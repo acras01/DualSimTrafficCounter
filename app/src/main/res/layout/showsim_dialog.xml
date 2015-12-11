@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textAlignment="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_sim"
+        android:id="@+id/choosesim"
+        android:layout_alignParentTop="true"
+        android:minLines="2"
+        android:maxLines="4"
+        android:maxWidth="@dimen/text_width"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/choosesim"
+        android:weightSum="1">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIM1"
+            android:id="@+id/sim1"
+            android:layout_weight=".33" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIM2"
+            android:id="@+id/sim2"
+            android:layout_weight=".33" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIM3"
+            android:id="@+id/sim3"
+            android:layout_weight=".33" />
+    </LinearLayout>
+
+</RelativeLayout>

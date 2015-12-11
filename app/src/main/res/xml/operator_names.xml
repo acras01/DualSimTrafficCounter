@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="SIM1"
+        android:key="sim1" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="auto1"
+            android:title="@string/auto_name_text"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:disableDependentsState="true" />
+
+        <EditTextPreference
+            android:key="name1"
+            android:inputType="text"
+            android:title="@string/name_text"
+            android:dependency="auto1"
+            android:summary="" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="SIM2"
+        android:key="sim2" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="auto2"
+            android:title="@string/auto_name_text"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:disableDependentsState="true" />
+
+        <EditTextPreference
+            android:key="name2"
+            android:inputType="text"
+            android:title="@string/name_text"
+            android:dependency="auto2"
+            android:summary="" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="SIM3"
+        android:key="sim3" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="auto3"
+            android:title="@string/auto_name_text"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:disableDependentsState="true" />
+
+        <EditTextPreference
+            android:key="name3"
+            android:inputType="text"
+            android:title="@string/name_text"
+            android:dependency="auto3"
+            android:summary="" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

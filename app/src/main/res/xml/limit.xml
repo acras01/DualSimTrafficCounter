@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="changeSIM"
+        android:title="@string/auto_change_text"
+        android:defaultValue="false"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off" />
+
+    <PreferenceCategory
+        android:title="@string/sim1_limit">
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="prefer1"
+            android:title="@string/prefer_text"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="autooff1"
+            android:title="@string/auto_off_text"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <EditTextPreference
+            android:key="limit1"
+            android:inputType="numberDecimal"
+            android:title="@string/limit"
+            android:summary="" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/measure"
+            android:entryValues="@array/measure_values"
+            android:key="value1"
+            android:summary=""
+            android:title="@string/measure_value" />
+
+        <EditTextPreference
+            android:key="round1"
+            android:inputType="numberDecimal"
+            android:defaultValue="0"
+            android:title="@string/round"
+            android:summary="" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="time1"
+            android:title="@string/time_of_end"/>
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/period"
+            android:entryValues="@array/period_values"
+            android:key="period1"
+            android:summary=""
+            android:title="@string/period_value" />
+
+        <EditTextPreference
+            android:key="day1"
+            android:inputType="number"
+            android:defaultValue="1"
+            android:title="@string/day"
+            android:summary="" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="everydayonoff1"
+            android:title="@string/everyday_on_off"
+            android:defaultValue="false"
+            android:singleLine="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="timeoff1"
+            android:dependency="everydayonoff1"
+            android:title="@string/time_off"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="timeon1"
+            android:dependency="everydayonoff1"
+            android:title="@string/time_on"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/sim2_limit"
+        android:key="sim2" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="prefer2"
+            android:title="@string/prefer_text"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="autooff2"
+            android:title="@string/auto_off_text"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <EditTextPreference
+            android:key="limit2"
+            android:inputType="numberDecimal"
+            android:title="@string/limit"
+            android:summary="" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/measure"
+            android:entryValues="@array/measure_values"
+            android:key="value2"
+            android:summary=""
+            android:title="@string/measure_value" />
+
+        <EditTextPreference
+            android:key="round2"
+            android:inputType="numberDecimal"
+            android:defaultValue="0"
+            android:title="@string/round"
+            android:summary="" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="time2"
+            android:title="@string/time_of_end"/>
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/period"
+            android:entryValues="@array/period_values"
+            android:key="period2"
+            android:summary=""
+            android:title="@string/period_value" />
+
+        <EditTextPreference
+            android:key="day2"
+            android:inputType="number"
+            android:defaultValue="1"
+            android:title="@string/day"
+            android:summary="" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="everydayonoff2"
+            android:title="@string/everyday_on_off"
+            android:defaultValue="false"
+            android:singleLine="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="timeoff2"
+            android:dependency="everydayonoff2"
+            android:title="@string/time_off"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="timeon2"
+            android:dependency="everydayonoff2"
+            android:title="@string/time_on"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/sim3_limit"
+        android:key="sim3" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="prefer3"
+            android:title="@string/prefer_text"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="autooff3"
+            android:title="@string/auto_off_text"
+            android:defaultValue="true"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <EditTextPreference
+            android:key="limit3"
+            android:inputType="numberDecimal"
+            android:title="@string/limit"
+            android:summary="" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/measure"
+            android:entryValues="@array/measure_values"
+            android:key="value3"
+            android:summary=""
+            android:title="@string/measure_value" />
+
+        <EditTextPreference
+            android:key="round3"
+            android:inputType="numberDecimal"
+            android:defaultValue="0"
+            android:title="@string/round"
+            android:summary="" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="time3"
+            android:title="@string/time_of_end"/>
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/period"
+            android:entryValues="@array/period_values"
+            android:key="period3"
+            android:summary=""
+            android:title="@string/period_value" />
+
+        <EditTextPreference
+            android:key="day3"
+            android:inputType="number"
+            android:defaultValue="1"
+            android:title="@string/day"
+            android:summary="" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="everydayonoff3"
+            android:title="@string/everyday_on_off"
+            android:singleLine="false"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="timeoff3"
+            android:dependency="everydayonoff3"
+            android:title="@string/time_off"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
+            android:key="timeon3"
+            android:dependency="everydayonoff3"
+            android:title="@string/time_on"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

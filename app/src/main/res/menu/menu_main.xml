@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    <item android:id="@+id/action_service_start_stop" android:title="@string/action_stop"
+        android:icon="@drawable/ic_action_disable" android:showAsAction="always" />
+    <item android:id="@+id/action_mobile_data_on_off" android:title="@string/action_disable"
+        android:icon="@drawable/ic_action_mobile_on" android:showAsAction="always" />
+    <item android:id="@+id/action_set_usage" android:title="@string/action_set_usage"
+        android:icon="@drawable/ic_action_set" android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:icon="@drawable/ic_action_settings" android:showAsAction="ifRoom" />
+</menu>

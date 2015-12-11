@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/info_widget_layout"
+    android:resizeMode="horizontal|vertical" >
+</appwidget-provider>

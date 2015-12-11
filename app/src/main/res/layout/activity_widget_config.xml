@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/ll7"
+                android:clickable="true"
+                android:contextClickable="false">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/choose_sim"
+                    android:id="@+id/simChoose"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/simChooseSum"
+                    android:layout_below="@+id/simChoose"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <CheckBox
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_names"
+                android:id="@+id/names"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/on"
+                android:id="@+id/names_summary" />
+
+            <CheckBox
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_full_text"
+                android:id="@+id/info"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/all"
+                android:id="@+id/info_summary" />
+
+            <CheckBox
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_icons"
+                android:id="@+id/icons"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/on"
+                android:id="@+id/icons_summary" />
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/logoLayout1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/operator_logo_1"
+                    android:id="@+id/logoText1"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/logoPreview1"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/logoSum1"
+                    android:layout_below="@+id/logoText1"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/logoLayout2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/operator_logo_2"
+                    android:id="@+id/logoText2"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/logoPreview2"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/logoSum2"
+                    android:layout_below="@+id/logoText2"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/logoLayout3">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/operator_logo_3"
+                    android:id="@+id/logoText3"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/logoPreview3"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/logoSum3"
+                    android:layout_below="@+id/logoText3"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/ll4"
+                android:clickable="true"
+                android:contextClickable="false">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/icon_size"
+                    android:id="@+id/iconSize"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/iconSizeSum"
+                    android:layout_below="@+id/iconSize"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/ll3"
+                android:clickable="true"
+                android:contextClickable="false">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_size"
+                    android:id="@+id/textSize"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/textSizeSum"
+                    android:layout_below="@+id/textSize"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/textColorLayout"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_color"
+                    android:id="@+id/textColor"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/textColorPreview"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@android:drawable/ic_menu_preferences" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <CheckBox
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/use_background"
+                android:id="@+id/useBack"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/on"
+                android:id="@+id/back_summary" />
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/backColorLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/background_color"
+                    android:id="@+id/backgroundColor"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/backColorPreview"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@android:drawable/ic_menu_preferences" />
+
+            </RelativeLayout>
+
+            <CheckBox
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_speed"
+                android:id="@+id/speed"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/on"
+                android:id="@+id/speed_summary" />
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/ll5"
+                android:clickable="true"
+                android:contextClickable="false">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_size"
+                    android:id="@+id/speedTextSize"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/speedTextSizeSum"
+                    android:layout_below="@+id/speedTextSize"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/ll6"
+                android:clickable="true"
+                android:contextClickable="false">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/icon_size"
+                    android:id="@+id/speedIconsSize"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/speedIconsSizeSum"
+                    android:layout_below="@+id/speedIconsSize"
+                    android:layout_alignParentLeft="true" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
