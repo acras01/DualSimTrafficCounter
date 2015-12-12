@@ -34,7 +34,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
     private EditTextPreference limit1, limit2, limit3, round1, round2, round3, day1, day2, day3;
     private ListPreference value1, period1, value2, period2, value3, period3;
-    private TwoLineCheckPreference prefer1, prefer2, prefer3, everyday1, everyday2, everyday3;
+    private TwoLineCheckPreference prefer1, prefer2, prefer3; //everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3;
 
     private final int SIM1_OFF = 100;
@@ -80,9 +80,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         day1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[10]);
         day2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[10]);
         day3 = (EditTextPreference) findPreference(Constants.PREF_SIM3[10]);
-        everyday1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[11]);
-        everyday2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[11]);
-        everyday3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[11]);
+        //everyday1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[11]);
+        //everyday2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[11]);
+        //everyday3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[11]);
         tOn1 = (TimePreference) findPreference(Constants.PREF_SIM1[13]);
         tOn2 = (TimePreference) findPreference(Constants.PREF_SIM2[13]);
         tOn3 = (TimePreference) findPreference(Constants.PREF_SIM3[13]);

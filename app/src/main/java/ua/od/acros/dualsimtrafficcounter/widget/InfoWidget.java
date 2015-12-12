@@ -330,9 +330,9 @@ public class InfoWidget extends AppWidgetProvider {
             if (prefs.getBoolean(Constants.PREF_WIDGET[3], false)) {
                 updateViews.setViewVisibility(R.id.ll4, View.VISIBLE);
                 String speedRX = String.format(context.getResources().getString(R.string.speed),
-                        DataFormat.formatData(context, bundle.getLong(Constants.SPEEDRX, 0)));
+                        DataFormat.formatData(context, bundle.getLong(Constants.SPEEDRX, 0L)));
                 String speedTX = String.format(context.getResources().getString(R.string.speed),
-                        DataFormat.formatData(context, bundle.getLong(Constants.SPEEDTX, 0)));
+                        DataFormat.formatData(context, bundle.getLong(Constants.SPEEDTX, 0L)));
                 updateViews.setTextViewText(R.id.tvSpeedRX, speedRX);
                 updateViews.setTextViewText(R.id.tvSpeedTX, speedTX);
                 updateViews.setOnClickPendingIntent(R.id.tvSpeedRX, settPIntent);
