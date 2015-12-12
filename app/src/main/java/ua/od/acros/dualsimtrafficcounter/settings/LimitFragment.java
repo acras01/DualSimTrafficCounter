@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
+import ua.od.acros.dualsimtrafficcounter.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
@@ -238,7 +239,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", getResources().getConfiguration().locale);
         if (key.equals(Constants.PREF_SIM1[11])) {
-            Intent i1Off = new Intent(getActivity(), CountService.class);
+            Intent i1Off = new Intent(getActivity(), OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1Off.putExtra(Constants.ON_OFF, false);
             i1Off.setAction(Constants.ALARM_ACTION);
@@ -254,7 +255,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.cancel(pi1Off);
         }
         if (key.equals(Constants.PREF_SIM2[11])) {
-            Intent i2Off = new Intent(getActivity(), CountService.class);
+            Intent i2Off = new Intent(getActivity(), OnOffReceiver.class);
             i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2Off.putExtra(Constants.ON_OFF, false);
             i2Off.setAction(Constants.ALARM_ACTION);
@@ -270,7 +271,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.cancel(pi2Off);
         }
         if (key.equals(Constants.PREF_SIM3[11])) {
-            Intent i3Off = new Intent(getActivity(), CountService.class);
+            Intent i3Off = new Intent(getActivity(), OnOffReceiver.class);
             i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3Off.putExtra(Constants.ON_OFF, false);
             i3Off.setAction(Constants.ALARM_ACTION);
@@ -286,7 +287,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.cancel(pi3Off);
         }
         if (key.equals(Constants.PREF_SIM1[11])) {
-            Intent i1On = new Intent(getActivity(), CountService.class);
+            Intent i1On = new Intent(getActivity(), OnOffReceiver.class);
             i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1On.putExtra(Constants.ON_OFF, true);
             i1On.setAction(Constants.ALARM_ACTION);
@@ -302,7 +303,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.cancel(pi1On);
         }
         if (key.equals(Constants.PREF_SIM2[11])) {
-            Intent i2On = new Intent(getActivity(), CountService.class);
+            Intent i2On = new Intent(getActivity(), OnOffReceiver.class);
             i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2On.putExtra(Constants.ON_OFF, true);
             i2On.setAction(Constants.ALARM_ACTION);
@@ -318,7 +319,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.cancel(pi2On);
         }
         if (key.equals(Constants.PREF_SIM3[11])) {
-            Intent i3On = new Intent(getActivity(), CountService.class);
+            Intent i3On = new Intent(getActivity(), OnOffReceiver.class);
             i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3On.putExtra(Constants.ON_OFF, true);
             i3On.setAction(Constants.ALARM_ACTION);
