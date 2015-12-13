@@ -32,24 +32,23 @@ public class DataFormat {
             case 2:
                 res = (long) (dData * gb);
                 break;
-        }
-        return res;
     }
+    return res;
+}
 
-    public static double getFormatDouble (String data, int value) {
-        double res = 0;
-        double dData = Double.valueOf(data);
+    public static long getRoundLong(long data, String round, String value) {
+        double div = Double.valueOf(round);
         switch (value) {
-            case 0:
-                res = dData / kb;
+            case "0":
+                div = div * kb;
                 break;
-            case 1:
-                res = dData / mb;
+            case "1":
+                div = div * mb;
                 break;
-            case 2:
-                res = dData / gb;
+            case "2":
+                div = div * kb;
                 break;
         }
-        return res;
+        return (long) (Math.ceil(data / div) * div);
     }
 }
