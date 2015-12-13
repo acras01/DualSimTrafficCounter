@@ -3,6 +3,7 @@ package ua.od.acros.dualsimtrafficcounter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,11 +13,17 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 
 public class OnOffReceiver extends BroadcastReceiver {
+
     public OnOffReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
+        wl.acquire();
+
         try {
             int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
             if (intent.getBooleanExtra(Constants.ON_OFF, true) && CountService.getLastActiveSIM() == sim &&

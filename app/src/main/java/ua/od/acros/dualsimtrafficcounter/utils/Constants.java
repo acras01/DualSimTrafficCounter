@@ -37,7 +37,7 @@ public class Constants {
     public static final String LIMIT_ACTION = "limit";
     public static final String OFF_ACTION = "off";
     public static final String ACTION = "action";
-    public static final String ALARM_ACTION = "alarm";
+    public static final String ALARM_ACTION = "ua.od.acros.dualsimtrafficcounter.ALARM";
     public static final String CONTINUE_ACTION = "continue";
     public static final long NOTIFY_INTERVAL = 1000; // 0.5 seconds
     public static final String DATABASE_NAME = "mydatabase.db";

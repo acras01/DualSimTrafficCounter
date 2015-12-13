@@ -17,11 +17,10 @@ import android.text.InputFilter;
 
 import com.stericson.RootTools.RootTools;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -236,8 +235,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
         AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", getResources().getConfiguration().locale);
+        DateTimeFormatter alrmfrmt = DateTimeFormat.forPattern("HH:mm");
         if (key.equals(Constants.PREF_SIM1[11])) {
             Intent i1Off = new Intent(getActivity(), OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
@@ -245,12 +243,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi1Off = PendingIntent.getBroadcast(getActivity(), SIM1_OFF, i1Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
-                try {
-                    cal.setTime(sdf.parse(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             } else
                 am.cancel(pi1Off);
         }
@@ -261,12 +255,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i2Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi2Off = PendingIntent.getBroadcast(getActivity(), SIM2_OFF, i2Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
-                try {
-                    cal.setTime(sdf.parse(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             } else
                 am.cancel(pi2Off);
         }
@@ -277,12 +267,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3Off = PendingIntent.getBroadcast(getActivity(), SIM3_OFF, i3Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
-                try {
-                    cal.setTime(sdf.parse(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             } else
                 am.cancel(pi3Off);
         }
@@ -293,12 +279,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi1On = PendingIntent.getBroadcast(getActivity(), SIM1_ON, i1On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
-                try {
-                    cal.setTime(sdf.parse(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1On);
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "00:05"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1On);
             } else
                 am.cancel(pi1On);
         }
@@ -309,12 +291,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i2On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi2On = PendingIntent.getBroadcast(getActivity(), SIM2_ON, i2On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
-                try {
-                    cal.setTime(sdf.parse(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2On);
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "00:05"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2On);
             } else
                 am.cancel(pi2On);
         }
@@ -325,12 +303,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3On = PendingIntent.getBroadcast(getActivity(), SIM3_ON, i3On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
-                try {
-                    cal.setTime(sdf.parse(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "00:05"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             } else
                 am.cancel(pi3On);
         }
