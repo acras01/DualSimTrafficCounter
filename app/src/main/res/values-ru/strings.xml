@@ -102,4 +102,5 @@
     <string name="time_off"> Время откл.</string>
     <string name="time_on">Время вкл.</string>
     <string name="userpick">Пользов.</string>
+    <string name="round_traffic">Округлять трафик за сессию</string>
 </resources>

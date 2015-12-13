@@ -31,8 +31,8 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 
 public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private EditTextPreference limit1, limit2, limit3, round1, round2, round3, day1, day2, day3;
-    private ListPreference value1, period1, value2, period2, value3, period3;
+    private EditTextPreference limit1, limit2, limit3, round1, round2, round3, day1, day2, day3,opLimit1, opLimit2, opLimit3;
+    private ListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3;
     private TwoLineCheckPreference prefer1, prefer2, prefer3; //everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3;
 
@@ -88,6 +88,13 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         tOff1 = (TimePreference) findPreference(Constants.PREF_SIM1[12]);
         tOff2 = (TimePreference) findPreference(Constants.PREF_SIM2[12]);
         tOff3 = (TimePreference) findPreference(Constants.PREF_SIM3[12]);
+        opLimit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[15]);
+        opLimit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[15]);
+        opLimit3 = (EditTextPreference) findPreference(Constants.PREF_SIM3[15]);
+        opValue1 = (ListPreference) findPreference(Constants.PREF_SIM1[16]);
+        opValue2 = (ListPreference) findPreference(Constants.PREF_SIM2[16]);
+        opValue3 = (ListPreference) findPreference(Constants.PREF_SIM3[16]);
+
         PreferenceCategory sim2 = (PreferenceCategory) getPreferenceScreen().findPreference("sim2");
         PreferenceCategory sim3 = (PreferenceCategory) getPreferenceScreen().findPreference("sim3");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isRootAvailable()) {
@@ -215,6 +222,19 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             tOff2.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM2[12], "23:55"));
         if (tOff3 != null)
             tOff3.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM3[12], "23:55"));
+
+        if (opLimit1 != null)
+            opLimit1.setSummary(opLimit1.getText());
+        if (opLimit2 != null)
+            opLimit2.setSummary(opLimit2.getText());
+        if (opLimit3 != null)
+            opLimit3.setSummary(opLimit3.getText());
+        if (opValue1 != null)
+            opValue1.setSummary(opValue1.getEntry());
+        if (opValue2 != null)
+            opValue2.setSummary(opValue2.getEntry());
+        if (opValue3 != null)
+            opValue3.setSummary(opValue3.getEntry());
     }
 
     @Override

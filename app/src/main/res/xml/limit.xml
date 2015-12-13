@@ -83,6 +83,30 @@
             android:dependency="everydayonoff1"
             android:title="@string/time_on"/>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="op_round1"
+            android:title="@string/round_traffic"
+            android:defaultValue="false"
+            android:singleLine="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <EditTextPreference
+            android:key="op_limit1"
+            android:inputType="numberDecimal"
+            android:dependency="op_round1"
+            android:title="@string/limit"
+            android:summary="" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/measure"
+            android:entryValues="@array/measure_values"
+            android:key="op_value1"
+            android:dependency="op_round1"
+            android:summary=""
+            android:title="@string/measure_value" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -161,6 +185,30 @@
             android:dependency="everydayonoff2"
             android:title="@string/time_on"/>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="op_round2"
+            android:title="@string/round_traffic"
+            android:defaultValue="false"
+            android:singleLine="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <EditTextPreference
+            android:key="op_limit2"
+            android:inputType="numberDecimal"
+            android:dependency="op_round2"
+            android:title="@string/limit"
+            android:summary="" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/measure"
+            android:entryValues="@array/measure_values"
+            android:key="op_value2"
+            android:dependency="op_round2"
+            android:summary=""
+            android:title="@string/measure_value" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -238,6 +286,30 @@
             android:key="timeon3"
             android:dependency="everydayonoff3"
             android:title="@string/time_on"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="op_round3"
+            android:title="@string/round_traffic"
+            android:defaultValue="false"
+            android:singleLine="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <EditTextPreference
+            android:key="op_limit3"
+            android:inputType="numberDecimal"
+            android:dependency="op_round3"
+            android:title="@string/limit"
+            android:summary="" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/measure"
+            android:entryValues="@array/measure_values"
+            android:key="op_value3"
+            android:dependency="op_round3"
+            android:summary=""
+            android:title="@string/measure_value" />
 
     </PreferenceCategory>
 
