@@ -243,10 +243,21 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi1Off = PendingIntent.getBroadcast(getActivity(), SIM1_OFF, i1Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55"));
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55"));
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             } else
                 am.cancel(pi1Off);
+
+            Intent i1On = new Intent(getActivity(), OnOffReceiver.class);
+            i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
+            i1On.putExtra(Constants.ON_OFF, true);
+            i1On.setAction(Constants.ALARM_ACTION);
+            PendingIntent pi1On = PendingIntent.getBroadcast(getActivity(), SIM1_ON, i1On, 0);
+            if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1On);
+            } else
+                am.cancel(pi1On);
         }
         if (key.equals(Constants.PREF_SIM2[11])) {
             Intent i2Off = new Intent(getActivity(), OnOffReceiver.class);
@@ -259,6 +270,17 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             } else
                 am.cancel(pi2Off);
+
+            Intent i2On = new Intent(getActivity(), OnOffReceiver.class);
+            i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
+            i2On.putExtra(Constants.ON_OFF, true);
+            i2On.setAction(Constants.ALARM_ACTION);
+            PendingIntent pi2On = PendingIntent.getBroadcast(getActivity(), SIM2_ON, i2On, 0);
+            if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05"));
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2On);
+            } else
+                am.cancel(pi2On);
         }
         if (key.equals(Constants.PREF_SIM3[11])) {
             Intent i3Off = new Intent(getActivity(), OnOffReceiver.class);
@@ -267,43 +289,18 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3Off = PendingIntent.getBroadcast(getActivity(), SIM3_OFF, i3Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55"));
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55"));
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             } else
                 am.cancel(pi3Off);
-        }
-        if (key.equals(Constants.PREF_SIM1[11])) {
-            Intent i1On = new Intent(getActivity(), OnOffReceiver.class);
-            i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
-            i1On.putExtra(Constants.ON_OFF, true);
-            i1On.setAction(Constants.ALARM_ACTION);
-            PendingIntent pi1On = PendingIntent.getBroadcast(getActivity(), SIM1_ON, i1On, 0);
-            if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "00:05"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1On);
-            } else
-                am.cancel(pi1On);
-        }
-        if (key.equals(Constants.PREF_SIM2[11])) {
-            Intent i2On = new Intent(getActivity(), OnOffReceiver.class);
-            i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
-            i2On.putExtra(Constants.ON_OFF, true);
-            i2On.setAction(Constants.ALARM_ACTION);
-            PendingIntent pi2On = PendingIntent.getBroadcast(getActivity(), SIM2_ON, i2On, 0);
-            if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "00:05"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2On);
-            } else
-                am.cancel(pi2On);
-        }
-        if (key.equals(Constants.PREF_SIM3[11])) {
+
             Intent i3On = new Intent(getActivity(), OnOffReceiver.class);
             i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3On.putExtra(Constants.ON_OFF, true);
             i3On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3On = PendingIntent.getBroadcast(getActivity(), SIM3_ON, i3On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "00:05"));
+                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05"));
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             } else
                 am.cancel(pi3On);
