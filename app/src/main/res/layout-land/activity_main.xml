@@ -138,7 +138,6 @@
                         android:text="@string/reset"
                         android:id="@+id/buttonClear1"
                         android:layout_column="5"
-                        android:onClick="buttonClear_Click"
                         android:visibility="visible" />
 
                 </TableRow>
@@ -202,7 +201,6 @@
                         android:text="@string/reset"
                         android:id="@+id/buttonClear2"
                         android:layout_column="5"
-                        android:onClick="buttonClear_Click"
                         android:visibility="visible" />
 
                 </TableRow>
@@ -266,7 +264,6 @@
                         android:text="@string/reset"
                         android:id="@+id/buttonClear3"
                         android:layout_column="5"
-                        android:onClick="buttonClear_Click"
                         android:visibility="visible" />
 
                 </TableRow>

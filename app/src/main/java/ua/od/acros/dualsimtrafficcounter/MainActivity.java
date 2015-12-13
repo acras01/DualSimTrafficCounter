@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.stericson.RootTools.RootTools;
@@ -40,7 +41,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
-public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener, Button.OnClickListener{
 
     TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
 
@@ -53,6 +54,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private TrafficDatabase mDatabaseHelper;
     private SharedPreferences prefs;
     private boolean needsRestart = false;
+    private Button b1clear, b2clear, b3clear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,13 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         SIM1 = (TextView) findViewById(R.id.sim1_name);
         SIM2 = (TextView) findViewById(R.id.sim2_name);
         SIM3 = (TextView) findViewById(R.id.sim3_name);
+        b1clear = (Button) findViewById(R.id.buttonClear1);
+        b2clear = (Button) findViewById(R.id.buttonClear2);
+        b3clear = (Button) findViewById(R.id.buttonClear3);
+
+        b1clear.setOnClickListener(this);
+        b2clear.setOnClickListener(this);
+        b3clear.setOnClickListener(this);
 
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             RX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1RX)));
@@ -297,73 +306,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         return false;
     }
 
-    public void buttonClear_Click(View v) {
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
-        DateTime dt = fmt.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
-        switch (v.getId()) {
-            case (R.id.buttonClear1):
-                if (isMyServiceRunning(CountService.class)) {
-                    Intent clear1Intent = new Intent(Constants.CLEAR1);
-                    sendBroadcast(clear1Intent);
-                } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
-                    dataMap.put(Constants.SIM1RX, (long) 0);
-                    dataMap.put(Constants.SIM1TX, (long) 0);
-                    dataMap.put(Constants.TOTAL1, (long) 0);
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
-                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
-                    else
-                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
-                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1RX)));
-                        TX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1TX)));
-                    }
-                    TOT1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)));
-                }
-                break;
-            case (R.id.buttonClear2):
-                if (isMyServiceRunning(CountService.class)) {
-                    Intent clear2Intent = new Intent(Constants.CLEAR2);
-                    sendBroadcast(clear2Intent);
-                } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
-                    dataMap.put(Constants.SIM2RX, (long) 0);
-                    dataMap.put(Constants.SIM2TX, (long) 0);
-                    dataMap.put(Constants.TOTAL2, (long) 0);
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
-                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
-                    else
-                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
-                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2RX)));
-                        TX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2TX)));
-                    }
-                    TOT2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2)));
-                }
-                break;
-            case (R.id.buttonClear3):
-                if (isMyServiceRunning(CountService.class)) {
-                    Intent clear2Intent = new Intent(Constants.CLEAR3);
-                    sendBroadcast(clear2Intent);
-                } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
-                    dataMap.put(Constants.SIM3RX, (long) 0);
-                    dataMap.put(Constants.SIM3TX, (long) 0);
-                    dataMap.put(Constants.TOTAL3, (long) 0);
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
-                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
-                    else
-                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
-                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3RX)));
-                        TX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3TX)));
-                    }
-                    TOT3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3)));
-                }
-                break;
-        }
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mService = menu.getItem(0);
@@ -503,16 +445,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    /**
-     * Called when a shared preference is changed, added, or removed. This
-     * may be called even if a preference is set to its existing value.
-     * <p/>
-     * <p>This callback will be run on your main thread.
-     *
-     * @param sharedPreferences The {@link SharedPreferences} that received
-     *                          the change.
-     * @param key               The key of the preference that was changed, added, or removed.
-     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[4])) {
@@ -528,5 +460,74 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         }
         if (key.equals(Constants.PREF_OTHER[5]))
             needsRestart = true;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTime dt = fmt.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+        switch (v.getId()) {
+            case (R.id.buttonClear1):
+                if (isMyServiceRunning(CountService.class)) {
+                    Intent clear1Intent = new Intent(Constants.CLEAR1);
+                    sendBroadcast(clear1Intent);
+                } else {
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    dataMap.put(Constants.SIM1RX, (long) 0);
+                    dataMap.put(Constants.SIM1TX, (long) 0);
+                    dataMap.put(Constants.TOTAL1, (long) 0);
+                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
+                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
+                    else
+                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
+                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        RX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1RX)));
+                        TX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1TX)));
+                    }
+                    TOT1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)));
+                }
+                break;
+            case (R.id.buttonClear2):
+                if (isMyServiceRunning(CountService.class)) {
+                    Intent clear2Intent = new Intent(Constants.CLEAR2);
+                    sendBroadcast(clear2Intent);
+                } else {
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    dataMap.put(Constants.SIM2RX, (long) 0);
+                    dataMap.put(Constants.SIM2TX, (long) 0);
+                    dataMap.put(Constants.TOTAL2, (long) 0);
+                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
+                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
+                    else
+                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
+                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        RX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2RX)));
+                        TX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2TX)));
+                    }
+                    TOT2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2)));
+                }
+                break;
+            case (R.id.buttonClear3):
+                if (isMyServiceRunning(CountService.class)) {
+                    Intent clear2Intent = new Intent(Constants.CLEAR3);
+                    sendBroadcast(clear2Intent);
+                } else {
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    dataMap.put(Constants.SIM3RX, (long) 0);
+                    dataMap.put(Constants.SIM3TX, (long) 0);
+                    dataMap.put(Constants.TOTAL3, (long) 0);
+                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
+                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
+                    else
+                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
+                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        RX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3RX)));
+                        TX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3TX)));
+                    }
+                    TOT3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3)));
+                }
+                break;
+        }
     }
 }
