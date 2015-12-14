@@ -150,8 +150,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     TIP.setText(getResources().getString(R.string.tip));
                 else
                     TIP.setText(getResources().getString(R.string.service_disabled_tip));
-                String rxSpeed = DataFormat.formatData(getAppContext(), intent.getIntExtra(Constants.SPEEDRX, 0));
-                String txSpeed = DataFormat.formatData(getAppContext(), intent.getIntExtra(Constants.SPEEDTX, 0));
+                String rxSpeed = DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SPEEDRX, 0L));
+                String txSpeed = DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SPEEDTX, 0L));
                 int swtch = MobileDataControl.getMobileDataInfo(getAppContext())[0];
                 switch (intent.getIntExtra(Constants.SIM_ACTIVE, 0)) {
                     default:

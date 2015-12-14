@@ -10,7 +10,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/ambilwarna_library" />
+            <option value="$PROJECT_DIR$/ambilwarna" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/joda-time-2.8.2" />
             <option value="$PROJECT_DIR$/mediatek-compatibility" />

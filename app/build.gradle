@@ -39,7 +39,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(':joda-time-2.8.2')
     compile project(':mediatek-compatibility')
-    compile project(':ambilwarna_library')
     compile project(':picasso')
     compile project(':roottools')
+    compile project(':ambilwarna')
 }

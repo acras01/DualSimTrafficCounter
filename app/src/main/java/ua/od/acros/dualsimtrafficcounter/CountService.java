@@ -22,7 +22,6 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
@@ -896,8 +895,8 @@ public class CountService extends Service {
                 isFirstRun = false;
             } else {
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                intent.putExtra(Constants.SPEEDRX, 0);
-                intent.putExtra(Constants.SPEEDTX, 0);
+                intent.putExtra(Constants.SPEEDRX, 0L);
+                intent.putExtra(Constants.SPEEDTX, 0L);
                 intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
                 intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
                 intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
@@ -1264,8 +1263,8 @@ public class CountService extends Service {
                 isFirstRun = false;
             } else {
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                intent.putExtra(Constants.SPEEDRX, 0);
-                intent.putExtra(Constants.SPEEDTX, 0);
+                intent.putExtra(Constants.SPEEDRX, 0L);
+                intent.putExtra(Constants.SPEEDTX, 0L);
                 intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
                 intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
                 intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
@@ -1632,8 +1631,8 @@ public class CountService extends Service {
                 isFirstRun = false;
             } else {
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                intent.putExtra(Constants.SPEEDRX, 0);
-                intent.putExtra(Constants.SPEEDTX, 0);
+                intent.putExtra(Constants.SPEEDRX, 0L);
+                intent.putExtra(Constants.SPEEDTX, 0L);
                 intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
                 intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
                 intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));

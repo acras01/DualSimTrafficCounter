@@ -62,6 +62,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/DualSimTrafficCounter/ambilwarna/unspecified/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
@@ -85,9 +86,10 @@
     <orderEntry type="library" exported="" name="support-annotations-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.1.1" level="project" />
     <orderEntry type="module" module-name="joda-time-2.8.2" exported="" />
+    <orderEntry type="module" module-name="ambilwarna" exported="" />
     <orderEntry type="module" module-name="roottools" exported="" />
     <orderEntry type="module" module-name="picasso" exported="" />
-    <orderEntry type="module" module-name="ambilwarna_library" exported="" />
     <orderEntry type="module" module-name="mediatek-compatibility" exported="" />
+    <orderEntry type="library" exported="" name="ambilwarna-unspecified" level="project" />
   </component>
 </module>
