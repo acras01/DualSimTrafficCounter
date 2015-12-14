@@ -17,17 +17,15 @@ import android.text.InputFilter;
 
 import com.stericson.RootTools.RootTools;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
-import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
-import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 
 public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -255,7 +253,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
         AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        DateTimeFormatter alrmfrmt = DateTimeFormat.forPattern("HH:mm");
+        Calendar clndr = Calendar.getInstance();
         if (key.equals(Constants.PREF_SIM1[11])) {
             Intent i1Off = new Intent(getActivity(), OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
@@ -263,8 +261,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi1Off = PendingIntent.getBroadcast(getActivity(), SIM1_OFF, i1Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
+                clndr.setTimeInMillis(System.currentTimeMillis());
+                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]));
+                clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]));
+                clndr.set(Calendar.SECOND, 0);
+                clndr.set(Calendar.MILLISECOND, 0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             } else
                 am.cancel(pi1Off);
 
@@ -274,8 +276,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi1On = PendingIntent.getBroadcast(getActivity(), SIM1_ON, i1On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1On);
+                clndr.setTimeInMillis(System.currentTimeMillis());
+                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]));
+                clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]));
+                clndr.set(Calendar.SECOND, 0);
+                clndr.set(Calendar.MILLISECOND, 0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1On);
             } else
                 am.cancel(pi1On);
         }
@@ -286,8 +292,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i2Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi2Off = PendingIntent.getBroadcast(getActivity(), SIM2_OFF, i2Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
+                clndr.setTimeInMillis(System.currentTimeMillis());
+                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]));
+                clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]));
+                clndr.set(Calendar.SECOND, 0);
+                clndr.set(Calendar.MILLISECOND, 0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             } else
                 am.cancel(pi2Off);
 
@@ -297,8 +307,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i2On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi2On = PendingIntent.getBroadcast(getActivity(), SIM2_ON, i2On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2On);
+                clndr.setTimeInMillis(System.currentTimeMillis());
+                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]));
+                clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]));
+                clndr.set(Calendar.SECOND, 0);
+                clndr.set(Calendar.MILLISECOND, 0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2On);
             } else
                 am.cancel(pi2On);
         }
@@ -309,8 +323,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3Off = PendingIntent.getBroadcast(getActivity(), SIM3_OFF, i3Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
+                clndr.setTimeInMillis(System.currentTimeMillis());
+                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]));
+                clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]));
+                clndr.set(Calendar.SECOND, 0);
+                clndr.set(Calendar.MILLISECOND, 0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             } else
                 am.cancel(pi3Off);
 
@@ -320,8 +338,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3On = PendingIntent.getBroadcast(getActivity(), SIM3_ON, i3On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
-                DateTime alrmdt = alrmfrmt.parseDateTime(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05"));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alrmdt.toCalendar(getResources().getConfiguration().locale).getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
+                clndr.setTimeInMillis(System.currentTimeMillis());
+                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]));
+                clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]));
+                clndr.set(Calendar.SECOND, 0);
+                clndr.set(Calendar.MILLISECOND, 0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             } else
                 am.cancel(pi3On);
         }
