@@ -10,7 +10,7 @@ import org.acra.annotation.*;
         customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,
                 ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL,
                 ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT },
-        logcatArguments = { "-t", "200", "-v", "long", "ActivityManager:I", "AndroidRuntime:E", "ua.od.acros.dualsimtrafficcounter:D", "*:S" },
+        logcatArguments = { "-t", "200", "-v", "long", "*:E", "*:S" },
         mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.crash_toast_text)
 public class MyApplication extends Application {
