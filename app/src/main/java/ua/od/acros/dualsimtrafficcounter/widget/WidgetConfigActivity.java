@@ -25,12 +25,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.IconsList;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class WidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
@@ -294,10 +299,27 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         if (item.getItemId() == R.id.save) {
             edit.apply();
             setResult(RESULT_OK, resultValue);
-            Intent intent = new Intent(this, InfoWidget.class);
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), InfoWidget.class));
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
+                    new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+            Intent intent = new Intent(Constants.BROADCAST_ACTION);
+            intent.putExtra(Constants.SPEEDRX, 0L);
+            intent.putExtra(Constants.SPEEDTX, 0L);
+            intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+            intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+            intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+            intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+            intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+            intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+            intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+            intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+            intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+            intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+            if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] >= 2)
+                intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+            if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] == 3)
+                intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+
             sendBroadcast(intent);
             finish();
         }

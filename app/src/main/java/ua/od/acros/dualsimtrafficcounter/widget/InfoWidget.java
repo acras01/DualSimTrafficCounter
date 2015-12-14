@@ -234,6 +234,7 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM2, pendingIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM2, pendingIntent);
                 } else {
+                    updateViews.setViewVisibility(R.id.logo2, View.GONE);
                     updateViews.setOnClickPendingIntent(R.id.operSIM2, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.txSIM2, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.rxSIM2, settPIntent);
@@ -301,6 +302,7 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM3, pendingIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM3, pendingIntent);
                 } else {
+                    updateViews.setViewVisibility(R.id.logo3, View.GONE);
                     updateViews.setOnClickPendingIntent(R.id.operSIM3, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.txSIM3, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.rxSIM3, settPIntent);

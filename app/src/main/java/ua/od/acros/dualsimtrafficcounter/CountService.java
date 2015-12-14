@@ -544,7 +544,7 @@ public class CountService extends Service {
         }
     }
 
-    private static String getName(String key1, String key2, int sim) {
+    public static String getName(String key1, String key2, int sim) {
         if (prefs.getBoolean(key1, true))
             return MobileDataControl.getOperatorNames(getAppContext()).get(sim);
         else
