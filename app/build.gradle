@@ -42,4 +42,5 @@ dependencies {
     compile project(':picasso')
     compile project(':roottools')
     compile project(':ambilwarna')
+    compile project(':acra')
 }

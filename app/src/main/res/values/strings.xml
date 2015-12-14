@@ -106,4 +106,5 @@
     <string name="time_on">ON time</string>
     <string name="userpick">User</string>
     <string name="round_traffic">Round traffic in session</string>
+    <string name="crash_toast_text">Sending crash report to developer</string>
 </resources>
