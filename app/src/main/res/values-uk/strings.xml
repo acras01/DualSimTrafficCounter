@@ -103,6 +103,6 @@
     <string name="time_on">Час увімкн.</string>
     <string name="userpick">Користув.</string>
     <string name="round_traffic">Округляти трафік за сесію</string>
-    <string name="crash_toast_text">Відправка </string>
+    <string name="crash_toast_text">Відправка звіту про помилку розробнику</string>
     <string name="pref_disable_acra">Відправка звітів про помилки</string>
 </resources>
