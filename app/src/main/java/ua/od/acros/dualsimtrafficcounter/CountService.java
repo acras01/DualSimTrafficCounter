@@ -87,8 +87,8 @@ public class CountService extends Service {
     private static DateTime resetTime3;
 
     static Map<String, Object> dataMap;
-    private static int activeSIM = Constants.DISABLED;
-    private static int lastActiveSIM = Constants.DISABLED;
+    private static int activeSIM;
+    private static int lastActiveSIM;
     BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, /*simChange,*/ setUsage, actionReceive;
 
     private static Context context;
@@ -376,6 +376,9 @@ public class CountService extends Service {
         registerReceiver(clear1Receiver, clear1ServiceFilter);
         registerReceiver(clear2Receiver, clear2ServiceFilter);
         registerReceiver(clear3Receiver, clear3ServiceFilter);
+
+        activeSIM = Constants.DISABLED;
+        lastActiveSIM = Constants.DISABLED;
 
         // cancel if already existed
         if (mTimer != null) {
