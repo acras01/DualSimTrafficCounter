@@ -254,13 +254,14 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         updateSummary();
         AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Calendar clndr = Calendar.getInstance();
-        if (key.equals(Constants.PREF_SIM1[11])) {
+        if (key.equals(Constants.PREF_SIM1[11]) || key.equals(Constants.PREF_SIM1[12]) || key.equals(Constants.PREF_SIM1[13])) {
             Intent i1Off = new Intent(getActivity(), OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1Off.putExtra(Constants.ON_OFF, false);
             i1Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi1Off = PendingIntent.getBroadcast(getActivity(), SIM1_OFF, i1Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
+                am.cancel(pi1Off);
                 clndr.setTimeInMillis(System.currentTimeMillis());
                 clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]));
                 clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]));
@@ -276,6 +277,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi1On = PendingIntent.getBroadcast(getActivity(), SIM1_ON, i1On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
+                am.cancel(pi1On);
                 clndr.setTimeInMillis(System.currentTimeMillis());
                 clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]));
                 clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]));
@@ -285,13 +287,14 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             } else
                 am.cancel(pi1On);
         }
-        if (key.equals(Constants.PREF_SIM2[11])) {
+        if (key.equals(Constants.PREF_SIM2[11]) || key.equals(Constants.PREF_SIM2[12]) || key.equals(Constants.PREF_SIM2[13])) {
             Intent i2Off = new Intent(getActivity(), OnOffReceiver.class);
             i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2Off.putExtra(Constants.ON_OFF, false);
             i2Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi2Off = PendingIntent.getBroadcast(getActivity(), SIM2_OFF, i2Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
+                am.cancel(pi2Off);
                 clndr.setTimeInMillis(System.currentTimeMillis());
                 clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]));
                 clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]));
@@ -307,6 +310,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i2On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi2On = PendingIntent.getBroadcast(getActivity(), SIM2_ON, i2On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
+                am.cancel(pi2On);
                 clndr.setTimeInMillis(System.currentTimeMillis());
                 clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]));
                 clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]));
@@ -316,13 +320,14 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             } else
                 am.cancel(pi2On);
         }
-        if (key.equals(Constants.PREF_SIM3[11])) {
+        if (key.equals(Constants.PREF_SIM3[11]) || key.equals(Constants.PREF_SIM3[12]) || key.equals(Constants.PREF_SIM3[13])) {
             Intent i3Off = new Intent(getActivity(), OnOffReceiver.class);
             i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3Off.putExtra(Constants.ON_OFF, false);
             i3Off.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3Off = PendingIntent.getBroadcast(getActivity(), SIM3_OFF, i3Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
+                am.cancel(pi3Off);
                 clndr.setTimeInMillis(System.currentTimeMillis());
                 clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]));
                 clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]));
@@ -338,6 +343,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3On.setAction(Constants.ALARM_ACTION);
             PendingIntent pi3On = PendingIntent.getBroadcast(getActivity(), SIM3_ON, i3On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
+                am.cancel(pi3On);
                 clndr.setTimeInMillis(System.currentTimeMillis());
                 clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]));
                 clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]));
