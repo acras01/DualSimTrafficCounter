@@ -103,4 +103,6 @@
     <string name="time_on">Время вкл.</string>
     <string name="userpick">Пользов.</string>
     <string name="round_traffic">Округлять трафик за сессию</string>
+    <string name="crash_toast_text">Отправка отчета об ошибке разработчику</string>
+    <string name="pref_disable_acra">Отправка отчетов об ошибках</string>
 </resources>

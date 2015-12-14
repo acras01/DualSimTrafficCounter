@@ -23,5 +23,11 @@
         android:summaryOn="@string/all"
         android:summaryOff="@string/only_total"/>
 
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="acra.enable"
+        android:title="@string/pref_disable_acra"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off"
+        android:defaultValue="true"/>
 
 </PreferenceScreen>

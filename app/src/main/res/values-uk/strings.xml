@@ -102,5 +102,7 @@
     <string name="time_off">Час вимкн.</string>
     <string name="time_on">Час увімкн.</string>
     <string name="userpick">Користув.</string>
-    <string name="round_traffic">Округляти трафiк за сесiю</string>
+    <string name="round_traffic">Округляти трафік за сесію</string>
+    <string name="crash_toast_text">Відправка </string>
+    <string name="pref_disable_acra">Відправка звітів про помилки</string>
 </resources>

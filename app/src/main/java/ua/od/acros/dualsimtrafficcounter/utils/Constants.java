@@ -52,7 +52,7 @@ public class Constants {
             "op_round3", "op_limit31", "op_value3"}; //16
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
-            "fullinfo", "watchdog_timer","first_run", "changeSIM"}; //10
+            "fullinfo", "watchdog_timer","first_run", "changeSIM", "acra.enable"}; //10
     public static final String[] PREF_WIDGET = {"stub", "names", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10
