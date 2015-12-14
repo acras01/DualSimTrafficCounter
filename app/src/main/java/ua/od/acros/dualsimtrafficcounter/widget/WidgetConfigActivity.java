@@ -478,9 +478,9 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             case R.id.icons:
                 edit.putBoolean(Constants.PREF_WIDGET[4], isChecked);
 
-                onOff(ll1, isChecked);
-                onOff(ll2, isChecked);
-                onOff(ll3, isChecked);
+                onOff(logoL1, isChecked);
+                onOff(logoL2, isChecked);
+                onOff(logoL3, isChecked);
                 onOff(ll4, isChecked);
                 if (isChecked)
                     iconsSum.setText(R.string.on);
