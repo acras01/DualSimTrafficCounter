@@ -480,6 +480,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 priority = NotificationCompat.PRIORITY_MAX;
         else
                 priority = NotificationCompat.PRIORITY_MIN;
+        nm.cancel(Constants.STARTED_ID);
     }
 
     private static class CheckTimerTask extends TimerTask {
