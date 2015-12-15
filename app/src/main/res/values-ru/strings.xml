@@ -105,4 +105,5 @@
     <string name="round_traffic">Округлять трафик за сессию</string>
     <string name="crash_toast_text">Отправка отчета об ошибке разработчику</string>
     <string name="pref_disable_acra">Отправка отчетов об ошибках</string>
+    <string name="show_icon_in_statusbar">Иконка сервиса в статус баре (если сервис останавливается системой, оставьте включенным)</string>
 </resources>

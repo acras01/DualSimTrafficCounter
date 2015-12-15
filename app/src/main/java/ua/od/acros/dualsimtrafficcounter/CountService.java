@@ -49,7 +49,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 
-public class CountService extends Service {
+public class CountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static PendingIntent contentIntent;
     private static NotificationManager nm;
@@ -82,6 +82,7 @@ public class CountService extends Service {
     private static boolean needsReset1 = false;
     private static int simChosen;
     private static int simNumber;
+    private static int priority;
     private static DateTime resetTime1;
     private static DateTime resetTime2;
     private static DateTime resetTime3;
@@ -119,6 +120,8 @@ public class CountService extends Service {
         super.onCreate();
 
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        priority = prefs.getBoolean(Constants.PREF_OTHER[11], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
         context = CountService.this;
 
@@ -302,6 +305,8 @@ public class CountService extends Service {
                         break;
                     }
                 n = builder.setContentIntent(contentIntent)
+                        .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                        .setPriority(priority)
                         .setContentText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1))
                                 + "   ||   " + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2))
                                 + "   ||   " + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3)))
@@ -401,6 +406,8 @@ public class CountService extends Service {
         builder = new NotificationCompat.Builder(this);
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setPriority(priority)
                 .setLargeIcon(bm)
                 .setTicker(getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
@@ -453,6 +460,25 @@ public class CountService extends Service {
         if (tTask != null) {
             mTimer.scheduleAtFixedRate(tTask, 0, Constants.NOTIFY_INTERVAL);
         }
+    }
+
+    /**
+     * Called when a shared preference is changed, added, or removed. This
+     * may be called even if a preference is set to its existing value.
+     * <p/>
+     * <p>This callback will be run on your main thread.
+     *
+     * @param sharedPreferences The {@link SharedPreferences} that received
+     *                          the change.
+     * @param key               The key of the preference that was changed, added, or
+     */
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Constants.PREF_OTHER[11]))
+            if (sharedPreferences.getBoolean(key, true))
+                priority = NotificationCompat.PRIORITY_MAX;
+        else
+                priority = NotificationCompat.PRIORITY_MIN;
     }
 
     private static class CheckTimerTask extends TimerTask {
@@ -888,6 +914,8 @@ public class CountService extends Service {
 
                     Bitmap bm = BitmapFactory.decodeResource(getAppContext().getResources(), R.mipmap.ic_launcher);
                     n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                            .setPriority(priority)
                             .setLargeIcon(bm)
                             .setWhen(System.currentTimeMillis())
                             .setContentTitle(getAppContext().getResources().getString(R.string.notification_title))
@@ -1256,6 +1284,8 @@ public class CountService extends Service {
 
                     Bitmap bm = BitmapFactory.decodeResource(getAppContext().getResources(), R.mipmap.ic_launcher);
                     n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                            .setPriority(priority)
                             .setLargeIcon(bm)
                             .setWhen(System.currentTimeMillis())
                             .setContentTitle(getAppContext().getResources().getString(R.string.notification_title))
@@ -1624,6 +1654,8 @@ public class CountService extends Service {
 
                     Bitmap bm = BitmapFactory.decodeResource(getAppContext().getResources(), R.mipmap.ic_launcher);
                     n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                            .setPriority(priority)
                             .setLargeIcon(bm)
                             .setWhen(System.currentTimeMillis())
                             .setContentTitle(getAppContext().getResources().getString(R.string.notification_title))
@@ -1679,6 +1711,8 @@ public class CountService extends Service {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext());
             NotificationManager nm = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
             Notification n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                    .setPriority(priority)
                     .setLargeIcon(bm)
                     .setWhen(System.currentTimeMillis())
                     .setContentTitle(getAppContext().getResources().getString(R.string.service_stopped_title))
@@ -1755,6 +1789,8 @@ public class CountService extends Service {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getAppContext());
             NotificationManager nm = (NotificationManager) getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
             Notification n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                    .setPriority(priority)
                     .setLargeIcon(bm)
                     .setWhen(System.currentTimeMillis())
                     .setContentTitle(getAppContext().getResources().getString(R.string.service_stopped_title))
@@ -1799,6 +1835,8 @@ public class CountService extends Service {
             txt = getAppContext().getResources().getString(R.string.data_dis_tip);
 
         Notification n = builder.setContentIntent(pIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                .setCategory(NotificationCompat.CATEGORY_STATUS)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setLargeIcon(bm)
                 .setTicker(getAppContext().getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())

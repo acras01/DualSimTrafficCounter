@@ -148,9 +148,9 @@ public class InfoWidget extends AppWidgetProvider {
                         title1 = "SIM1";
                     else
                         title1 = bundle.getString(Constants.OPERATOR1, "");
+                    updateViews.setViewVisibility(R.id.operSIM1, View.VISIBLE);
+                    updateViews.setTextViewText(R.id.operSIM1, title1);
                 }
-                updateViews.setViewVisibility(R.id.operSIM1, View.VISIBLE);
-                updateViews.setTextViewText(R.id.operSIM1, title1);
                 int resourceId1 = 0;
                 Uri uri1 = null;
                 if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
@@ -209,13 +209,14 @@ public class InfoWidget extends AppWidgetProvider {
                 }
                 String title2 = "";
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
-                if (bundle.getString(Constants.OPERATOR2, "").equals(""))
-                    title2 = "SIM2";
-                else
-                    title2 = bundle.getString(Constants.OPERATOR2);
-                updateViews.setViewVisibility(R.id.operSIM2, View.VISIBLE);
-                updateViews.setTextViewText(R.id.operSIM2, title2);
-
+                if (prefs.getBoolean(Constants.PREF_WIDGET[1], true)) {
+                    if (bundle.getString(Constants.OPERATOR2, "").equals(""))
+                        title2 = "SIM2";
+                    else
+                        title2 = bundle.getString(Constants.OPERATOR2);
+                    updateViews.setViewVisibility(R.id.operSIM2, View.VISIBLE);
+                    updateViews.setTextViewText(R.id.operSIM2, title2);
+                }
                 int resourceId2 = 0;
                 Uri uri2 = null;
                 if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
@@ -276,14 +277,15 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.vert32, View.VISIBLE);
                 }
                 String title3 = "";
-                updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
-                if (bundle.getString(Constants.OPERATOR3, "").equals(""))
-                    title3 = "SIM3";
-                else
-                    title3 = bundle.getString(Constants.OPERATOR3);
-                updateViews.setViewVisibility(R.id.operSIM3, View.VISIBLE);
-                updateViews.setTextViewText(R.id.operSIM3, title3);
-
+                if (prefs.getBoolean(Constants.PREF_WIDGET[1], true)) {
+                    updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
+                    if (bundle.getString(Constants.OPERATOR3, "").equals(""))
+                        title3 = "SIM3";
+                    else
+                        title3 = bundle.getString(Constants.OPERATOR3);
+                    updateViews.setViewVisibility(R.id.operSIM3, View.VISIBLE);
+                    updateViews.setTextViewText(R.id.operSIM3, title3);
+                }
                 int resourceId3 = 0;
                 Uri uri3 = null;
                 if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
