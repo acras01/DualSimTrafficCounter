@@ -52,13 +52,13 @@ public class Constants {
             "op_round3", "op_limit31", "op_value3"}; //16
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
-            "fullinfo", "watchdog_timer","first_run", "changeSIM", "acra.enable", "status_icon"}; //11
+            "fullinfo", "watchdog_timer","first_run", "changeSIM", "acra.enable", "status_icon"}; //12
     public static final String[] PREF_WIDGET = {"stub", "names", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
-            "showsim1","showsim2", "showsim3"}; //20
+            "showsim1","showsim2", "showsim3", "showdiv"}; //21
     public static final int STARTED_ID = 101;
     public static final int SIM1 = 0;
     public static final int SIM2 = 1;

@@ -3,7 +3,6 @@ package ua.od.acros.dualsimtrafficcounter.widget;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,10 +44,10 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     Intent resultValue;
     ImageView tiv, biv, logo1, logo2, logo3;
-    CheckBox names, info, icons, speed, back;
+    CheckBox names, info, icons, speed, back, div;
     TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum,
-            backSum, speedTextSum, speedIconsSum, showSimSum;
+            backSum, speedTextSum, speedIconsSum, showSimSum, divSum;
     RelativeLayout ll1, ll2, ll3, ll4, ll5, ll6, ll7, ll8, logoL1, logoL2, logoL3;
     private SharedPreferences prefs;
     private SharedPreferences.Editor edit;
@@ -102,6 +101,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             edit.putBoolean(Constants.PREF_WIDGET[18], true);
             edit.putBoolean(Constants.PREF_WIDGET[19], true);
             edit.putBoolean(Constants.PREF_WIDGET[20], true);
+            edit.putBoolean(Constants.PREF_WIDGET[21], true);
             edit.apply();
         }
 
@@ -125,6 +125,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         speed.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[3], true));
         back = (CheckBox) findViewById(R.id.useBack);
         back.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[14], true));
+        div = (CheckBox) findViewById(R.id.divider);
+        div.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[21], true));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -146,7 +148,11 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             speedSum.setText(R.string.on);
         else
             speedSum.setText(R.string.off);
-
+        divSum = (TextView) findViewById(R.id.divider_summary);
+        if (div.isChecked())
+            divSum.setText(R.string.on);
+        else
+            divSum.setText(R.string.off);
 
         logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
         logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
@@ -207,6 +213,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         icons.setOnCheckedChangeListener(this);
         speed.setOnCheckedChangeListener(this);
         back.setOnCheckedChangeListener(this);
+        div.setOnCheckedChangeListener(this);
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
         biv = (ImageView) findViewById(R.id.backColorPreview);
@@ -299,27 +306,40 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         if (item.getItemId() == R.id.save) {
             edit.apply();
             setResult(RESULT_OK, resultValue);
-            Map<String, Object> dataMap = new HashMap<>();
-            dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
-                    new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
             Intent intent = new Intent(Constants.BROADCAST_ACTION);
-            intent.putExtra(Constants.SPEEDRX, 0L);
-            intent.putExtra(Constants.SPEEDTX, 0L);
-            intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-            intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-            intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-            intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-            intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-            intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-            intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-            intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-            intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-            intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-            if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] >= 2)
-                intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-            if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] == 3)
-                intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-
+            if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
+                        new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+                intent.putExtra(Constants.SPEEDRX, 0L);
+                intent.putExtra(Constants.SPEEDTX, 0L);
+                intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+                intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+                intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+                intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+                intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+                intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+                intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+                intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+                intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+                intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+                if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] >= 2)
+                    intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+                if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] == 3)
+                    intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+            } else {
+                intent.putExtra(Constants.SPEEDRX, 0L);
+                intent.putExtra(Constants.SPEEDTX, 0L);
+                intent.putExtra(Constants.SIM1RX, 0L);
+                intent.putExtra(Constants.SIM2RX, 0L);
+                intent.putExtra(Constants.SIM3RX, 0L);
+                intent.putExtra(Constants.SIM1TX, 0L);
+                intent.putExtra(Constants.SIM2TX, 0L);
+                intent.putExtra(Constants.SIM3TX, 0L);
+                intent.putExtra(Constants.TOTAL1, 0L);
+                intent.putExtra(Constants.TOTAL2, 0L);
+                intent.putExtra(Constants.TOTAL3, 0L);
+            }
             sendBroadcast(intent);
             finish();
         }
@@ -489,6 +509,13 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 else
                     speedSum.setText(R.string.off);
                 break;
+            case R.id.divider:
+                edit.putBoolean(Constants.PREF_WIDGET[21], isChecked);
+                if (isChecked)
+                    divSum.setText(R.string.on);
+                else
+                    divSum.setText(R.string.off);
+                break;
             case R.id.useBack:
                 edit.putBoolean(Constants.PREF_WIDGET[14], isChecked);
                 if (isChecked)
@@ -499,7 +526,6 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 break;
             case R.id.icons:
                 edit.putBoolean(Constants.PREF_WIDGET[4], isChecked);
-
                 onOff(logoL1, isChecked);
                 onOff(logoL2, isChecked);
                 onOff(logoL3, isChecked);

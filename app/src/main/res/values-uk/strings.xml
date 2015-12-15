@@ -106,4 +106,5 @@
     <string name="crash_toast_text">Відправка звіту про помилку розробнику</string>
     <string name="pref_disable_acra">Відправка звітів про помилки</string>
     <string name="show_icon_in_statusbar">Іконка сервісу в статус барі (якщо сервіс зупиняється системою, спробйте лишити увімкненим)</string>
+    <string name="use_divider">Відображати роздільну лінію</string>
 </resources>

@@ -31,19 +31,31 @@ public class InfoWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
         super.onUpdate(context, widgetManager, widgetId);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
-                new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
         Bundle bundle = new Bundle();
-        bundle.putLong(Constants.SIM1RX, (Long) dataMap.get(Constants.SIM1RX));
-        bundle.putLong(Constants.SIM2RX, (Long) dataMap.get(Constants.SIM2RX));
-        bundle.putLong(Constants.SIM3RX, (Long) dataMap.get(Constants.SIM3RX));
-        bundle.putLong(Constants.SIM1TX, (Long) dataMap.get(Constants.SIM1TX));
-        bundle.putLong(Constants.SIM2TX, (Long) dataMap.get(Constants.SIM2TX));
-        bundle.putLong(Constants.SIM3TX, (Long) dataMap.get(Constants.SIM3TX));
-        bundle.putLong(Constants.TOTAL1, (Long) dataMap.get(Constants.TOTAL1));
-        bundle.putLong(Constants.TOTAL2, (Long) dataMap.get(Constants.TOTAL2));
-        bundle.putLong(Constants.TOTAL3, (Long) dataMap.get(Constants.TOTAL3));
+        if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
+                    new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+            bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+            bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+            bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+            bundle.putLong(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+            bundle.putLong(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+            bundle.putLong(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+            bundle.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+            bundle.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+            bundle.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+        } else {
+            bundle.putLong(Constants.SIM1RX, 0L);
+            bundle.putLong(Constants.SIM2RX, 0L);
+            bundle.putLong(Constants.SIM3RX, 0L);
+            bundle.putLong(Constants.SIM1TX, 0L);
+            bundle.putLong(Constants.SIM2TX, 0L);
+            bundle.putLong(Constants.SIM3TX, 0L);
+            bundle.putLong(Constants.TOTAL1, 0L);
+            bundle.putLong(Constants.TOTAL2, 0L);
+            bundle.putLong(Constants.TOTAL3, 0L);
+        }
         updateWidget(context, widgetManager, widgetId, bundle);
     }
 
@@ -105,6 +117,7 @@ public class InfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET[18], true);
                 edit.putBoolean(Constants.PREF_WIDGET[19], true);
                 edit.putBoolean(Constants.PREF_WIDGET[20], true);
+                edit.putBoolean(Constants.PREF_WIDGET[21], true);
                 edit.apply();
             }
 
@@ -255,7 +268,10 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll2, View.VISIBLE);
-                updateViews.setViewVisibility(R.id.stub2, View.VISIBLE);
+                if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
+                    updateViews.setViewVisibility(R.id.stub2, View.VISIBLE);
+                else
+                    updateViews.setViewVisibility(R.id.stub2, View.GONE);
             } else {
                 updateViews.setViewVisibility(R.id.ll2, View.GONE);
                 updateViews.setViewVisibility(R.id.stub2, View.GONE);
@@ -324,7 +340,10 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll3, View.VISIBLE);
-                updateViews.setViewVisibility(R.id.stub3, View.VISIBLE);
+                if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
+                    updateViews.setViewVisibility(R.id.stub3, View.VISIBLE);
+                else
+                    updateViews.setViewVisibility(R.id.stub3, View.GONE);
             } else {
                 updateViews.setViewVisibility(R.id.ll3, View.GONE);
                 updateViews.setViewVisibility(R.id.stub3, View.GONE);
@@ -356,7 +375,10 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.tvSpeedRX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.tvSpeedTX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll4, View.VISIBLE);
-                updateViews.setViewVisibility(R.id.stub1, View.VISIBLE);
+                if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
+                    updateViews.setViewVisibility(R.id.stub1, View.VISIBLE);
+                else
+                    updateViews.setViewVisibility(R.id.stub1, View.GONE);
             } else {
                 updateViews.setViewVisibility(R.id.ll4, View.GONE);
                 updateViews.setViewVisibility(R.id.stub1, View.GONE);

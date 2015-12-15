@@ -120,8 +120,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         super.onCreate();
 
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        prefs.registerOnSharedPreferenceChangeListener(this);
 
-        priority = prefs.getBoolean(Constants.PREF_OTHER[11], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
+        priority = prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
         context = CountService.this;
 
@@ -474,7 +475,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Constants.PREF_OTHER[11]))
+        if (key.equals(Constants.PREF_OTHER[12]))
             if (sharedPreferences.getBoolean(key, true))
                 priority = NotificationCompat.PRIORITY_MAX;
         else
@@ -1860,6 +1861,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         mTimer.purge();
         nm.cancel(Constants.STARTED_ID);
         TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(clear1Receiver);
         unregisterReceiver(clear2Receiver);
         unregisterReceiver(clear3Receiver);
