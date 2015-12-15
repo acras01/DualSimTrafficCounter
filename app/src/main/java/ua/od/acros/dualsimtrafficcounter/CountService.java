@@ -905,12 +905,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     String text = "";
                     if (simNumber == 1)
-                        text = DataFormat.formatData(getAppContext(), tot);
+                        text = DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1));
                     else if (simNumber == 2)
-                        text = DataFormat.formatData(getAppContext(), tot) + "   ||   "
+                        text = DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
                                 + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2));
                     else if (simNumber == 3)
-                        text = DataFormat.formatData(getAppContext(), tot) + "   ||   "
+                        text = DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
                                 + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
                                 + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3));
 
@@ -1278,10 +1278,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         text = DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1));
                     else if (simNumber == 2)
                         text = DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                + DataFormat.formatData(getAppContext(), tot);
+                                + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2));
                     else if (simNumber == 3)
                         text = DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                + DataFormat.formatData(getAppContext(), tot) + "   ||   "
+                                + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
                                 + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3));
 
                     Bitmap bm = BitmapFactory.decodeResource(getAppContext().getResources(), R.mipmap.ic_launcher);
@@ -1652,7 +1652,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     else if (simNumber == 3)
                         text = DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
                                 + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
-                                + DataFormat.formatData(getAppContext(), tot);
+                                + DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3));
 
                     Bitmap bm = BitmapFactory.decodeResource(getAppContext().getResources(), R.mipmap.ic_launcher);
                     n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
