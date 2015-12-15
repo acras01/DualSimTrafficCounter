@@ -8,9 +8,9 @@ import org.acra.annotation.*;
 
 @ReportsCrashes(mailTo = "acras1@gmail.com",
         customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,
-                ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL,
-                ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT },
-        logcatArguments = { "-t", "200", "-v", "long", "*:E" },
+                ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.SETTINGS_GLOBAL, ReportField.SETTINGS_SYSTEM,
+                ReportField.STACK_TRACE, ReportField.LOGCAT, ReportField.SHARED_PREFERENCES },
+        logcatArguments = { "-t", "200", "-v", "long", "*:W" },
         mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.crash_toast_text)
 public class MyApplication extends Application {
