@@ -28,7 +28,7 @@
             android:weightSum="1"
             android:id="@+id/ll4"
             android:gravity="center|center_horizontal"
-            android:layout_weight=".25">
+            android:layout_weight=".24">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -91,9 +91,10 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="1dp"
             android:id="@+id/stub1"
-            android:src="@drawable/widget_divider"/>
+            android:src="@drawable/widget_divider"
+            android:layout_weight="0.02" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -102,7 +103,7 @@
             android:weightSum="1"
             android:id="@+id/ll1"
             android:gravity="center|center_horizontal"
-            android:layout_weight=".25">
+            android:layout_weight=".24">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -214,10 +215,11 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="1dp"
             android:id="@+id/stub2"
             android:src="@drawable/widget_divider"
-            android:layout_marginBottom="3dp" />
+            android:layout_marginBottom="3dp"
+            android:layout_weight="0.02" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -226,7 +228,7 @@
             android:weightSum="1"
             android:id="@+id/ll2"
             android:gravity="center|center_horizontal"
-            android:layout_weight=".25">
+            android:layout_weight=".24">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -338,10 +340,11 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="1dp"
             android:id="@+id/stub3"
             android:src="@drawable/widget_divider"
-            android:layout_marginBottom="3dp" />
+            android:layout_marginBottom="3dp"
+            android:layout_weight="0.02" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -350,7 +353,7 @@
             android:weightSum="1"
             android:id="@+id/ll3"
             android:gravity="center|center_horizontal"
-            android:layout_weight=".25">
+            android:layout_weight=".24">
 
             <ImageView
                 android:layout_width="wrap_content"

@@ -154,6 +154,7 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.vert11, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert12, View.VISIBLE);
                 }
+
                 String title1 = "";
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET[1], true)) {
@@ -164,17 +165,21 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.operSIM1, View.VISIBLE);
                     updateViews.setTextViewText(R.id.operSIM1, title1);
                 }
-                int resourceId1 = 0;
-                Uri uri1 = null;
+
                 if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
                     if (!prefs.getBoolean(Constants.PREF_WIDGET[8], false))
-                        resourceId1 = context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", context.getPackageName());
+                        Picasso.with(context)
+                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", context.getPackageName()))
+                                .resize(dim, dim)
+                                .centerInside()
+                                .into(updateViews, R.id.logo1, new int[]{i});
                     else
-                        uri1 = Uri.parse(prefs.getString(Constants.PREF_WIDGET[5], ""));
-                    if (!prefs.getBoolean(Constants.PREF_WIDGET[8], false))
-                        Picasso.with(context).load(resourceId1).resize(dim, dim).centerInside().into(updateViews, R.id.logo1, new int[]{i});
-                    else
-                        Picasso.with(context).load(uri1).resize(dim, dim).centerInside().into(updateViews, R.id.logo1, new int[]{i});
+                        Picasso.with(context)
+                                .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[5], "")))
+                                .resize(dim, dim)
+                                .centerInside()
+                                .into(updateViews, R.id.logo1, new int[]{i});
+
                     updateViews.setViewVisibility(R.id.logo1, View.VISIBLE);
                     updateViews.setOnClickPendingIntent(R.id.logo1, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.operSIM1, pendingIntent);
@@ -202,10 +207,12 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll1, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
-                    if (prefs.getBoolean(Constants.PREF_WIDGET[3], true))
+                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true)) {
+                    if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
                         updateViews.setViewVisibility(R.id.stub1, View.VISIBLE);
-                else
+                    else
+                        updateViews.setViewVisibility(R.id.stub1, View.GONE);
+                } else
                     updateViews.setViewVisibility(R.id.stub1, View.GONE);
             } else
                 updateViews.setViewVisibility(R.id.ll1, View.GONE);
@@ -235,17 +242,21 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.operSIM2, View.VISIBLE);
                     updateViews.setTextViewText(R.id.operSIM2, title2);
                 }
-                int resourceId2 = 0;
-                Uri uri2 = null;
+
                 if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
                     if (!prefs.getBoolean(Constants.PREF_WIDGET[9], false))
-                        resourceId2 = context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", context.getPackageName());
+                        Picasso.with(context)
+                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", context.getPackageName()))
+                                .resize(dim, dim)
+                                .centerInside()
+                                .into(updateViews, R.id.logo2, new int[]{i});
                     else
-                        uri2 = Uri.parse(prefs.getString(Constants.PREF_WIDGET[6], ""));
-                    if (!prefs.getBoolean(Constants.PREF_WIDGET[9], false))
-                        Picasso.with(context).load(resourceId2).resize(dim, dim).centerInside().into(updateViews, R.id.logo2, new int[]{i});
-                    else
-                        Picasso.with(context).load(uri2).resize(dim, dim).centerInside().into(updateViews, R.id.logo2, new int[]{i});
+                        Picasso.with(context)
+                                .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[6], "")))
+                                .resize(dim, dim)
+                                .centerInside()
+                                .into(updateViews, R.id.logo2, new int[]{i});
+
                     updateViews.setViewVisibility(R.id.logo2, View.VISIBLE);
                     updateViews.setOnClickPendingIntent(R.id.logo2, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.operSIM2, pendingIntent);
@@ -273,10 +284,12 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll2, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
-                    if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || prefs.getBoolean(Constants.PREF_WIDGET[18], true))
+                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || prefs.getBoolean(Constants.PREF_WIDGET[18], true)) {
+                    if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
                         updateViews.setViewVisibility(R.id.stub2, View.VISIBLE);
-                else
+                    else
+                        updateViews.setViewVisibility(R.id.stub2, View.GONE);
+                } else
                     updateViews.setViewVisibility(R.id.stub2, View.GONE);
             } else {
                 updateViews.setViewVisibility(R.id.ll2, View.GONE);
@@ -308,17 +321,22 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.operSIM3, View.VISIBLE);
                     updateViews.setTextViewText(R.id.operSIM3, title3);
                 }
-                int resourceId3 = 0;
-                Uri uri3 = null;
+
                 if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
+
                     if (!prefs.getBoolean(Constants.PREF_WIDGET[10], false))
-                        resourceId3 = context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", context.getPackageName());
+                        Picasso.with(context)
+                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", context.getPackageName()))
+                                .resize(dim, dim)
+                                .centerInside()
+                                .into(updateViews, R.id.logo3, new int[]{i});
                     else
-                        uri3 = Uri.parse(prefs.getString(Constants.PREF_WIDGET[7], ""));
-                    if (!prefs.getBoolean(Constants.PREF_WIDGET[10], false))
-                        Picasso.with(context).load(resourceId3).resize(dim, dim).centerInside().into(updateViews, R.id.logo3, new int[]{i});
-                    else
-                        Picasso.with(context).load(uri3).resize(dim, dim).centerInside().into(updateViews, R.id.logo3, new int[]{i});
+                        Picasso.with(context)
+                                .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[7], "")))
+                                .resize(dim, dim)
+                                .centerInside()
+                                .into(updateViews, R.id.logo3, new int[]{i});
+
                     updateViews.setViewVisibility(R.id.logo3, View.VISIBLE);
                     updateViews.setOnClickPendingIntent(R.id.logo3, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.operSIM3, pendingIntent);
@@ -346,11 +364,13 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll3, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
-                    if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || prefs.getBoolean(Constants.PREF_WIDGET[18], true) ||
-                            prefs.getBoolean(Constants.PREF_WIDGET[19], true))
+                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || prefs.getBoolean(Constants.PREF_WIDGET[18], true) ||
+                        prefs.getBoolean(Constants.PREF_WIDGET[19], true)) {
+                    if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
                         updateViews.setViewVisibility(R.id.stub3, View.VISIBLE);
-                else
+                    else
+                        updateViews.setViewVisibility(R.id.stub3, View.GONE);
+                } else
                     updateViews.setViewVisibility(R.id.stub3, View.GONE);
             } else {
                 updateViews.setViewVisibility(R.id.ll3, View.GONE);
@@ -364,12 +384,14 @@ public class InfoWidget extends AppWidgetProvider {
                         DataFormat.formatData(context, bundle.getLong(Constants.SPEEDRX, 0L)));
                 String speedTX = String.format(context.getResources().getString(R.string.speed),
                         DataFormat.formatData(context, bundle.getLong(Constants.SPEEDTX, 0L)));
+
                 updateViews.setTextViewText(R.id.tvSpeedRX, speedRX);
                 updateViews.setTextViewText(R.id.tvSpeedTX, speedTX);
                 updateViews.setOnClickPendingIntent(R.id.tvSpeedRX, settPIntent);
                 updateViews.setOnClickPendingIntent(R.id.tvSpeedTX, settPIntent);
                 updateViews.setOnClickPendingIntent(R.id.ivRX, settPIntent);
                 updateViews.setOnClickPendingIntent(R.id.ivTX, settPIntent);
+
                 Picasso.with(context).load(R.drawable.rx_arrow).resize(dims, dims).centerInside().into(updateViews, R.id.ivRX, new int[]{i});
                 Picasso.with(context).load(R.drawable.tx_arrow).resize(dims, dims).centerInside().into(updateViews, R.id.ivTX, new int[]{i});
 
