@@ -51,11 +51,6 @@ import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 public class CountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static PendingIntent contentIntent;
-    private static NotificationManager nm;
-    private static NotificationCompat.Builder builder;
-    private static Notification n;
-
     private static long totalRxBytes;
     private static long totalTxBytes;
     private static long lastUpdateTime;
@@ -83,20 +78,22 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private static int simChosen;
     private static int simNumber;
     private static int priority;
+    private static int activeSIM;
+    private static int lastActiveSIM;
     private static DateTime resetTime1;
     private static DateTime resetTime2;
     private static DateTime resetTime3;
 
-    static Map<String, Object> dataMap;
-    private static int activeSIM;
-    private static int lastActiveSIM;
-    BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, /*simChange,*/ setUsage, actionReceive;
-
+    private static Map<String, Object> dataMap;
+    private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, /*simChange,*/ setUsage, actionReceive;
     private static Context context;
     private static TrafficDatabase mDatabaseHelper;
-
     private static Timer mTimer = null;
     private static SharedPreferences prefs;
+    private static PendingIntent contentIntent;
+    private static NotificationManager nm;
+    private static NotificationCompat.Builder builder;
+    private static Notification n;
 
 
     public CountService() {
