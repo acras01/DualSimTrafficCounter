@@ -260,18 +260,30 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         ll8.setOnClickListener(this);
 
         if (prefs.getBoolean(Constants.PREF_WIDGET[8], false)) {
-            Picasso.with(context).load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[5], "none")))
-                    .resize(dim, dim).centerInside().into(logo1);
+            Picasso.with(context)
+                    .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[5], "none")))
+                    .resize(dim, dim)
+                    .centerInside()
+                    .error(R.drawable.none)
+                    .into(logo1);
             logoSum1.setText(getResources().getString(R.string.userpick));
         }
         if (prefs.getBoolean(Constants.PREF_WIDGET[9], false)) {
-            Picasso.with(context).load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[6], "none")))
-                    .resize(dim, dim).centerInside().into(logo2);
+            Picasso.with(context)
+                    .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[6], "none")))
+                    .resize(dim, dim)
+                    .centerInside()
+                    .error(R.drawable.none)
+                    .into(logo2);
             logoSum2.setText(getResources().getString(R.string.userpick));
         }
         if (prefs.getBoolean(Constants.PREF_WIDGET[10], false)) {
-            Picasso.with(context).load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[7], "none")))
-                    .resize(dim, dim).centerInside().into(logo3);
+            Picasso.with(context)
+                    .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[7], "none")))
+                    .resize(dim, dim)
+                    .centerInside()
+                    .error(R.drawable.none)
+                    .into(logo3);
             logoSum3.setText(getResources().getString(R.string.userpick));
         }
 
@@ -425,17 +437,32 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             if (logo.equals(Constants.PREF_WIDGET[5])) {
                 edit.putBoolean(Constants.PREF_WIDGET[8], false);
                 edit.putString(Constants.PREF_WIDGET[5], listitems[position]);
-                Picasso.with(context).load(resourceId).resize(dim, dim).centerInside().into(logo1);
+                Picasso.with(context)
+                        .load(resourceId)
+                        .resize(dim, dim)
+                        .centerInside()
+                        .error(R.drawable.none)
+                        .into(logo1);
                 logoSum1.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[6])) {
                 edit.putBoolean(Constants.PREF_WIDGET[9], false);
                 edit.putString(Constants.PREF_WIDGET[6], listitems[position]);
-                Picasso.with(context).load(resourceId).resize(dim, dim).centerInside().into(logo2);
+                Picasso.with(context)
+                        .load(resourceId)
+                        .resize(dim, dim)
+                        .centerInside()
+                        .error(R.drawable.none)
+                        .into(logo2);
                 logoSum2.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[7])) {
                 edit.putBoolean(Constants.PREF_WIDGET[10], false);
                 edit.putString(Constants.PREF_WIDGET[7], listitems[position]);
-                Picasso.with(context).load(resourceId).resize(dim, dim).centerInside().into(logo3);
+                Picasso.with(context)
+                        .load(resourceId)
+                        .resize(dim, dim)
+                        .centerInside()
+                        .error(R.drawable.none)
+                        .into(logo3);
                 logoSum3.setText(list[position]);
             }
         } else {
@@ -458,17 +485,32 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     if (user_pick.equals(Constants.PREF_WIDGET[5])) {
                         edit.putBoolean(Constants.PREF_WIDGET[8], true);
                         edit.putString(Constants.PREF_WIDGET[5], selectedImage.toString());
-                        Picasso.with(context).load(selectedImage).resize(dim, dim).centerInside().into(logo1);
+                        Picasso.with(context)
+                                .load(selectedImage)
+                                .resize(dim, dim)
+                                .centerInside()
+                                .error(R.drawable.none)
+                                .into(logo1);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (user_pick.equals(Constants.PREF_WIDGET[6])) {
                         edit.putBoolean(Constants.PREF_WIDGET[9], true);
                         edit.putString(Constants.PREF_WIDGET[6], selectedImage.toString());
-                        Picasso.with(context).load(selectedImage).resize(dim, dim).centerInside().into(logo2);
+                        Picasso.with(context)
+                                .load(selectedImage)
+                                .resize(dim, dim)
+                                .centerInside()
+                                .error(R.drawable.none)
+                                .into(logo2);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (user_pick.equals(Constants.PREF_WIDGET[7])) {
                         edit.putBoolean(Constants.PREF_WIDGET[10], true);
                         edit.putString(Constants.PREF_WIDGET[7], selectedImage.toString());
-                        Picasso.with(context).load(selectedImage).resize(dim, dim).centerInside().into(logo3);
+                        Picasso.with(context)
+                                .load(selectedImage)
+                                .resize(dim, dim)
+                                .centerInside()
+                                .error(R.drawable.none)
+                                .into(logo3);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     }
                     user_pick = "";

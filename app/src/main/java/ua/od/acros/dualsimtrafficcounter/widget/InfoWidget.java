@@ -172,12 +172,14 @@ public class InfoWidget extends AppWidgetProvider {
                                 .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
+                                .error(R.drawable.none)
                                 .into(updateViews, R.id.logo1, new int[]{i});
                     else
                         Picasso.with(context)
                                 .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[5], "")))
                                 .resize(dim, dim)
                                 .centerInside()
+                                .error(R.drawable.none)
                                 .into(updateViews, R.id.logo1, new int[]{i});
 
                     updateViews.setViewVisibility(R.id.logo1, View.VISIBLE);
@@ -249,12 +251,14 @@ public class InfoWidget extends AppWidgetProvider {
                                 .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
+                                .error(R.drawable.none)
                                 .into(updateViews, R.id.logo2, new int[]{i});
                     else
                         Picasso.with(context)
                                 .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[6], "")))
                                 .resize(dim, dim)
                                 .centerInside()
+                                .error(R.drawable.none)
                                 .into(updateViews, R.id.logo2, new int[]{i});
 
                     updateViews.setViewVisibility(R.id.logo2, View.VISIBLE);
@@ -329,12 +333,14 @@ public class InfoWidget extends AppWidgetProvider {
                                 .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
+                                .error(R.drawable.none)
                                 .into(updateViews, R.id.logo3, new int[]{i});
                     else
                         Picasso.with(context)
                                 .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[7], "")))
                                 .resize(dim, dim)
                                 .centerInside()
+                                .error(R.drawable.none)
                                 .into(updateViews, R.id.logo3, new int[]{i});
 
                     updateViews.setViewVisibility(R.id.logo3, View.VISIBLE);
@@ -392,8 +398,18 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setOnClickPendingIntent(R.id.ivRX, settPIntent);
                 updateViews.setOnClickPendingIntent(R.id.ivTX, settPIntent);
 
-                Picasso.with(context).load(R.drawable.rx_arrow).resize(dims, dims).centerInside().into(updateViews, R.id.ivRX, new int[]{i});
-                Picasso.with(context).load(R.drawable.tx_arrow).resize(dims, dims).centerInside().into(updateViews, R.id.ivTX, new int[]{i});
+                Picasso.with(context)
+                        .load(R.drawable.rx_arrow)
+                        .resize(dims, dims)
+                        .centerInside()
+                        .error(R.drawable.none)
+                        .into(updateViews, R.id.ivRX, new int[]{i});
+                Picasso.with(context)
+                        .load(R.drawable.tx_arrow)
+                        .resize(dims, dims)
+                        .centerInside()
+                        .error(R.drawable.none)
+                        .into(updateViews, R.id.ivTX, new int[]{i});
 
                 if (!sizestr.equals("") && !sizestrs.equals("")) {
                     updateViews.setFloat(R.id.tvSpeedRX, "setTextSize", Float.parseFloat(sizestrs));
