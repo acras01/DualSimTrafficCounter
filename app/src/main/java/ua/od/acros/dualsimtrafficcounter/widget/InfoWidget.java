@@ -446,6 +446,7 @@ public class InfoWidget extends AppWidgetProvider {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         for (String aChildren : children) {
             for (int j : appWidgetIds)
