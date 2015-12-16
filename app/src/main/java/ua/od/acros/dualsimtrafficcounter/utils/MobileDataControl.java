@@ -85,7 +85,8 @@ public class MobileDataControl {
                 name.add((String) si.getCarrierName());
             }
         } else {
-            for (int i = 0; i < isMultiSim(context); i++) {
+            int simNumber = isMultiSim(context);
+            for (int i = 0; i < simNumber; i++) {
                 try {
                     Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
                     Method getName = c.getMethod("getNetworkOperatorName", Integer.TYPE);
