@@ -58,7 +58,7 @@ public class MobileDataControl {
                     getId.setAccessible(true);
                     String id = (String) getId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
                     String idNext = (String) getId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i + 1);
-                    if (!id.equals(idNext) && idNext != null)
+                    if (idNext != null && !id.equals(idNext))
                         ret++;
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();

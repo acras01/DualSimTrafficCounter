@@ -323,9 +323,9 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
                 intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
                 intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] >= 2)
+                if (MobileDataControl.isMultiSim(getApplicationContext()) >= 2)
                     intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                if (MobileDataControl.getMobileDataInfo(getApplicationContext())[1] == 3)
+                if (MobileDataControl.isMultiSim(getApplicationContext()) == 3)
                     intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
             } else {
                 intent.putExtra(Constants.SPEEDRX, 0L);
