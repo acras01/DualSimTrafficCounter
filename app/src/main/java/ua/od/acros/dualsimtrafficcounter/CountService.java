@@ -40,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckVisibility;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
@@ -874,7 +873,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             break;
                     }
 
-                    if (CheckVisibility.isActivityVisible() ||
+                    if (MyApplication.isActivityVisible() ||
                             (AppWidgetManager.getInstance(getAppContext()).
                                     getAppWidgetIds(new ComponentName(getAppContext(), InfoWidget.class)).length != 0) &&
                             isScreenOn(getAppContext())) {
@@ -1244,7 +1243,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             break;
                     }
 
-                    if (CheckVisibility.isActivityVisible() ||
+                    if (MyApplication.isActivityVisible() ||
                             (AppWidgetManager.getInstance(getAppContext()).
                                     getAppWidgetIds(new ComponentName(getAppContext(), InfoWidget.class)).length != 0) &&
                                     isScreenOn(getAppContext())) {
@@ -1614,7 +1613,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             break;
                     }
 
-                    if (CheckVisibility.isActivityVisible() ||
+                    if (MyApplication.isActivityVisible() ||
                             (AppWidgetManager.getInstance(getAppContext()).
                                     getAppWidgetIds(new ComponentName(getAppContext(), InfoWidget.class)).length != 0) &&
                                     isScreenOn(getAppContext())) {

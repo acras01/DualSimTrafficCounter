@@ -33,7 +33,6 @@ import java.util.Map;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetUsageDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckVisibility;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
@@ -59,7 +58,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CheckVisibility.activityResumed();
+        MyApplication.activityResumed();
         mContext = MainActivity.this;
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
@@ -421,7 +420,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onResume() {
         super.onResume();
-        CheckVisibility.activityResumed();
+        MyApplication.activityResumed();
         if (needsRestart)
             finish();
     }
@@ -429,13 +428,13 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onPause() {
         super.onPause();
-        CheckVisibility.activityPaused();
+        MyApplication.activityPaused();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        CheckVisibility.activityPaused();
+        MyApplication.activityPaused();
         if (dataReceiver != null)
             unregisterReceiver(dataReceiver);
         if (tipReceiver != null)
