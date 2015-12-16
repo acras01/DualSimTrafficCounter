@@ -21,7 +21,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -41,14 +43,14 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         CompoundButton.OnCheckedChangeListener, Button.OnClickListener {
 
     private static final int SELECT_PHOTO = 101;
-    int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
-    Intent resultValue;
-    ImageView tiv, biv, logo1, logo2, logo3;
-    CheckBox names, info, icons, speed, back, div;
-    TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
+    private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private Intent resultValue;
+    private ImageView tiv, biv, logo1, logo2, logo3;
+    private CheckBox names, info, icons, speed, back, div;
+    private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum,
             backSum, speedTextSum, speedIconsSum, showSimSum, divSum;
-    RelativeLayout ll1, ll2, ll3, ll4, ll5, ll6, ll7, ll8, logoL1, logoL2, logoL3;
+    private RelativeLayout ll3, ll4, ll5, ll6, ll7, ll8, logoL1, logoL2, logoL3;
     private SharedPreferences prefs;
     private SharedPreferences.Editor edit;
     private int textColor, backColor;
@@ -56,10 +58,21 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private final int KEY_ICON = 1;
     private final int KEY_TEXT_S = 2;
     private final int KEY_ICON_S = 3;
+    private int dim;
     private String user_pick;
 
-    final Context context = this;
-    private int dim;
+    private final Context context = this;
+    private Callback picassoCallback = new Callback() {
+        @Override
+        public void onSuccess() {
+            Toast.makeText(context, "Image loaded!", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onError() {
+            Toast.makeText(context, "Image not loaded!", Toast.LENGTH_LONG).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,7 +278,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     .resize(dim, dim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo1);
+                    .into(logo1, picassoCallback);
             logoSum1.setText(getResources().getString(R.string.userpick));
         }
         if (prefs.getBoolean(Constants.PREF_WIDGET[9], false)) {
@@ -274,7 +287,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     .resize(dim, dim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo2);
+                    .into(logo2, picassoCallback);
             logoSum2.setText(getResources().getString(R.string.userpick));
         }
         if (prefs.getBoolean(Constants.PREF_WIDGET[10], false)) {
@@ -283,7 +296,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     .resize(dim, dim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo3);
+                    .into(logo3, picassoCallback);
             logoSum3.setText(getResources().getString(R.string.userpick));
         }
 
@@ -442,7 +455,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                         .resize(dim, dim)
                         .centerInside()
                         .error(R.drawable.none)
-                        .into(logo1);
+                        .into(logo1, picassoCallback);
                 logoSum1.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[6])) {
                 edit.putBoolean(Constants.PREF_WIDGET[9], false);
@@ -452,7 +465,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                         .resize(dim, dim)
                         .centerInside()
                         .error(R.drawable.none)
-                        .into(logo2);
+                        .into(logo2, picassoCallback);
                 logoSum2.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[7])) {
                 edit.putBoolean(Constants.PREF_WIDGET[10], false);
@@ -462,7 +475,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                         .resize(dim, dim)
                         .centerInside()
                         .error(R.drawable.none)
-                        .into(logo3);
+                        .into(logo3, picassoCallback);
                 logoSum3.setText(list[position]);
             }
         } else {
@@ -490,7 +503,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
-                                .into(logo1);
+                                .into(logo1, picassoCallback);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (user_pick.equals(Constants.PREF_WIDGET[6])) {
                         edit.putBoolean(Constants.PREF_WIDGET[9], true);
@@ -500,7 +513,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
-                                .into(logo2);
+                                .into(logo2, picassoCallback);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (user_pick.equals(Constants.PREF_WIDGET[7])) {
                         edit.putBoolean(Constants.PREF_WIDGET[10], true);
@@ -510,7 +523,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
-                                .into(logo3);
+                                .into(logo3, picassoCallback);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     }
                     user_pick = "";
