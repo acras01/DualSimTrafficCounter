@@ -199,6 +199,14 @@ public class MobileDataControl {
                 e.printStackTrace();
             }
             if (sim == Constants.DISABLED) {
+                try {
+                    sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
+                    out = "getFromSettingsGlobal " + sim + "\n";
+                } catch (Settings.SettingNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (sim == Constants.DISABLED) {
                 SubscriptionManager sm = SubscriptionManager.from(context);
                 List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
                 for (int i = 0; i < sl.size(); i++) {

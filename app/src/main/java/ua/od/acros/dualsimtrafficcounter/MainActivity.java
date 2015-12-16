@@ -464,8 +464,12 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     public void onClick(View v) {
 
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
-        DateTime dt = fmt.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+        DateTime dt;
+        if (!dataMap.get(Constants.LAST_DATE).equals("")) {
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+            dt = fmt.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+        } else
+            dt = new DateTime();
         switch (v.getId()) {
             case (R.id.buttonClear1):
                 if (isMyServiceRunning(CountService.class)) {
