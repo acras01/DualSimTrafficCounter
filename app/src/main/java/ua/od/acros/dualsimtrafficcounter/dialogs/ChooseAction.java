@@ -14,15 +14,17 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 
-public class ChooseAction extends Activity  implements View.OnClickListener {
+public class ChooseAction extends Activity implements View.OnClickListener {
+
     private String action = "";
     private SharedPreferences prefs;
     private int simid;
+    private static boolean shown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        shown = true;
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setContentView(R.layout.action_dialog);
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
@@ -69,5 +71,27 @@ public class ChooseAction extends Activity  implements View.OnClickListener {
         }
         sendBroadcast(intent);
         finish();
+    }
+
+    public static boolean isShown() {
+        return shown;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        shown = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        shown = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        shown = false;
     }
 }

@@ -1724,7 +1724,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 Intent dialogIntent = new Intent(getAppContext(), ChooseAction.class);
                 dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getAppContext().startActivity(dialogIntent);
+                if (!ChooseAction.isShown())
+                    getAppContext().startActivity(dialogIntent);
         } else if (((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
                 (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
@@ -1768,12 +1769,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             Intent dialogIntent = new Intent(getAppContext(), ChooseAction.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getAppContext().startActivity(dialogIntent);
+            if (!ChooseAction.isShown())
+                getAppContext().startActivity(dialogIntent);
         } else if (isSIM1OverLimit && isSIM2OverLimit && isSIM3OverLimit && prefs.getBoolean(Constants.PREF_OTHER[10], true)){
             Intent dialogIntent = new Intent(getAppContext(), ChooseAction.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getAppContext().startActivity(dialogIntent);
+            if (!ChooseAction.isShown())
+                getAppContext().startActivity(dialogIntent);
         } else if (isSIM1OverLimit && isSIM2OverLimit && isSIM2OverLimit) {
             isTimerCancelled = true;
             mTimer.cancel();
