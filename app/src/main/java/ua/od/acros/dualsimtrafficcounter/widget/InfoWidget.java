@@ -65,7 +65,7 @@ public class InfoWidget extends AppWidgetProvider {
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
             final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                this.onDeleted(context, new int[]{appWidgetId});
+                deleteWidgetPreferences(context, new int[]{appWidgetId});
             }
         } else if (action.equals(Constants.BROADCAST_ACTION)) {
             AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
@@ -435,9 +435,7 @@ public class InfoWidget extends AppWidgetProvider {
         }
     }
 
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
+    private void deleteWidgetPreferences(Context context, int[] appWidgetIds) {
         File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
         String[] children = dir.list();
         for (String aChildren : children) {

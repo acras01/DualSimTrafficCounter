@@ -29,7 +29,6 @@
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -62,7 +61,10 @@
             android:name=".widget.InfoWidget"
             android:label="@string/info_widget_simple" >
             <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
                 <action android:name="ua.od.acros.dualsimtrafficcounter.DATABROADCAST" />
             </intent-filter>
 
