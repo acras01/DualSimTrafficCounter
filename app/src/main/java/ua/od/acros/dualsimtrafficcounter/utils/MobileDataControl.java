@@ -62,7 +62,6 @@ public class MobileDataControl {
                         ret++;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
                 }
             return ret;
         }
@@ -87,7 +86,6 @@ public class MobileDataControl {
                     name.add(i, (String) getName.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i));
                 } catch (Exception e0) {
                     e0.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e0);
                 }
             }
         }
@@ -148,7 +146,6 @@ public class MobileDataControl {
                     reader.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
                 }
             }
         }
@@ -211,7 +208,6 @@ public class MobileDataControl {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
                 }
             }
             try {
@@ -240,9 +236,8 @@ public class MobileDataControl {
                         break;
                     }
                 }
-            } catch (Exception e1) {
-                e1.printStackTrace();
-                ACRA.getErrorReporter().handleException(e1);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         int simNumber = isMultiSim(context);
@@ -261,7 +256,6 @@ public class MobileDataControl {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
                 }
                 if (state == TelephonyManager.DATA_CONNECTED
                         || state == TelephonyManager.DATA_CONNECTING
@@ -286,7 +280,6 @@ public class MobileDataControl {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
                 }
                 if (state == TelephonyManager.DATA_CONNECTED
                         || state == TelephonyManager.DATA_CONNECTING
@@ -352,7 +345,6 @@ public class MobileDataControl {
                                     os.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    ACRA.getErrorReporter().handleException(e);
                                 }
                             }
                             @Override
@@ -479,13 +471,11 @@ public class MobileDataControl {
                     alt = true;
                 } catch (Settings.SettingNotFoundException e0) {
                     e0.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e0);
                     try {
                         lastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_setting");
                         alt = true;
                     } catch (Settings.SettingNotFoundException e1) {
                         e1.printStackTrace();
-                        ACRA.getErrorReporter().handleException(e1);
                     }
                 }
             }
@@ -513,7 +503,6 @@ public class MobileDataControl {
             try {
                 TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
-                ACRA.getErrorReporter().handleException(e);
             }
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -530,7 +519,6 @@ public class MobileDataControl {
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
-            ACRA.getErrorReporter().handleException(e);
         }
     }
 
@@ -548,7 +536,6 @@ public class MobileDataControl {
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
                 }
             }
         }
