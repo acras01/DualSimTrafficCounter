@@ -570,7 +570,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     public static String getName(String key1, String key2, int sim) {
         if (prefs.getBoolean(key1, true))
-            return MobileDataControl.getOperatorNames(getAppContext()).get(sim);
+            return MobileDataControl.getOperatorNames(getAppContext()).get(sim) != null ?
+                    MobileDataControl.getOperatorNames(getAppContext()).get(sim) :
+                    context.getString(R.string.single_sim);
         else
             return prefs.getString(key2, "");
     }
