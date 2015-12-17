@@ -248,26 +248,15 @@ public class MobileDataControl {
         if (sim == Constants.DISABLED) {
             for (int i = 0; i < isMultiSim(context); i++) {
                 int state = Constants.DISABLED;
-                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 try {
-
-                    state = (int) Class.forName(tm.getClass().getName()).getMethod("getDataState", Integer.TYPE).invoke(tm, i);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    try {
-                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                        Method[] cm = c.getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getDataState")) {
-                                m.setAccessible(true);
-                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
-                                break;
-                            }
+                    Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                    Method[] cm = c.getDeclaredMethods();
+                    for (Method m : cm) {
+                        if (m.getName().equalsIgnoreCase("getDataState")) {
+                            m.setAccessible(true);
+                            state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                            break;
                         }
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ACRA.getErrorReporter().handleException(e1);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -284,26 +273,15 @@ public class MobileDataControl {
         if (sim == Constants.DISABLED) {
             for (long i = 0; i < isMultiSim(context); i++) {
                 int state = Constants.DISABLED;
-                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 try {
-
-                    state = (int) Class.forName(tm.getClass().getName()).getMethod("getDataState", Long.TYPE).invoke(tm, i);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    try {
-                        Class<?> c = Class.forName("android.telephony.TelephonyManager");
-                        Method[] cm = c.getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getDataState")) {
-                                m.setAccessible(true);
-                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
-                                break;
-                            }
+                    Class<?> c = Class.forName("android.telephony.TelephonyManager");
+                    Method[] cm = c.getDeclaredMethods();
+                    for (Method m : cm) {
+                        if (m.getName().equalsIgnoreCase("getDataState")) {
+                            m.setAccessible(true);
+                            state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                            break;
                         }
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                        ACRA.getErrorReporter().handleException(e1);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -316,7 +294,7 @@ public class MobileDataControl {
                     break;
                 }
             }
-            if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
                 try {
                     sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
                 } catch (Settings.SettingNotFoundException e) {
