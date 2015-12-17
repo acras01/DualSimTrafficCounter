@@ -3,8 +3,10 @@ package ua.od.acros.dualsimtrafficcounter.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -32,11 +34,14 @@ public class OnOffDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.onoff_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        if (MobileDataControl.isMultiSim(getActivity()) == 1) {
+        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        if (simNumber == 1) {
             view.findViewById(R.id.sim2RB).setEnabled(false);
             view.findViewById(R.id.sim3RB).setEnabled(false);
         }
-        if (MobileDataControl.isMultiSim(getActivity()) == 2)
+        if (simNumber == 2)
             view.findViewById(R.id.sim3RB).setEnabled(false);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

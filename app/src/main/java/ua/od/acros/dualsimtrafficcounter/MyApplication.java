@@ -12,8 +12,9 @@ import org.acra.annotation.ReportsCrashes;
                 ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.SETTINGS_GLOBAL, ReportField.SETTINGS_SYSTEM,
                 ReportField.STACK_TRACE, ReportField.LOGCAT, ReportField.SHARED_PREFERENCES },
         logcatArguments = { "-t", "200", "-v", "long", "*:S" },
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.crash_toast_text)
+        mode = ReportingInteractionMode.DIALOG,
+        resDialogText = R.string.pref_disable_acra,
+        resDialogOkToast = R.string.crash_toast_text)
 public class MyApplication extends Application {
 
     @Override

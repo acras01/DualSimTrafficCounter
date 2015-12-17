@@ -58,6 +58,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private final int KEY_ICON = 1;
     private final int KEY_TEXT_S = 2;
     private final int KEY_ICON_S = 3;
+    private int simNumber;
     private int dim;
     private String user_pick;
 
@@ -92,6 +93,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         }
 
         prefs = getSharedPreferences(String.valueOf(widgetID) + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         edit = prefs.edit();
         if (prefs.getAll().size() == 0) {
             edit.putBoolean(Constants.PREF_WIDGET[1], true);
@@ -180,8 +183,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
 
 
         onOff(logoL1, icons.isChecked());
-        onOff(logoL2, MobileDataControl.isMultiSim(context) >= 2 && icons.isChecked());
-        onOff(logoL3, MobileDataControl.isMultiSim(context) == 3 && icons.isChecked());
+        onOff(logoL2, simNumber >= 2 && icons.isChecked());
+        onOff(logoL3, simNumber == 3 && icons.isChecked());
         onOff(ll5, speed.isChecked());
         onOff(ll6, speed.isChecked());
         onOff(ll8, back.isChecked());
@@ -348,9 +351,9 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
                 intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
                 intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                if (MobileDataControl.isMultiSim(getApplicationContext()) >= 2)
+                if (simNumber >= 2)
                     intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                if (MobileDataControl.isMultiSim(getApplicationContext()) == 3)
+                if (simNumber == 3)
                     intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
             } else {
                 intent.putExtra(Constants.SPEEDRX, 0L);

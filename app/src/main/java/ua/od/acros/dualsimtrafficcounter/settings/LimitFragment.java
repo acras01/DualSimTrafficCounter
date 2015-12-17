@@ -40,6 +40,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     private final int SIM2_ON = 111;
     private final int SIM3_OFF = 120;
     private final int SIM3_ON = 121;
+    private int simNumber;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -103,13 +104,17 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             autoff3.setChecked(false);
             autoff3.setEnabled(false);
         }
-        if (MobileDataControl.isMultiSim(getActivity()) == 1) {
+
+        simNumber = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+                : Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(Constants.PREF_OTHER[14], "1"));
+
+        if (simNumber == 1) {
             getPreferenceScreen().removePreference(sim2);
             getPreferenceScreen().removePreference(sim3);
             getPreferenceScreen().removePreference(changeSIM);
             prefer1.setEnabled(false);
         }
-        if (MobileDataControl.isMultiSim(getActivity()) == 2) {
+        if (simNumber == 2) {
             getPreferenceScreen().removePreference(sim3);
         }
         updateSummary();
@@ -165,7 +170,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             round2.setSummary(round2.getText() + "%");
         if (round3 != null)
             round3.setSummary(round3.getText() + "%");
-        if (MobileDataControl.isMultiSim(getActivity()) == 3)
+        if (simNumber == 3)
             if (prefer1 != null && prefer2 != null && prefer3 != null) {
                 if (prefer1.isChecked()) {
                     prefer2.setEnabled(false);
@@ -188,7 +193,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                     prefer3.setEnabled(true);
                 }
             }
-        if (MobileDataControl.isMultiSim(getActivity()) == 2)
+        if (simNumber == 2)
             if (prefer1 != null && prefer2 != null && prefer3 != null) {
                 if (prefer1.isChecked()) {
                     prefer2.setEnabled(false);

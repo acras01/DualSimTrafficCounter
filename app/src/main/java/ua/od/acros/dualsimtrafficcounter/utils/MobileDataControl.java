@@ -3,6 +3,7 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -76,7 +77,9 @@ public class MobileDataControl {
                 name.add((String) si.getCarrierName());
             }
         } else {
-            int simNumber = isMultiSim(context);
+            SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+            int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
+                    : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             for (int i = 0; i < simNumber; i++) {
                 try {
                     Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
@@ -238,7 +241,9 @@ public class MobileDataControl {
                 e.printStackTrace();
             }
         }
-        int simNumber = isMultiSim(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (sim == Constants.DISABLED) {
             for (int i = 0; i < simNumber; i++) {
                 int state = Constants.DISABLED;
@@ -272,8 +277,11 @@ public class MobileDataControl {
                     for (Method m : cm) {
                         if (m.getName().equalsIgnoreCase("getDataState")) {
                             m.setAccessible(true);
-                            state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
-                            break;
+                            m.getParameterTypes();
+                            if (m.getParameterTypes().length > 1) {
+                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                                break;
+                            }
                         }
                     }
                 } catch (Exception e) {

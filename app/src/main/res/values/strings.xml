@@ -110,4 +110,6 @@
     <string name="pref_disable_acra">Send error logs to developer</string>
     <string name="show_icon_in_statusbar">Show service icon in status bar  (if service gets closed by system, try enabling this)</string>
     <string name="use_divider">Show divider line</string>
+    <string name="detect_sim">Autodetect SIM number</string>
+    <string name="user_sim">Edit SIM number</string>
 </resources>

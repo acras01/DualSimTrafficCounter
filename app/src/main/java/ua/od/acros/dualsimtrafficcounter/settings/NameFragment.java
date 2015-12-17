@@ -18,6 +18,7 @@ public class NameFragment extends PreferenceFragment implements SharedPreference
 
     private TwoLineCheckPreference auto1, auto2, auto3;
     private EditTextPreference name1, name2, name3;
+    private int simNumber;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -40,12 +41,14 @@ public class NameFragment extends PreferenceFragment implements SharedPreference
         PreferenceCategory sim2 = (PreferenceCategory) getPreferenceScreen().findPreference("sim2");
         PreferenceCategory sim3 = (PreferenceCategory) getPreferenceScreen().findPreference("sim3");
 
+        simNumber = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+                : Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(Constants.PREF_OTHER[14], "1"));
 
-        if (MobileDataControl.isMultiSim(getActivity()) == 1) {
+        if (simNumber == 1) {
             getPreferenceScreen().removePreference(sim2);
             getPreferenceScreen().removePreference(sim3);
         }
-        if (MobileDataControl.isMultiSim(getActivity()) == 2)
+        if (simNumber == 2)
             getPreferenceScreen().removePreference(sim3);
 
         updateSummary();

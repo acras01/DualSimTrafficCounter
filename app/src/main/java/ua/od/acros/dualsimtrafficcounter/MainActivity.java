@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     BroadcastReceiver dataReceiver, tipReceiver, onoffReceiver;
 
     private MenuItem mService, mMobileData;
-    private static Context mContext;
+    private static Context context;
     private TrafficDatabase mDatabaseHelper;
     private SharedPreferences prefs;
     private boolean needsRestart = false;
@@ -60,11 +60,13 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.activityResumed();
-        mContext = MainActivity.this;
+        context = MainActivity.this;
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(this);
+        final int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             setContentView(R.layout.activity_main);
             RX1 = (TextView) findViewById(R.id.RX1);
@@ -129,17 +131,17 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     SIM1.setText("SIM1");
                 else
                     SIM1.setText(intent.getStringExtra(Constants.OPERATOR1));
-                if (MobileDataControl.isMultiSim(getAppContext()) < 2) {
+                if (simNumber < 2) {
                     SIM2.setText(getResources().getString(R.string.single_sim));
                     SIM3.setText(getResources().getString(R.string.single_sim));
                 } else {
-                    if (MobileDataControl.isMultiSim(getAppContext()) >= 2) {
+                    if (simNumber >= 2) {
                         if (!intent.hasExtra(Constants.OPERATOR2) || intent.getStringExtra(Constants.OPERATOR2).equals(""))
                             SIM2.setText("SIM2");
                         else
                             SIM2.setText(intent.getStringExtra(Constants.OPERATOR2));
                     }
-                    if (MobileDataControl.isMultiSim(getAppContext()) == 3) {
+                    if (simNumber == 3) {
                         if (!intent.hasExtra(Constants.OPERATOR3) || intent.getStringExtra(Constants.OPERATOR3).equals(""))
                             SIM3.setText("SIM3");
                         else
@@ -255,7 +257,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             findViewById(R.id.sim2row).setVisibility(View.GONE);
             findViewById(R.id.sim3row).setVisibility(View.GONE);
         }
-        if (MobileDataControl.isMultiSim(getAppContext()) >= 2)
+        if (simNumber >= 2)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (TX2 != null)
@@ -268,7 +270,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 findViewById(R.id.buttonClear2).setVisibility(View.VISIBLE);
             } else
                 findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
-        if (MobileDataControl.isMultiSim(getAppContext()) == 3)
+        if (simNumber == 3)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (TX3 != null)
@@ -295,7 +297,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     }
 
     public static Context getAppContext() {
-        return MainActivity.mContext;
+        return MainActivity.context;
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {

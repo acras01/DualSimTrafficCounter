@@ -435,10 +435,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         return CountService.context;
     }
 
-    protected static void timerStart(int task) {
+    private static void timerStart(int task) {
         TimerTask tTask = null;
-        simNumber = MobileDataControl.isMultiSim(getAppContext());
-        activeSIM = MobileDataControl.getMobileDataInfo(getAppContext())[1];
+        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        activeSIM = MobileDataControl.getMobileDataInfo(context)[1];
         if (task == Constants.COUNT) {
             switch (activeSIM) {
                 case Constants.SIM1:

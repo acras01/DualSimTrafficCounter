@@ -39,8 +39,9 @@ public class ShowSimDialog extends DialogFragment {
         CheckBox sim1 = (CheckBox) view.findViewById(R.id.sim1);
         CheckBox sim2 = (CheckBox) view.findViewById(R.id.sim2);
         CheckBox sim3 = (CheckBox) view.findViewById(R.id.sim3);
-
-        if (MobileDataControl.isMultiSim(getActivity()) == 1) {
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        if (simNumber == 1) {
             sim2.setEnabled(false);
             sim2.setChecked(false);
             edit.putBoolean(Constants.PREF_WIDGET[19], false).apply();
@@ -48,7 +49,7 @@ public class ShowSimDialog extends DialogFragment {
             sim3.setChecked(false);
             edit.putBoolean(Constants.PREF_WIDGET[20], false).apply();
         }
-        if (MobileDataControl.isMultiSim(getActivity()) == 2) {
+        if (simNumber == 2) {
             sim3.setEnabled(false);
             sim3.setChecked(false);
             edit.putBoolean(Constants.PREF_WIDGET[20], false).apply();
