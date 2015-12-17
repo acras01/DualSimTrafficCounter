@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.stericson.RootShell.execution.Command;
 import com.stericson.RootTools.RootTools;
 
+import org.acra.ACRA;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -27,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,16 +60,9 @@ public class MobileDataControl {
                     String idNext = (String) getId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i + 1);
                     if (idNext != null && !id.equals(idNext))
                         ret++;
-                } catch (ClassNotFoundException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
             return ret;
         }
@@ -92,16 +85,9 @@ public class MobileDataControl {
                     Method getName = c.getMethod("getNetworkOperatorName", Integer.TYPE);
                     getName.setAccessible(true);
                     name.add(i, (String) getName.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i));
-                } catch (ClassNotFoundException e0) {
-                    name.add(i, "ClassNotFoundException");
-                } catch (NoSuchMethodException e0) {
-                    name.add(i, "NoSuchMethodException");
-                } catch (InstantiationException e0) {
-                    name.add(i, "InstantiationException");
-                } catch (IllegalAccessException e0) {
-                    name.add(i, "InstantiationException");
-                } catch (InvocationTargetException e0) {
-                    name.add(i, "InstantiationException");
+                } catch (Exception e0) {
+                    e0.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e0);
                 }
             }
         }
@@ -162,6 +148,7 @@ public class MobileDataControl {
                     reader.close();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
             }
         }
@@ -187,16 +174,9 @@ public class MobileDataControl {
                     }
                 }
             }
-            catch (IllegalAccessException e) {
+            catch (Exception e) {
                 e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
+                ACRA.getErrorReporter().handleException(e);
             }
             if (sim == Constants.DISABLED) {
                 try {
@@ -229,16 +209,9 @@ public class MobileDataControl {
                             break;
                         }
                     }
-                } catch (IllegalAccessException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
             }
             try {
@@ -267,12 +240,9 @@ public class MobileDataControl {
                         break;
                     }
                 }
-            } catch (ClassNotFoundException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
-            }  catch (IllegalAccessException e1) {
-                e1.printStackTrace();
-            } catch (InvocationTargetException e1) {
-                e1.printStackTrace();
+                ACRA.getErrorReporter().handleException(e1);
             }
         }
         if (sim == Constants.DISABLED) {
@@ -295,21 +265,13 @@ public class MobileDataControl {
                                 break;
                             }
                         }
-                    } catch (ClassNotFoundException e1) {
+                    } catch (Exception e1) {
                         e1.printStackTrace();
-                    } catch (NoSuchMethodException e1) {
-                        e1.printStackTrace();
-                    } catch (InstantiationException e1) {
-                        e1.printStackTrace();
-                    } catch (IllegalAccessException e1) {
-                        e1.printStackTrace();
-                    } catch (InvocationTargetException e1) {
-                        e1.printStackTrace();
+                        ACRA.getErrorReporter().handleException(e1);
                     }
-                } catch (IllegalAccessException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
                 if (state == TelephonyManager.DATA_CONNECTED
                         || state == TelephonyManager.DATA_CONNECTING
@@ -339,21 +301,13 @@ public class MobileDataControl {
                                 break;
                             }
                         }
-                    } catch (ClassNotFoundException e1) {
+                    } catch (Exception e1) {
                         e1.printStackTrace();
-                    } catch (NoSuchMethodException e1) {
-                        e1.printStackTrace();
-                    } catch (InstantiationException e1) {
-                        e1.printStackTrace();
-                    } catch (IllegalAccessException e1) {
-                        e1.printStackTrace();
-                    } catch (InvocationTargetException e1) {
-                        e1.printStackTrace();
+                        ACRA.getErrorReporter().handleException(e1);
                     }
-                } catch (IllegalAccessException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
                 if (state == TelephonyManager.DATA_CONNECTED
                         || state == TelephonyManager.DATA_CONNECTING
@@ -412,6 +366,7 @@ public class MobileDataControl {
                                     os.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                    ACRA.getErrorReporter().handleException(e);
                                 }
                             }
                             @Override
@@ -435,7 +390,6 @@ public class MobileDataControl {
                 }
             }
         } catch(Exception e) {
-                // Oops! Something went wrong, so we throw the exception here.
             throw e;
         }
     }
@@ -539,11 +493,13 @@ public class MobileDataControl {
                     alt = true;
                 } catch (Settings.SettingNotFoundException e0) {
                     e0.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e0);
                     try {
                         lastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_setting");
                         alt = true;
                     } catch (Settings.SettingNotFoundException e1) {
                         e1.printStackTrace();
+                        ACRA.getErrorReporter().handleException(e1);
                     }
                 }
             }
@@ -571,7 +527,7 @@ public class MobileDataControl {
             try {
                 TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
-                //Handle exception
+                ACRA.getErrorReporter().handleException(e);
             }
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -588,7 +544,7 @@ public class MobileDataControl {
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
-            //Handle exception
+            ACRA.getErrorReporter().handleException(e);
         }
     }
 
@@ -606,6 +562,7 @@ public class MobileDataControl {
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
             }
         }

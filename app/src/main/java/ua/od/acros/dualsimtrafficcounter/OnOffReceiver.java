@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
 
+import org.acra.ACRA;
+
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -35,10 +36,7 @@ public class OnOffReceiver extends BroadcastReceiver {
             else if (!intent.getBooleanExtra(Constants.ON_OFF, true) && CountService.getActiveSIM() == sim &&
                     MobileDataControl.getMobileDataInfo(context)[0] == 2)
                 MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
+
             String out = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +
                     String.valueOf(intent.getBooleanExtra(Constants.ON_OFF, true)) + "\n";
             // to this path add a new directory path
@@ -51,8 +49,9 @@ public class OnOffReceiver extends BroadcastReceiver {
             FileOutputStream os = new FileOutputStream(file, true);
             os.write(out.getBytes());
             os.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
         }
     }
 }

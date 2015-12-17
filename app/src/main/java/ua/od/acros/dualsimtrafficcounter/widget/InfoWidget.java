@@ -3,7 +3,6 @@ package ua.od.acros.dualsimtrafficcounter.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +14,8 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.squareup.picasso.Picasso;
+
+import org.acra.ACRA;
 
 import java.io.File;
 import java.util.HashMap;
@@ -62,18 +63,14 @@ public class InfoWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
             final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 deleteWidgetPreferences(context, new int[]{appWidgetId});
             }
-        } else if (action.equals(Constants.BROADCAST_ACTION)) {
-            AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
-            ComponentName widgetComponent = new ComponentName(context.getPackageName(), this.getClass().getName());
-            Bundle extras = intent.getExtras();
-            int[] widgetId = widgetManager.getAppWidgetIds(widgetComponent);
-            updateWidget(context, widgetManager, widgetId, extras);
-        }
+        } else if (action.equals(Constants.BROADCAST_ACTION) && widgetIds != null)
+            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
     }
 
     public void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
@@ -447,6 +444,7 @@ public class InfoWidget extends AppWidgetProvider {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
         }
         for (String aChildren : children) {
             for (int j : appWidgetIds)

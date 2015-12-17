@@ -3,6 +3,8 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 import android.text.InputFilter;
 import android.text.Spanned;
 
+import org.acra.ACRA;
+
 public class InputFilterMinMax implements InputFilter {
 
     private int min, max;
@@ -23,7 +25,9 @@ public class InputFilterMinMax implements InputFilter {
             int input = Integer.parseInt(dest.toString() + source.toString());
             if (isInRange(min, max, input))
                 return null;
-        } catch (NumberFormatException nfe) { }
+        } catch (NumberFormatException nfe) {
+            ACRA.getErrorReporter().handleException(nfe);
+        }
         return "";
     }
 

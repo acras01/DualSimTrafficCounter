@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 
+import org.acra.ACRA;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -93,6 +94,7 @@ public class WatchDogService extends Service{
                     TimeUnit.MINUTES.sleep(Long.parseLong(prefs.getString(Constants.PREF_OTHER[8], "1")));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
                 isFirstRun = false;
             }
@@ -126,6 +128,7 @@ public class WatchDogService extends Service{
                     os.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
                 startService(new Intent(context, CountService.class));
             }

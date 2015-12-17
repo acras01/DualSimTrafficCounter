@@ -71,4 +71,5 @@ public class Constants {
     public static final String ICON_SIZE = "30";
     public static final String SPEEDRX = "rx_speed";
     public static final String SPEEDTX = "tx_speed";
+    public static final String WIDGET_IDS = "widget_ids";
 }

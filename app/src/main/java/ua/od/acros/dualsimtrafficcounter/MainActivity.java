@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.stericson.RootTools.RootTools;
 
+import org.acra.ACRA;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -209,6 +210,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         MobileDataControl.toggleMobileDataConnection(false, getAppContext(), Constants.DISABLED);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
                 invalidateOptionsMenu();
             }
@@ -480,7 +482,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     dataMap.put(Constants.SIM1RX, (long) 0);
                     dataMap.put(Constants.SIM1TX, (long) 0);
                     dataMap.put(Constants.TOTAL1, (long) 0);
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
+                    if (DateCompare.isNextDayOrMonth(dt, "0", "1") && !TrafficDatabase.isEmpty(mDatabaseHelper))
                         TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
@@ -500,7 +502,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     dataMap.put(Constants.SIM2RX, (long) 0);
                     dataMap.put(Constants.SIM2TX, (long) 0);
                     dataMap.put(Constants.TOTAL2, (long) 0);
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
+                    if (DateCompare.isNextDayOrMonth(dt, "0", "1") && !TrafficDatabase.isEmpty(mDatabaseHelper))
                         TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
@@ -520,7 +522,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     dataMap.put(Constants.SIM3RX, (long) 0);
                     dataMap.put(Constants.SIM3TX, (long) 0);
                     dataMap.put(Constants.TOTAL3, (long) 0);
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
+                    if (DateCompare.isNextDayOrMonth(dt, "0", "1") && !TrafficDatabase.isEmpty(mDatabaseHelper))
                         TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
