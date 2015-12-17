@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.stericson.RootShell.execution.Command;
 import com.stericson.RootTools.RootTools;
 
-import org.acra.ACRA;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -173,7 +172,6 @@ public class MobileDataControl {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
             }
             if (sim == Constants.DISABLED) {
                 try {
