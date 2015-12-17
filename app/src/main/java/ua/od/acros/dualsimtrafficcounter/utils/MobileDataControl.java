@@ -245,8 +245,9 @@ public class MobileDataControl {
                 ACRA.getErrorReporter().handleException(e1);
             }
         }
+        int simNumber = isMultiSim(context);
         if (sim == Constants.DISABLED) {
-            for (int i = 0; i < isMultiSim(context); i++) {
+            for (int i = 0; i < simNumber; i++) {
                 int state = Constants.DISABLED;
                 try {
                     Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
@@ -271,7 +272,7 @@ public class MobileDataControl {
             }
         }
         if (sim == Constants.DISABLED) {
-            for (long i = 0; i < isMultiSim(context); i++) {
+            for (long i = 0; i < simNumber; i++) {
                 int state = Constants.DISABLED;
                 try {
                     Class<?> c = Class.forName("android.telephony.TelephonyManager");
