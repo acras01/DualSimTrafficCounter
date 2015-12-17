@@ -200,7 +200,7 @@ public class MobileDataControl {
             }
             if (sim == Constants.DISABLED) {
                 try {
-                    sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
+                    sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
                     out = "getFromSettingsGlobal " + sim + "\n";
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
