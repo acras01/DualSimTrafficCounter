@@ -37,6 +37,7 @@ import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
+import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
@@ -54,7 +55,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private TrafficDatabase mDatabaseHelper;
     private SharedPreferences prefs;
     private boolean needsRestart = false;
-    private Button b1clear, b2clear, b3clear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +86,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         SIM1 = (TextView) findViewById(R.id.sim1_name);
         SIM2 = (TextView) findViewById(R.id.sim2_name);
         SIM3 = (TextView) findViewById(R.id.sim3_name);
-        b1clear = (Button) findViewById(R.id.buttonClear1);
-        b2clear = (Button) findViewById(R.id.buttonClear2);
-        b3clear = (Button) findViewById(R.id.buttonClear3);
 
-        b1clear.setOnClickListener(this);
-        b2clear.setOnClickListener(this);
-        b3clear.setOnClickListener(this);
+        findViewById(R.id.buttonClear1).setOnClickListener(this);
+        findViewById(R.id.buttonClear2).setOnClickListener(this);
+        findViewById(R.id.buttonClear3).setOnClickListener(this);
 
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             RX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1RX)));
@@ -219,23 +216,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         };
         IntentFilter onoffFilter = new IntentFilter(Constants.ON_OFF);
         registerReceiver(onoffReceiver, onoffFilter);
-        if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(Constants.PREF_OTHER[9], false);
-            editor.apply();
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) {
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle(R.string.attention)
-                        .setMessage(R.string.need_root)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .create();
-                dialog.show();
-            }
-        }
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                 if (TX2 != null)
@@ -294,6 +274,30 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             startService(new Intent(this, CountService.class));
         /*else
             Toast.makeText(this, R.string.service_running, Toast.LENGTH_LONG).show();*/
+        if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
+            new AlertDialog.Builder(context)
+                    .setMessage(R.string.set_sim_number)
+                    .setTitle(R.string.attention)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.attention)
+                        .setMessage(R.string.need_root)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+            prefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
+        }
     }
 
     public static Context getAppContext() {
@@ -326,7 +330,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mService.setTitle(R.string.action_start);
             mService.setIcon(R.drawable.ic_action_enable);
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) {
+        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {

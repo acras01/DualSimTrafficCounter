@@ -13,7 +13,7 @@ import org.acra.annotation.ReportsCrashes;
                 ReportField.STACK_TRACE, ReportField.LOGCAT, ReportField.SHARED_PREFERENCES },
         logcatArguments = { "-t", "200", "-v", "long", "*:S" },
         mode = ReportingInteractionMode.DIALOG,
-        resDialogText = R.string.pref_disable_acra,
+        resDialogText = R.string.crash_toast_text,
         resDialogOkToast = R.string.crash_toast_text)
 public class MyApplication extends Application {
 

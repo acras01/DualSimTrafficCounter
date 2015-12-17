@@ -17,7 +17,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference;
 public class OtherFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     //private CheckBoxPreference watchdog, fullInfo;
-    private TwoLinePreference timer;
+    private TwoLinePreference timer, simNumber;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -35,6 +35,8 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         //fullInfo = (CheckBoxPreference) findPreference(Constants.PREF[52]);
         timer = (TwoLinePreference) findPreference(Constants.PREF_OTHER[8]);
         timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
+        simNumber = (TwoLinePreference) findPreference(Constants.PREF_OTHER[14]);
+        simNumber.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
 
         updateSummary();
     }
@@ -42,6 +44,8 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
     private void updateSummary() {
         if (timer != null && timer.isEnabled())
             timer.setSummary(timer.getText() + getResources().getString(R.string.minute));
+        if (simNumber != null && simNumber.isEnabled())
+            simNumber.setSummary(simNumber.getText());
 
     }
 

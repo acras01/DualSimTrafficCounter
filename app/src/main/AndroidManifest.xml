@@ -34,6 +34,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="org.acra.CrashReportDialog"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            android:process=":error_report"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true" />
+
         <activity
             android:name=".settings.SettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -77,6 +84,8 @@
         <activity
             android:name=".dialogs.ChooseAction"
             android:label="@string/attention"
+            android:process=":choose_action"
+            android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Holo.Dialog" >
         </activity>
 

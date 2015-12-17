@@ -107,4 +107,7 @@
     <string name="pref_disable_acra">Відправка звітів про помилки</string>
     <string name="show_icon_in_statusbar">Іконка сервісу в статус барі (якщо сервіс зупиняється системою, спробйте лишити увімкненим)</string>
     <string name="use_divider">Відображати роздільну лінію</string>
+    <string name="detect_sim">Автовизначеня кылькосты SIM</string>
+    <string name="set_sim_number">Якщо кількість SIM визначається не вірно, встановить іі в Налаштуваннях самостійно</string>
+    <string name="user_sim">Введіть кількість SIM</string>
 </resources>

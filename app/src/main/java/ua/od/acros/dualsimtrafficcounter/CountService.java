@@ -31,6 +31,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -579,11 +580,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     }
 
     public static String getName(String key1, String key2, int sim) {
-        if (prefs.getBoolean(key1, true))
-            return MobileDataControl.getOperatorNames(getAppContext()).get(sim) != null ?
-                    MobileDataControl.getOperatorNames(getAppContext()).get(sim) :
-                    context.getString(R.string.single_sim);
-        else
+        if (prefs.getBoolean(key1, true)) {
+            ArrayList<String> opNames = MobileDataControl.getOperatorNames(getAppContext());
+            return (opNames.get(sim) != null && opNames.size() > sim) ? opNames.get(sim) : context.getString(R.string.single_sim);
+        } else
             return prefs.getString(key2, "");
     }
 
