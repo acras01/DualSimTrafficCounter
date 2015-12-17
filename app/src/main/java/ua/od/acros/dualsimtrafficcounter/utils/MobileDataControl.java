@@ -316,6 +316,13 @@ public class MobileDataControl {
                     break;
                 }
             }
+            if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+                try {
+                    sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
+                } catch (Settings.SettingNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return sim;
     }
