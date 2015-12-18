@@ -46,11 +46,17 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent resultValue;
     private ImageView tiv, biv, logo1, logo2, logo3;
-    private CheckBox names, info, icons, speed, back, div;
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
-            logoSum3, textSizeSum, iconsSizeSum, speedSum,
-            backSum, speedTextSum, speedIconsSum, showSimSum, divSum;
-    private RelativeLayout ll3, ll4, ll5, ll6, ll7, ll8, logoL1, logoL2, logoL3;
+            logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
+            speedTextSum, speedIconsSum, showSimSum, divSum, activesum;
+    private RelativeLayout ll4;
+    private RelativeLayout ll5;
+    private RelativeLayout ll6;
+    private RelativeLayout ll7;
+    private RelativeLayout ll8;
+    private RelativeLayout logoL1;
+    private RelativeLayout logoL2;
+    private RelativeLayout logoL3;
     private SharedPreferences prefs;
     private SharedPreferences.Editor edit;
     private int textColor, backColor;
@@ -118,6 +124,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             edit.putBoolean(Constants.PREF_WIDGET[19], true);
             edit.putBoolean(Constants.PREF_WIDGET[20], true);
             edit.putBoolean(Constants.PREF_WIDGET[21], true);
+            edit.putBoolean(Constants.PREF_WIDGET[22], false);
             edit.apply();
         }
 
@@ -131,18 +138,20 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
 
         setContentView(R.layout.activity_widget_config);
 
-        names = (CheckBox) findViewById(R.id.names);
+        CheckBox names = (CheckBox) findViewById(R.id.names);
         names.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[1], true));
-        info = (CheckBox) findViewById(R.id.info);
+        CheckBox info = (CheckBox) findViewById(R.id.info);
         info.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[2], true));
-        icons = (CheckBox) findViewById(R.id.icons);
+        CheckBox icons = (CheckBox) findViewById(R.id.icons);
         icons.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[4], true));
-        speed = (CheckBox) findViewById(R.id.speed);
+        CheckBox speed = (CheckBox) findViewById(R.id.speed);
         speed.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[3], true));
-        back = (CheckBox) findViewById(R.id.useBack);
+        CheckBox back = (CheckBox) findViewById(R.id.useBack);
         back.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[14], true));
-        div = (CheckBox) findViewById(R.id.divider);
+        CheckBox div = (CheckBox) findViewById(R.id.divider);
         div.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[21], true));
+        CheckBox active = (CheckBox) findViewById(R.id.activesim);
+        active.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[22], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -169,12 +178,23 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             divSum.setText(R.string.on);
         else
             divSum.setText(R.string.off);
+        activesum = (TextView) findViewById(R.id.activesim_summary);
+        if (active.isChecked())
+            activesum.setText(R.string.on);
+        else
+            activesum.setText(R.string.off);
+        backSum = (TextView) findViewById(R.id.back_summary);
+        if (back.isChecked())
+            backSum.setText(R.string.on);
+        else
+            backSum.setText(R.string.off);
+
 
         logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
         logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
         logoL3 = (RelativeLayout) findViewById(R.id.logoLayout3);
 
-        ll3 = (RelativeLayout) findViewById(R.id.ll3);
+        RelativeLayout ll3 = (RelativeLayout) findViewById(R.id.ll3);
         ll4 = (RelativeLayout) findViewById(R.id.ll4);
         ll5 = (RelativeLayout) findViewById(R.id.ll5);
         ll6 = (RelativeLayout) findViewById(R.id.ll6);
@@ -188,13 +208,6 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         onOff(ll5, speed.isChecked());
         onOff(ll6, speed.isChecked());
         onOff(ll8, back.isChecked());
-
-        backSum = (TextView) findViewById(R.id.back_summary);
-        if (back.isChecked())
-            backSum.setText(R.string.on);
-        else
-            backSum.setText(R.string.off);
-
 
         textSizeSum = (TextView) findViewById(R.id.textSizeSum);
         textSizeSum.setText(prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE));
@@ -230,6 +243,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         speed.setOnCheckedChangeListener(this);
         back.setOnCheckedChangeListener(this);
         div.setOnCheckedChangeListener(this);
+        active.setOnCheckedChangeListener(this);
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
         biv = (ImageView) findViewById(R.id.backColorPreview);
@@ -592,6 +606,14 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     iconsSum.setText(R.string.on);
                 else
                     iconsSum.setText(R.string.off);
+                break;
+            case R.id.activesim:
+                edit.putBoolean(Constants.PREF_WIDGET[22], isChecked);
+                if (isChecked)
+                    activesum.setText(R.string.on);
+                else
+                    activesum.setText(R.string.off);
+                onOff(ll7, isChecked);
                 break;
         }
     }

@@ -95,18 +95,18 @@ public class TrafficDatabase extends SQLiteOpenHelper {
 
         if (r_w == Constants.WRITE) {
             ContentValues values = new ContentValues();
-            values.put(Constants.SIM1RX, (Long) mMap.get(Constants.SIM1RX));
-            values.put(Constants.SIM2RX, (Long) mMap.get(Constants.SIM2RX));
-            values.put(Constants.SIM3RX, (Long) mMap.get(Constants.SIM3RX));
-            values.put(Constants.SIM1TX, (Long) mMap.get(Constants.SIM1TX));
-            values.put(Constants.SIM2TX, (Long) mMap.get(Constants.SIM2TX));
-            values.put(Constants.SIM3TX, (Long) mMap.get(Constants.SIM3TX));
-            values.put(Constants.TOTAL1, (Long) mMap.get(Constants.TOTAL1));
-            values.put(Constants.TOTAL2, (Long) mMap.get(Constants.TOTAL2));
-            values.put(Constants.TOTAL3, (Long) mMap.get(Constants.TOTAL3));
+            values.put(Constants.SIM1RX, (long) mMap.get(Constants.SIM1RX));
+            values.put(Constants.SIM2RX, (long) mMap.get(Constants.SIM2RX));
+            values.put(Constants.SIM3RX, (long) mMap.get(Constants.SIM3RX));
+            values.put(Constants.SIM1TX, (long) mMap.get(Constants.SIM1TX));
+            values.put(Constants.SIM2TX, (long) mMap.get(Constants.SIM2TX));
+            values.put(Constants.SIM3TX, (long) mMap.get(Constants.SIM3TX));
+            values.put(Constants.TOTAL1, (long) mMap.get(Constants.TOTAL1));
+            values.put(Constants.TOTAL2, (long) mMap.get(Constants.TOTAL2));
+            values.put(Constants.TOTAL3, (long) mMap.get(Constants.TOTAL3));
             values.put(Constants.LAST_ACTIVE_SIM, (int) mMap.get(Constants.LAST_ACTIVE_SIM));
-            values.put(Constants.LAST_TX, (Long) mMap.get(Constants.LAST_TX));
-            values.put(Constants.LAST_RX, (Long) mMap.get(Constants.LAST_RX));
+            values.put(Constants.LAST_TX, (long) mMap.get(Constants.LAST_TX));
+            values.put(Constants.LAST_RX, (long) mMap.get(Constants.LAST_RX));
             values.put(Constants.LAST_TIME, (String) mMap.get(Constants.LAST_TIME));
             values.put(Constants.LAST_DATE, (String) mMap.get(Constants.LAST_DATE));
             values.put(Constants.PERIOD1, (int) mMap.get(Constants.PERIOD1));
@@ -136,9 +136,9 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                 mMap.put(Constants.LAST_TX, cursor.getLong(cursor.getColumnIndex(Constants.LAST_TX)));
                 mMap.put(Constants.LAST_TIME, cursor.getString(cursor.getColumnIndex(Constants.LAST_TIME)));
                 mMap.put(Constants.LAST_DATE, cursor.getString(cursor.getColumnIndex(Constants.LAST_DATE)));
-                mMap.put(Constants.PERIOD1, cursor.getLong(cursor.getColumnIndex(Constants.PERIOD1)));
-                mMap.put(Constants.PERIOD2, cursor.getLong(cursor.getColumnIndex(Constants.PERIOD2)));
-                mMap.put(Constants.PERIOD3, cursor.getLong(cursor.getColumnIndex(Constants.PERIOD3)));
+                mMap.put(Constants.PERIOD1, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD1)));
+                mMap.put(Constants.PERIOD2, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD2)));
+                mMap.put(Constants.PERIOD3, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD3)));
 
             } else {
                 mMap.put(Constants.SIM1RX, 0L);
@@ -162,15 +162,15 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             cursor.close();
         } else if (r_w ==Constants.UPDATE) {
             ContentValues values = new ContentValues();
-            values.put(Constants.SIM1RX, (Long) mMap.get(Constants.SIM1RX));
-            values.put(Constants.SIM2RX, (Long) mMap.get(Constants.SIM2RX));
-            values.put(Constants.SIM3RX, (Long) mMap.get(Constants.SIM3RX));
-            values.put(Constants.SIM1TX, (Long) mMap.get(Constants.SIM1TX));
-            values.put(Constants.SIM2TX, (Long) mMap.get(Constants.SIM2TX));
-            values.put(Constants.SIM3TX, (Long) mMap.get(Constants.SIM3TX));
-            values.put(Constants.TOTAL1, (Long) mMap.get(Constants.TOTAL1));
-            values.put(Constants.TOTAL2, (Long) mMap.get(Constants.TOTAL2));
-            values.put(Constants.TOTAL3, (Long) mMap.get(Constants.TOTAL3));
+            values.put(Constants.SIM1RX, (long) mMap.get(Constants.SIM1RX));
+            values.put(Constants.SIM2RX, (long) mMap.get(Constants.SIM2RX));
+            values.put(Constants.SIM3RX, (long) mMap.get(Constants.SIM3RX));
+            values.put(Constants.SIM1TX, (long) mMap.get(Constants.SIM1TX));
+            values.put(Constants.SIM2TX, (long) mMap.get(Constants.SIM2TX));
+            values.put(Constants.SIM3TX, (long) mMap.get(Constants.SIM3TX));
+            values.put(Constants.TOTAL1, (long) mMap.get(Constants.TOTAL1));
+            values.put(Constants.TOTAL2, (long) mMap.get(Constants.TOTAL2));
+            values.put(Constants.TOTAL3, (long) mMap.get(Constants.TOTAL3));
             values.put(Constants.LAST_ACTIVE_SIM, (int) mMap.get(Constants.LAST_ACTIVE_SIM));
             values.put(Constants.LAST_TX, (Long) mMap.get(Constants.LAST_TX));
             values.put(Constants.LAST_RX, (Long) mMap.get(Constants.LAST_RX));

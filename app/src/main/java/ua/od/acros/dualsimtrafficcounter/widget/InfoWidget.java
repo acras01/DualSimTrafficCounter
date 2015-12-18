@@ -115,6 +115,7 @@ public class InfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET[19], true);
                 edit.putBoolean(Constants.PREF_WIDGET[20], true);
                 edit.putBoolean(Constants.PREF_WIDGET[21], true);
+                edit.putBoolean(Constants.PREF_WIDGET[22], false);
                 edit.apply();
             }
 
@@ -137,7 +138,8 @@ public class InfoWidget extends AppWidgetProvider {
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.info_widget_layout);
 
             //SIM1
-            if (prefs.getBoolean(Constants.PREF_WIDGET[18], true)) {
+            if ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
+                    || prefs.getBoolean(Constants.PREF_WIDGET[22], false)) {
                 updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL1, 0)));
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
@@ -217,7 +219,8 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.ll1, View.GONE);
 
             //SIM2
-            if (prefs.getBoolean(Constants.PREF_WIDGET[19], true)) {
+            if ((prefs.getBoolean(Constants.PREF_WIDGET[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
+            || prefs.getBoolean(Constants.PREF_WIDGET[22], false)) {
                 updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL2, 0)));
                 updateViews.setViewVisibility(R.id.txSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM2, View.GONE);
@@ -298,7 +301,8 @@ public class InfoWidget extends AppWidgetProvider {
             }
 
             //SIM3
-            if (prefs.getBoolean(Constants.PREF_WIDGET[20], true)) {
+            if ((prefs.getBoolean(Constants.PREF_WIDGET[20], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
+            || prefs.getBoolean(Constants.PREF_WIDGET[22], false)) {
                 updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL3, 0)));
                 updateViews.setViewVisibility(R.id.txSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM3, View.GONE);

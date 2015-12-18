@@ -110,4 +110,6 @@
     <string name="detect_sim">Автоопределение количества SIM</string>
     <string name="set_sim_number">Если количество SIM определяется некорректно, установите его вручную в Настройках</string>
     <string name="user_sim">Введите количество SIM</string>
+    <string name="day_in_period">Дней в периоде</string>
+    <string name="only_active">Показывать только активную SIM</string>
 </resources>

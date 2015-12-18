@@ -144,9 +144,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             if ((period1.getValue().equals("1") || period1.getValue().equals("2")) && day1 != null) {
                 day1.setEnabled(true);
                 if (period1.getValue().equals("1"))
-                    day1.setText(getActivity().getResources().getString(R.string.day));
+                    day1.setTitle(getActivity().getResources().getString(R.string.day));
                 else
-                    day1.setText(getActivity().getResources().getString(R.string.day_in_period));
+                    day1.setTitle(getActivity().getResources().getString(R.string.day_in_period));
             }
         }
         if (period2 != null) {
@@ -156,9 +156,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             if ((period2.getValue().equals("1") || period2.getValue().equals("2")) && day2 != null) {
                 day2.setEnabled(true);
                 if (period2.getValue().equals("1"))
-                    day2.setText(getActivity().getResources().getString(R.string.day));
+                    day2.setTitle(getActivity().getResources().getString(R.string.day));
                 else
-                    day2.setText(getActivity().getResources().getString(R.string.day_in_period));
+                    day2.setTitle(getActivity().getResources().getString(R.string.day_in_period));
             }
         }
         if (period3 != null) {
@@ -168,9 +168,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             if ((period3.getValue().equals("1") || period3.getValue().equals("2")) && day3 != null) {
                 day3.setEnabled(true);
                 if (period3.getValue().equals("1"))
-                    day3.setText(getActivity().getResources().getString(R.string.day));
+                    day3.setTitle(getActivity().getResources().getString(R.string.day));
                 else
-                    day3.setText(getActivity().getResources().getString(R.string.day_in_period));
+                    day3.setTitle(getActivity().getResources().getString(R.string.day_in_period));
             }
         }
         if (day1 != null && day1.isEnabled())

@@ -21,6 +21,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <CheckBox
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/only_active"
+                android:id="@+id/activesim"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/on"
+                android:id="@+id/activesim_summary" />
+
+            <Space
+                android:layout_width="5dp"
+                android:layout_height="5dp" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

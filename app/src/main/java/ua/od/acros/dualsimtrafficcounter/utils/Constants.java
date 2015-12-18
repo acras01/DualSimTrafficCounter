@@ -43,13 +43,13 @@ public class Constants {
     public static final String DATABASE_NAME = "mydatabase.db";
     public static final String[] PREF_SIM1 = {"stub", "limit1", "value1", "period1", "round1", "auto1", //5
             "name1", "autooff1", "prefer1", "time1", "day1", "everydayonoff1", "timeoff1", "timeon1", //13
-            "op_round1", "op_limit1", "op_value1", "user_period1"}; //17
+            "op_round1", "op_limit1", "op_value1"}; //16
     public static final String[] PREF_SIM2 = {"stub", "limit2", "value2", "period2", "round2", "auto2", //5
             "name2", "autooff2", "prefer2", "time2", "day2", "everydayonoff2", "timeoff2", "timeon2", //13
-            "op_round2", "op_limit2", "op_value2", "user_period2"}; //17
+            "op_round2", "op_limit2", "op_value2"}; //16
     public static final String[] PREF_SIM3 = {"stub", "limit3", "value3", "period3", "round3", "auto3", //5
             "name3", "autooff3", "prefer3", "time3", "day3", "everydayonoff3", "timeoff3", "timeon3", //13
-            "op_round3", "op_limit31", "op_value3", "user_period3"}; //17
+            "op_round3", "op_limit31", "op_value3"}; //16
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
@@ -59,7 +59,7 @@ public class Constants {
             "user_pick1", "user_pick2", "user_pick3", //10
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
-            "showsim1","showsim2", "showsim3", "showdiv"}; //21
+            "showsim1","showsim2", "showsim3", "showdiv", "active"}; //22
     public static final int STARTED_ID = 101;
     public static final int SIM1 = 0;
     public static final int SIM2 = 1;

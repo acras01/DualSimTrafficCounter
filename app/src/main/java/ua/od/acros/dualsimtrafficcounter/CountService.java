@@ -589,6 +589,132 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             return prefs.getString(key2, "");
     }
 
+    private static void isResetNeeded() {
+        DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+        DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+        DateTime now = new DateTime();
+
+        String reset1 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[9], "00:00");
+        String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
+        String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
+
+        if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1 ||
+                (prefs.getString(Constants.PREF_SIM1[3], "0").equals("2") && DateCompare.isNextDayOrMonth(dt, "0"))) {
+            needsReset1 = true;
+            switch (prefs.getString(Constants.PREF_SIM1[3], "")) {
+                case "0":
+                    resetTime1 = fmtnow.parseDateTime(reset1);
+                    break;
+                case "1":
+                    int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
+                    if (day1 >= 28)
+                        switch (now.getMonthOfYear()) {
+                            case 2:
+                                if (now.year().isLeap())
+                                    day1 = 29;
+                                else
+                                    day1 = 28;
+                                break;
+                            case 4:
+                            case 6:
+                            case 9:
+                            case 11:
+                                if (day1 == 31)
+                                    day1 = 30;
+                                break;
+                        }
+                    if (day1 >= now.getDayOfMonth())
+                        resetTime1 = fmtnow.parseDateTime(reset1);
+                    break;
+                case "2":
+                    int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
+                    if ((int) dataMap.get(Constants.PERIOD1) >= day2 + 1) {
+                        resetTime1 = fmtnow.parseDateTime(reset1);
+                        dataMap.put(Constants.PERIOD1, 0);
+                    }
+                    else
+                        dataMap.put(Constants.PERIOD1, (int) dataMap.get(Constants.PERIOD1) + 1);
+            }
+        }
+        if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2 ||
+                (prefs.getString(Constants.PREF_SIM2[3], "0").equals("2") && DateCompare.isNextDayOrMonth(dt, "0"))) {
+            needsReset2 = true;
+            switch (prefs.getString(Constants.PREF_SIM2[3], "")) {
+                case "0":
+                    resetTime2 = fmtnow.parseDateTime(reset2);
+                    break;
+                case "1":
+                    int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
+                    if (day1 >= 28)
+                        switch (now.getMonthOfYear()) {
+                            case 2:
+                                if (now.year().isLeap())
+                                    day1 = 29;
+                                else
+                                    day1 = 28;
+                                break;
+                            case 4:
+                            case 6:
+                            case 9:
+                            case 11:
+                                if (day1 == 31)
+                                    day1 = 30;
+                                break;
+                        }
+                    if (day1 >= now.getDayOfMonth())
+                        resetTime2 = fmtnow.parseDateTime(reset1);
+                    break;
+                case "2":
+                    int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
+                    if ((int) dataMap.get(Constants.PERIOD2) >= day2 + 1) {
+                        resetTime2 = fmtnow.parseDateTime(reset2);
+                        dataMap.put(Constants.PERIOD2, 0);
+                    }
+                    else
+                        dataMap.put(Constants.PERIOD2, (int) dataMap.get(Constants.PERIOD2) + 1);
+            }
+        }
+        if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3 ||
+                (prefs.getString(Constants.PREF_SIM3[3], "0").equals("2")  && DateCompare.isNextDayOrMonth(dt, "0"))) {
+            needsReset3 = true;
+            switch (prefs.getString(Constants.PREF_SIM3[3], "")) {
+                case "0":
+                    resetTime3 = fmtnow.parseDateTime(reset3);
+                    break;
+                case "1":
+                    int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
+                    if (day1 >= 28)
+                        switch (now.getMonthOfYear()) {
+                            case 2:
+                                if (now.year().isLeap())
+                                    day1 = 29;
+                                else
+                                    day1 = 28;
+                                break;
+                            case 4:
+                            case 6:
+                            case 9:
+                            case 11:
+                                if (day1 == 31)
+                                    day1 = 30;
+                                break;
+                        }
+                    if (day1 >= now.getDayOfMonth())
+                        resetTime3 = fmtnow.parseDateTime(reset3);
+                    break;
+                case "2":
+                    int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
+                    if ((int) dataMap.get(Constants.PERIOD3) >= day2 + 1) {
+                        resetTime3 = fmtnow.parseDateTime(reset1);
+                        dataMap.put(Constants.PERIOD3, 0);
+                    }
+                    else
+                        dataMap.put(Constants.PERIOD3, (int) dataMap.get(Constants.PERIOD3) + 1);
+            }
+        }
+    }
+
     private static class CountTimerTask1 extends TimerTask {
 
         private static final long MB = 1024 * 1024;
@@ -622,127 +748,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
+                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
+
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    String reset1 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[9], "00:00");
-                    String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
-                    String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
+                    isResetNeeded();
 
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1 || prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                        needsReset1 = true;
-                        switch (prefs.getString(Constants.PREF_SIM1[3], "")) {
-                            case "0":
-                                resetTime1 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime1 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD1) + 1 > day2) {
-                                    resetTime1 = fmtnow.parseDateTime(reset1);
-                                    dataMap.put(Constants.PERIOD1, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD1, (int) dataMap.get(Constants.PERIOD1) + 1);
-                        }
-                    }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2 || prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                        needsReset2 = true;
-                        switch (prefs.getString(Constants.PREF_SIM2[3], "")) {
-                            case "0":
-                                resetTime2 = fmtnow.parseDateTime(reset2);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime2 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD2) + 1 > day2) {
-                                    resetTime2 = fmtnow.parseDateTime(reset2);
-                                    dataMap.put(Constants.PERIOD2, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD2, (int) dataMap.get(Constants.PERIOD2) + 1);
-                        }
-                    }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3 || prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                        needsReset3 = true;
-                        switch (prefs.getString(Constants.PREF_SIM3[3], "")) {
-                            case "0":
-                                resetTime3 = fmtnow.parseDateTime(reset3);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime3 = fmtnow.parseDateTime(reset3);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD3) + 1 > day2) {
-                                    resetTime3 = fmtnow.parseDateTime(reset1);
-                                    dataMap.put(Constants.PERIOD3, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD3, (int) dataMap.get(Constants.PERIOD3) + 1);
-                        }
-                    }
-                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
                     if (emptyDB) {
                         dataMap.put(Constants.SIM1RX, 0L);
                         dataMap.put(Constants.SIM2RX, 0L);
@@ -1015,125 +1028,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tot = 0;
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    String reset1 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[9], "00:00");
-                    String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
-                    String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
+                    isResetNeeded();
 
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1 || prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                        needsReset1 = true;
-                        switch (prefs.getString(Constants.PREF_SIM1[3], "")) {
-                            case "0":
-                                resetTime1 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime1 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD1) + 1 > day2) {
-                                    resetTime1 = fmtnow.parseDateTime(reset1);
-                                    dataMap.put(Constants.PERIOD1, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD1, (int) dataMap.get(Constants.PERIOD1) + 1);
-                        }
-                    }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2 || prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                        needsReset2 = true;
-                        switch (prefs.getString(Constants.PREF_SIM2[3], "")) {
-                            case "0":
-                                resetTime2 = fmtnow.parseDateTime(reset2);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime2 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD2) + 1 > day2) {
-                                    resetTime2 = fmtnow.parseDateTime(reset2);
-                                    dataMap.put(Constants.PERIOD2, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD2, (int) dataMap.get(Constants.PERIOD2) + 1);
-                        }
-                    }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3 || prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                        needsReset3 = true;
-                        switch (prefs.getString(Constants.PREF_SIM3[3], "")) {
-                            case "0":
-                                resetTime3 = fmtnow.parseDateTime(reset3);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime3 = fmtnow.parseDateTime(reset3);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD3) + 1 > day2) {
-                                    resetTime3 = fmtnow.parseDateTime(reset1);
-                                    dataMap.put(Constants.PERIOD3, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD3, (int) dataMap.get(Constants.PERIOD3) + 1);
-                        }
-                    }
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
                     if (emptyDB) {
                         dataMap.put(Constants.SIM1RX, 0L);
@@ -1406,125 +1305,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tot = 0;
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    String reset1 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[9], "00:00");
-                    String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
-                    String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
+                    isResetNeeded();
 
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1 || prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                        needsReset1 = true;
-                        switch (prefs.getString(Constants.PREF_SIM1[3], "")) {
-                            case "0":
-                                resetTime1 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime1 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD1) + 1 > day2) {
-                                    resetTime1 = fmtnow.parseDateTime(reset1);
-                                    dataMap.put(Constants.PERIOD1, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD1, (int) dataMap.get(Constants.PERIOD1) + 1);
-                        }
-                    }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2 || prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                        needsReset2 = true;
-                        switch (prefs.getString(Constants.PREF_SIM2[3], "")) {
-                            case "0":
-                                resetTime2 = fmtnow.parseDateTime(reset2);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime2 = fmtnow.parseDateTime(reset1);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD2) + 1 > day2) {
-                                    resetTime2 = fmtnow.parseDateTime(reset2);
-                                    dataMap.put(Constants.PERIOD2, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD2, (int) dataMap.get(Constants.PERIOD2) + 1);
-                        }
-                    }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3 || prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                        needsReset3 = true;
-                        switch (prefs.getString(Constants.PREF_SIM3[3], "")) {
-                            case "0":
-                                resetTime3 = fmtnow.parseDateTime(reset3);
-                                break;
-                            case "1":
-                                int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                                if (day1 >= 28)
-                                    switch (now.getMonthOfYear()) {
-                                        case 2:
-                                            if (now.year().isLeap())
-                                                day1 = 29;
-                                            else
-                                                day1 = 28;
-                                            break;
-                                        case 4:
-                                        case 6:
-                                        case 9:
-                                        case 11:
-                                            if (day1 == 31)
-                                                day1 = 30;
-                                            break;
-                                    }
-                                if (day1 >= now.getDayOfMonth())
-                                    resetTime3 = fmtnow.parseDateTime(reset3);
-                                break;
-                            case "2":
-                                int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                                if ((int) dataMap.get(Constants.PERIOD3) + 1 > day2) {
-                                    resetTime3 = fmtnow.parseDateTime(reset1);
-                                    dataMap.put(Constants.PERIOD3, 0);
-                                }
-                                else
-                                    dataMap.put(Constants.PERIOD3, (int) dataMap.get(Constants.PERIOD3) + 1);
-                        }
-                    }
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
                     if (emptyDB) {
                         dataMap.put(Constants.SIM1RX, 0L);
