@@ -139,7 +139,7 @@ public class InfoWidget extends AppWidgetProvider {
 
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || prefs.getBoolean(Constants.PREF_WIDGET[22], false)) {
+                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
                 updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL1, 0)));
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
@@ -220,7 +220,7 @@ public class InfoWidget extends AppWidgetProvider {
 
             //SIM2
             if ((prefs.getBoolean(Constants.PREF_WIDGET[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-            || prefs.getBoolean(Constants.PREF_WIDGET[22], false)) {
+                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM2)) {
                 updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL2, 0)));
                 updateViews.setViewVisibility(R.id.txSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM2, View.GONE);
@@ -302,7 +302,7 @@ public class InfoWidget extends AppWidgetProvider {
 
             //SIM3
             if ((prefs.getBoolean(Constants.PREF_WIDGET[20], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-            || prefs.getBoolean(Constants.PREF_WIDGET[22], false)) {
+                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
                 updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL3, 0)));
                 updateViews.setViewVisibility(R.id.txSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM3, View.GONE);

@@ -676,7 +676,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         }
         if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3 ||
-                (prefs.getString(Constants.PREF_SIM3[3], "0").equals("2")  && DateCompare.isNextDayOrMonth(dt, "0"))) {
+                (prefs.getString(Constants.PREF_SIM3[3], "0").equals("2") && DateCompare.isNextDayOrMonth(dt, "0"))) {
             needsReset3 = true;
             switch (prefs.getString(Constants.PREF_SIM3[3], "")) {
                 case "0":

@@ -207,6 +207,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         onOff(logoL3, simNumber == 3 && icons.isChecked());
         onOff(ll5, speed.isChecked());
         onOff(ll6, speed.isChecked());
+        onOff(ll7, active.isChecked());
         onOff(ll8, back.isChecked());
 
         textSizeSum = (TextView) findViewById(R.id.textSizeSum);
