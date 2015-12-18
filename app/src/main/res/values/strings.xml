@@ -79,7 +79,7 @@
     <string name="set">Set</string>
     <string name="day">Day of reset</string>
     <string name="check">Enter valid day of month</string>
-    <string name="info_widget_simple">Widget</string>
+    <string name="info_widget_simple">DSTC Widget</string>
     <string name="info_widget_image">Widget with carrier labels</string>
     <string name="show_icons">Show operator logo</string>
     <string name="operator_logo_1">Logo for SIM1</string>

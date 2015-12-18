@@ -77,7 +77,7 @@
     <string name="time_of_end">Час скидання</string>
     <string name="day">День скидання</string>
     <string name="check">Введіть вірний день</string>
-    <string name="info_widget_simple">Віджет</string>
+    <string name="info_widget_simple">Віджет DSTC</string>
     <string name="info_widget_image">Віджет з лого операторів</string>
     <string name="show_icons">Лого операторів на віджеті</string>
     <string name="operator_logo_1">Лого для SIM1</string>

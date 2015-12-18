@@ -282,20 +282,20 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle(R.string.attention)
+                                        .setMessage(R.string.need_root)
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .show();
+                            }
                         }
                     })
                     .show();
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) {
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.attention)
-                        .setMessage(R.string.need_root)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-            }
             prefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         }
     }
@@ -331,7 +331,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mService.setIcon(R.drawable.ic_action_enable);
         }
         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !MTKUtils.isMtkDevice())) {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {

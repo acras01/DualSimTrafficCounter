@@ -78,7 +78,7 @@
     <string name="day">День обнуления</string>
     <string name="check">Введите правильный день</string>
     <string name="info_widget_image">Виджет с лого операторов</string>
-    <string name="info_widget_simple">Виджет</string>
+    <string name="info_widget_simple">Виджет DSTC</string>
     <string name="show_icons">Лого операторов на виджете</string>
     <string name="operator_logo_1">Лого для SIM1</string>
     <string name="operator_logo_2">Лого для SIM2</string>
