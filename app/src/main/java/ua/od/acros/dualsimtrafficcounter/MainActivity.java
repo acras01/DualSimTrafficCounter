@@ -92,37 +92,37 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         findViewById(R.id.buttonClear3).setOnClickListener(this);
 
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1TX)));
-            RX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2RX)));
-            TX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2TX)));
-            RX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3RX)));
-            TX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3TX)));
+            RX1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM1RX)));
+            TX1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM1TX)));
+            RX2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM2RX)));
+            TX2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM2TX)));
+            RX3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM3RX)));
+            TX3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM3TX)));
         }
-        TOT1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)));
-        TOT2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2)));
-        TOT3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3)));
+        TOT1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1)));
+        TOT2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL2)));
+        TOT3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL3)));
         SIM.setText((String) dataMap.get(Constants.SIM_ACTIVE));
 
         dataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
 
-                TOT1.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.TOTAL1, 0)));
-                TOT2.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.TOTAL2, 0)));
-                TOT3.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.TOTAL3, 0)));
+                TOT1.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.TOTAL1, 0)));
+                TOT2.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.TOTAL2, 0)));
+                TOT3.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.TOTAL3, 0)));
                 if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (RX1 != null)
-                        RX1.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SIM1RX, 0)));
+                        RX1.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.SIM1RX, 0)));
                     if (TX1 != null)
-                        TX1.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SIM1TX, 0)));
+                        TX1.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.SIM1TX, 0)));
                     if (RX2 != null)
-                        RX2.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SIM2RX, 0)));
+                        RX2.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.SIM2RX, 0)));
                     if (TX2 != null)
-                        TX2.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SIM2TX, 0)));
+                        TX2.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.SIM2TX, 0)));
                     if (RX3 != null)
-                        RX3.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SIM3RX, 0)));
+                        RX3.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.SIM3RX, 0)));
                     if (TX3 != null)
-                        TX3.setText(DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SIM3TX, 0)));
+                        TX3.setText(DataFormat.formatData(context, intent.getLongExtra(Constants.SIM3TX, 0)));
                 }
                 if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
                     SIM1.setText("SIM1");
@@ -149,9 +149,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     TIP.setText(getResources().getString(R.string.tip));
                 else
                     TIP.setText(getResources().getString(R.string.service_disabled_tip));
-                String rxSpeed = DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SPEEDRX, 0L));
-                String txSpeed = DataFormat.formatData(getAppContext(), intent.getLongExtra(Constants.SPEEDTX, 0L));
-                int swtch = MobileDataControl.getMobileDataInfo(getAppContext())[0];
+                String rxSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDRX, 0L));
+                String txSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDTX, 0L));
+                int swtch = MobileDataControl.getMobileDataInfo(context)[0];
                 switch (intent.getIntExtra(Constants.SIM_ACTIVE, 0)) {
                     default:
                         if (swtch== 0)
@@ -204,9 +204,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 int simChosen = intent.getIntExtra("sim", Constants.NULL);
                 try {
                     if (simChosen > Constants.DISABLED)
-                        MobileDataControl.toggleMobileDataConnection(true, getAppContext(), simChosen);
+                        MobileDataControl.toggleMobileDataConnection(true, context, simChosen);
                     else
-                        MobileDataControl.toggleMobileDataConnection(false, getAppContext(), Constants.DISABLED);
+                        MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                 } catch (Exception e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
@@ -305,7 +305,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getAppContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName()))
                 return true;
@@ -335,7 +335,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
-            switch (MobileDataControl.getMobileDataInfo(getAppContext())[0]) {
+            switch (MobileDataControl.getMobileDataInfo(context)[0]) {
                 case 0:
                     mMobileData.setEnabled(true);
                     mMobileData.setTitle(R.string.action_enable);
@@ -363,7 +363,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent = new Intent(getAppContext(), SettingsActivity.class);
+                Intent intent = new Intent(context, SettingsActivity.class);
                 startActivityForResult(intent, 0);
                 break;
             case R.id.action_service_start_stop:
@@ -413,16 +413,16 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.SIM1TX)));
-            RX2.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.SIM2RX)));
-            TX2.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.SIM2TX)));
-            RX3.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.SIM3RX)));
-            TX3.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.SIM3TX)));
+            RX1.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM1RX)));
+            TX1.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM1TX)));
+            RX2.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM2RX)));
+            TX2.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM2TX)));
+            RX3.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM3RX)));
+            TX3.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM3TX)));
         }
-        TOT1.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.TOTAL1)));
-        TOT2.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.TOTAL2)));
-        TOT3.setText(DataFormat.formatData(getAppContext(), savedInstanceState.getLong(Constants.TOTAL3)));
+        TOT1.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.TOTAL1)));
+        TOT2.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.TOTAL2)));
+        TOT3.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.TOTAL3)));
         SIM.setText(savedInstanceState.getString(Constants.SIM_ACTIVE));
     }
 
@@ -494,10 +494,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1RX)));
-                        TX1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM1TX)));
+                        RX1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM1RX)));
+                        TX1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM1TX)));
                     }
-                    TOT1.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL1)));
+                    TOT1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1)));
                 }
                 break;
             case (R.id.buttonClear2):
@@ -514,10 +514,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2RX)));
-                        TX2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM2TX)));
+                        RX2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM2RX)));
+                        TX2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM2TX)));
                     }
-                    TOT2.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL2)));
+                    TOT2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL2)));
                 }
                 break;
             case (R.id.buttonClear3):
@@ -534,10 +534,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3RX)));
-                        TX3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.SIM3TX)));
+                        RX3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM3RX)));
+                        TX3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM3TX)));
                     }
-                    TOT3.setText(DataFormat.formatData(getAppContext(), (long) dataMap.get(Constants.TOTAL3)));
+                    TOT3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL3)));
                 }
                 break;
         }
