@@ -663,7 +663,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 break;
                         }
                     if (day1 >= now.getDayOfMonth())
-                        resetTime2 = fmtnow.parseDateTime(reset1);
+                        resetTime2 = fmtnow.parseDateTime(reset2);
                     break;
                 case "2":
                     int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
@@ -706,7 +706,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 case "2":
                     int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
                     if ((int) dataMap.get(Constants.PERIOD3) >= day2 + 1) {
-                        resetTime3 = fmtnow.parseDateTime(reset1);
+                        resetTime3 = fmtnow.parseDateTime(reset3);
                         dataMap.put(Constants.PERIOD3, 0);
                     }
                     else
