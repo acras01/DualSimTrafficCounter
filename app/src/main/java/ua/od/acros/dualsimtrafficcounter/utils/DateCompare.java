@@ -11,7 +11,7 @@ public class DateCompare {
             case "0":
                 return now.getDayOfYear() != date.getDayOfYear();
             case "1":
-                return now.getDayOfMonth() == Integer.valueOf(day);
+                return now.getDayOfMonth() >= Integer.valueOf(day);
             default:
                 return false;
         }
