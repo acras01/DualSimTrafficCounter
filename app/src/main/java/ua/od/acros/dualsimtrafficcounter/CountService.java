@@ -53,8 +53,6 @@ import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 public class CountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static long mTotalRxBytes;
-    private static long mTotalTxBytes;
     private static long mLastUpdateTime;
     private static long mStartRX1 = 0;
     private static long mStartTX1 = 0;
@@ -732,18 +730,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     }
                     mLastUpdateTime = SystemClock.elapsedRealtime();
 
-                    long newTotalRxBytes = TrafficStats.getTotalRxBytes();
-                    long newTotalTxBytes = TrafficStats.getTotalTxBytes();
-
-                    long rxData = newTotalRxBytes - mTotalRxBytes;
-                    long txData = newTotalTxBytes - mTotalTxBytes;
-
-                    long speedRX = (long) (rxData / (timeDelta / 1000F));
-                    long speedTX = (long) (txData / (timeDelta / 1000F));
-
-                    mTotalRxBytes = newTotalRxBytes;
-                    mTotalTxBytes = newTotalTxBytes;
-
                     long rx = 0;
                     long tx = 0;
                     long tot = 0;
@@ -865,6 +851,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX1;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX1;
+
+                    long speedRX = (long) (diffrx / (timeDelta / 1000F));
+                    long speedTX = (long) (difftx / (timeDelta / 1000F));
+
                     mStartRX1 = TrafficStats.getMobileRxBytes();
                     mStartTX1 = TrafficStats.getMobileTxBytes();
                     if (((long) dataMap.get(Constants.TOTAL1) <= (long) lim) || continueOverLimit) {
@@ -1011,18 +1001,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     }
                     mLastUpdateTime = SystemClock.elapsedRealtime();
 
-                    long newTotalRxBytes = TrafficStats.getTotalRxBytes();
-                    long newTotalTxBytes = TrafficStats.getTotalTxBytes();
-
-                    long rxData = newTotalRxBytes - mTotalRxBytes;
-                    long txData = newTotalTxBytes - mTotalTxBytes;
-
-                    long speedRX = (long) (rxData / (timeDelta / 1000F));
-                    long speedTX = (long) (txData / (timeDelta / 1000F));
-
-                    mTotalRxBytes = newTotalRxBytes;
-                    mTotalTxBytes = newTotalTxBytes;
-
                     long rx = 0;
                     long tx = 0;
                     long tot = 0;
@@ -1142,6 +1120,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX2;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX2;
+
+                    long speedRX = (long) (diffrx / (timeDelta / 1000F));
+                    long speedTX = (long) (difftx / (timeDelta / 1000F));
+
                     mStartRX2 = TrafficStats.getMobileRxBytes();
                     mStartTX2 = TrafficStats.getMobileTxBytes();
                     if (((long) dataMap.get(Constants.TOTAL2) <= (long) lim) || continueOverLimit) {
@@ -1288,18 +1270,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     }
                     mLastUpdateTime = SystemClock.elapsedRealtime();
 
-                    long newTotalRxBytes = TrafficStats.getTotalRxBytes();
-                    long newTotalTxBytes = TrafficStats.getTotalTxBytes();
-
-                    long rxData = newTotalRxBytes - mTotalRxBytes;
-                    long txData = newTotalTxBytes - mTotalTxBytes;
-
-                    long speedRX = (long) (rxData / (timeDelta / 1000F));
-                    long speedTX = (long) (txData / (timeDelta / 1000F));
-
-                    mTotalRxBytes = newTotalRxBytes;
-                    mTotalTxBytes = newTotalTxBytes;
-
                     long rx = 0;
                     long tx = 0;
                     long tot = 0;
@@ -1419,6 +1389,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX3;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX3;
+
+                    long speedRX = (long) (diffrx / (timeDelta / 1000F));
+                    long speedTX = (long) (difftx / (timeDelta / 1000F));
+
                     mStartRX3 = TrafficStats.getMobileRxBytes();
                     mStartTX3 = TrafficStats.getMobileTxBytes();
                     if (((long) dataMap.get(Constants.TOTAL3) <= (long) lim) || continueOverLimit) {
