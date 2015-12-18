@@ -215,8 +215,10 @@ public class InfoWidget extends AppWidgetProvider {
                         updateViews.setViewVisibility(R.id.stub1, View.GONE);
                 } else
                     updateViews.setViewVisibility(R.id.stub1, View.GONE);
-            } else
+            } else {
                 updateViews.setViewVisibility(R.id.ll1, View.GONE);
+                updateViews.setViewVisibility(R.id.stub1, View.GONE);
+            }
 
             //SIM2
             if ((prefs.getBoolean(Constants.PREF_WIDGET[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
