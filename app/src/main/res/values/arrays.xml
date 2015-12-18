@@ -8,6 +8,7 @@
     <string-array name="period">
         <item>Day</item>
         <item>Month</item>
+        <item>User</item>
     </string-array>
     <string-array name="measure_values">
         <item>0</item>
@@ -17,6 +18,7 @@
     <string-array name="period_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
     <string-array name="icons">
         <item>None</item>

@@ -113,4 +113,5 @@
     <string name="detect_sim">Autodetect SIM quantity</string>
     <string name="user_sim">Enter SIM quantity</string>
     <string name="set_sim_number">If SIM quantity is not detected correctly try to set it manually in Settings</string>
+    <string name="day_in_period">Days in period</string>
 </resources>

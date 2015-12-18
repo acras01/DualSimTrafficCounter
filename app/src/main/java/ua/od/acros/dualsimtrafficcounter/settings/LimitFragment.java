@@ -29,7 +29,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 
 public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private EditTextPreference limit1, limit2, limit3, round1, round2, round3, day1, day2, day3,opLimit1, opLimit2, opLimit3;
+    private EditTextPreference limit1, limit2, limit3, round1, round2, round3, day1, day2, day3, opLimit1, opLimit2, opLimit3;
     private ListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3;
     private TwoLineCheckPreference prefer1, prefer2, prefer3; //everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3;
@@ -141,22 +141,37 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             period1.setSummary(period1.getEntry());
             if (period1.getValue().equals("0") && day1 != null)
                 day1.setEnabled(false);
-            if (period1.getValue().equals("1") && day1 != null)
+            if ((period1.getValue().equals("1") || period1.getValue().equals("2")) && day1 != null) {
                 day1.setEnabled(true);
+                if (period1.getValue().equals("1"))
+                    day1.setText(getActivity().getResources().getString(R.string.day));
+                else
+                    day1.setText(getActivity().getResources().getString(R.string.day_in_period));
+            }
         }
         if (period2 != null) {
             period2.setSummary(period2.getEntry());
             if (period2.getValue().equals("0") && day2 != null)
                 day2.setEnabled(false);
-            if (period2.getValue().equals("1") && day2 != null)
+            if ((period2.getValue().equals("1") || period2.getValue().equals("2")) && day2 != null) {
                 day2.setEnabled(true);
+                if (period2.getValue().equals("1"))
+                    day2.setText(getActivity().getResources().getString(R.string.day));
+                else
+                    day2.setText(getActivity().getResources().getString(R.string.day_in_period));
+            }
         }
         if (period3 != null) {
             period3.setSummary(period3.getEntry());
             if (period3.getValue().equals("0") && day3 != null)
                 day3.setEnabled(false);
-            if (period3.getValue().equals("1") && day3 != null)
+            if ((period3.getValue().equals("1") || period3.getValue().equals("2")) && day3 != null) {
                 day3.setEnabled(true);
+                if (period3.getValue().equals("1"))
+                    day3.setText(getActivity().getResources().getString(R.string.day));
+                else
+                    day3.setText(getActivity().getResources().getString(R.string.day_in_period));
+            }
         }
         if (day1 != null && day1.isEnabled())
             day1.setSummary(day1.getText());
