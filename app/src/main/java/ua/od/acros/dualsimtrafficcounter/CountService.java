@@ -480,9 +480,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[12])) {
             if (sharedPreferences.getBoolean(key, true))
-                mPriority = NotificationCompat.PRIORITY_MAX;
-            else
-                mPriority = NotificationCompat.PRIORITY_MIN;
+                mPriority = sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
             nm.cancel(Constants.STARTED_ID);
         }
         if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && activeSIM == Constants.SIM1 && continueOverLimit)
