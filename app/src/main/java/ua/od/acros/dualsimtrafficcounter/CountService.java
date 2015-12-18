@@ -541,7 +541,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
             }
             try {
-                if (isSIM1OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], ""), prefs.getString(Constants.PREF_SIM1[10], "1"))
+                if (isSIM1OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], ""))
                         || ((long) dataMap.get(Constants.TOTAL1) <= (long) lim1 && (prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -552,7 +552,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     CountService.timerStart(Constants.COUNT);
                     isFirstRun = true;
                 }
-                if (isSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], ""), prefs.getString(Constants.PREF_SIM2[10], "1"))
+                if (isSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], ""))
                         || ((long) dataMap.get(Constants.TOTAL2) <= (long) lim2 && (prefs.getBoolean(Constants.PREF_SIM2[8], false)
                         || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -563,7 +563,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     CountService.timerStart(Constants.COUNT);
                     isFirstRun = true;
                 }
-                if (isSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], ""), prefs.getString(Constants.PREF_SIM3[10], "1"))
+                if (isSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], ""))
                         || ((long) dataMap.get(Constants.TOTAL3) <= (long) lim3 && (prefs.getBoolean(Constants.PREF_SIM3[8], false)
                         || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -631,7 +631,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
                     String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
 
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], ""), prefs.getString(Constants.PREF_SIM1[10], "1")) || needsReset1) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1) {
                         needsReset1 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM1[3], "").equals("0"))
@@ -657,7 +657,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 resetTime1 = fmtnow.parseDateTime(reset1);
                         }
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], ""), prefs.getString(Constants.PREF_SIM2[10], "1")) || needsReset2) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2) {
                         needsReset2 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM2[3], "").equals("0"))
@@ -683,7 +683,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 resetTime2 = fmtnow.parseDateTime(reset2);
                         }
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], ""), prefs.getString(Constants.PREF_SIM3[10], "1")) || needsReset3) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3) {
                         needsReset3 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM3[3], "").equals("0"))
@@ -853,8 +853,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 dt_temp = new org.joda.time.DateTime();
                             else
                                 dt_temp = fmtdate.parseDateTime(last);
-                            if (!DateCompare.isNextDayOrMonth(dt, "0", "1") && !emptyDB
-                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0", "1"))
+                            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
+                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
                                 choice = 1;
                             else
                                 choice = 2;
@@ -990,7 +990,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
                     String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
 
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], ""), prefs.getString(Constants.PREF_SIM1[10], "1")) || needsReset1) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1) {
                         needsReset1 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM1[3], "").equals("0"))
@@ -1016,7 +1016,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 resetTime1 = fmtnow.parseDateTime(reset1);
                         }
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], ""), prefs.getString(Constants.PREF_SIM2[10], "1")) || needsReset2) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2) {
                         needsReset2 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM2[3], "").equals("0"))
@@ -1042,7 +1042,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 resetTime2 = fmtnow.parseDateTime(reset2);
                         }
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], ""), prefs.getString(Constants.PREF_SIM3[10], "1")) || needsReset3) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3) {
                         needsReset3 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM3[3], "").equals("0"))
@@ -1211,8 +1211,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 dt_temp = new org.joda.time.DateTime();
                             else
                                 dt_temp = fmtdate.parseDateTime(last);
-                            if (!DateCompare.isNextDayOrMonth(dt, "0", "1") && !emptyDB
-                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0", "1"))
+                            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
+                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
                                 choice = 1;
                             else
                                 choice = 2;
@@ -1348,7 +1348,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
                     String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
 
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], ""), prefs.getString(Constants.PREF_SIM1[10], "1")) || needsReset1) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1) {
                         needsReset1 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM1[3], "").equals("0"))
@@ -1374,7 +1374,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 resetTime1 = fmtnow.parseDateTime(reset1);
                         }
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], ""), prefs.getString(Constants.PREF_SIM2[10], "1")) || needsReset2) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2) {
                         needsReset2 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM2[3], "").equals("0"))
@@ -1400,7 +1400,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 resetTime2 = fmtnow.parseDateTime(reset2);
                         }
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], ""), prefs.getString(Constants.PREF_SIM3[10], "1")) || needsReset3) {
+                    if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3) {
                         needsReset3 = true;
                         int day = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
                         if (prefs.getString(Constants.PREF_SIM3[3], "").equals("0"))
@@ -1569,8 +1569,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 dt_temp = new org.joda.time.DateTime();
                             else
                                 dt_temp = fmtdate.parseDateTime(last);
-                            if (!DateCompare.isNextDayOrMonth(dt, "0", "1") && !emptyDB
-                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0", "1"))
+                            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
+                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
                                 choice = 1;
                             else
                                 choice = 2;
