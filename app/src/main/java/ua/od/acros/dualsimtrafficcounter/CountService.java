@@ -481,12 +481,19 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Constants.PREF_OTHER[12]))
+        if (key.equals(Constants.PREF_OTHER[12])) {
             if (sharedPreferences.getBoolean(key, true))
                 priority = NotificationCompat.PRIORITY_MAX;
-        else
+            else
                 priority = NotificationCompat.PRIORITY_MIN;
-        nm.cancel(Constants.STARTED_ID);
+            nm.cancel(Constants.STARTED_ID);
+        }
+        if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && activeSIM == Constants.SIM1 && continueOverLimit)
+            continueOverLimit = false;
+        if ((key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2])) && activeSIM == Constants.SIM2 && continueOverLimit)
+            continueOverLimit = false;
+        if ((key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2])) && activeSIM == Constants.SIM3 && continueOverLimit)
+            continueOverLimit = false;
     }
 
     private static class CheckTimerTask extends TimerTask {

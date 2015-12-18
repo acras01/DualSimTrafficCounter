@@ -84,7 +84,6 @@
         <activity
             android:name=".dialogs.ChooseAction"
             android:label="@string/attention"
-            android:process=":choose_action"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Holo.Dialog" >
         </activity>
