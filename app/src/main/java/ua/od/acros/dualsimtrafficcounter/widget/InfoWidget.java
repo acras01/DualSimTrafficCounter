@@ -139,7 +139,7 @@ public class InfoWidget extends AppWidgetProvider {
 
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
+                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM1)) {
                 updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL1, 0)));
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
@@ -288,7 +288,8 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll2, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || prefs.getBoolean(Constants.PREF_WIDGET[18], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) ||
+                        (prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))) {
                     if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
                         updateViews.setViewVisibility(R.id.stub2, View.VISIBLE);
                     else
@@ -371,8 +372,8 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.ll3, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || prefs.getBoolean(Constants.PREF_WIDGET[18], true) ||
-                        prefs.getBoolean(Constants.PREF_WIDGET[19], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) ||
+                        prefs.getBoolean(Constants.PREF_WIDGET[19], true)) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))) {
                     if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
                         updateViews.setViewVisibility(R.id.stub3, View.VISIBLE);
                     else
