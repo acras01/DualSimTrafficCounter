@@ -384,7 +384,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         registerReceiver(clear3Receiver, clear3ServiceFilter);
 
         activeSIM = Constants.DISABLED;
-        lastActiveSIM = Constants.DISABLED;
+        lastActiveSIM = (int) dataMap.get(Constants.LAST_ACTIVE_SIM);
 
         // cancel if already existed
         if (mTimer != null) {
@@ -420,7 +420,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         + "   ||   " + DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL3)))
                 .build();
         startForeground(Constants.STARTED_ID, n);
-
         // schedule task
         timerStart(Constants.COUNT);
 
@@ -436,6 +435,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         activeSIM = MobileDataControl.getMobileDataInfo(context)[1];
+        sendDataBroadcast(0L, 0L);
         if (task == Constants.COUNT) {
             switch (activeSIM) {
                 case Constants.SIM1:
@@ -721,6 +721,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         public void run() {
             try {
                 int[] data = {2, Constants.SIM1};
+                long speedRX = 0;
+                long speedTX = 0;
+
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -852,8 +855,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX1;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX1;
 
-                    long speedRX = (long) (diffrx / (timeDelta / 1000F));
-                    long speedTX = (long) (difftx / (timeDelta / 1000F));
+                    speedRX = (long) (diffrx / (timeDelta / 1000F));
+                    speedTX = (long) (difftx / (timeDelta / 1000F));
 
                     mStartRX1 = TrafficStats.getMobileRxBytes();
                     mStartTX1 = TrafficStats.getMobileTxBytes();
@@ -909,30 +912,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 break;
                         }
 
-                        if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context)) {
-                            Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                            intent.putExtra(Constants.WIDGET_IDS, getWidgetIds());
-                            intent.putExtra(Constants.SPEEDRX, speedRX);
-                            intent.putExtra(Constants.SPEEDTX, speedTX);
-                            intent.putExtra(Constants.SIM1RX, rx);
-                            intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                            intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                            intent.putExtra(Constants.SIM1TX, tx);
-                            intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                            intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                            intent.putExtra(Constants.TOTAL1, tot);
-                            intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                            intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                            intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-                            intent.putExtra(Constants.TIP, (isSIM1OverLimit || isSIM2OverLimit || isSIM3OverLimit) && !continueOverLimit);
-                            intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                            if (simNumber >= 2)
-                                intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                            if (simNumber == 3)
-                                intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                            context.sendBroadcast(intent);
-                        }
-
                         String text = "";
                         if (simNumber == 1)
                             text = DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1));
@@ -956,26 +935,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         nm.notify(Constants.STARTED_ID, n);
                     }
                     isFirstRun = false;
-                } else {
-                    Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                    intent.putExtra(Constants.SPEEDRX, 0L);
-                    intent.putExtra(Constants.SPEEDTX, 0L);
-                    intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                    intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                    intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                    intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                    intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                    intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                    intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                    intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                    intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    intent.putExtra(Constants.SIM_ACTIVE, MobileDataControl.getMobileDataInfo(context)[1]);
-                    intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                    if (simNumber >= 2)
-                        intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                    if (simNumber == 3)
-                        intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                    context.sendBroadcast(intent);
+
+                    if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context))
+                        sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -992,6 +954,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         public void run() {
             try {
                 int[] data = {2, Constants.SIM2};
+                long speedRX = 0;
+                long speedTX = 0;
+
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -1121,8 +1086,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX2;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX2;
 
-                    long speedRX = (long) (diffrx / (timeDelta / 1000F));
-                    long speedTX = (long) (difftx / (timeDelta / 1000F));
+                    speedRX = (long) (diffrx / (timeDelta / 1000F));
+                    speedTX = (long) (difftx / (timeDelta / 1000F));
 
                     mStartRX2 = TrafficStats.getMobileRxBytes();
                     mStartTX2 = TrafficStats.getMobileTxBytes();
@@ -1178,30 +1143,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 break;
                         }
 
-                        if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context)) {
-                            Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                            intent.putExtra(Constants.WIDGET_IDS, getWidgetIds());
-                            intent.putExtra(Constants.SPEEDRX, speedRX);
-                            intent.putExtra(Constants.SPEEDTX, speedTX);
-                            intent.putExtra(Constants.SIM2RX, rx);
-                            intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                            intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                            intent.putExtra(Constants.SIM2TX, tx);
-                            intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                            intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                            intent.putExtra(Constants.TOTAL2, tot);
-                            intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                            intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                            intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-                            intent.putExtra(Constants.TIP, (isSIM1OverLimit || isSIM2OverLimit || isSIM3OverLimit) && !continueOverLimit);
-                            intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                            if (simNumber >= 2)
-                                intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                            if (simNumber == 3)
-                                intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                            context.sendBroadcast(intent);
-                        }
-
                         String text = "";
                         if (simNumber == 1)
                             text = DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1));
@@ -1225,26 +1166,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         nm.notify(Constants.STARTED_ID, n);
                     }
                     isFirstRun = false;
-                } else {
-                    Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                    intent.putExtra(Constants.SPEEDRX, 0L);
-                    intent.putExtra(Constants.SPEEDTX, 0L);
-                    intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                    intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                    intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                    intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                    intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                    intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                    intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                    intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                    intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    intent.putExtra(Constants.SIM_ACTIVE, MobileDataControl.getMobileDataInfo(context)[1]);
-                    intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                    if (simNumber >= 2)
-                        intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                    if (simNumber == 3)
-                        intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                    context.sendBroadcast(intent);
+
+                    if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context))
+                        sendDataBroadcast(speedRX, speedTX);
                 }
             }catch (Exception e) {
                 e.printStackTrace();
@@ -1260,6 +1184,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
+                long speedRX = 0;
+                long speedTX = 0;
                 int[] data = {2, Constants.SIM3};
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
@@ -1390,8 +1316,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX3;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX3;
 
-                    long speedRX = (long) (diffrx / (timeDelta / 1000F));
-                    long speedTX = (long) (difftx / (timeDelta / 1000F));
+                    speedRX = (long) (diffrx / (timeDelta / 1000F));
+                    speedTX = (long) (difftx / (timeDelta / 1000F));
 
                     mStartRX3 = TrafficStats.getMobileRxBytes();
                     mStartTX3 = TrafficStats.getMobileTxBytes();
@@ -1447,30 +1373,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 break;
                         }
 
-                        if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context)) {
-                            Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                            intent.putExtra(Constants.WIDGET_IDS, getWidgetIds());
-                            intent.putExtra(Constants.SPEEDRX, speedRX);
-                            intent.putExtra(Constants.SPEEDTX, speedTX);
-                            intent.putExtra(Constants.SIM3RX, rx);
-                            intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                            intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                            intent.putExtra(Constants.SIM3TX, tx);
-                            intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                            intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                            intent.putExtra(Constants.TOTAL3, tot);
-                            intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                            intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                            intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-                            intent.putExtra(Constants.TIP, (isSIM1OverLimit || isSIM2OverLimit || isSIM3OverLimit) && !continueOverLimit);
-                            intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                            if (simNumber >= 2)
-                                intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                            if (simNumber == 3)
-                                intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                            context.sendBroadcast(intent);
-                        }
-
                         String text = "";
                         if (simNumber == 1)
                             text = DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1));
@@ -1494,32 +1396,42 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         nm.notify(Constants.STARTED_ID, n);
                     }
                     isFirstRun = false;
-                } else {
-                    Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                    intent.putExtra(Constants.SPEEDRX, 0L);
-                    intent.putExtra(Constants.SPEEDTX, 0L);
-                    intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                    intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                    intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                    intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                    intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                    intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                    intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                    intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                    intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    intent.putExtra(Constants.SIM_ACTIVE, MobileDataControl.getMobileDataInfo(context)[1]);
-                    intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                    if (simNumber >= 2)
-                        intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                    if (simNumber == 3)
-                        intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                    context.sendBroadcast(intent);
+
+                    if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context))
+                        sendDataBroadcast(speedRX, speedTX);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
         }
+    }
+
+    private static void sendDataBroadcast(long speedRX, long speedTX) {
+        Intent intent = new Intent(Constants.BROADCAST_ACTION);
+        intent.putExtra(Constants.WIDGET_IDS, getWidgetIds());
+        intent.putExtra(Constants.SPEEDRX, speedRX);
+        intent.putExtra(Constants.SPEEDTX, speedTX);
+        intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+        intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+        intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+        intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+        intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+        intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+        intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+        intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+        intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+        if (activeSIM == Constants.DISABLED)
+            intent.putExtra(Constants.LAST_ACTIVE_SIM, lastActiveSIM);
+        else
+            intent.putExtra(Constants.LAST_ACTIVE_SIM, activeSIM);
+        intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+        if (simNumber >= 2)
+            intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+        if (simNumber == 3)
+            intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+        context.sendBroadcast(intent);
     }
 
     private static void startCheck(int alertID) {

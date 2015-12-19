@@ -29,6 +29,8 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.acra.ACRA;
+
 import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
@@ -346,45 +348,52 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.save) {
-            edit.apply();
-            setResult(RESULT_OK, resultValue);
-            Intent intent = new Intent(Constants.BROADCAST_ACTION);
-            if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-                Map<String, Object> dataMap = new HashMap<>();
-                dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
-                        new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
-                intent.putExtra(Constants.SPEEDRX, 0L);
-                intent.putExtra(Constants.SPEEDTX, 0L);
-                intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                if (simNumber >= 2)
-                    intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                if (simNumber == 3)
-                    intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-            } else {
-                intent.putExtra(Constants.SPEEDRX, 0L);
-                intent.putExtra(Constants.SPEEDTX, 0L);
-                intent.putExtra(Constants.SIM1RX, 0L);
-                intent.putExtra(Constants.SIM2RX, 0L);
-                intent.putExtra(Constants.SIM3RX, 0L);
-                intent.putExtra(Constants.SIM1TX, 0L);
-                intent.putExtra(Constants.SIM2TX, 0L);
-                intent.putExtra(Constants.SIM3TX, 0L);
-                intent.putExtra(Constants.TOTAL1, 0L);
-                intent.putExtra(Constants.TOTAL2, 0L);
-                intent.putExtra(Constants.TOTAL3, 0L);
+        try {
+            if (item.getItemId() == R.id.save) {
+                edit.apply();
+                setResult(RESULT_OK, resultValue);
+                Intent intent = new Intent(Constants.BROADCAST_ACTION);
+                if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
+                    Map<String, Object> dataMap = new HashMap<>();
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
+                            new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+                    intent.putExtra(Constants.SPEEDRX, 0L);
+                    intent.putExtra(Constants.SPEEDTX, 0L);
+                    intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+                    intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+                    intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+                    intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+                    intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+                    intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+                    intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+                    intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+                    intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+                    intent.putExtra(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+                    if (simNumber >= 2)
+                        intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+                    if (simNumber == 3)
+                        intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+                } else {
+                    intent.putExtra(Constants.SPEEDRX, 0L);
+                    intent.putExtra(Constants.SPEEDTX, 0L);
+                    intent.putExtra(Constants.SIM1RX, 0L);
+                    intent.putExtra(Constants.SIM2RX, 0L);
+                    intent.putExtra(Constants.SIM3RX, 0L);
+                    intent.putExtra(Constants.SIM1TX, 0L);
+                    intent.putExtra(Constants.SIM2TX, 0L);
+                    intent.putExtra(Constants.SIM3TX, 0L);
+                    intent.putExtra(Constants.TOTAL1, 0L);
+                    intent.putExtra(Constants.TOTAL2, 0L);
+                    intent.putExtra(Constants.TOTAL3, 0L);
+                    intent.putExtra(Constants.LAST_ACTIVE_SIM, 0);
+                }
+                sendBroadcast(intent);
+                finish();
             }
-            sendBroadcast(intent);
-            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
         }
         return super.onOptionsItemSelected(item);
     }

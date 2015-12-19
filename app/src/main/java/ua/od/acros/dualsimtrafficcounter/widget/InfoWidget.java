@@ -46,6 +46,7 @@ public class InfoWidget extends AppWidgetProvider {
             bundle.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
             bundle.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
             bundle.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+            bundle.putInt(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
         } else {
             bundle.putLong(Constants.SIM1RX, 0L);
             bundle.putLong(Constants.SIM2RX, 0L);
@@ -56,6 +57,7 @@ public class InfoWidget extends AppWidgetProvider {
             bundle.putLong(Constants.TOTAL1, 0L);
             bundle.putLong(Constants.TOTAL2, 0L);
             bundle.putLong(Constants.TOTAL3, 0L);
+            bundle.putInt(Constants.LAST_ACTIVE_SIM, 0);
         }
         updateWidget(context, widgetManager, widgetId, bundle);
     }
@@ -79,15 +81,16 @@ public class InfoWidget extends AppWidgetProvider {
             Map<String, Object> dataMap = new HashMap<>();
             dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
                     new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
-            bundle.putLong(Constants.SIM1RX, (Long) dataMap.get(Constants.SIM1RX));
-            bundle.putLong(Constants.SIM2RX, (Long) dataMap.get(Constants.SIM2RX));
-            bundle.putLong(Constants.SIM3RX, (Long) dataMap.get(Constants.SIM3RX));
-            bundle.putLong(Constants.SIM1TX, (Long) dataMap.get(Constants.SIM1TX));
-            bundle.putLong(Constants.SIM2TX, (Long) dataMap.get(Constants.SIM2TX));
-            bundle.putLong(Constants.SIM3TX, (Long) dataMap.get(Constants.SIM3TX));
-            bundle.putLong(Constants.TOTAL1, (Long) dataMap.get(Constants.TOTAL1));
-            bundle.putLong(Constants.TOTAL2, (Long) dataMap.get(Constants.TOTAL2));
-            bundle.putLong(Constants.TOTAL3, (Long) dataMap.get(Constants.TOTAL3));
+            bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+            bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+            bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+            bundle.putLong(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+            bundle.putLong(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+            bundle.putLong(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+            bundle.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+            bundle.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+            bundle.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+            bundle.putInt(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
         }
 
         for (int i : ids) {
@@ -139,7 +142,7 @@ public class InfoWidget extends AppWidgetProvider {
 
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM1)) {
+                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.LAST_ACTIVE_SIM) == Constants.SIM1)) {
                 updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL1, 0)));
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
@@ -222,7 +225,7 @@ public class InfoWidget extends AppWidgetProvider {
 
             //SIM2
             if ((prefs.getBoolean(Constants.PREF_WIDGET[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM2)) {
+                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.LAST_ACTIVE_SIM) == Constants.SIM2)) {
                 updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL2, 0)));
                 updateViews.setViewVisibility(R.id.txSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM2, View.GONE);
@@ -305,7 +308,7 @@ public class InfoWidget extends AppWidgetProvider {
 
             //SIM3
             if ((prefs.getBoolean(Constants.PREF_WIDGET[20], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
+                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.LAST_ACTIVE_SIM) == Constants.SIM3)) {
                 updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatData(context, bundle.getLong(Constants.TOTAL3, 0)));
                 updateViews.setViewVisibility(R.id.txSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM3, View.GONE);
