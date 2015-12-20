@@ -278,11 +278,11 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         logo1.setOnClickListener(this);
         logo2.setOnClickListener(this);
         logo3.setOnClickListener(this);
-        simFontL.setOnClickListener(this);
-        simLogoL.setOnClickListener(this);
-        speedFontL.setOnClickListener(this);
-        speedArrowsL.setOnClickListener(this);
-        showSimL.setOnClickListener(this);
+        setOnClickListenerWithChild(simFontL);
+        setOnClickListenerWithChild(simLogoL);
+        setOnClickListenerWithChild(speedFontL);
+        setOnClickListenerWithChild(speedArrowsL);
+        setOnClickListenerWithChild(showSimL);
         backColorL.setOnClickListener(this);
 
         if (prefs.getBoolean(Constants.PREF_WIDGET[8], false)) {
@@ -332,6 +332,17 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 showSimSum.setText(sum);
             }
         });
+    }
+
+    private void setOnClickListenerWithChild(ViewGroup v) {
+        for (int i = 0; i < v.getChildCount(); i++) {
+            View child = v.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                setOnClickListenerWithChild((ViewGroup) child);
+            } else {
+                child.setOnClickListener(this);
+            }
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -417,18 +428,28 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 dialog = IconsList.newInstance(Constants.PREF_WIDGET[7]);
                 break;
             case R.id.simFontSize:
+            case R.id.textSize:
+            case R.id.textSizeSum:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE), KEY_TEXT);
                 break;
             case R.id.simLogoSize:
+            case R.id.iconSize:
+            case R.id.iconSizeSum:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE), KEY_ICON);
                 break;
             case R.id.speedFontSize:
+            case R.id.speedTextSize:
+            case R.id.speedTextSizeSum:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE), KEY_TEXT_S);
                 break;
             case R.id.speedArrowsSize:
+            case R.id.speedIconsSize:
+            case R.id.speedIconsSizeSum:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE), KEY_ICON_S);
                 break;
             case R.id.showSim:
+            case R.id.simChoose:
+            case R.id.simChooseSum:
                 dialog = ShowSimDialog.newInstance(widgetID);
                 break;
         }
@@ -675,26 +696,20 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             case R.id.speedFontSize:
             case R.id.speedArrowsSize:
             case R.id.showSim:
+            case R.id.simChoose:
+            case R.id.simChooseSum:
+            case R.id.textSize:
+            case R.id.textSizeSum:
+            case R.id.iconSize:
+            case R.id.iconSizeSum:
+            case R.id.speedIconsSize:
+            case R.id.speedIconsSizeSum:
+            case R.id.speedTextSize:
+            case R.id.speedTextSizeSum:
                 showDialog(v);
                 break;
         }
         if (dialog != null)
             dialog.show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        tiv.setOnClickListener(this);
-        biv.setOnClickListener(this);
-        logo1.setOnClickListener(this);
-        logo2.setOnClickListener(this);
-        logo3.setOnClickListener(this);
-        simFontL.setOnClickListener(this);
-        simLogoL.setOnClickListener(this);
-        speedFontL.setOnClickListener(this);
-        speedArrowsL.setOnClickListener(this);
-        showSimL.setOnClickListener(this);
-        backColorL.setOnClickListener(this);
     }
 }
