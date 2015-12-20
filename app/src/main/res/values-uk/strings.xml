@@ -112,4 +112,6 @@
     <string name="user_sim">Введіть кількість SIM</string>
     <string name="day_in_period">Днів в періоді</string>
     <string name="only_active">Відображати тільки активну SIM</string>
+    <string name="image_load">Зображення завантажено!</string>
+    <string name="image_not_load">Зображення не завантажено!</string>
 </resources>

@@ -115,4 +115,6 @@
     <string name="set_sim_number">If SIM quantity is not detected correctly try to set it manually in Settings</string>
     <string name="day_in_period">Days in period</string>
     <string name="only_active">Show only active SIM</string>
+    <string name="image_load">Image loaded!</string>
+    <string name="image_not_load">Image not loaded!</string>
 </resources>

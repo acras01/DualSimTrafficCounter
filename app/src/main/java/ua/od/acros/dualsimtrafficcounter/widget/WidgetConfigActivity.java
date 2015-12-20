@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -32,7 +31,6 @@ import java.util.Map;
 import org.acra.ACRA;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
-import ua.od.acros.dualsimtrafficcounter.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
@@ -76,12 +74,12 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private Callback picassoCallback = new Callback() {
         @Override
         public void onSuccess() {
-            Toast.makeText(context, "Image loaded!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.image_load, Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onError() {
-            Toast.makeText(context, "Image not loaded!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.image_not_load, Toast.LENGTH_LONG).show();
         }
     };
 
