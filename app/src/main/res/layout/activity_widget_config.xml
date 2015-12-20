@@ -37,15 +37,12 @@
                 android:text="@string/on"
                 android:id="@+id/activesim_summary" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5dp" />
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/showSim">
+                android:id="@+id/showSim"
+                android:clickable="false">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -58,7 +55,8 @@
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:clickable="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -67,9 +65,14 @@
                     android:text="None"
                     android:id="@+id/simChooseSum"
                     android:layout_below="@+id/simChoose"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:clickable="false" />
 
             </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <CheckBox
                 android:layout_width="fill_parent"
@@ -86,6 +89,10 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/on"
                 android:id="@+id/names_summary" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5dp" />
 
             <CheckBox
                 android:layout_width="fill_parent"
@@ -105,7 +112,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                android:layout_height="5dp" />
 
             <CheckBox
                 android:layout_width="fill_parent"
@@ -122,10 +129,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/on"
                 android:id="@+id/icons_summary" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -452,7 +455,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/speedFontSize">
+                android:id="@+id/speedFontSize"
+                android:clickable="false">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -465,7 +469,8 @@
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:clickable="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -474,7 +479,8 @@
                     android:text="None"
                     android:id="@+id/speedTextSizeSum"
                     android:layout_below="@+id/speedTextSize"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:clickable="false" />
 
             </RelativeLayout>
 
@@ -486,7 +492,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/speedArrowsSize">
+                android:id="@+id/speedArrowsSize"
+                android:clickable="false">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -499,7 +506,8 @@
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:clickable="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -508,7 +516,8 @@
                     android:text="None"
                     android:id="@+id/speedIconsSizeSum"
                     android:layout_below="@+id/speedIconsSize"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:clickable="false" />
 
             </RelativeLayout>
 
