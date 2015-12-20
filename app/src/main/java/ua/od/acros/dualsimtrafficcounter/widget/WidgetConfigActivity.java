@@ -50,15 +50,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
             speedTextSum, speedIconsSum, showSimSum, divSum, activesum;
-    private RelativeLayout simLogoL;
-    private RelativeLayout simFontL;
-    private RelativeLayout speedFontL;
-    private RelativeLayout speedArrowsL;
-    private RelativeLayout showSimL;
-    private RelativeLayout backColorL;
-    private RelativeLayout logoL1;
-    private RelativeLayout logoL2;
-    private RelativeLayout logoL3;
+    private RelativeLayout simLogoL, simFontL, speedFontL, speedArrowsL,
+            showSimL, backColorL, logoL1, logoL2, logoL3;
     private SharedPreferences prefs;
     private SharedPreferences.Editor edit;
     private int textColor, backColor;
