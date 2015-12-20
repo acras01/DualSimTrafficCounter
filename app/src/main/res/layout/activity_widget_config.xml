@@ -38,7 +38,7 @@
                 android:id="@+id/activesim_summary" />
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -73,10 +73,6 @@
 
             </RelativeLayout>
 
-            <Space
-                android:layout_width="5dp"
-                android:layout_height="5dp" />
-
             <CheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -109,6 +105,10 @@
                 android:text="@string/all"
                 android:id="@+id/info_summary" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
             <CheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                 android:id="@+id/icons_summary" />
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -175,7 +175,7 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -224,7 +224,7 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -273,7 +273,7 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -309,8 +309,8 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
-                android:layout_height="5dp" />
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -345,7 +345,7 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -385,8 +385,8 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
-                android:layout_height="5dp" />
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <CheckBox
                 android:layout_width="fill_parent"
@@ -403,10 +403,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/on"
                 android:id="@+id/back_summary" />
-
-            <Space
-                android:layout_width="5dp"
-                android:layout_height="5dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -443,6 +439,10 @@
 
             </RelativeLayout>
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
             <CheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -460,7 +460,7 @@
                 android:id="@+id/speed_summary" />
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -496,7 +496,7 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
             <RelativeLayout
@@ -532,8 +532,8 @@
             </RelativeLayout>
 
             <Space
-                android:layout_width="5dp"
-                android:layout_height="5dp" />
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <CheckBox
                 android:layout_width="fill_parent"
