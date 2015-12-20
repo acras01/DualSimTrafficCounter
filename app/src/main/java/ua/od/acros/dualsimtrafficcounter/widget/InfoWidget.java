@@ -376,7 +376,7 @@ public class InfoWidget extends AppWidgetProvider {
                 }
                 updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
-                updateViews.setViewVisibility(R.id.ll3, View.VISIBLE);
+                updateViews.setViewVisibility(R.id.simFontSize, View.VISIBLE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) ||
                         prefs.getBoolean(Constants.PREF_WIDGET[19], true)) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))) {
                     if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
@@ -386,13 +386,13 @@ public class InfoWidget extends AppWidgetProvider {
                 } else
                     updateViews.setViewVisibility(R.id.stub3, View.GONE);
             } else {
-                updateViews.setViewVisibility(R.id.ll3, View.GONE);
+                updateViews.setViewVisibility(R.id.simFontSize, View.GONE);
                 updateViews.setViewVisibility(R.id.stub3, View.GONE);
             }
 
             //SPEED
             if (prefs.getBoolean(Constants.PREF_WIDGET[3], false)) {
-                updateViews.setViewVisibility(R.id.ll4, View.VISIBLE);
+                updateViews.setViewVisibility(R.id.simLogoSize, View.VISIBLE);
                 String speedRX = String.format(context.getResources().getString(R.string.speed),
                         DataFormat.formatData(context, bundle.getLong(Constants.SPEEDRX, 0L)));
                 String speedTX = String.format(context.getResources().getString(R.string.speed),
@@ -427,9 +427,9 @@ public class InfoWidget extends AppWidgetProvider {
                 }
                 updateViews.setInt(R.id.tvSpeedRX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.tvSpeedTX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
-                updateViews.setViewVisibility(R.id.ll4, View.VISIBLE);
+                updateViews.setViewVisibility(R.id.simLogoSize, View.VISIBLE);
             } else
-                updateViews.setViewVisibility(R.id.ll4, View.GONE);
+                updateViews.setViewVisibility(R.id.simLogoSize, View.GONE);
 
             //BACKGROUND
             if (prefs.getBoolean(Constants.PREF_WIDGET[14], true))

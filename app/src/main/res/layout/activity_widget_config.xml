@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/ll7"
+                android:id="@+id/showSim"
                 android:clickable="true"
                 android:contextClickable="false">
 
@@ -271,7 +271,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/ll4"
+                android:id="@+id/simLogoSize"
                 android:clickable="true"
                 android:contextClickable="false">
 
@@ -307,7 +307,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/ll3"
+                android:id="@+id/simFontSize"
                 android:clickable="true"
                 android:contextClickable="false">
 
@@ -458,7 +458,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/ll5"
+                android:id="@+id/speedFontSize"
                 android:clickable="true"
                 android:contextClickable="false">
 
@@ -494,7 +494,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/ll6"
+                android:id="@+id/speedArrowsSize"
                 android:clickable="true"
                 android:contextClickable="false">
 

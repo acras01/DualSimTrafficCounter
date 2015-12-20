@@ -438,12 +438,14 @@ public class MobileDataControl {
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         activeNetworkInfo = cm.getActiveNetworkInfo();
         if (activeNetworkInfo != null) {
-            mobileDataEnabled[1] = (int) activeSIM(context, activeNetworkInfo);
+
             String typeName = activeNetworkInfo.getTypeName().toLowerCase();
             boolean isConnected = activeNetworkInfo.isConnectedOrConnecting();
             int type = activeNetworkInfo.getType();
-            if ((isNetworkTypeMobile(type)) && (typeName.contains("mobile")) && isConnected)
+            if ((isNetworkTypeMobile(type)) && (typeName.contains("mobile")) && isConnected) {
                 mobileDataEnabled[0] = 2;
+                mobileDataEnabled[1] = (int) activeSIM(context, activeNetworkInfo);
+            }
             else if ((!isNetworkTypeMobile(type)) && (!typeName.contains("mobile")) && isConnected)
                 mobileDataEnabled[0] = 1;
         }

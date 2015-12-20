@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:weightSum="1"
-            android:id="@+id/ll4"
+            android:id="@+id/simLogoSize"
             android:gravity="center|center_horizontal"
             android:layout_weight=".25">
 
@@ -349,7 +349,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:weightSum="1"
-            android:id="@+id/ll3"
+            android:id="@+id/simFontSize"
             android:gravity="center|center_horizontal"
             android:layout_weight=".25">
 

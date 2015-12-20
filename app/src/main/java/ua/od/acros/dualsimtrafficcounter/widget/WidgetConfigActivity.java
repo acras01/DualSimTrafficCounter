@@ -32,6 +32,7 @@ import java.util.Map;
 import org.acra.ACRA;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
+import ua.od.acros.dualsimtrafficcounter.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
@@ -51,11 +52,12 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
             speedTextSum, speedIconsSum, showSimSum, divSum, activesum;
-    private RelativeLayout ll4;
-    private RelativeLayout ll5;
-    private RelativeLayout ll6;
-    private RelativeLayout ll7;
-    private RelativeLayout ll8;
+    private RelativeLayout simLogoL;
+    private RelativeLayout simFontL;
+    private RelativeLayout speedFontL;
+    private RelativeLayout speedArrowsL;
+    private RelativeLayout showSimL;
+    private RelativeLayout backColorL;
     private RelativeLayout logoL1;
     private RelativeLayout logoL2;
     private RelativeLayout logoL3;
@@ -196,21 +198,21 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
         logoL3 = (RelativeLayout) findViewById(R.id.logoLayout3);
 
-        RelativeLayout ll3 = (RelativeLayout) findViewById(R.id.ll3);
-        ll4 = (RelativeLayout) findViewById(R.id.ll4);
-        ll5 = (RelativeLayout) findViewById(R.id.ll5);
-        ll6 = (RelativeLayout) findViewById(R.id.ll6);
-        ll7 = (RelativeLayout) findViewById(R.id.ll7);
-        ll8 = (RelativeLayout) findViewById(R.id.backColorLayout);
+        simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
+        simLogoL = (RelativeLayout) findViewById(R.id.simLogoSize);
+        speedFontL = (RelativeLayout) findViewById(R.id.speedFontSize);
+        speedArrowsL = (RelativeLayout) findViewById(R.id.speedArrowsSize);
+        showSimL = (RelativeLayout) findViewById(R.id.showSim);
+        backColorL = (RelativeLayout) findViewById(R.id.backColorLayout);
 
 
         onOff(logoL1, icons.isChecked());
         onOff(logoL2, simNumber >= 2 && icons.isChecked());
         onOff(logoL3, simNumber == 3 && icons.isChecked());
-        onOff(ll5, speed.isChecked());
-        onOff(ll6, speed.isChecked());
-        onOff(ll7, !active.isChecked());
-        onOff(ll8, back.isChecked());
+        onOff(speedFontL, speed.isChecked());
+        onOff(speedArrowsL, speed.isChecked());
+        onOff(showSimL, !active.isChecked());
+        onOff(backColorL, back.isChecked());
 
         textSizeSum = (TextView) findViewById(R.id.textSizeSum);
         textSizeSum.setText(prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE));
@@ -285,12 +287,12 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         logo1.setOnClickListener(this);
         logo2.setOnClickListener(this);
         logo3.setOnClickListener(this);
-        ll3.setOnClickListener(this);
-        ll4.setOnClickListener(this);
-        ll5.setOnClickListener(this);
-        ll6.setOnClickListener(this);
-        ll7.setOnClickListener(this);
-        ll8.setOnClickListener(this);
+        simFontL.setOnClickListener(this);
+        simLogoL.setOnClickListener(this);
+        speedFontL.setOnClickListener(this);
+        speedArrowsL.setOnClickListener(this);
+        showSimL.setOnClickListener(this);
+        backColorL.setOnClickListener(this);
 
         if (prefs.getBoolean(Constants.PREF_WIDGET[8], false)) {
             Picasso.with(context)
@@ -353,6 +355,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 edit.apply();
                 setResult(RESULT_OK, resultValue);
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
+                intent.putExtra(Constants.WIDGET_IDS, new int[]{widgetID});
                 if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
                     Map<String, Object> dataMap = new HashMap<>();
                     dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
@@ -422,19 +425,19 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             case R.id.logoPreview3:
                 dialog = IconsList.newInstance(Constants.PREF_WIDGET[7]);
                 break;
-            case R.id.ll3:
+            case R.id.simFontSize:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE), KEY_TEXT);
                 break;
-            case R.id.ll4:
+            case R.id.simLogoSize:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE), KEY_ICON);
                 break;
-            case R.id.ll5:
+            case R.id.speedFontSize:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE), KEY_TEXT_S);
                 break;
-            case R.id.ll6:
+            case R.id.speedArrowsSize:
                 dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE), KEY_ICON_S);
                 break;
-            case R.id.ll7:
+            case R.id.showSim:
                 dialog = ShowSimDialog.newInstance(widgetID);
                 break;
         }
@@ -584,10 +587,13 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 break;
             case R.id.speed:
                 edit.putBoolean(Constants.PREF_WIDGET[3], isChecked);
-                onOff(ll5, isChecked);
-                onOff(ll6, isChecked);
-                if (isChecked)
+                onOff(speedFontL, isChecked);
+                onOff(speedArrowsL, isChecked);
+                if (isChecked) {
                     speedSum.setText(R.string.on);
+                    speedFontL.setOnClickListener(this);
+                    speedArrowsL.setOnClickListener(this);
+                }
                 else
                     speedSum.setText(R.string.off);
                 break;
@@ -604,26 +610,33 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     backSum.setText(R.string.on);
                 else
                     backSum.setText(R.string.off);
-                onOff(ll8, isChecked);
+                onOff(backColorL, isChecked);
                 break;
             case R.id.icons:
                 edit.putBoolean(Constants.PREF_WIDGET[4], isChecked);
                 onOff(logoL1, isChecked);
                 onOff(logoL2, isChecked);
                 onOff(logoL3, isChecked);
-                onOff(ll4, isChecked);
-                if (isChecked)
+                onOff(simLogoL, isChecked);
+                if (isChecked) {
                     iconsSum.setText(R.string.on);
+                    simLogoL.setOnClickListener(this);
+                    logoL1.setOnClickListener(this);
+                    logoL2.setOnClickListener(this);
+                    logoL3.setOnClickListener(this);
+                }
                 else
                     iconsSum.setText(R.string.off);
                 break;
             case R.id.activesim:
                 edit.putBoolean(Constants.PREF_WIDGET[22], isChecked);
+                onOff(showSimL, !isChecked);
                 if (isChecked)
                     activesum.setText(R.string.on);
-                else
+                else {
                     activesum.setText(R.string.off);
-                onOff(ll7, !isChecked);
+                    showSimL.setOnClickListener(this);
+                }
                 break;
         }
     }
@@ -666,15 +679,31 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             case R.id.logoPreview1:
             case R.id.logoPreview2:
             case R.id.logoPreview3:
-            case R.id.ll3:
-            case R.id.ll4:
-            case R.id.ll5:
-            case R.id.ll6:
-            case R.id.ll7:
+            case R.id.simFontSize:
+            case R.id.simLogoSize:
+            case R.id.speedFontSize:
+            case R.id.speedArrowsSize:
+            case R.id.showSim:
                 showDialog(v);
                 break;
         }
         if (dialog != null)
             dialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tiv.setOnClickListener(this);
+        biv.setOnClickListener(this);
+        logo1.setOnClickListener(this);
+        logo2.setOnClickListener(this);
+        logo3.setOnClickListener(this);
+        simFontL.setOnClickListener(this);
+        simLogoL.setOnClickListener(this);
+        speedFontL.setOnClickListener(this);
+        speedArrowsL.setOnClickListener(this);
+        showSimL.setOnClickListener(this);
+        backColorL.setOnClickListener(this);
     }
 }
