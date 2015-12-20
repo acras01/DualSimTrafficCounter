@@ -45,9 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/showSim"
-                android:clickable="true"
-                android:onClick="onClick">
+                android:id="@+id/showSim">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -133,9 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/logoLayout1"
-                android:onClick="onClick"
-                android:clickable="true">
+                android:id="@+id/logoLayout1">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -160,8 +156,7 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:clickable="false" />
+                    android:layout_alignParentRight="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -182,9 +177,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/logoLayout2"
-                android:onClick="onClick"
-                android:clickable="true">
+                android:id="@+id/logoLayout2">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -209,8 +202,7 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:clickable="false" />
+                    android:layout_alignParentRight="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -231,9 +223,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/logoLayout3"
-                android:onClick="onClick"
-                android:clickable="true">
+                android:id="@+id/logoLayout3">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -258,8 +248,7 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:clickable="false" />
+                    android:layout_alignParentRight="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -280,9 +269,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/simLogoSize"
-                android:clickable="true"
-                android:onClick="onClick">
+                android:id="@+id/simLogoSize">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -316,9 +303,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/simFontSize"
-                android:clickable="true"
-                android:onClick="onClick">
+                android:id="@+id/simFontSize">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -467,9 +452,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/speedFontSize"
-                android:clickable="true"
-                android:onClick="onClick">
+                android:id="@+id/speedFontSize">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -503,9 +486,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/speedArrowsSize"
-                android:clickable="true"
-                android:onClick="onClick">
+                android:id="@+id/speedArrowsSize">
 
                 <TextView
                     android:layout_width="wrap_content"
