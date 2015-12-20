@@ -43,7 +43,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class WidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
-        CompoundButton.OnCheckedChangeListener, Button.OnClickListener {
+        CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private static final int SELECT_PHOTO = 101;
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;

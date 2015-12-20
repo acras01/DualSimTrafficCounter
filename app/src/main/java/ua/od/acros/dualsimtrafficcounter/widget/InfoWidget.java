@@ -432,9 +432,10 @@ public class InfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.simLogoSize, View.GONE);
 
             //BACKGROUND
-            if (prefs.getBoolean(Constants.PREF_WIDGET[14], true))
+            if (prefs.getBoolean(Constants.PREF_WIDGET[14], true)) {
                 updateViews.setInt(R.id.background, "setColorFilter", prefs.getInt(Constants.PREF_WIDGET[15], ContextCompat.getColor(context, R.color.background)));
-            else
+                updateViews.setViewVisibility(R.id.background, View.VISIBLE);
+            } else
                 updateViews.setViewVisibility(R.id.background, View.GONE);
 
             //UPDATE
