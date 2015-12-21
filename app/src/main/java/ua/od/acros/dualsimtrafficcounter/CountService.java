@@ -1479,11 +1479,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
                 prefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
-                if (!isSIM2OverLimit && alertID == Constants.SIM1) {
+                if (!isSIM2OverLimit && alertID == Constants.SIM1 && simNumber >=2) {
                     MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
                     timerStart(Constants.COUNT);
-                } else if (!isSIM3OverLimit && alertID == Constants.SIM1) {
+                } else if (!isSIM3OverLimit && alertID == Constants.SIM1 && simNumber == 3) {
                     MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
                     timerStart(Constants.COUNT);
@@ -1491,7 +1491,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
                     timerStart(Constants.COUNT);
-                } else if (!isSIM3OverLimit && alertID == Constants.SIM2) {
+                } else if (!isSIM3OverLimit && alertID == Constants.SIM2 && simNumber == 3) {
                     MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
                     timerStart(Constants.COUNT);

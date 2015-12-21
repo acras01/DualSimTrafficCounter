@@ -114,6 +114,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/simFontSize"
+                android:clickable="false">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_size"
+                    android:id="@+id/textSize"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:clickable="false" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/textSizeSum"
+                    android:layout_below="@+id/textSize"
+                    android:layout_alignParentLeft="true"
+                    android:clickable="false" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
             <CheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -129,6 +166,47 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/on"
                 android:id="@+id/icons_summary" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/simLogoSize"
+                android:clickable="false">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/icon_size"
+                    android:id="@+id/iconSize"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:clickable="false" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="None"
+                    android:id="@+id/iconSizeSum"
+                    android:layout_below="@+id/iconSize"
+                    android:layout_alignParentLeft="true"
+                    android:clickable="false" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -266,175 +344,6 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/simLogoSize"
-                android:clickable="false">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/icon_size"
-                    android:id="@+id/iconSize"
-                    android:textSize="16sp"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center_vertical"
-                    android:clickable="false" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="None"
-                    android:id="@+id/iconSizeSum"
-                    android:layout_below="@+id/iconSize"
-                    android:layout_alignParentLeft="true"
-                    android:clickable="false" />
-
-            </RelativeLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/simFontSize"
-                android:clickable="false">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/text_size"
-                    android:id="@+id/textSize"
-                    android:textSize="16sp"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center_vertical"
-                    android:clickable="false" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="None"
-                    android:id="@+id/textSizeSum"
-                    android:layout_below="@+id/textSize"
-                    android:layout_alignParentLeft="true"
-                    android:clickable="false" />
-
-            </RelativeLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/textColorLayout"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/text_color"
-                    android:id="@+id/textColor"
-                    android:textSize="16sp"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center_vertical"
-                    android:layout_centerVertical="true" />
-
-                <ImageView
-                    android:layout_width="@dimen/logo_size"
-                    android:layout_height="@dimen/logo_size"
-                    android:id="@+id/textColorPreview"
-                    android:scaleType="fitXY"
-                    android:maxHeight="@dimen/logo_size"
-                    android:maxWidth="@dimen/logo_size"
-                    android:minHeight="@dimen/logo_size"
-                    android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:src="@android:drawable/ic_menu_preferences" />
-
-            </RelativeLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <CheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/use_background"
-                android:id="@+id/useBack"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/back_summary" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/backColorLayout">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/background_color"
-                    android:id="@+id/backgroundColor"
-                    android:textSize="16sp"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center_vertical"
-                    android:layout_centerVertical="true" />
-
-                <ImageView
-                    android:layout_width="@dimen/logo_size"
-                    android:layout_height="@dimen/logo_size"
-                    android:id="@+id/backColorPreview"
-                    android:scaleType="fitXY"
-                    android:maxHeight="@dimen/logo_size"
-                    android:maxWidth="@dimen/logo_size"
-                    android:minHeight="@dimen/logo_size"
-                    android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:src="@android:drawable/ic_menu_preferences" />
-
-            </RelativeLayout>
-
-            <Space
-                android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
             <CheckBox
@@ -524,6 +433,101 @@
                     android:layout_below="@+id/speedIconsSize"
                     android:layout_alignParentLeft="true"
                     android:clickable="false" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/textColorLayout"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_color"
+                    android:id="@+id/textColor"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/textColorPreview"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@android:drawable/ic_menu_preferences" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <CheckBox
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/use_background"
+                android:id="@+id/useBack"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/on"
+                android:id="@+id/back_summary" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/backColorLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/background_color"
+                    android:id="@+id/backgroundColor"
+                    android:textSize="16sp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/backColorPreview"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@android:drawable/ic_menu_preferences" />
 
             </RelativeLayout>
 
