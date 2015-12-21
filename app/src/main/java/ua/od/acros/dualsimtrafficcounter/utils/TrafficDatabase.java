@@ -24,7 +24,12 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             + Constants.SIM2TX + " long, " + Constants.TOTAL2 + " long, "
             + Constants.SIM3RX + " long, " + Constants.SIM3TX + " long, "
             + Constants.TOTAL3 + " long, " + Constants.PERIOD1 + " integer,"
-            + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
+            + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer, "
+            + Constants.SIM1RX_N + " long, "
+            + Constants.SIM1TX_N + " long, " + Constants.TOTAL1_N + " long, "
+            + Constants.SIM2RX_N + " long, " + Constants.SIM2TX_N + " long, "
+            + Constants.TOTAL2_N + " long, " + Constants.SIM3RX_N + " integer,"
+            + Constants.SIM3TX_N + " integer, " + Constants.TOTAL3_N + " integer);";
 
     public TrafficDatabase(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
@@ -73,6 +78,42 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                     "ALTER TABLE " + DATABASE_TABLE +
                             " ADD COLUMN " + Constants.PERIOD3 + " integer;";
             db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM1RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM1TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL1_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM2RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM2TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL2_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM3RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM3TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL3_N + " long;";
+            db.execSQL(ALTER_TBL);
         }
 
         if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 2) {
@@ -87,6 +128,81 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             ALTER_TBL =
                     "ALTER TABLE " + DATABASE_TABLE +
                             " ADD COLUMN " + Constants.PERIOD3 + " integer;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM1RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM1TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL1_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM2RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM2TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL2_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM3RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM3TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL3_N + " long;";
+            db.execSQL(ALTER_TBL);
+        }
+
+        if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 3) {
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM1RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM1TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL1_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM2RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM2TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL2_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM3RX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.SIM3TX_N + " long;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + DATABASE_TABLE +
+                            " ADD COLUMN " + Constants.TOTAL3_N + " long;";
             db.execSQL(ALTER_TBL);
         }
     }
@@ -112,15 +228,26 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             values.put(Constants.PERIOD1, (int) mMap.get(Constants.PERIOD1));
             values.put(Constants.PERIOD2, (int) mMap.get(Constants.PERIOD2));
             values.put(Constants.PERIOD3, (int) mMap.get(Constants.PERIOD3));
+            values.put(Constants.SIM1RX_N, (long) mMap.get(Constants.SIM1RX_N));
+            values.put(Constants.SIM2RX_N, (long) mMap.get(Constants.SIM2RX_N));
+            values.put(Constants.SIM3RX_N, (long) mMap.get(Constants.SIM3RX_N));
+            values.put(Constants.SIM1TX_N, (long) mMap.get(Constants.SIM1TX_N));
+            values.put(Constants.SIM2TX_N, (long) mMap.get(Constants.SIM2TX_N));
+            values.put(Constants.SIM3TX_N, (long) mMap.get(Constants.SIM3TX_N));
+            values.put(Constants.TOTAL1_N, (long) mMap.get(Constants.TOTAL1_N));
+            values.put(Constants.TOTAL2_N, (long) mMap.get(Constants.TOTAL2_N));
+            values.put(Constants.TOTAL3_N, (long) mMap.get(Constants.TOTAL3_N));
 
             mSqLiteDatabase = db.getWritableDatabase();
             mSqLiteDatabase.insert(DATABASE_TABLE, null, values);
         } else if (r_w == Constants.READ) {
             mSqLiteDatabase = db.getReadableDatabase();
             Cursor cursor = mSqLiteDatabase.query(DATABASE_TABLE, new String[] {Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
-                    Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX,Constants.TOTAL1,
+                    Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
                     Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
-                    Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3}, null, null, null, null, null);
+                    Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
+                    Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
+                    Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, null, null, null, null, null);
             if (cursor.moveToLast()) {
                 mMap.put(Constants.SIM1RX, cursor.getLong(cursor.getColumnIndex(Constants.SIM1RX)));
                 mMap.put(Constants.SIM2RX, cursor.getLong(cursor.getColumnIndex(Constants.SIM2RX)));
@@ -139,6 +266,15 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                 mMap.put(Constants.PERIOD1, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD1)));
                 mMap.put(Constants.PERIOD2, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD2)));
                 mMap.put(Constants.PERIOD3, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD3)));
+                mMap.put(Constants.SIM1RX_N, cursor.getLong(cursor.getColumnIndex(Constants.SIM1RX_N)));
+                mMap.put(Constants.SIM2RX_N, cursor.getLong(cursor.getColumnIndex(Constants.SIM2RX_N)));
+                mMap.put(Constants.SIM3RX_N, cursor.getLong(cursor.getColumnIndex(Constants.SIM3RX_N)));
+                mMap.put(Constants.SIM1TX_N, cursor.getLong(cursor.getColumnIndex(Constants.SIM1TX_N)));
+                mMap.put(Constants.SIM2TX_N, cursor.getLong(cursor.getColumnIndex(Constants.SIM2TX_N)));
+                mMap.put(Constants.SIM3TX_N, cursor.getLong(cursor.getColumnIndex(Constants.SIM3TX_N)));
+                mMap.put(Constants.TOTAL1_N, cursor.getLong(cursor.getColumnIndex(Constants.TOTAL1_N)));
+                mMap.put(Constants.TOTAL2_N, cursor.getLong(cursor.getColumnIndex(Constants.TOTAL2_N)));
+                mMap.put(Constants.TOTAL3_N, cursor.getLong(cursor.getColumnIndex(Constants.TOTAL3_N)));
 
             } else {
                 mMap.put(Constants.SIM1RX, 0L);
@@ -158,6 +294,15 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                 mMap.put(Constants.PERIOD1, 0);
                 mMap.put(Constants.PERIOD2, 0);
                 mMap.put(Constants.PERIOD3, 0);
+                mMap.put(Constants.SIM1RX_N, 0L);
+                mMap.put(Constants.SIM2RX_N, 0L);
+                mMap.put(Constants.SIM3RX_N, 0L);
+                mMap.put(Constants.SIM1TX_N, 0L);
+                mMap.put(Constants.SIM2TX_N, 0L);
+                mMap.put(Constants.SIM3TX_N, 0L);
+                mMap.put(Constants.TOTAL1_N, 0L);
+                mMap.put(Constants.TOTAL2_N, 0L);
+                mMap.put(Constants.TOTAL3_N, 0L);
             }
             cursor.close();
         } else if (r_w ==Constants.UPDATE) {
@@ -172,13 +317,22 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             values.put(Constants.TOTAL2, (long) mMap.get(Constants.TOTAL2));
             values.put(Constants.TOTAL3, (long) mMap.get(Constants.TOTAL3));
             values.put(Constants.LAST_ACTIVE_SIM, (int) mMap.get(Constants.LAST_ACTIVE_SIM));
-            values.put(Constants.LAST_TX, (Long) mMap.get(Constants.LAST_TX));
-            values.put(Constants.LAST_RX, (Long) mMap.get(Constants.LAST_RX));
+            values.put(Constants.LAST_TX, (long) mMap.get(Constants.LAST_TX));
+            values.put(Constants.LAST_RX, (long) mMap.get(Constants.LAST_RX));
             values.put(Constants.LAST_TIME, (String) mMap.get(Constants.LAST_TIME));
             values.put(Constants.LAST_DATE, (String) mMap.get(Constants.LAST_DATE));
             values.put(Constants.PERIOD1, (int) mMap.get(Constants.PERIOD1));
             values.put(Constants.PERIOD2, (int) mMap.get(Constants.PERIOD2));
             values.put(Constants.PERIOD3, (int) mMap.get(Constants.PERIOD3));
+            values.put(Constants.SIM1RX_N, (long) mMap.get(Constants.SIM1RX_N));
+            values.put(Constants.SIM2RX_N, (long) mMap.get(Constants.SIM2RX_N));
+            values.put(Constants.SIM3RX_N, (long) mMap.get(Constants.SIM3RX_N));
+            values.put(Constants.SIM1TX_N, (long) mMap.get(Constants.SIM1TX_N));
+            values.put(Constants.SIM2TX_N, (long) mMap.get(Constants.SIM2TX_N));
+            values.put(Constants.SIM3TX_N, (long) mMap.get(Constants.SIM3TX_N));
+            values.put(Constants.TOTAL1_N, (long) mMap.get(Constants.TOTAL1_N));
+            values.put(Constants.TOTAL2_N, (long) mMap.get(Constants.TOTAL2_N));
+            values.put(Constants.TOTAL3_N, (long) mMap.get(Constants.TOTAL3_N));
             mSqLiteDatabase = db.getWritableDatabase();
             String filter = Constants.LAST_DATE + "='" + mMap.get(Constants.LAST_DATE) + "'";
             mSqLiteDatabase.update(DATABASE_TABLE, values, filter, null);
@@ -193,7 +347,9 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         Cursor cursor = mSqLiteDatabase.query(DATABASE_TABLE, new String[] {Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
                 Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
                 Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
-                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3}, null, null, null, null, null);
+                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
+                Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
+                Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, null, null, null, null, null);
         result =  cursor != null && cursor.getCount() == 0;
         if (cursor != null) {
             cursor.close();

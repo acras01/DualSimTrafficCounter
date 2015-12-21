@@ -114,4 +114,5 @@
     <string name="only_active">Відображати тільки активну SIM</string>
     <string name="image_load">Зображення завантажено!</string>
     <string name="image_not_load">Зображення не завантажено!</string>
+    <string name="use_night_limit">Використовувати нічний тариф</string>
 </resources>

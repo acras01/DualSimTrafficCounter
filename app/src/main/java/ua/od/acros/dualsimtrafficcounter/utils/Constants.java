@@ -1,7 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 public class Constants {
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String SIM1RX = "sim1rx";
     public static final String SIM2RX = "sim2rx";
     public static final String SIM3RX = "sim3rx";
@@ -11,6 +11,15 @@ public class Constants {
     public static final String TOTAL1 = "total1";
     public static final String TOTAL2 = "total2";
     public static final String TOTAL3 = "total3";
+    public static final String SIM1RX_N = "sim1rx_n";
+    public static final String SIM2RX_N = "sim2rx_n";
+    public static final String SIM3RX_N = "sim3rx_n";
+    public static final String SIM1TX_N = "sim1tx_n";
+    public static final String SIM2TX_N = "sim2tx_n";
+    public static final String SIM3TX_N = "sim3tx_n";
+    public static final String TOTAL1_N = "total1_n";
+    public static final String TOTAL2_N = "total2_n";
+    public static final String TOTAL3_N = "total3_n";
     public static final String SIM_ACTIVE = "active_sim";
     public static final String OPERATOR1 = "operator1";
     public static final String OPERATOR2 = "operator2";
@@ -43,13 +52,13 @@ public class Constants {
     public static final String DATABASE_NAME = "mydatabase.db";
     public static final String[] PREF_SIM1 = {"stub", "limit1", "value1", "period1", "round1", "auto1", //5
             "name1", "autooff1", "prefer1", "time1", "day1", "everydayonoff1", "timeoff1", "timeon1", //13
-            "op_round1", "op_limit1", "op_value1"}; //16
+            "op_round1", "op_limit1", "op_value1", "usenight1", "limitnight1", "valuenight1", "nighton1", "nightoff1"}; //21
     public static final String[] PREF_SIM2 = {"stub", "limit2", "value2", "period2", "round2", "auto2", //5
             "name2", "autooff2", "prefer2", "time2", "day2", "everydayonoff2", "timeoff2", "timeon2", //13
-            "op_round2", "op_limit2", "op_value2"}; //16
+            "op_round2", "op_limit2", "op_value2", "usenight2", "limitnight2", "valuenight2", "nighton2", "nightoff2"}; //21
     public static final String[] PREF_SIM3 = {"stub", "limit3", "value3", "period3", "round3", "auto3", //5
             "name3", "autooff3", "prefer3", "time3", "day3", "everydayonoff3", "timeoff3", "timeon3", //13
-            "op_round3", "op_limit31", "op_value3"}; //16
+            "op_round3", "op_limit31", "op_value3", "usenight3", "limitnight3", "valuenight3", "nighton3", "nightoff3"}; //21
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
