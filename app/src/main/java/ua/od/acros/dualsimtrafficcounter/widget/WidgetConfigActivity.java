@@ -25,10 +25,10 @@ import android.widget.Toast;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.acra.ACRA;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.acra.ACRA;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -373,7 +373,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
                     intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
                     intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    intent.putExtra(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    intent.putExtra(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
                     intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
                     if (simNumber >= 2)
                         intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
@@ -391,7 +391,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL1, 0L);
                     intent.putExtra(Constants.TOTAL2, 0L);
                     intent.putExtra(Constants.TOTAL3, 0L);
-                    intent.putExtra(Constants.LAST_ACTIVE_SIM, 0);
+                    intent.putExtra(Constants.SIM_ACTIVE, 0);
                 }
                 sendBroadcast(intent);
                 finish();

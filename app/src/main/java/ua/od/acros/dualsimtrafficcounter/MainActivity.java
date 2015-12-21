@@ -102,7 +102,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         TOT1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1)));
         TOT2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL2)));
         TOT3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL3)));
-        SIM.setText((String) dataMap.get(Constants.SIM_ACTIVE));
+        SIM.setText((String) dataMap.get(Constants.LAST_ACTIVE_SIM));
 
         dataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {

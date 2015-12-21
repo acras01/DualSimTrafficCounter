@@ -1423,9 +1423,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
         intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
         if (activeSIM == Constants.DISABLED)
-            intent.putExtra(Constants.LAST_ACTIVE_SIM, lastActiveSIM);
+            intent.putExtra(Constants.SIM_ACTIVE, lastActiveSIM);
         else
-            intent.putExtra(Constants.LAST_ACTIVE_SIM, activeSIM);
+            intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
         intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
         if (simNumber >= 2)
             intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
