@@ -102,7 +102,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         TOT1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1)));
         TOT2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL2)));
         TOT3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL3)));
-        SIM.setText((String) dataMap.get(Constants.LAST_ACTIVE_SIM));
+
+        setLabelText((int) dataMap.get(Constants.LAST_ACTIVE_SIM), "0", "0");
 
         dataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -151,41 +152,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     TIP.setText(getResources().getString(R.string.service_disabled_tip));
                 String rxSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDRX, 0L));
                 String txSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDTX, 0L));
-                int swtch = MobileDataControl.getMobileDataInfo(context)[0];
-                switch (intent.getIntExtra(Constants.SIM_ACTIVE, 0)) {
-                    default:
-                        if (swtch== 0)
-                            SIM.setText(R.string.data_dis);
-                        else if (swtch == 1)
-                            SIM.setText(R.string.other_network);
-                        else if (swtch == 2)
-                            SIM.setText(R.string.not_supported);
-                        break;
-                    case Constants.SIM1:
-                        if (swtch == 2)
-                            SIM.setText(String.format(getResources().getString(R.string.sim1_act), txSpeed, rxSpeed));
-                        else if (swtch == 1)
-                            SIM.setText(R.string.other_network);
-                        if (swtch == 0)
-                            SIM.setText(R.string.data_dis);
-                        break;
-                    case Constants.SIM2:
-                        if (swtch == 2)
-                            SIM.setText(String.format(getResources().getString(R.string.sim2_act), txSpeed, rxSpeed));
-                        else if (swtch == 1)
-                            SIM.setText(R.string.other_network);
-                        if (swtch == 0)
-                            SIM.setText(R.string.data_dis);
-                        break;
-                    case Constants.SIM3:
-                        if (swtch == 2)
-                            SIM.setText(String.format(getResources().getString(R.string.sim3_act), txSpeed, rxSpeed));
-                        else if (swtch == 1)
-                            SIM.setText(R.string.other_network);
-                        if (swtch == 0)
-                            SIM.setText(R.string.data_dis);
-                        break;
-                }
+                setLabelText(intent.getIntExtra(Constants.SIM_ACTIVE, 0), txSpeed, rxSpeed);
                 invalidateOptionsMenu();
             }
         };
@@ -302,6 +269,44 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     public static Context getAppContext() {
         return MainActivity.context;
+    }
+
+    private void setLabelText(int sim, String rx, String tx) {
+        int swtch = MobileDataControl.getMobileDataInfo(context)[0];
+        switch (sim) {
+            default:
+                if (swtch== 0)
+                    SIM.setText(R.string.data_dis);
+                else if (swtch == 1)
+                    SIM.setText(R.string.other_network);
+                else if (swtch == 2)
+                    SIM.setText(R.string.not_supported);
+                break;
+            case Constants.SIM1:
+                if (swtch == 2)
+                    SIM.setText(String.format(context.getResources().getString(R.string.sim1_act), tx, rx));
+                else if (swtch == 1)
+                    SIM.setText(R.string.other_network);
+                if (swtch == 0)
+                    SIM.setText(R.string.data_dis);
+                break;
+            case Constants.SIM2:
+                if (swtch == 2)
+                    SIM.setText(String.format(getResources().getString(R.string.sim2_act), tx, rx));
+                else if (swtch == 1)
+                    SIM.setText(R.string.other_network);
+                if (swtch == 0)
+                    SIM.setText(R.string.data_dis);
+                break;
+            case Constants.SIM3:
+                if (swtch == 2)
+                    SIM.setText(String.format(getResources().getString(R.string.sim3_act), tx, rx));
+                else if (swtch == 1)
+                    SIM.setText(R.string.other_network);
+                if (swtch == 0)
+                    SIM.setText(R.string.data_dis);
+                break;
+        }
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
