@@ -743,6 +743,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
+                    boolean isNight1 = false;
+                    if (prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
+                        String timeON = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[20], "23:00");
+                        String timeOFF = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[21], "06:00");
+                        if (DateTimeComparator.getInstance().compare(now, timeON) >= 0 && DateTimeComparator.getInstance().compare(now, timeOFF) <= 0)
+                            isNight1 = true;
+                    }
+
                     isResetNeeded();
 
                     if (emptyDB) {
