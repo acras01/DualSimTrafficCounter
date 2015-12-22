@@ -167,21 +167,22 @@ public class InfoWidget extends AppWidgetProvider {
             String sizestrs = prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.info_widget_layout);
+            boolean[] isNight =  CountService.getIsNight();
 
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
                     || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM1)) {
-                updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, CountService.getIsNight()[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
+                updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                         bundle.getLong(Constants.TOTAL1, 0)));
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.vert11, View.GONE);
                 updateViews.setViewVisibility(R.id.vert12, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET[2], true)) {
-                    updateViews.setTextViewText(R.id.txSIM1, DataFormat.formatData(context, CountService.getIsNight()[0] ? bundle.getLong(Constants.SIM1TX_N, 0) :
+                    updateViews.setTextViewText(R.id.txSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.SIM1TX_N, 0) :
                             bundle.getLong(Constants.SIM1TX, 0)));
                     updateViews.setViewVisibility(R.id.txSIM1, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.rxSIM1, DataFormat.formatData(context, CountService.getIsNight()[0] ? bundle.getLong(Constants.SIM1RX_N, 0) :
+                    updateViews.setTextViewText(R.id.rxSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.SIM1RX_N, 0) :
                             bundle.getLong(Constants.SIM1RX, 0)));
                     updateViews.setViewVisibility(R.id.rxSIM1, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert11, View.VISIBLE);
@@ -257,17 +258,17 @@ public class InfoWidget extends AppWidgetProvider {
             //SIM2
             if ((prefs.getBoolean(Constants.PREF_WIDGET[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
                     || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM2)) {
-                updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatData(context, CountService.getIsNight()[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
+                updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                         bundle.getLong(Constants.TOTAL2, 0)));
                 updateViews.setViewVisibility(R.id.txSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.vert21, View.GONE);
                 updateViews.setViewVisibility(R.id.vert22, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET[2], true)) {
-                    updateViews.setTextViewText(R.id.txSIM2, DataFormat.formatData(context, CountService.getIsNight()[1] ? bundle.getLong(Constants.SIM2TX_N, 0) :
+                    updateViews.setTextViewText(R.id.txSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.SIM2TX_N, 0) :
                             bundle.getLong(Constants.SIM2TX, 0)));
                     updateViews.setViewVisibility(R.id.txSIM2, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.rxSIM2, DataFormat.formatData(context, CountService.getIsNight()[1] ? bundle.getLong(Constants.SIM2RX_N, 0) :
+                    updateViews.setTextViewText(R.id.rxSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.SIM2RX_N, 0) :
                             bundle.getLong(Constants.SIM2RX, 0)));
                     updateViews.setViewVisibility(R.id.rxSIM2, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert21, View.VISIBLE);
@@ -343,17 +344,17 @@ public class InfoWidget extends AppWidgetProvider {
             //SIM3
             if ((prefs.getBoolean(Constants.PREF_WIDGET[20], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
                     || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
-                updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatData(context, CountService.getIsNight()[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
+                updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                         bundle.getLong(Constants.TOTAL3, 0)));
                 updateViews.setViewVisibility(R.id.txSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.vert31, View.GONE);
                 updateViews.setViewVisibility(R.id.vert32, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET[2], true)) {
-                    updateViews.setTextViewText(R.id.txSIM3, DataFormat.formatData(context, CountService.getIsNight()[2] ? bundle.getLong(Constants.SIM3TX_N, 0) :
+                    updateViews.setTextViewText(R.id.txSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.SIM3TX_N, 0) :
                             bundle.getLong(Constants.SIM3TX, 0)));
                     updateViews.setViewVisibility(R.id.txSIM3, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.rxSIM3, DataFormat.formatData(context, CountService.getIsNight()[2] ? bundle.getLong(Constants.SIM3RX_N, 0) :
+                    updateViews.setTextViewText(R.id.rxSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.SIM3RX_N, 0) :
                             bundle.getLong(Constants.SIM3RX, 0)));
                     updateViews.setViewVisibility(R.id.rxSIM3, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert31, View.VISIBLE);
