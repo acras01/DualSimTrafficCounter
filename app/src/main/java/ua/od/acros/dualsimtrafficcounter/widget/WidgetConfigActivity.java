@@ -373,6 +373,15 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
                     intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
                     intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+                    intent.putExtra(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
+                    intent.putExtra(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
+                    intent.putExtra(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
+                    intent.putExtra(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
+                    intent.putExtra(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
+                    intent.putExtra(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
+                    intent.putExtra(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
+                    intent.putExtra(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
+                    intent.putExtra(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
                     intent.putExtra(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
                     intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
                     if (simNumber >= 2)
@@ -391,6 +400,15 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL1, 0L);
                     intent.putExtra(Constants.TOTAL2, 0L);
                     intent.putExtra(Constants.TOTAL3, 0L);
+                    intent.putExtra(Constants.SIM1RX_N, 0L);
+                    intent.putExtra(Constants.SIM2RX_N, 0L);
+                    intent.putExtra(Constants.SIM3RX_N, 0L);
+                    intent.putExtra(Constants.SIM1TX_N, 0L);
+                    intent.putExtra(Constants.SIM2TX_N, 0L);
+                    intent.putExtra(Constants.SIM3TX_N, 0L);
+                    intent.putExtra(Constants.TOTAL1_N, 0L);
+                    intent.putExtra(Constants.TOTAL2_N, 0L);
+                    intent.putExtra(Constants.TOTAL3_N, 0L);
                     intent.putExtra(Constants.SIM_ACTIVE, 0);
                 }
                 sendBroadcast(intent);

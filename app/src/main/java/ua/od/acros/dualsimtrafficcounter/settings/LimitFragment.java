@@ -30,7 +30,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private EditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
-            round1, round2, round3,
+            round1, round2, round3, round1N, round2N, round3N,
             day1, day2, day3,
             opLimit1, opLimit2, opLimit3;
     private ListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3, value1N, value2N, value3N;
@@ -109,6 +109,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         tOff1N = (TimePreference) findPreference(Constants.PREF_SIM1[21]);
         tOff2N = (TimePreference) findPreference(Constants.PREF_SIM2[21]);
         tOff3N = (TimePreference) findPreference(Constants.PREF_SIM3[21]);
+        round1N = (EditTextPreference) findPreference(Constants.PREF_SIM1[22]);
+        round2N = (EditTextPreference) findPreference(Constants.PREF_SIM2[22]);
+        round3N = (EditTextPreference) findPreference(Constants.PREF_SIM3[22]);
 
         PreferenceCategory sim2 = (PreferenceCategory) getPreferenceScreen().findPreference("sim2");
         PreferenceCategory sim3 = (PreferenceCategory) getPreferenceScreen().findPreference("sim3");
@@ -272,6 +275,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             tOff3.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM3[12], "23:55"));
 
         //night
+        if (round1N != null)
+            round1N.setSummary(round1N.getText() + "%");
+        if (round2N != null)
+            round2N.setSummary(round2N.getText() + "%");
+        if (round3N != null)
+            round3N.setSummary(round3N.getText() + "%");
         if (tOn1N != null)
             tOn1N.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM1[20], "23:00"));
         if (tOn2N != null)

@@ -130,6 +130,14 @@
             android:summary=""
             android:title="@string/measure_value" />
 
+        <EditTextPreference
+            android:key="nightround1"
+            android:inputType="numberDecimal"
+            android:defaultValue="0"
+            android:title="@string/round"
+            android:dependency="usenight1"
+            android:summary="" />
+
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nighton1"
             android:dependency="usenight1"
@@ -265,6 +273,14 @@
             android:summary=""
             android:title="@string/measure_value" />
 
+        <EditTextPreference
+            android:key="nightround2"
+            android:inputType="numberDecimal"
+            android:defaultValue="0"
+            android:title="@string/round"
+            android:dependency="usenight2"
+            android:summary="" />
+
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nighton2"
             android:dependency="usenight2"
@@ -399,6 +415,14 @@
             android:dependency="usenight3"
             android:summary=""
             android:title="@string/measure_value" />
+
+        <EditTextPreference
+            android:key="nightround3"
+            android:inputType="numberDecimal"
+            android:defaultValue="0"
+            android:title="@string/round"
+            android:dependency="usenight3"
+            android:summary="" />
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nighton3"
