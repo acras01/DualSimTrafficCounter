@@ -176,6 +176,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         };
         IntentFilter countServiceFilter = new IntentFilter(Constants.BROADCAST_ACTION);
         registerReceiver(dataReceiver, countServiceFilter);
+
         tipReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 TIP.setText(getResources().getString(R.string.service_disabled_tip));
@@ -183,6 +184,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         };
         IntentFilter tipFilter = new IntentFilter(Constants.TIP);
         registerReceiver(tipReceiver, tipFilter);
+
         onoffReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -201,6 +203,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         };
         IntentFilter onoffFilter = new IntentFilter(Constants.ON_OFF);
         registerReceiver(onoffReceiver, onoffFilter);
+
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                 if (TX2 != null)
