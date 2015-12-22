@@ -260,8 +260,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             startService(new Intent(this, WatchDogService.class));
         if (!isMyServiceRunning(CountService.class) && !prefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(this, CountService.class));
-        /*else
-            Toast.makeText(this, R.string.service_running, Toast.LENGTH_LONG).show();*/
+
         if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             new AlertDialog.Builder(context)
                     .setMessage(R.string.set_sim_number)
