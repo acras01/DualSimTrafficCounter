@@ -115,30 +115,30 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
                 boolean[] isNight =  CountService.getIsNight();
                 TOT1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
-                        intent.getLongExtra(Constants.TOTAL1, 0)));
+                        intent.getLongExtra(Constants.TOTAL1, 0L)));
                 TOT2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
-                        intent.getLongExtra(Constants.TOTAL2, 0)));
+                        intent.getLongExtra(Constants.TOTAL2, 0L)));
                 TOT3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
-                        intent.getLongExtra(Constants.TOTAL3, 0)));
+                        intent.getLongExtra(Constants.TOTAL3, 0L)));
                 if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (RX1 != null)
                         RX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM1RX, 0)));
+                                intent.getLongExtra(Constants.SIM1RX, 0L)));
                     if (TX1 != null)
                         TX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1TX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM1TX, 0)));
+                                intent.getLongExtra(Constants.SIM1TX, 0L)));
                     if (RX2 != null)
                         RX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM2RX, 0)));
+                                intent.getLongExtra(Constants.SIM2RX, 0L)));
                     if (TX2 != null)
                         TX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2TX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM2TX, 0)));
+                                intent.getLongExtra(Constants.SIM2TX, 0L)));
                     if (RX3 != null)
                         RX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM3RX, 0)));
+                                intent.getLongExtra(Constants.SIM3RX, 0L)));
                     if (TX3 != null)
                         TX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3TX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM3TX, 0)));
+                                intent.getLongExtra(Constants.SIM3TX, 0L)));
                 }
                 if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
                     SIM1.setText(isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
@@ -498,7 +498,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     public void onClick(View v) {
-
+        boolean[] isNight =  CountService.getIsNight();
         DateTime dt;
         if (!dataMap.get(Constants.LAST_DATE).equals("")) {
             DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -512,18 +512,29 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     sendBroadcast(clear1Intent);
                 } else {
                     dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
-                    dataMap.put(Constants.SIM1RX, (long) 0);
-                    dataMap.put(Constants.SIM1TX, (long) 0);
-                    dataMap.put(Constants.TOTAL1, (long) 0);
+                    if (isNight[0]) {
+                        dataMap.put(Constants.SIM1RX_N, 0L);
+                        dataMap.put(Constants.SIM1TX_N, 0L);
+                        dataMap.put(Constants.TOTAL1_N, 0L);
+                    } else {
+                        dataMap.put(Constants.SIM1RX, 0L);
+                        dataMap.put(Constants.SIM1TX, 0L);
+                        dataMap.put(Constants.TOTAL1, 0L);
+                    }
                     if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
                         TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM1RX)));
-                        TX1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM1TX)));
+                        if (RX1 != null)
+                            RX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
+                                    (long) dataMap.get(Constants.SIM1RX)));
+                        if (TX1 != null)
+                            TX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1TX_N) :
+                                    (long) dataMap.get(Constants.SIM1TX)));
                     }
-                    TOT1.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL1)));
+                    TOT1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.TOTAL1_N) :
+                            (long) dataMap.get(Constants.TOTAL1)));
                 }
                 break;
             case (R.id.buttonClear2):
@@ -532,18 +543,29 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     sendBroadcast(clear2Intent);
                 } else {
                     dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
-                    dataMap.put(Constants.SIM2RX, (long) 0);
-                    dataMap.put(Constants.SIM2TX, (long) 0);
-                    dataMap.put(Constants.TOTAL2, (long) 0);
+                    if (isNight[1]) {
+                        dataMap.put(Constants.SIM2RX_N, 0L);
+                        dataMap.put(Constants.SIM2TX_N, 0L);
+                        dataMap.put(Constants.TOTAL2_N, 0L);
+                    } else {
+                        dataMap.put(Constants.SIM2RX, 0L);
+                        dataMap.put(Constants.SIM2TX, 0L);
+                        dataMap.put(Constants.TOTAL2, 0L);
+                    }
                     if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
                         TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM2RX)));
-                        TX2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM2TX)));
+                        if (RX2 != null)
+                            RX2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.SIM2RX_N) :
+                                    (long) dataMap.get(Constants.SIM2RX)));
+                        if (TX2 != null)
+                            TX2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.SIM2TX_N) :
+                                    (long) dataMap.get(Constants.SIM2TX)));
                     }
-                    TOT2.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL2)));
+                    TOT2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.TOTAL2_N) :
+                            (long) dataMap.get(Constants.TOTAL2)));
                 }
                 break;
             case (R.id.buttonClear3):
@@ -552,18 +574,29 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     sendBroadcast(clear2Intent);
                 } else {
                     dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
-                    dataMap.put(Constants.SIM3RX, (long) 0);
-                    dataMap.put(Constants.SIM3TX, (long) 0);
-                    dataMap.put(Constants.TOTAL3, (long) 0);
+                    if (isNight[2]) {
+                        dataMap.put(Constants.SIM3RX_N, 0L);
+                        dataMap.put(Constants.SIM3TX_N, 0L);
+                        dataMap.put(Constants.TOTAL3_N, 0L);
+                    } else {
+                        dataMap.put(Constants.SIM3RX, 0L);
+                        dataMap.put(Constants.SIM3TX, 0L);
+                        dataMap.put(Constants.TOTAL3, 0L);
+                    }
                     if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
                         TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
                     else
                         TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        RX3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM3RX)));
-                        TX3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.SIM3TX)));
+                        if (RX3 != null)
+                            RX3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.SIM3RX_N) :
+                                    (long) dataMap.get(Constants.SIM3RX)));
+                        if (TX3 != null)
+                            TX3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.SIM3TX_N) :
+                                    (long) dataMap.get(Constants.SIM3TX)));
                     }
-                    TOT3.setText(DataFormat.formatData(context, (long) dataMap.get(Constants.TOTAL3)));
+                    TOT3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.TOTAL3_N) :
+                            (long) dataMap.get(Constants.TOTAL3)));
                 }
                 break;
         }
