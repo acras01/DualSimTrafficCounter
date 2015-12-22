@@ -68,7 +68,7 @@ public class Constants {
             "user_pick1", "user_pick2", "user_pick3", //10
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
-            "showsim1","showsim2", "showsim3", "showdiv", "active"}; //22
+            "showsim1","showsim2", "showsim3", "showdiv", "active", "day_night"}; //23
     public static final int STARTED_ID = 101;
     public static final int SIM1 = 0;
     public static final int SIM2 = 1;
