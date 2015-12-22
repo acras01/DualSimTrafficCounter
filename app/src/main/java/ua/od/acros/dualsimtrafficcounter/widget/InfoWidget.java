@@ -266,9 +266,9 @@ public class InfoWidget extends AppWidgetProvider {
                 if (prefs.getBoolean(Constants.PREF_WIDGET[2], true)) {
                     updateViews.setTextViewText(R.id.txSIM2, DataFormat.formatData(context, CountService.getIsNight()[1] ? bundle.getLong(Constants.SIM2TX_N, 0) :
                             bundle.getLong(Constants.SIM2TX, 0)));
-                    updateViews.setViewVisibility(R.id.txSIM1, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.rxSIM1, DataFormat.formatData(context, CountService.getIsNight()[1] ? bundle.getLong(Constants.SIM2RX_N, 0) :
-                            bundle.getLong(Constants.SIM1RX, 0)));
+                    updateViews.setViewVisibility(R.id.txSIM2, View.VISIBLE);
+                    updateViews.setTextViewText(R.id.rxSIM2, DataFormat.formatData(context, CountService.getIsNight()[1] ? bundle.getLong(Constants.SIM2RX_N, 0) :
+                            bundle.getLong(Constants.SIM2RX, 0)));
                     updateViews.setViewVisibility(R.id.rxSIM2, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert21, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert22, View.VISIBLE);

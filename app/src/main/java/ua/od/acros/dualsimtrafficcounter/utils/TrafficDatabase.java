@@ -28,8 +28,8 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             + Constants.SIM1RX_N + " long, "
             + Constants.SIM1TX_N + " long, " + Constants.TOTAL1_N + " long, "
             + Constants.SIM2RX_N + " long, " + Constants.SIM2TX_N + " long, "
-            + Constants.TOTAL2_N + " long, " + Constants.SIM3RX_N + " integer,"
-            + Constants.SIM3TX_N + " integer, " + Constants.TOTAL3_N + " integer);";
+            + Constants.TOTAL2_N + " long, " + Constants.SIM3RX_N + " long,"
+            + Constants.SIM3TX_N + " long, " + Constants.TOTAL3_N + " long);";
 
     public TrafficDatabase(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
