@@ -482,7 +482,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[4])) {
-            //SharedPreferences.Editor edit = prefs.edit();
             if (!sharedPreferences.getBoolean(key, false)) {
                 stopService(new Intent(this, WatchDogService.class));
                 prefs.edit().putBoolean(Constants.PREF_OTHER[6], true).apply();
@@ -490,7 +489,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 startService(new Intent(this, WatchDogService.class));
                 prefs.edit().putBoolean(Constants.PREF_OTHER[6], false).apply();
             }
-            //edit.apply();
         }
         if (key.equals(Constants.PREF_OTHER[5]))
             needsRestart = true;
