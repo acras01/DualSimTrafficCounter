@@ -90,6 +90,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         findViewById(R.id.buttonClear1).setOnClickListener(this);
         findViewById(R.id.buttonClear2).setOnClickListener(this);
         findViewById(R.id.buttonClear3).setOnClickListener(this);
+        SIM1.setOnClickListener(this);
+        SIM2.setOnClickListener(this);
+        SIM3.setOnClickListener(this);
+
 
         boolean[] isNight =  CountService.getIsNight();
 
@@ -596,6 +600,52 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                             (long) dataMap.get(Constants.TOTAL3)));
                 }
                 break;
+            case R.id.sim1_name:
+                if (prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
+                    SIM1.setText(!isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
+                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        if (RX1 != null)
+                            RX1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
+                                    (long) dataMap.get(Constants.SIM1RX)));
+                        if (TX1 != null)
+                            TX1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.SIM1TX_N) :
+                                    (long) dataMap.get(Constants.SIM1TX)));
+                    }
+                    TOT1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.TOTAL1_N) :
+                            (long) dataMap.get(Constants.TOTAL1)));
+                }
+                break;
+            case R.id.sim2_name:
+                if (prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
+                    SIM2.setText(!isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
+                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        if (RX2 != null)
+                            RX2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM2RX_N) :
+                                    (long) dataMap.get(Constants.SIM2RX)));
+                        if (TX2 != null)
+                            TX2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM2TX_N) :
+                                    (long) dataMap.get(Constants.SIM2TX)));
+                    }
+                    TOT2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.TOTAL2_N) :
+                            (long) dataMap.get(Constants.TOTAL2)));
+                }
+                break;
+            case R.id.sim3_name:
+                if (prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
+                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        SIM3.setText(!isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
+                        if (RX3 != null)
+                            RX3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM3RX_N) :
+                                    (long) dataMap.get(Constants.SIM3RX)));
+                        if (TX3 != null)
+                            TX3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM3TX_N) :
+                                    (long) dataMap.get(Constants.SIM2TX)));
+                    }
+                    TOT3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.TOTAL3_N) :
+                            (long) dataMap.get(Constants.TOTAL3)));
+                }
+                break;
+
         }
     }
 }
