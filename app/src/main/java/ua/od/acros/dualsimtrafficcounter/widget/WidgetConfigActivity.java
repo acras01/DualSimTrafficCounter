@@ -49,7 +49,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private ImageView tiv, biv, logo1, logo2, logo3;
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
-            speedTextSum, speedIconsSum, showSimSum, divSum, activesum;
+            speedTextSum, speedIconsSum, showSimSum, divSum, activesum, daynightSum;
     private RelativeLayout simLogoL, simFontL, speedFontL, speedArrowsL,
             showSimL, backColorL, logoL1, logoL2, logoL3;
     private SharedPreferences prefs;
@@ -120,6 +120,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             edit.putBoolean(Constants.PREF_WIDGET[20], true);
             edit.putBoolean(Constants.PREF_WIDGET[21], true);
             edit.putBoolean(Constants.PREF_WIDGET[22], false);
+            edit.putBoolean(Constants.PREF_WIDGET[23], false);
             edit.apply();
         }
 
@@ -147,6 +148,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         div.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[21], true));
         CheckBox active = (CheckBox) findViewById(R.id.activesim);
         active.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[22], false));
+        CheckBox daynight = (CheckBox) findViewById(R.id.daynight_icons);
+        daynight.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[23], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -183,6 +186,11 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             backSum.setText(R.string.on);
         else
             backSum.setText(R.string.off);
+        daynightSum = (TextView) findViewById(R.id.daynight_icons_summary);
+        if (daynight.isChecked())
+            daynightSum.setText(R.string.on);
+        else
+            daynightSum.setText(R.string.off);
 
 
         logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
@@ -240,6 +248,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         back.setOnCheckedChangeListener(this);
         div.setOnCheckedChangeListener(this);
         active.setOnCheckedChangeListener(this);
+        daynight.setOnCheckedChangeListener(this);
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
         biv = (ImageView) findViewById(R.id.backColorPreview);
@@ -667,6 +676,13 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     activesum.setText(R.string.off);
                     showSimL.setOnClickListener(this);
                 }
+                break;
+            case R.id.daynight_icons:
+                edit.putBoolean(Constants.PREF_WIDGET[23], isChecked);
+                if (isChecked)
+                    daynightSum.setText(R.string.on);
+                else
+                    daynightSum.setText(R.string.off);
                 break;
         }
     }

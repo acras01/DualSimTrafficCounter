@@ -147,6 +147,7 @@ public class InfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET[20], true);
                 edit.putBoolean(Constants.PREF_WIDGET[21], true);
                 edit.putBoolean(Constants.PREF_WIDGET[22], false);
+                edit.putBoolean(Constants.PREF_WIDGET[23], false);
                 edit.apply();
             }
 
