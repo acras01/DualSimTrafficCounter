@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:weightSum="1"
-            android:id="@+id/simLogoSize"
+            android:id="@+id/speedLayout"
             android:gravity="center|center_horizontal"
             android:layout_weight=".25">
 
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:weightSum="1"
-            android:id="@+id/ll1"
+            android:id="@+id/simLayout1"
             android:gravity="center|center_horizontal"
             android:layout_weight=".25">
 
@@ -111,6 +111,13 @@
                 android:id="@+id/logo1"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/logo1_n"
+                android:layout_alignTop="@+id/logo1"
+                android:layout_toRightOf="@+id/logo1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -130,7 +137,7 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="right"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/logo1"
+                android:layout_toRightOf="@+id/logo1_n"
                 android:textStyle="bold" />
 
             <TextView
@@ -169,7 +176,7 @@
                 android:id="@+id/rxSIM1"
                 android:layout_gravity="center"
                 android:textSize="@dimen/widget_text_size"
-                android:textColor="@android:color/holo_red_dark"
+                android:textColor="@android:color/holo_orange_dark"
                 android:typeface="normal"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
@@ -225,7 +232,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:weightSum="1"
-            android:id="@+id/ll2"
+            android:id="@+id/simLayout2"
             android:gravity="center|center_horizontal"
             android:layout_weight=".25">
 
@@ -235,6 +242,13 @@
                 android:id="@+id/logo2"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/logo2_n"
+                android:layout_alignTop="@+id/logo2"
+                android:layout_toRightOf="@+id/logo2" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -293,7 +307,7 @@
                 android:id="@+id/rxSIM2"
                 android:layout_gravity="center"
                 android:textSize="@dimen/widget_text_size"
-                android:textColor="@android:color/holo_red_dark"
+                android:textColor="@android:color/holo_orange_dark"
                 android:typeface="normal"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
@@ -349,7 +363,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:weightSum="1"
-            android:id="@+id/simFontSize"
+            android:id="@+id/simLayout3"
             android:gravity="center|center_horizontal"
             android:layout_weight=".25">
 
@@ -359,6 +373,13 @@
                 android:id="@+id/logo3"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/logo3_n"
+                android:layout_alignTop="@+id/logo3"
+                android:layout_toRightOf="@+id/logo3" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -417,7 +438,7 @@
                 android:id="@+id/rxSIM3"
                 android:layout_gravity="center"
                 android:textSize="@dimen/widget_text_size"
-                android:textColor="@android:color/holo_red_dark"
+                android:textColor="@android:color/holo_orange_dark"
                 android:typeface="normal"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"

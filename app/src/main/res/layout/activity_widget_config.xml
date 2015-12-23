@@ -558,7 +558,7 @@
             <CheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/use_divider"
+                android:text="@string/show_daynight_icons"
                 android:id="@+id/daynight_icons"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"

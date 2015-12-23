@@ -116,4 +116,5 @@
     <string name="image_not_load">Изображение не загружено!</string>
     <string name="use_night_limit">Использовать ночной тариф</string>
     <string name="night">" (ночной)"</string>
+    <string name="show_daynight_icons">Показывать иконки \"день/ночь\" при использовании ночного тарифа</string>
 </resources>
