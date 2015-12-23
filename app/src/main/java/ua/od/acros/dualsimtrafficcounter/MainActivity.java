@@ -55,11 +55,17 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private TrafficDatabase mDatabaseHelper;
     private SharedPreferences prefs;
     private boolean needsRestart = false;
+    private boolean showNight1, showNight2, showNight3;
+    private String opName1, opName2, opName3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         MyApplication.activityResumed();
+        showNight1 = showNight2 = showNight3 = false;
+        opName1 = opName2 = opName3 = "";
         context = MainActivity.this;
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
@@ -116,39 +122,48 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
         dataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-
                 boolean[] isNight =  CountService.getIsNight();
-                TOT1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
+                if (!showNight1)
+                    TOT1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
                         intent.getLongExtra(Constants.TOTAL1, 0L)));
-                TOT2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
+                if (!showNight2)
+                    TOT2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
                         intent.getLongExtra(Constants.TOTAL2, 0L)));
-                TOT3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
+                if (!showNight3)
+                    TOT3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
                         intent.getLongExtra(Constants.TOTAL3, 0L)));
                 if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                    if (RX1 != null)
-                        RX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM1RX, 0L)));
-                    if (TX1 != null)
-                        TX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1TX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM1TX, 0L)));
-                    if (RX2 != null)
-                        RX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM2RX, 0L)));
-                    if (TX2 != null)
-                        TX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2TX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM2TX, 0L)));
-                    if (RX3 != null)
-                        RX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM3RX, 0L)));
-                    if (TX3 != null)
-                        TX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3TX_N, 0L) :
-                                intent.getLongExtra(Constants.SIM3TX, 0L)));
+                    if (!showNight1) {
+                        if (RX1 != null)
+                            RX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
+                                    intent.getLongExtra(Constants.SIM1RX, 0L)));
+                        if (TX1 != null)
+                            TX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1TX_N, 0L) :
+                                    intent.getLongExtra(Constants.SIM1TX, 0L)));
+                    }
+                    if (!showNight2) {
+                        if (RX2 != null)
+                            RX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
+                                    intent.getLongExtra(Constants.SIM2RX, 0L)));
+                        if (TX2 != null)
+                            TX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2TX_N, 0L) :
+                                    intent.getLongExtra(Constants.SIM2TX, 0L)));
+                    }
+                    if (!showNight3) {
+                        if (RX3 != null)
+                            RX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
+                                    intent.getLongExtra(Constants.SIM3RX, 0L)));
+                        if (TX3 != null)
+                            TX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3TX_N, 0L) :
+                                    intent.getLongExtra(Constants.SIM3TX, 0L)));
+                    }
                 }
                 if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
                     SIM1.setText(isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
-                else
-                    SIM1.setText(isNight[0] ? intent.getStringExtra(Constants.OPERATOR1) + getResources().getString(R.string.night) :
-                            intent.getStringExtra(Constants.OPERATOR1));
+                else {
+                    opName1 = intent.getStringExtra(Constants.OPERATOR1);
+                    SIM1.setText(isNight[0] ? opName1 + getResources().getString(R.string.night) : opName1);
+                }
                 if (simNumber < 2) {
                     SIM2.setText(getResources().getString(R.string.single_sim));
                     SIM3.setText(getResources().getString(R.string.single_sim));
@@ -156,16 +171,18 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     if (simNumber >= 2) {
                         if (!intent.hasExtra(Constants.OPERATOR2) || intent.getStringExtra(Constants.OPERATOR2).equals(""))
                             SIM2.setText(isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
-                        else
-                            SIM2.setText(isNight[1] ? intent.getStringExtra(Constants.OPERATOR2) + getResources().getString(R.string.night) :
-                                    intent.getStringExtra(Constants.OPERATOR2));
+                        else {
+                            opName2 = intent.getStringExtra(Constants.OPERATOR2);
+                            SIM2.setText(isNight[1] ? opName2 + getResources().getString(R.string.night) : opName2);
+                        }
                     }
                     if (simNumber == 3) {
                         if (!intent.hasExtra(Constants.OPERATOR3) || intent.getStringExtra(Constants.OPERATOR3).equals(""))
                             SIM3.setText(isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
-                        else
-                            SIM3.setText(isNight[2] ? intent.getStringExtra(Constants.OPERATOR3) + getResources().getString(R.string.night) :
-                                    intent.getStringExtra(Constants.OPERATOR3));
+                        else {
+                            opName3 = intent.getStringExtra(Constants.OPERATOR3);
+                            SIM3.setText(isNight[2] ? opName3 + getResources().getString(R.string.night) : opName3);
+                        }
                     }
                 }
                 if (!intent.getBooleanExtra(Constants.TIP, false))
@@ -602,7 +619,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
             case R.id.sim1_name:
                 if (prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                    SIM1.setText(!isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
+                    if (opName1.equals(""))
+                        SIM1.setText(!isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
+                    else
+                        SIM1.setText(!isNight[0] ? opName1 + getResources().getString(R.string.night) : opName1);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
@@ -613,11 +633,15 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     }
                     TOT1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.TOTAL1_N) :
                             (long) dataMap.get(Constants.TOTAL1)));
+                    showNight1 = !showNight1;
                 }
                 break;
             case R.id.sim2_name:
                 if (prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                    SIM2.setText(!isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
+                    if (opName2.equals(""))
+                        SIM2.setText(!isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
+                    else
+                        SIM2.setText(!isNight[1] ? opName2 + getResources().getString(R.string.night) : opName2);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM2RX_N) :
@@ -628,12 +652,16 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     }
                     TOT2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.TOTAL2_N) :
                             (long) dataMap.get(Constants.TOTAL2)));
+                    showNight2 = !showNight2;
                 }
                 break;
             case R.id.sim3_name:
                 if (prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        SIM3.setText(!isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
+                        if (opName3.equals(""))
+                            SIM3.setText(!isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
+                        else
+                            SIM3.setText(!isNight[2] ? opName3 + getResources().getString(R.string.night) : opName3);
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM3RX_N) :
                                     (long) dataMap.get(Constants.SIM3RX)));
@@ -643,6 +671,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     }
                     TOT3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.TOTAL3_N) :
                             (long) dataMap.get(Constants.TOTAL3)));
+                    showNight3 = !showNight3;
                 }
                 break;
 
