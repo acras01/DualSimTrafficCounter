@@ -123,6 +123,7 @@ public class InfoWidget extends AppWidgetProvider {
 
         for (int i : ids) {
             SharedPreferences prefs = context.getSharedPreferences(String.valueOf(i) + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
                 edit.putBoolean(Constants.PREF_WIDGET[1], true);
@@ -230,7 +231,7 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM1, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM1, settPIntent);
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM1[17], false)) {
                     if (!isNight[0])
                         Picasso.with(context)
                                 .load(R.drawable.day)
@@ -333,7 +334,7 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM2, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM2, settPIntent);
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM2[17], false)) {
                     if (!isNight[1])
                         Picasso.with(context)
                                 .load(R.drawable.day)
@@ -438,7 +439,7 @@ public class InfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM3, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM3, settPIntent);
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM3[17], false)) {
                     if (!isNight[2])
                         Picasso.with(context)
                                 .load(R.drawable.day)

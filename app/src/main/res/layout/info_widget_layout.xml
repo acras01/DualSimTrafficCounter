@@ -134,7 +134,7 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:clickable="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:gravity="right"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/logo1_n"
@@ -265,10 +265,10 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:clickable="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:gravity="right"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/logo2"
+                android:layout_toRightOf="@+id/logo2_n"
                 android:textStyle="bold" />
 
             <TextView
@@ -396,10 +396,10 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:clickable="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:gravity="right"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/logo3"
+                android:layout_toRightOf="@+id/logo3_n"
                 android:textStyle="bold" />
 
             <TextView
