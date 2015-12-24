@@ -124,7 +124,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.setdate) {
-            DatePickerDialog tpd = new DatePickerDialog(MainActivity.getAppContext(), myCallBack, myYear, myMonth, myDay);
+            DatePickerDialog tpd = new DatePickerDialog(MainActivity.getAppContext(), myCallBack, myYear, myMonth - 1, myDay);
             tpd.show();
         }
 
@@ -134,7 +134,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     DatePickerDialog.OnDateSetListener myCallBack = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             myYear = year;
-            myMonth = monthOfYear;
+            myMonth = monthOfYear + 1;
             myDay = dayOfMonth;
             bSetDate.setText(String.format(MainActivity.getAppContext().getResources().getString(R.string.time), myDay, myMonth, myYear));
         }
