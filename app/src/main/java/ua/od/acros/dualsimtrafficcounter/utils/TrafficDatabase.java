@@ -2,11 +2,17 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class TrafficDatabase extends SQLiteOpenHelper {
@@ -237,7 +243,6 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             values.put(Constants.TOTAL1_N, (long) mMap.get(Constants.TOTAL1_N));
             values.put(Constants.TOTAL2_N, (long) mMap.get(Constants.TOTAL2_N));
             values.put(Constants.TOTAL3_N, (long) mMap.get(Constants.TOTAL3_N));
-
             mSqLiteDatabase = db.getWritableDatabase();
             mSqLiteDatabase.insert(DATABASE_TABLE, null, values);
         } else if (r_w == Constants.READ) {
@@ -275,7 +280,6 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                 mMap.put(Constants.TOTAL1_N, cursor.getLong(cursor.getColumnIndex(Constants.TOTAL1_N)));
                 mMap.put(Constants.TOTAL2_N, cursor.getLong(cursor.getColumnIndex(Constants.TOTAL2_N)));
                 mMap.put(Constants.TOTAL3_N, cursor.getLong(cursor.getColumnIndex(Constants.TOTAL3_N)));
-
             } else {
                 mMap.put(Constants.SIM1RX, 0L);
                 mMap.put(Constants.SIM2RX, 0L);
@@ -355,6 +359,130 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             cursor.close();
         }
         return result;
+    }
+
+    public static Map<String, Object> getDataForDate(TrafficDatabase db, String date, int sim, SharedPreferences prefs) {
+        Map<String, Object> mMap1 = new HashMap<>();
+        Map<String, Object> mMap2 = new HashMap<>();
+        Map<String, Object> mMap3 = new HashMap<>();
+        mSqLiteDatabase = db.getReadableDatabase();
+        DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
+        DateTime queried = fmtdate.parseDateTime(date);
+        String dayBeforeDate = queried.minusDays(1).toString(fmtdate);
+        Cursor cursorToDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
+                Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
+                Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
+                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
+                Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
+                Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, Constants.LAST_DATE + "=?", new String[]{date}, null, null, null);
+        if (cursorToDate.moveToLast()) {
+            mMap1.put(Constants.SIM1RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX)));
+            mMap1.put(Constants.SIM2RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX)));
+            mMap1.put(Constants.SIM3RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3RX)));
+            mMap1.put(Constants.SIM1TX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1TX)));
+            mMap1.put(Constants.SIM2TX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2TX)));
+            mMap1.put(Constants.SIM3TX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3TX)));
+            mMap1.put(Constants.TOTAL1, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL1)));
+            mMap1.put(Constants.TOTAL2, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2)));
+            mMap1.put(Constants.TOTAL3, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3)));
+            mMap1.put(Constants.SIM1RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX_N)));
+            mMap1.put(Constants.SIM2RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX_N)));
+            mMap1.put(Constants.SIM3RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3RX_N)));
+            mMap1.put(Constants.SIM1TX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1TX_N)));
+            mMap1.put(Constants.SIM2TX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2TX_N)));
+            mMap1.put(Constants.SIM3TX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3TX_N)));
+            mMap1.put(Constants.TOTAL1_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL1_N)));
+            mMap1.put(Constants.TOTAL2_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2_N)));
+            mMap1.put(Constants.TOTAL3_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3_N)));
+        }
+        Cursor cursorToDayBeforeDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[] {Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
+                Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
+                Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
+                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
+                Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
+                Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, Constants.LAST_DATE + "=?", new String[]{dayBeforeDate}, null, null, null);
+        if (cursorToDayBeforeDate.moveToLast()) {
+            mMap2.put(Constants.SIM1RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX)));
+            mMap2.put(Constants.SIM2RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX)));
+            mMap2.put(Constants.SIM3RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3RX)));
+            mMap2.put(Constants.SIM1TX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1TX)));
+            mMap2.put(Constants.SIM2TX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2TX)));
+            mMap2.put(Constants.SIM3TX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3TX)));
+            mMap2.put(Constants.TOTAL1, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL1)));
+            mMap2.put(Constants.TOTAL2, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL2)));
+            mMap2.put(Constants.TOTAL3, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL3)));
+            mMap2.put(Constants.SIM1RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX_N)));
+            mMap2.put(Constants.SIM2RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX_N)));
+            mMap2.put(Constants.SIM3RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3RX_N)));
+            mMap2.put(Constants.SIM1TX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1TX_N)));
+            mMap2.put(Constants.SIM2TX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2TX_N)));
+            mMap2.put(Constants.SIM3TX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3TX_N)));
+            mMap2.put(Constants.TOTAL1_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL1_N)));
+            mMap2.put(Constants.TOTAL2_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL2_N)));
+            mMap2.put(Constants.TOTAL3_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL3_N)));
+        }
+        switch (sim) {
+            case Constants.SIM1:
+                if (prefs.getString(Constants.PREF_SIM1[3], "0").equals("1")) {
+                    if (queried.monthOfYear() == queried.minusDays(1).monthOfYear()) {
+                        mMap3.put("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
+                        mMap3.put("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
+                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
+                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
+                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
+                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
+                    } else {
+                        mMap3.put("rx", mMap1.get(Constants.SIM1RX));
+                        mMap3.put("tx", mMap1.get(Constants.SIM1TX));
+                        mMap3.put("tot", mMap1.get(Constants.TOTAL1));
+                        mMap3.put("rx_n", mMap1.get(Constants.SIM1RX_N));
+                        mMap3.put("tx_n", mMap1.get(Constants.SIM1TX_N));
+                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL1_N));
+                    }
+                }
+                break;
+            case Constants.SIM2:
+                if (prefs.getString(Constants.PREF_SIM2[3], "0").equals("1")) {
+                    if (queried.monthOfYear() == queried.minusDays(1).monthOfYear()) {
+                        mMap3.put("rx", (long) mMap1.get(Constants.SIM2RX) - (long) mMap2.get(Constants.SIM2RX));
+                        mMap3.put("tx", (long) mMap1.get(Constants.SIM2TX) - (long) mMap2.get(Constants.SIM2TX));
+                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL2) - (long) mMap2.get(Constants.TOTAL2));
+                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM2RX_N) - (long) mMap2.get(Constants.SIM2RX_N));
+                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM2TX_N) - (long) mMap2.get(Constants.SIM2TX_N));
+                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL2_N) - (long) mMap2.get(Constants.TOTAL2_N));
+                    } else {
+                        mMap3.put("rx", mMap1.get(Constants.SIM2RX));
+                        mMap3.put("tx", mMap1.get(Constants.SIM2TX));
+                        mMap3.put("tot", mMap1.get(Constants.TOTAL2));
+                        mMap3.put("rx_n", mMap1.get(Constants.SIM2RX_N));
+                        mMap3.put("tx_n", mMap1.get(Constants.SIM2TX_N));
+                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL2_N));
+                    }
+                }
+                break;
+            case Constants.SIM3:
+                if (prefs.getString(Constants.PREF_SIM3[3], "0").equals("1")) {
+                    if (queried.monthOfYear() == queried.minusDays(1).monthOfYear()) {
+                        mMap3.put("rx", (long) mMap1.get(Constants.SIM3RX) - (long) mMap2.get(Constants.SIM3RX));
+                        mMap3.put("tx", (long) mMap1.get(Constants.SIM3TX) - (long) mMap2.get(Constants.SIM3TX));
+                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL3) - (long) mMap2.get(Constants.TOTAL3));
+                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM3RX_N) - (long) mMap2.get(Constants.SIM3RX_N));
+                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM3TX_N) - (long) mMap2.get(Constants.SIM3TX_N));
+                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL3_N) - (long) mMap2.get(Constants.TOTAL3_N));
+                    } else {
+                        mMap3.put("rx", mMap1.get(Constants.SIM3RX));
+                        mMap3.put("tx", mMap1.get(Constants.SIM3TX));
+                        mMap3.put("tot", mMap1.get(Constants.TOTAL3));
+                        mMap3.put("rx_n", mMap1.get(Constants.SIM3RX_N));
+                        mMap3.put("tx_n", mMap1.get(Constants.SIM3TX_N));
+                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL3_N));
+                    }
+                }
+                break;
+        }
+        cursorToDate.close();
+        cursorToDayBeforeDate.close();
+        return mMap3;
     }
 
     /*public static void cleanDB (TrafficDatabase db, String date, String time) {
