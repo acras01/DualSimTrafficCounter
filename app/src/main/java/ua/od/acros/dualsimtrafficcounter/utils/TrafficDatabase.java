@@ -460,7 +460,8 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                 break;
             case Constants.SIM2:
                 if (prefs.getString(Constants.PREF_SIM2[3], "0").equals("1")) {
-                    if (queried.monthOfYear() == queried.minusDays(1).monthOfYear()) {
+                    if ((queried.getMonthOfYear() == queried.minusDays(1).getMonthOfYear() && queried.getDayOfMonth() < Integer.valueOf(prefs.getString(Constants.PREF_SIM2[10], "1"))) ||
+                            (queried.getMonthOfYear() != queried.minusDays(1).getMonthOfYear() && queried.getDayOfMonth() >= Integer.valueOf(prefs.getString(Constants.PREF_SIM2[10], "1")))) {
                         mMap3.put("rx", (long) mMap1.get(Constants.SIM2RX) - (long) mMap2.get(Constants.SIM2RX));
                         mMap3.put("tx", (long) mMap1.get(Constants.SIM2TX) - (long) mMap2.get(Constants.SIM2TX));
                         mMap3.put("tot", (long) mMap1.get(Constants.TOTAL2) - (long) mMap2.get(Constants.TOTAL2));
