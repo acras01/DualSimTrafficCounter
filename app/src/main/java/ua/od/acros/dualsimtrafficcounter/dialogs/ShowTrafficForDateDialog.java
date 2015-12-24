@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -12,28 +13,44 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.ViewTraffic;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 
-public class OnOffDialog extends DialogFragment {
+public class ShowTrafficForDateDialog extends DialogFragment implements View.OnClickListener{
 
+    private static final int DIALOG_DATE = 1;
+    private int myYear;
+    private int myMonth;
+    private int myDay;
     private int chkSIM = Constants.NULL;
-    private Button bSetUsageOK;
+    private Button bOK, bSetDate;
 
-    public static OnOffDialog newInstance() {
-        return new OnOffDialog();
+
+    public static ShowTrafficForDateDialog newInstance() {
+        return new ShowTrafficForDateDialog();
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        myDay = new DateTime().getDayOfMonth();
+        myMonth = new DateTime().getMonthOfYear();
+        myYear = new DateTime().getYear();
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.onoff_dialog, null);
+        View view = inflater.inflate(R.layout.show_traffic_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        bSetDate = (Button) view.findViewById(R.id.setdate);
+        bSetDate.setOnClickListener(this);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -77,14 +94,18 @@ public class OnOffDialog extends DialogFragment {
 
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                bSetUsageOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                bSetUsageOK.setOnClickListener(new View.OnClickListener() {
+                bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (chkSIM != Constants.NULL) {
+                        if (chkSIM != Constants.NULL ) {
                             dialog.dismiss();
-                            Intent intent = new Intent(Constants.ON_OFF);
+                            Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
+                            String date = myYear + "-" + myMonth + "-" + myDay;
+                            Bundle bundle = TrafficDatabase.getDataForDate(new TrafficDatabase(MainActivity.getAppContext(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
+                                    date, chkSIM, MainActivity.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
                             intent.putExtra("sim", chkSIM);
+                            intent.putExtra("data", bundle);
                             getActivity().sendBroadcast(intent);
                         } else
                             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
@@ -94,4 +115,28 @@ public class OnOffDialog extends DialogFragment {
         });
         return dialog;
     }
+
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.setdate) {
+            DatePickerDialog tpd = new DatePickerDialog(MainActivity.getAppContext(), myCallBack, myYear, myMonth, myDay);
+            tpd.show();
+        }
+
+    }
+
+
+    DatePickerDialog.OnDateSetListener myCallBack = new DatePickerDialog.OnDateSetListener() {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            myYear = year;
+            myMonth = monthOfYear;
+            myDay = dayOfMonth;
+            bSetDate.setText(String.format(MainActivity.getAppContext().getResources().getString(R.string.time), myDay, myMonth, myYear));
+        }
+    };
 }

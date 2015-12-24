@@ -117,4 +117,6 @@
     <string name="use_night_limit">Використовувати нічний тариф</string>
     <string name="night">" (нічний)"</string>
     <string name="show_daynight_icons">Відображати іконки \"день/ніч\" при використанні нічного тарифу</string>
+    <string name="set_date">Натисніть для вибору дати</string>
+    <string name="action_show_history">Трафік за обрану дату</string>
 </resources>

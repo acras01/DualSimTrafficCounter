@@ -33,6 +33,7 @@ import java.util.Map;
 
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetUsageDialog;
+import ua.od.acros.dualsimtrafficcounter.dialogs.ShowTrafficForDateDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -441,6 +442,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             case R.id.action_set_usage:
                 DialogFragment frg2 = SetUsageDialog.newInstance();
                 frg2.show(getFragmentManager(), "dialog");
+                break;
+            case R.id.action_show_history:
+                DialogFragment frg3 = ShowTrafficForDateDialog.newInstance();
+                frg3.show(getFragmentManager(), "dialog");
                 break;
         }
         return super.onOptionsItemSelected(item);

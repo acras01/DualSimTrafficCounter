@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Bundle;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -361,10 +362,10 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         return result;
     }
 
-    public static Map<String, Object> getDataForDate(TrafficDatabase db, String date, int sim, SharedPreferences prefs) {
+    public static Bundle getDataForDate(TrafficDatabase db, String date, int sim, SharedPreferences prefs) {
         Map<String, Object> mMap1 = new HashMap<>();
         Map<String, Object> mMap2 = new HashMap<>();
-        Map<String, Object> mMap3 = new HashMap<>();
+        Bundle out = new Bundle();
         mSqLiteDatabase = db.getReadableDatabase();
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime queried = fmtdate.parseDateTime(date);
@@ -424,115 +425,114 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         switch (sim) {
             case Constants.SIM1:
                 if (prefs.getString(Constants.PREF_SIM1[3], "0").equals("1")) {
-                    if (queried.monthOfYear() == queried.minusDays(1).monthOfYear()) {
-                        mMap3.put("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
-                        mMap3.put("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
-                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
-                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
-                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
-                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
+                    if (queried.getDayOfMonth() != Integer.valueOf(prefs.getString(Constants.PREF_SIM1[10], "1"))) {
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
                     } else {
-                        mMap3.put("rx", mMap1.get(Constants.SIM1RX));
-                        mMap3.put("tx", mMap1.get(Constants.SIM1TX));
-                        mMap3.put("tot", mMap1.get(Constants.TOTAL1));
-                        mMap3.put("rx_n", mMap1.get(Constants.SIM1RX_N));
-                        mMap3.put("tx_n", mMap1.get(Constants.SIM1TX_N));
-                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL1_N));
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM1RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM1TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL1));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N));
                     }
                 }
                 else if (prefs.getString(Constants.PREF_SIM1[3], "0").equals("2")) {
-                    if ((int) mMap1.get(Constants.PERIOD1) == 0) {
-                        mMap3.put("rx", mMap1.get(Constants.SIM1RX));
-                        mMap3.put("tx", mMap1.get(Constants.SIM1TX));
-                        mMap3.put("tot", mMap1.get(Constants.TOTAL1));
-                        mMap3.put("rx_n", mMap1.get(Constants.SIM1RX_N));
-                        mMap3.put("tx_n", mMap1.get(Constants.SIM1TX_N));
-                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL1_N));
+                    if ((int) mMap1.get(Constants.PERIOD1) == 1) {
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM1RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM1TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL1));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N));
                     } else {
-                        mMap3.put("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
-                        mMap3.put("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
-                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
-                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
-                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
-                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
                     }
                 }
                 break;
             case Constants.SIM2:
                 if (prefs.getString(Constants.PREF_SIM2[3], "0").equals("1")) {
-                    if ((queried.getMonthOfYear() == queried.minusDays(1).getMonthOfYear() && queried.getDayOfMonth() < Integer.valueOf(prefs.getString(Constants.PREF_SIM2[10], "1"))) ||
-                            (queried.getMonthOfYear() != queried.minusDays(1).getMonthOfYear() && queried.getDayOfMonth() >= Integer.valueOf(prefs.getString(Constants.PREF_SIM2[10], "1")))) {
-                        mMap3.put("rx", (long) mMap1.get(Constants.SIM2RX) - (long) mMap2.get(Constants.SIM2RX));
-                        mMap3.put("tx", (long) mMap1.get(Constants.SIM2TX) - (long) mMap2.get(Constants.SIM2TX));
-                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL2) - (long) mMap2.get(Constants.TOTAL2));
-                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM2RX_N) - (long) mMap2.get(Constants.SIM2RX_N));
-                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM2TX_N) - (long) mMap2.get(Constants.SIM2TX_N));
-                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL2_N) - (long) mMap2.get(Constants.TOTAL2_N));
+                    if (queried.getDayOfMonth() != Integer.valueOf(prefs.getString(Constants.PREF_SIM2[10], "1"))) {
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM2RX) - (long) mMap2.get(Constants.SIM2RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM2TX) - (long) mMap2.get(Constants.SIM2TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL2) - (long) mMap2.get(Constants.TOTAL2));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM2RX_N) - (long) mMap2.get(Constants.SIM2RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM2TX_N) - (long) mMap2.get(Constants.SIM2TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL2_N) - (long) mMap2.get(Constants.TOTAL2_N));
                     } else {
-                        mMap3.put("rx", mMap1.get(Constants.SIM2RX));
-                        mMap3.put("tx", mMap1.get(Constants.SIM2TX));
-                        mMap3.put("tot", mMap1.get(Constants.TOTAL2));
-                        mMap3.put("rx_n", mMap1.get(Constants.SIM2RX_N));
-                        mMap3.put("tx_n", mMap1.get(Constants.SIM2TX_N));
-                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL2_N));
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM2RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM2TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL2));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM2RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM2TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL2_N));
                     }
                 }
                 else if (prefs.getString(Constants.PREF_SIM2[3], "0").equals("2")) {
-                    if ((int) mMap1.get(Constants.PERIOD2) == 0) {
-                        mMap3.put("rx", mMap1.get(Constants.SIM2RX));
-                        mMap3.put("tx", mMap1.get(Constants.SIM2TX));
-                        mMap3.put("tot", mMap1.get(Constants.TOTAL2));
-                        mMap3.put("rx_n", mMap1.get(Constants.SIM2RX_N));
-                        mMap3.put("tx_n", mMap1.get(Constants.SIM2TX_N));
-                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL2_N));
+                    if ((int) mMap1.get(Constants.PERIOD2) == 1) {
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM2RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM2TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL2));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM2RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM2TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL2_N));
                     } else {
-                        mMap3.put("rx", (long) mMap1.get(Constants.SIM2RX) - (long) mMap2.get(Constants.SIM2RX));
-                        mMap3.put("tx", (long) mMap1.get(Constants.SIM2TX) - (long) mMap2.get(Constants.SIM2TX));
-                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL2) - (long) mMap2.get(Constants.TOTAL2));
-                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM2RX_N) - (long) mMap2.get(Constants.SIM2RX_N));
-                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM2TX_N) - (long) mMap2.get(Constants.SIM2TX_N));
-                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL2_N) - (long) mMap2.get(Constants.TOTAL2_N));
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM2RX) - (long) mMap2.get(Constants.SIM2RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM2TX) - (long) mMap2.get(Constants.SIM2TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL2) - (long) mMap2.get(Constants.TOTAL2));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM2RX_N) - (long) mMap2.get(Constants.SIM2RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM2TX_N) - (long) mMap2.get(Constants.SIM2TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL2_N) - (long) mMap2.get(Constants.TOTAL2_N));
                     }
                 }
                 break;
             case Constants.SIM3:
                 if (prefs.getString(Constants.PREF_SIM3[3], "0").equals("1")) {
-                    if (queried.monthOfYear() == queried.minusDays(1).monthOfYear()) {
-                        mMap3.put("rx", (long) mMap1.get(Constants.SIM3RX) - (long) mMap2.get(Constants.SIM3RX));
-                        mMap3.put("tx", (long) mMap1.get(Constants.SIM3TX) - (long) mMap2.get(Constants.SIM3TX));
-                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL3) - (long) mMap2.get(Constants.TOTAL3));
-                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM3RX_N) - (long) mMap2.get(Constants.SIM3RX_N));
-                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM3TX_N) - (long) mMap2.get(Constants.SIM3TX_N));
-                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL3_N) - (long) mMap2.get(Constants.TOTAL3_N));
+                    if (queried.getDayOfMonth() != Integer.valueOf(prefs.getString(Constants.PREF_SIM3[10], "1"))) {
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM3RX) - (long) mMap2.get(Constants.SIM3RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM3TX) - (long) mMap2.get(Constants.SIM3TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL3) - (long) mMap2.get(Constants.TOTAL3));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM3RX_N) - (long) mMap2.get(Constants.SIM3RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM3TX_N) - (long) mMap2.get(Constants.SIM3TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL3_N) - (long) mMap2.get(Constants.TOTAL3_N));
                     } else {
-                        mMap3.put("rx", mMap1.get(Constants.SIM3RX));
-                        mMap3.put("tx", mMap1.get(Constants.SIM3TX));
-                        mMap3.put("tot", mMap1.get(Constants.TOTAL3));
-                        mMap3.put("rx_n", mMap1.get(Constants.SIM3RX_N));
-                        mMap3.put("tx_n", mMap1.get(Constants.SIM3TX_N));
-                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL3_N));
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM3RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM3TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL3));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM3RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM3TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL3_N));
                     }
                 } else if (prefs.getString(Constants.PREF_SIM3[3], "0").equals("2")) {
-                    if ((int) mMap1.get(Constants.PERIOD3) == 0) {
-                        mMap3.put("rx", mMap1.get(Constants.SIM3RX));
-                        mMap3.put("tx", mMap1.get(Constants.SIM3TX));
-                        mMap3.put("tot", mMap1.get(Constants.TOTAL3));
-                        mMap3.put("rx_n", mMap1.get(Constants.SIM3RX_N));
-                        mMap3.put("tx_n", mMap1.get(Constants.SIM3TX_N));
-                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL3_N));
+                    if ((int) mMap1.get(Constants.PERIOD3) == 1) {
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM3RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM3TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL3));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM3RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM3TX_N));
+                        out.putLong("tot_n",(long)  mMap1.get(Constants.TOTAL3_N));
                     } else {
-                        mMap3.put("rx", (long) mMap1.get(Constants.SIM3RX) - (long) mMap2.get(Constants.SIM3RX));
-                        mMap3.put("tx", (long) mMap1.get(Constants.SIM3TX) - (long) mMap2.get(Constants.SIM3TX));
-                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL3) - (long) mMap2.get(Constants.TOTAL3));
-                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM3RX_N) - (long) mMap2.get(Constants.SIM3RX_N));
-                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM3TX_N) - (long) mMap2.get(Constants.SIM3TX_N));
-                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL3_N) - (long) mMap2.get(Constants.TOTAL3_N));
+                        out.putLong("rx", (long) mMap1.get(Constants.SIM3RX) - (long) mMap2.get(Constants.SIM3RX));
+                        out.putLong("tx", (long) mMap1.get(Constants.SIM3TX) - (long) mMap2.get(Constants.SIM3TX));
+                        out.putLong("tot", (long) mMap1.get(Constants.TOTAL3) - (long) mMap2.get(Constants.TOTAL3));
+                        out.putLong("rx_n", (long) mMap1.get(Constants.SIM3RX_N) - (long) mMap2.get(Constants.SIM3RX_N));
+                        out.putLong("tx_n", (long) mMap1.get(Constants.SIM3TX_N) - (long) mMap2.get(Constants.SIM3TX_N));
+                        out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL3_N) - (long) mMap2.get(Constants.TOTAL3_N));
                     }
                 }
                 break;
         }
         cursorToDate.close();
         cursorToDayBeforeDate.close();
-        return mMap3;
+        return out;
     }
 }

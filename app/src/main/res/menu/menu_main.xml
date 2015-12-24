@@ -9,4 +9,6 @@
         android:icon="@drawable/ic_action_set" android:showAsAction="ifRoom" />
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:icon="@drawable/ic_action_settings" android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_show_history" android:title="@string/action_show_history"
+        android:showAsAction="never" />
 </menu>
