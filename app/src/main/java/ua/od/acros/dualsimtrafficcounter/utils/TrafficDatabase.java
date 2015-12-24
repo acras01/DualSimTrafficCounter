@@ -440,6 +440,23 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                         mMap3.put("tot_n", mMap1.get(Constants.TOTAL1_N));
                     }
                 }
+                else if (prefs.getString(Constants.PREF_SIM1[3], "0").equals("2")) {
+                    if ((int) mMap1.get(Constants.PERIOD1) == 0) {
+                        mMap3.put("rx", mMap1.get(Constants.SIM1RX));
+                        mMap3.put("tx", mMap1.get(Constants.SIM1TX));
+                        mMap3.put("tot", mMap1.get(Constants.TOTAL1));
+                        mMap3.put("rx_n", mMap1.get(Constants.SIM1RX_N));
+                        mMap3.put("tx_n", mMap1.get(Constants.SIM1TX_N));
+                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL1_N));
+                    } else {
+                        mMap3.put("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
+                        mMap3.put("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
+                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
+                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
+                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
+                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
+                    }
+                }
                 break;
             case Constants.SIM2:
                 if (prefs.getString(Constants.PREF_SIM2[3], "0").equals("1")) {
@@ -457,6 +474,23 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                         mMap3.put("rx_n", mMap1.get(Constants.SIM2RX_N));
                         mMap3.put("tx_n", mMap1.get(Constants.SIM2TX_N));
                         mMap3.put("tot_n", mMap1.get(Constants.TOTAL2_N));
+                    }
+                }
+                else if (prefs.getString(Constants.PREF_SIM2[3], "0").equals("2")) {
+                    if ((int) mMap1.get(Constants.PERIOD2) == 0) {
+                        mMap3.put("rx", mMap1.get(Constants.SIM2RX));
+                        mMap3.put("tx", mMap1.get(Constants.SIM2TX));
+                        mMap3.put("tot", mMap1.get(Constants.TOTAL2));
+                        mMap3.put("rx_n", mMap1.get(Constants.SIM2RX_N));
+                        mMap3.put("tx_n", mMap1.get(Constants.SIM2TX_N));
+                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL2_N));
+                    } else {
+                        mMap3.put("rx", (long) mMap1.get(Constants.SIM2RX) - (long) mMap2.get(Constants.SIM2RX));
+                        mMap3.put("tx", (long) mMap1.get(Constants.SIM2TX) - (long) mMap2.get(Constants.SIM2TX));
+                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL2) - (long) mMap2.get(Constants.TOTAL2));
+                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM2RX_N) - (long) mMap2.get(Constants.SIM2RX_N));
+                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM2TX_N) - (long) mMap2.get(Constants.SIM2TX_N));
+                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL2_N) - (long) mMap2.get(Constants.TOTAL2_N));
                     }
                 }
                 break;
@@ -477,6 +511,22 @@ public class TrafficDatabase extends SQLiteOpenHelper {
                         mMap3.put("tx_n", mMap1.get(Constants.SIM3TX_N));
                         mMap3.put("tot_n", mMap1.get(Constants.TOTAL3_N));
                     }
+                } else if (prefs.getString(Constants.PREF_SIM3[3], "0").equals("2")) {
+                    if ((int) mMap1.get(Constants.PERIOD3) == 0) {
+                        mMap3.put("rx", mMap1.get(Constants.SIM3RX));
+                        mMap3.put("tx", mMap1.get(Constants.SIM3TX));
+                        mMap3.put("tot", mMap1.get(Constants.TOTAL3));
+                        mMap3.put("rx_n", mMap1.get(Constants.SIM3RX_N));
+                        mMap3.put("tx_n", mMap1.get(Constants.SIM3TX_N));
+                        mMap3.put("tot_n", mMap1.get(Constants.TOTAL3_N));
+                    } else {
+                        mMap3.put("rx", (long) mMap1.get(Constants.SIM3RX) - (long) mMap2.get(Constants.SIM3RX));
+                        mMap3.put("tx", (long) mMap1.get(Constants.SIM3TX) - (long) mMap2.get(Constants.SIM3TX));
+                        mMap3.put("tot", (long) mMap1.get(Constants.TOTAL3) - (long) mMap2.get(Constants.TOTAL3));
+                        mMap3.put("rx_n", (long) mMap1.get(Constants.SIM3RX_N) - (long) mMap2.get(Constants.SIM3RX_N));
+                        mMap3.put("tx_n", (long) mMap1.get(Constants.SIM3TX_N) - (long) mMap2.get(Constants.SIM3TX_N));
+                        mMap3.put("tot_n", (long) mMap1.get(Constants.TOTAL3_N) - (long) mMap2.get(Constants.TOTAL3_N));
+                    }
                 }
                 break;
         }
@@ -484,20 +534,4 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         cursorToDayBeforeDate.close();
         return mMap3;
     }
-
-    /*public static void cleanDB (TrafficDatabase db, String date, String time) {
-        mSqLiteDatabase = db.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(DATABASE_TABLE, new String[] {Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
-                Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
-                Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3}, "date=? AND time=?", new String[] {date, time}, null, null, null);
-        if (cursor != null && cursor.getCount() > 1) {
-            cursor.moveToFirst();
-            for (int i = 0; i < cursor.getCount() - 1; i++) {
-                cursor.re
-                cursor.moveToNext();
-            }
-            cursor.close();
-        }
-    }*/
-
 }
