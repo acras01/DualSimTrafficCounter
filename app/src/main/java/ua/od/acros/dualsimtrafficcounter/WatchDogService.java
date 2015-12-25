@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,8 +100,8 @@ public class WatchDogService extends Service{
             dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
             if (dataMap.get(Constants.LAST_DATE).equals("")) {
                 Calendar myCalendar = Calendar.getInstance();
-                SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
+                SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss", getResources().getConfiguration().locale);
                 dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
                 dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
             }

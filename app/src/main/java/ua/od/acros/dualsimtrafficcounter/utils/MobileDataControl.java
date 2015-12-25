@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -331,7 +330,7 @@ public class MobileDataControl {
                         // create this directory if not already created
                         dir.mkdir();
                         // create the file in which we will write the contents
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault());
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", context.getResources().getConfiguration().locale);
                         Date now = new Date();
                         String fileName = formatter.format(now) + "_log.txt";
                         File file = new File(dir, fileName);

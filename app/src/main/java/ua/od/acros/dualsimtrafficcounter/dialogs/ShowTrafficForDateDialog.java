@@ -18,6 +18,11 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.Format;
+import java.text.SimpleDateFormat;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -99,7 +104,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                         if (chkSIM != Constants.NULL ) {
                             String date = myYear + "-" + myMonth + "-" + myDay;
                             Bundle bundle = TrafficDatabase.getDataForDate(new TrafficDatabase(getActivity(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
-                                    date, chkSIM, MainActivity.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
+                                    date, chkSIM, getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
                             if (bundle != null) {
                                 dialog.dismiss();
                                 Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
@@ -138,7 +143,14 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
             myYear = year;
             myMonth = monthOfYear + 1;
             myDay = dayOfMonth;
-            bSetDate.setText(String.format(getActivity().getResources().getString(R.string.time), myDay, myMonth, myYear));
+
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+            DateTime date = fmt.parseDateTime(myYear + "-" + myMonth + "-" + myDay);
+
+            Format dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+            String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
+
+            bSetDate.setText(new SimpleDateFormat(pattern).format(date.toDate()));
         }
     };
 }

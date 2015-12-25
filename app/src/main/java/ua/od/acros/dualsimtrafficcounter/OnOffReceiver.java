@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
@@ -37,7 +36,7 @@ public class OnOffReceiver extends BroadcastReceiver {
                     MobileDataControl.getMobileDataInfo(context)[0] == 2)
                 MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
 
-            String out = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +
+            String out = new SimpleDateFormat("HH:mm", context.getResources().getConfiguration().locale).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +
                     String.valueOf(intent.getBooleanExtra(Constants.ON_OFF, true)) + "\n";
             // to this path add a new directory path
             File dir = new File(String.valueOf(context.getFilesDir()));

@@ -1,7 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +11,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.Locale;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -28,7 +28,11 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
 
         DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
         DateTime date = fmt.parseDateTime(getIntent().getStringExtra(Constants.LAST_DATE));
-        setTitle(String.format(date.toString(Constants.DATE_FORMAT, Locale.getDefault()), R.string.traffic_data));
+
+        Format dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+        String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
+
+        setTitle(String.format(getResources().getString(R.string.traffic_data), new SimpleDateFormat(pattern).format(date.toDate())));
 
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -42,7 +46,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
         TextView night = (TextView) findViewById(R.id.night);
 
         findViewById(R.id.buttonOK).setOnClickListener(this);
-        findViewById(R.id.choosedate).setOnClickListener(this);
+        //findViewById(R.id.choosedate).setOnClickListener(this);
 
         Bundle bundle = getIntent().getBundleExtra(Constants.SET_USAGE);
         int sim = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
@@ -98,11 +102,11 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
             case R.id.buttonOK:
                 finish();
                 break;
-            case R.id.choosedate:
-                finish();
+            /*case R.id.choosedate:
                 DialogFragment frg = ShowTrafficForDateDialog.newInstance();
                 frg.show(getFragmentManager(), "dialog");
-                break;
+                finish();
+                break;*/
         }
     }
 }

@@ -177,16 +177,6 @@
         android:weightSum="1">
 
         <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/choose_date"
-            android:id="@+id/choosedate"
-            android:layout_alignParentBottom="false"
-            android:layout_below="@+id/tableLayout2"
-            android:layout_weight=".5" />
-
-        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@android:string/ok"

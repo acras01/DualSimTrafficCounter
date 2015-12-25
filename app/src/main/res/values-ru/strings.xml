@@ -121,4 +121,5 @@
     <string name="action_show_history">Трафик за определенную дату</string>
     <string name="traffic_data">Трафик за %1$s</string>
     <string name="date_incorrect_or_data_missing">Введена неверная дата или данные отсутствуют</string>
+    <string name="choose_date">Другая дата</string>
 </resources>
