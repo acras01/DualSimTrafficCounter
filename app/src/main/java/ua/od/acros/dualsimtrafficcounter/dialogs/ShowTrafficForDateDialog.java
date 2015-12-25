@@ -107,9 +107,9 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                                 intent.putExtra("data", bundle);
                                 getActivity().startActivity(intent);
                             } else
-                                Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_LONG).show();
                         } else
-                            Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_LONG).show();
                     }
                 });
             }

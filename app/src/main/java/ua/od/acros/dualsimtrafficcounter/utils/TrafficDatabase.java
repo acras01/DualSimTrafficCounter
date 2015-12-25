@@ -363,15 +363,21 @@ public class TrafficDatabase extends SQLiteOpenHelper {
     }
 
     public static Bundle getDataForDate(TrafficDatabase db, String date, int sim, SharedPreferences prefs) {
+
         Map<String, Object> mMap1 = new HashMap<>();
         Map<String, Object> mMap2 = new HashMap<>();
         Bundle out = new Bundle();
+
         mSqLiteDatabase = db.getReadableDatabase();
+
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime queried = fmtdate.parseDateTime(date);
+
         if (queried.isAfterNow())
             return null;
+
         String dayBeforeDate = queried.minusDays(1).toString(fmtdate);
+
         Cursor cursorToDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{
                 Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
                 Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
