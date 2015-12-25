@@ -105,12 +105,18 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         boolean[] isNight =  CountService.getIsNight();
 
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) : (long) dataMap.get(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1TX_N) : (long) dataMap.get(Constants.SIM1TX)));
-            RX2.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM2RX_N) : (long) dataMap.get(Constants.SIM2RX)));
-            TX2.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM2TX_N) : (long) dataMap.get(Constants.SIM2TX)));
-            RX3.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM3RX_N) : (long) dataMap.get(Constants.SIM3RX)));
-            TX3.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM3TX_N) : (long) dataMap.get(Constants.SIM3TX)));
+            RX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
+                    (long) dataMap.get(Constants.SIM1RX)));
+            TX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1TX_N) :
+                    (long) dataMap.get(Constants.SIM1TX)));
+            RX2.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM2RX_N) :
+                    (long) dataMap.get(Constants.SIM2RX)));
+            TX2.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM2TX_N) :
+                    (long) dataMap.get(Constants.SIM2TX)));
+            RX3.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM3RX_N) :
+                    (long) dataMap.get(Constants.SIM3RX)));
+            TX3.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM3TX_N) :
+                    (long) dataMap.get(Constants.SIM3TX)));
         }
         TOT1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.TOTAL1_N) :
                 (long) dataMap.get(Constants.TOTAL1)));

@@ -21,14 +21,12 @@ import org.joda.time.DateTime;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.ViewTraffic;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 
 public class ShowTrafficForDateDialog extends DialogFragment implements View.OnClickListener{
 
-    private static final int DIALOG_DATE = 1;
     private int myYear;
     private int myMonth;
     private int myDay;
@@ -101,12 +99,15 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                         if (chkSIM != Constants.NULL ) {
                             dialog.dismiss();
                             Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
-                            String date = myYear + "-" + myMonth + "-" + myDay;
-                            Bundle bundle = TrafficDatabase.getDataForDate(new TrafficDatabase(MainActivity.getAppContext(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
-                                    date, chkSIM, MainActivity.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
                             intent.putExtra("sim", chkSIM);
-                            intent.putExtra("data", bundle);
-                            getActivity().sendBroadcast(intent);
+                            String date = myYear + "-" + myMonth + "-" + myDay;
+                            Bundle bundle = TrafficDatabase.getDataForDate(new TrafficDatabase(getActivity(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
+                                    date, chkSIM, MainActivity.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
+                            if (bundle != null) {
+                                intent.putExtra("data", bundle);
+                                getActivity().startActivity(intent);
+                            } else
+                                Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
                         } else
                             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }
@@ -124,7 +125,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.setdate) {
-            DatePickerDialog tpd = new DatePickerDialog(MainActivity.getAppContext(), myCallBack, myYear, myMonth - 1, myDay);
+            DatePickerDialog tpd = new DatePickerDialog(getActivity(), myCallBack, myYear, myMonth - 1, myDay);
             tpd.show();
         }
 
@@ -136,7 +137,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
             myYear = year;
             myMonth = monthOfYear + 1;
             myDay = dayOfMonth;
-            bSetDate.setText(String.format(MainActivity.getAppContext().getResources().getString(R.string.time), myDay, myMonth, myYear));
+            bSetDate.setText(String.format(getActivity().getResources().getString(R.string.time), myDay, myMonth, myYear));
         }
     };
 }

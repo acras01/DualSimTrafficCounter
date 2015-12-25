@@ -370,12 +370,12 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime queried = fmtdate.parseDateTime(date);
         String dayBeforeDate = queried.minusDays(1).toString(fmtdate);
-        Cursor cursorToDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
-                Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
-                Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
-                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
-                Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
-                Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, Constants.LAST_DATE + "=?", new String[]{date}, null, null, null);
+        Cursor cursorToDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{
+                Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
+                Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
+                Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
+                Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N, Constants.SIM3RX_N, Constants.SIM3TX_N,
+                Constants.TOTAL3_N}, Constants.LAST_DATE + " = ?", new String[]{date}, null, null, null);
         if (cursorToDate.moveToLast()) {
             mMap1.put(Constants.SIM1RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX)));
             mMap1.put(Constants.SIM2RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX)));
@@ -396,12 +396,12 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             mMap1.put(Constants.TOTAL2_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2_N)));
             mMap1.put(Constants.TOTAL3_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3_N)));
         }
-        Cursor cursorToDayBeforeDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[] {Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
-                Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
-                Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
-                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
-                Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
-                Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, Constants.LAST_DATE + "=?", new String[]{dayBeforeDate}, null, null, null);
+        Cursor cursorToDayBeforeDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{
+                Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
+                Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
+                Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
+                Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N, Constants.SIM3RX_N, Constants.SIM3TX_N,
+                Constants.TOTAL3_N}, Constants.LAST_DATE + " = ?", new String[]{dayBeforeDate}, null, null, null);
         if (cursorToDayBeforeDate.moveToLast()) {
             mMap2.put(Constants.SIM1RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX)));
             mMap2.put(Constants.SIM2RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX)));

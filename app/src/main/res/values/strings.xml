@@ -123,5 +123,6 @@
     <string name="action_show_history">Show traffic for date</string>
     <string name="set_date">Click to choose date</string>
     <string name="time" translatable="false">%1$s/%2$s/%3$s</string>
-    <string name="title_activity_view_traffic">ViewTraffic</string>
+    <string name="date_incorrect_or_data_missing">Date you\'ve entered is incorrect or data is missing</string>
+    <string name="traffic_data">Traffic data for selected date</string>
 </resources>
