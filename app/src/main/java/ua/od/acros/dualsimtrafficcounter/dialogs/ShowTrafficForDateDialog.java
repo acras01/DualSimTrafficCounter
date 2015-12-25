@@ -103,8 +103,9 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                             if (bundle != null) {
                                 dialog.dismiss();
                                 Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
-                                intent.putExtra("sim", chkSIM);
-                                intent.putExtra("data", bundle);
+                                intent.putExtra(Constants.SIM_ACTIVE, chkSIM);
+                                intent.putExtra(Constants.SET_USAGE, bundle);
+                                intent.putExtra(Constants.LAST_DATE, date);
                                 getActivity().startActivity(intent);
                             } else
                                 Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_LONG).show();

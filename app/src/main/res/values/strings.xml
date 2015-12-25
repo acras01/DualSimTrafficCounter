@@ -124,5 +124,6 @@
     <string name="set_date">Click to choose date</string>
     <string name="time" translatable="false">%1$s/%2$s/%3$s</string>
     <string name="date_incorrect_or_data_missing">Date you\'ve entered is incorrect or data is missing</string>
-    <string name="traffic_data">Traffic data for selected date</string>
+    <string name="traffic_data">Traffic data for %1$s</string>
+    <string name="choose_date">Another date</string>
 </resources>

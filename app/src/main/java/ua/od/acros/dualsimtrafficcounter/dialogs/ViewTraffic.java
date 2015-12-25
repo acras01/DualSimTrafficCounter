@@ -1,48 +1,51 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.Locale;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 
-public class ViewTraffic extends Activity {
-
-    private TextView RX, TX, RXN, TXN, day, night, TOT, TOTN;
+public class ViewTraffic extends Activity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_traffic);
 
+        DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+        DateTime date = fmt.parseDateTime(getIntent().getStringExtra(Constants.LAST_DATE));
+        setTitle(String.format(date.toString(Constants.DATE_FORMAT, Locale.getDefault()), R.string.traffic_data));
+
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        RX = (TextView) findViewById(R.id.rx);
-        TX = (TextView) findViewById(R.id.tx);
-        RXN = (TextView) findViewById(R.id.rxnight);
-        TXN = (TextView) findViewById(R.id.txnight);
-        TOT = (TextView) findViewById(R.id.total);
-        TOTN = (TextView) findViewById(R.id.totalnight);
-        day = (TextView) findViewById(R.id.day);
-        night = (TextView) findViewById(R.id.night);
+        TextView RX = (TextView) findViewById(R.id.rx);
+        TextView TX = (TextView) findViewById(R.id.tx);
+        TextView RXN = (TextView) findViewById(R.id.rxnight);
+        TextView TXN = (TextView) findViewById(R.id.txnight);
+        TextView TOT = (TextView) findViewById(R.id.total);
+        TextView TOTN = (TextView) findViewById(R.id.totalnight);
+        TextView day = (TextView) findViewById(R.id.day);
+        TextView night = (TextView) findViewById(R.id.night);
 
-        Button bOK = (Button) findViewById(R.id.buttonOK);
-        bOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        findViewById(R.id.buttonOK).setOnClickListener(this);
+        findViewById(R.id.choosedate).setOnClickListener(this);
 
-        Bundle bundle = getIntent().getBundleExtra("data");
-        int sim = getIntent().getIntExtra("sim", Constants.DISABLED);
+        Bundle bundle = getIntent().getBundleExtra(Constants.SET_USAGE);
+        int sim = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
 
         RXN.setVisibility(View.GONE);
         TXN.setVisibility(View.GONE);
@@ -81,6 +84,25 @@ public class ViewTraffic extends Activity {
                 TXN.setText(DataFormat.formatData(this, bundle.getLong("tx_n")));
                 TOTN.setText(DataFormat.formatData(this, bundle.getLong("tot_n")));
             }
+        }
+    }
+
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.buttonOK:
+                finish();
+                break;
+            case R.id.choosedate:
+                finish();
+                DialogFragment frg = ShowTrafficForDateDialog.newInstance();
+                frg.show(getFragmentManager(), "dialog");
+                break;
         }
     }
 }

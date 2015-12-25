@@ -85,4 +85,5 @@ public class Constants {
     public static final String PERIOD3 = "period3";
     public static final String PERIOD2 = "period2";
     public static final String PERIOD1 = "period1";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
 }

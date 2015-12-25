@@ -119,6 +119,6 @@
     <string name="show_daynight_icons">Відображати іконки \"день/ніч\" при використанні нічного тарифу</string>
     <string name="set_date">Натисніть для вибору дати</string>
     <string name="action_show_history">Трафік за обрану дату</string>
-    <string name="traffic_data">Трафік за обрану дату</string>
+    <string name="traffic_data">Трафік за %1$s</string>
     <string name="date_incorrect_or_data_missing">Введено невірну дату або дані відсутні</string>
 </resources>
