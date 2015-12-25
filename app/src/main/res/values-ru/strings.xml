@@ -120,4 +120,5 @@
     <string name="set_date">Нажмите для выбора даты</string>
     <string name="action_show_history">Трафик за определенную дату</string>
     <string name="traffic_data">Трафик за выбранную дату</string>
+    <string name="date_incorrect_or_data_missing">Введена неверная дата или данные отсутствуют</string>
 </resources>
