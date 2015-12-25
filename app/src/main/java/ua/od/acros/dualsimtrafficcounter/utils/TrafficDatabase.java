@@ -369,6 +369,8 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         mSqLiteDatabase = db.getReadableDatabase();
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime queried = fmtdate.parseDateTime(date);
+        if (queried.isAfterNow())
+            return null;
         String dayBeforeDate = queried.minusDays(1).toString(fmtdate);
         Cursor cursorToDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{
                 Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,

@@ -97,13 +97,13 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                     @Override
                     public void onClick(View view) {
                         if (chkSIM != Constants.NULL ) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
-                            intent.putExtra("sim", chkSIM);
                             String date = myYear + "-" + myMonth + "-" + myDay;
                             Bundle bundle = TrafficDatabase.getDataForDate(new TrafficDatabase(getActivity(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
                                     date, chkSIM, MainActivity.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
                             if (bundle != null) {
+                                dialog.dismiss();
+                                Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
+                                intent.putExtra("sim", chkSIM);
                                 intent.putExtra("data", bundle);
                                 getActivity().startActivity(intent);
                             } else
