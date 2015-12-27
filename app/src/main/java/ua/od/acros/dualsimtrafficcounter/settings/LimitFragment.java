@@ -97,7 +97,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         opValue1 = (ListPreference) findPreference(Constants.PREF_SIM1[16]);
         opValue2 = (ListPreference) findPreference(Constants.PREF_SIM2[16]);
         opValue3 = (ListPreference) findPreference(Constants.PREF_SIM3[16]);
-//night
+        //night
         limit1N = (EditTextPreference) findPreference(Constants.PREF_SIM1[18]);
         limit2N = (EditTextPreference) findPreference(Constants.PREF_SIM2[18]);
         limit3N = (EditTextPreference) findPreference(Constants.PREF_SIM3[18]);
@@ -142,6 +142,30 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
+
+
+        int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+        if (sim != Constants.DISABLED) {
+            String key = "";
+            // the preference screen your item is in must be known
+            switch (sim) {
+                case R.id.limit1:
+                    key = "sim1";
+                    break;
+                case R.id.limit2:
+                    key = "sim2";
+                    break;
+                case R.id.limit3:
+                    key = "sim3";
+                    break;
+            }
+            // the position of your item inside the preference screen above
+            if (!key.equals("")) {
+                int pos = getPreferenceScreen().findPreference(key).getOrder();
+                // simulate a click / call it!!
+                getPreferenceScreen().onItemClick(null, null, pos, 0);
+            }
+        }
     }
 
     private void updateSummary() {

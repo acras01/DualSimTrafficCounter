@@ -9,7 +9,8 @@
         android:summaryOff="@string/off" />
 
     <PreferenceScreen
-        android:title="@string/sim1_limit">
+        android:title="@string/sim1_limit"
+        android:key="sim1" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="prefer1"

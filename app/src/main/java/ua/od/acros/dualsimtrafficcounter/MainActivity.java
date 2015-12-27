@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ import java.util.Map;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetUsageDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowTrafficForDateDialog;
+import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -61,7 +63,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private boolean needsRestart = false;
     private boolean showNight1, showNight2, showNight3;
     private String opName1, opName2, opName3;
-    private static FragmentManager frgmgr;
 
 
     @Override
@@ -69,7 +70,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         super.onCreate(savedInstanceState);
 
         MyApplication.activityResumed();
-        frgmgr = getFragmentManager();
         showNight1 = showNight2 = showNight3 = false;
         opName1 = opName2 = opName3 = "";
         context = MainActivity.this;
@@ -488,19 +488,19 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 }
                 break;
             case R.id.action_mobile_data_on_off:
-                showDialog(Constants.ON_OFF);
+                showDialog(Constants.ON_OFF, getFragmentManager());
                 break;
             case R.id.action_set_usage:
-                showDialog(Constants.SET_USAGE);
+                showDialog(Constants.SET_USAGE, getFragmentManager());
                 break;
             case R.id.action_show_history:
-                showDialog(Constants.TRAFFIC_FOR_DATE);
+                showDialog(Constants.TRAFFIC_FOR_DATE, getFragmentManager());
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public static void showDialog(String key) {
+    public static void showDialog(String key, FragmentManager fragmentManager) {
         DialogFragment dialog = null;
         switch (key) {
             case Constants.ON_OFF:
@@ -514,7 +514,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
         }
         if (dialog != null)
-            dialog.show(frgmgr, "dialog");
+            dialog.show(fragmentManager, "dialog");
     }
 
     @Override
@@ -555,14 +555,12 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         MyApplication.activityResumed();
         if (needsRestart)
             finish();
-        frgmgr = getFragmentManager();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         MyApplication.activityPaused();
-        frgmgr = null;
     }
 
     @Override
@@ -576,7 +574,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         if (onoffReceiver != null)
             unregisterReceiver(onoffReceiver);
         prefs.unregisterOnSharedPreferenceChangeListener(this);
-        frgmgr = null;
     }
 
     @Override
@@ -761,6 +758,13 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 }
                 break;
             case R.id.limit1:
+            case R.id.limit2:
+            case R.id.limit3:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
+                intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                intent.putExtra(Constants.SIM_ACTIVE, v.getId());
+                startActivity(intent);
                 break;
         }
     }
