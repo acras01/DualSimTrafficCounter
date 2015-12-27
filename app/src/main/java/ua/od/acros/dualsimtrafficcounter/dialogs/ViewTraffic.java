@@ -15,6 +15,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -46,7 +47,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
         TextView night = (TextView) findViewById(R.id.night);
 
         findViewById(R.id.buttonOK).setOnClickListener(this);
-        //findViewById(R.id.choosedate).setOnClickListener(this);
+        findViewById(R.id.choosedate).setOnClickListener(this);
 
         Bundle bundle = getIntent().getBundleExtra(Constants.SET_USAGE);
         int sim = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
@@ -102,11 +103,10 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
             case R.id.buttonOK:
                 finish();
                 break;
-            /*case R.id.choosedate:
-                DialogFragment frg = ShowTrafficForDateDialog.newInstance();
-                frg.show(getFragmentManager(), "dialog");
+            case R.id.choosedate:
+                MainActivity.showDialog(Constants.TRAFFIC_FOR_DATE, getFragmentManager());
                 finish();
-                break;*/
+                break;
         }
     }
 }

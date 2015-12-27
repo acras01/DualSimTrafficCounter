@@ -8,7 +8,7 @@
         android:summaryOn="@string/on"
         android:summaryOff="@string/off" />
 
-    <PreferenceCategory
+    <PreferenceScreen
         android:title="@string/sim1_limit">
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
@@ -148,9 +148,9 @@
             android:dependency="usenight1"
             android:title="@string/time_off"/>
 
-    </PreferenceCategory>
+    </PreferenceScreen>
 
-    <PreferenceCategory
+    <PreferenceScreen
         android:title="@string/sim2_limit"
         android:key="sim2" >
 
@@ -291,9 +291,9 @@
             android:dependency="usenight2"
             android:title="@string/time_off"/>
 
-    </PreferenceCategory>
+    </PreferenceScreen>
 
-    <PreferenceCategory
+    <PreferenceScreen
         android:title="@string/sim3_limit"
         android:key="sim3" >
 
@@ -310,6 +310,9 @@
             android:defaultValue="true"
             android:summaryOn="@string/on"
             android:summaryOff="@string/off" />
+
+        <PreferenceCategory
+            android:title="@string/limit_title" >
 
         <EditTextPreference
             android:key="limit3"
@@ -369,6 +372,11 @@
             android:dependency="everydayonoff3"
             android:title="@string/time_on"/>
 
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/operator_round" >
+
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="op_round3"
             android:title="@string/round_traffic"
@@ -392,6 +400,11 @@
             android:dependency="op_round3"
             android:summary=""
             android:title="@string/measure_value" />
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/night_tafiff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="usenight3"
@@ -434,6 +447,8 @@
             android:dependency="usenight3"
             android:title="@string/time_off"/>
 
-    </PreferenceCategory>
+        </PreferenceCategory>
+
+    </PreferenceScreen>
 
 </PreferenceScreen>

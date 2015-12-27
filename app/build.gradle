@@ -4,7 +4,7 @@ android {
     signingConfigs {
         acras {
             keyAlias 'acras_1'
-            storeFile file('D:/android/development/acras_keystore.jks')
+            storeFile file('C:/jjj/acras_keystore.jks')
             keyPassword 'ZqwErtY19810506'
             storePassword 'fpfhjdfbhbyf12091977'
         }

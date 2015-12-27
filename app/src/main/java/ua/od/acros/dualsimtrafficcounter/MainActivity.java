@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -442,19 +443,33 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 }
                 break;
             case R.id.action_mobile_data_on_off:
-                DialogFragment frg1 = OnOffDialog.newInstance();
-                frg1.show(getFragmentManager(), "dialog");
+                showDialog(Constants.ON_OFF, getFragmentManager());
                 break;
             case R.id.action_set_usage:
-                DialogFragment frg2 = SetUsageDialog.newInstance();
-                frg2.show(getFragmentManager(), "dialog");
+                showDialog(Constants.SET_USAGE, getFragmentManager());
                 break;
             case R.id.action_show_history:
-                DialogFragment frg3 = ShowTrafficForDateDialog.newInstance();
-                frg3.show(getFragmentManager(), "dialog");
+                showDialog(Constants.TRAFFIC_FOR_DATE, getFragmentManager());
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void showDialog(String key, FragmentManager mgr) {
+        DialogFragment dialog = null;
+        switch (key) {
+            case Constants.ON_OFF:
+                dialog = OnOffDialog.newInstance();
+                break;
+            case Constants.SET_USAGE:
+                dialog = SetUsageDialog.newInstance();
+                break;
+            case Constants.TRAFFIC_FOR_DATE:
+                dialog = ShowTrafficForDateDialog.newInstance();
+                break;
+        }
+        if (dialog != null)
+            dialog.show(mgr, "dialog");
     }
 
     @Override
