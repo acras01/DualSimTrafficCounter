@@ -184,7 +184,8 @@
             android:id="@+id/choosedate"
             android:layout_alignParentBottom="false"
             android:layout_below="@+id/tableLayout2"
-            android:layout_weight=".5" />
+            android:layout_weight=".5"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="match_parent"
