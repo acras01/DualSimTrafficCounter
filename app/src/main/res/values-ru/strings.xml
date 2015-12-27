@@ -122,4 +122,8 @@
     <string name="traffic_data">Трафик за %1$s</string>
     <string name="date_incorrect_or_data_missing">Введена неверная дата или данные отсутствуют</string>
     <string name="choose_date">Другая дата</string>
+    <string name="everyday_onoff">Ежедневное переключение</string>
+    <string name="limit_settings">Настройки предела</string>
+    <string name="night_tafiff">Ночной тариф</string>
+    <string name="operator_round">Округление трафика </string>
 </resources>

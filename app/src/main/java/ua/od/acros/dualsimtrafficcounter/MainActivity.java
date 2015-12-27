@@ -46,11 +46,13 @@ import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener, Button.OnClickListener{
 
-    TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
+    private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
 
-    Map<String, Object> dataMap = new HashMap<>();
+    private Map<String, Object> dataMap = new HashMap<>();
 
-    BroadcastReceiver dataReceiver, tipReceiver, onoffReceiver;
+    private BroadcastReceiver dataReceiver, tipReceiver, onoffReceiver;
+
+    private Button bLim1, bLim2, bLim3;
 
     private MenuItem mService, mMobileData;
     private static Context context;
@@ -59,6 +61,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private boolean needsRestart = false;
     private boolean showNight1, showNight2, showNight3;
     private String opName1, opName2, opName3;
+    private static FragmentManager frgmgr;
 
 
     @Override
@@ -66,6 +69,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         super.onCreate(savedInstanceState);
 
         MyApplication.activityResumed();
+        frgmgr = getFragmentManager();
         showNight1 = showNight2 = showNight3 = false;
         opName1 = opName2 = opName3 = "";
         context = MainActivity.this;
@@ -95,15 +99,52 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         SIM2 = (TextView) findViewById(R.id.sim2_name);
         SIM3 = (TextView) findViewById(R.id.sim3_name);
 
+        bLim1 = (Button) findViewById(R.id.limit1);
+        bLim2 = (Button) findViewById(R.id.limit2);
+        bLim3 = (Button) findViewById(R.id.limit3);
+
         findViewById(R.id.buttonClear1).setOnClickListener(this);
         findViewById(R.id.buttonClear2).setOnClickListener(this);
         findViewById(R.id.buttonClear3).setOnClickListener(this);
         SIM1.setOnClickListener(this);
         SIM2.setOnClickListener(this);
         SIM3.setOnClickListener(this);
-
+        bLim1.setOnClickListener(this);
+        bLim2.setOnClickListener(this);
+        bLim3.setOnClickListener(this);
 
         boolean[] isNight =  CountService.getIsNight();
+
+        String limit1 = isNight[0] ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
+        String limit2 = isNight[1] ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
+        String limit3 = isNight[2] ? prefs.getString(Constants.PREF_SIM3[18], "") : prefs.getString(Constants.PREF_SIM3[1], "");
+
+        int value1;
+        if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+            value1 = 0;
+        else
+            value1 = isNight[0] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], "")) :
+                    Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
+        int value2;
+        if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+            value2 = 0;
+        else
+            value2 = isNight[1] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], "")) :
+                    Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+        int value3;
+        if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+            value3 = 0;
+        else
+            value3 = isNight[2] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], "")) :
+                    Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+
+        double lim1 = !limit1.equals("") ? DataFormat.getFormatLong(limit1, value1) : Double.MAX_VALUE;
+        double lim2 = !limit2.equals("") ? DataFormat.getFormatLong(limit2, value2) : Double.MAX_VALUE;
+        double lim3 = !limit3.equals("") ? DataFormat.getFormatLong(limit3, value3) : Double.MAX_VALUE;
+
+        bLim1.setText(DataFormat.formatData(context, (long) lim1));
+        bLim2.setText(DataFormat.formatData(context, (long) lim2));
+        bLim3.setText(DataFormat.formatData(context, (long) lim3));
 
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             RX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
@@ -253,9 +294,11 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             SIM2.setVisibility(View.GONE);
             TOT2.setVisibility(View.GONE);
             findViewById(R.id.buttonClear2).setVisibility(View.GONE);
+            bLim2.setVisibility(View.GONE);
             SIM3.setVisibility(View.GONE);
             TOT3.setVisibility(View.GONE);
             findViewById(R.id.buttonClear3).setVisibility(View.GONE);
+            bLim3.setVisibility(View.GONE);
         } else {
             findViewById(R.id.sim2row).setVisibility(View.GONE);
             findViewById(R.id.sim3row).setVisibility(View.GONE);
@@ -271,6 +314,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 SIM2.setVisibility(View.VISIBLE);
                 TOT2.setVisibility(View.VISIBLE);
                 findViewById(R.id.buttonClear2).setVisibility(View.VISIBLE);
+                bLim2.setVisibility(View.VISIBLE);
             } else
                 findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
         if (simNumber == 3)
@@ -284,6 +328,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 SIM3.setVisibility(View.VISIBLE);
                 TOT3.setVisibility(View.VISIBLE);
                 findViewById(R.id.buttonClear3).setVisibility(View.VISIBLE);
+                bLim3.setVisibility(View.VISIBLE);
             } else
                 findViewById(R.id.sim3row).setVisibility(View.VISIBLE);
         Intent intent = new Intent(this, InfoWidget.class);
@@ -443,19 +488,19 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 }
                 break;
             case R.id.action_mobile_data_on_off:
-                showDialog(Constants.ON_OFF, getFragmentManager());
+                showDialog(Constants.ON_OFF);
                 break;
             case R.id.action_set_usage:
-                showDialog(Constants.SET_USAGE, getFragmentManager());
+                showDialog(Constants.SET_USAGE);
                 break;
             case R.id.action_show_history:
-                showDialog(Constants.TRAFFIC_FOR_DATE, getFragmentManager());
+                showDialog(Constants.TRAFFIC_FOR_DATE);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public static void showDialog(String key, FragmentManager mgr) {
+    public static void showDialog(String key) {
         DialogFragment dialog = null;
         switch (key) {
             case Constants.ON_OFF:
@@ -469,7 +514,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
         }
         if (dialog != null)
-            dialog.show(mgr, "dialog");
+            dialog.show(frgmgr, "dialog");
     }
 
     @Override
@@ -510,12 +555,14 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         MyApplication.activityResumed();
         if (needsRestart)
             finish();
+        frgmgr = getFragmentManager();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         MyApplication.activityPaused();
+        frgmgr = null;
     }
 
     @Override
@@ -529,6 +576,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         if (onoffReceiver != null)
             unregisterReceiver(onoffReceiver);
         prefs.unregisterOnSharedPreferenceChangeListener(this);
+        frgmgr = null;
     }
 
     @Override
@@ -712,7 +760,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     }
                 }
                 break;
-
+            case R.id.limit1:
+                break;
         }
     }
 }

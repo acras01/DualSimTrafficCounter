@@ -125,6 +125,8 @@
     <string name="date_incorrect_or_data_missing">Date you\'ve entered is incorrect or data is missing</string>
     <string name="traffic_data">Traffic data for %1$s</string>
     <string name="choose_date">Another date</string>
-    <string name="operator_round">Round traffic by operator</string>
-    <string name="night_tafiff">Night tariff</string>
+    <string name="operator_round">Round traffic</string>
+    <string name="night_tafiff">Night limit</string>
+    <string name="everyday_onoff">Everyday ON/OFF</string>
+    <string name="limit_settings">Limit settings</string>
 </resources>

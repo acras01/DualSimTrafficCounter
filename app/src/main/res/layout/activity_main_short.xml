@@ -2,8 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    style="?android:attr/buttonBarButtonStyle">
+    android:layout_height="match_parent">
 
     <RelativeLayout
 
@@ -127,36 +126,68 @@
 
                 <TableRow
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:id="@+id/limit1"
+                        android:layout_column="2"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:id="@+id/limit2"
+                        android:layout_column="2"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:id="@+id/limit3"
+                        android:layout_column="2"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/butrow"
                     android:layout_marginTop="15dp">
 
                     <Button
-                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
                         android:id="@+id/buttonClear1"
                         android:layout_column="2"
-                        android:gravity="center|center_horizontal" />
+                        android:gravity="center|center_horizontal"
+                        style="?android:attr/buttonStyleSmall" />
 
                     <Button
-                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
                         android:id="@+id/buttonClear2"
                         android:layout_column="3"
-                        android:gravity="center|center_horizontal" />
+                        android:gravity="center|center_horizontal"
+                        style="?android:attr/buttonStyleSmall" />
 
                     <Button
-                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
                         android:id="@+id/buttonClear3"
                         android:layout_column="4"
-                        android:gravity="center|center_horizontal" />
+                        android:gravity="center|center_horizontal"
+                        style="?android:attr/buttonStyleSmall" />
                 </TableRow>
 
             </TableLayout>

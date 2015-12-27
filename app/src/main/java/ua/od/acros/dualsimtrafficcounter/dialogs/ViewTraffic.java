@@ -104,7 +104,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.choosedate:
-                MainActivity.showDialog(Constants.TRAFFIC_FOR_DATE, getFragmentManager());
+                MainActivity.showDialog(Constants.TRAFFIC_FOR_DATE);
                 finish();
                 break;
         }

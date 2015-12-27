@@ -25,6 +25,9 @@
             android:summaryOn="@string/on"
             android:summaryOff="@string/off" />
 
+        <PreferenceCategory
+            android:title="@string/limit_settings" >
+
         <EditTextPreference
             android:key="limit1"
             android:inputType="numberDecimal"
@@ -65,6 +68,11 @@
             android:title="@string/day"
             android:summary="" />
 
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/everyday_onoff" >
+
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="everydayonoff1"
             android:title="@string/everyday_on_off"
@@ -82,6 +90,11 @@
             android:key="timeon1"
             android:dependency="everydayonoff1"
             android:title="@string/time_on"/>
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/operator_round" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="op_round1"
@@ -106,6 +119,11 @@
             android:dependency="op_round1"
             android:summary=""
             android:title="@string/measure_value" />
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/night_tafiff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="usenight1"
@@ -148,6 +166,8 @@
             android:dependency="usenight1"
             android:title="@string/time_off"/>
 
+        </PreferenceCategory>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -167,6 +187,9 @@
             android:defaultValue="true"
             android:summaryOn="@string/on"
             android:summaryOff="@string/off" />
+
+        <PreferenceCategory
+            android:title="@string/limit_settings" >
 
         <EditTextPreference
             android:key="limit2"
@@ -208,6 +231,11 @@
             android:title="@string/day"
             android:summary="" />
 
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/everyday_onoff" >
+
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="everydayonoff2"
             android:title="@string/everyday_on_off"
@@ -225,6 +253,11 @@
             android:key="timeon2"
             android:dependency="everydayonoff2"
             android:title="@string/time_on"/>
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/operator_round" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="op_round2"
@@ -249,6 +282,11 @@
             android:dependency="op_round2"
             android:summary=""
             android:title="@string/measure_value" />
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/night_tafiff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="usenight2"
@@ -291,6 +329,8 @@
             android:dependency="usenight2"
             android:title="@string/time_off"/>
 
+        </PreferenceCategory>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -312,7 +352,7 @@
             android:summaryOff="@string/off" />
 
         <PreferenceCategory
-            android:title="@string/limit_title" >
+            android:title="@string/limit_settings" >
 
         <EditTextPreference
             android:key="limit3"
@@ -353,6 +393,11 @@
             android:defaultValue="1"
             android:title="@string/day"
             android:summary="" />
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/everyday_onoff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="everydayonoff3"

@@ -13,6 +13,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.text.InputFilter;
 
 import com.stericson.RootTools.RootTools;
@@ -113,8 +114,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         round2N = (EditTextPreference) findPreference(Constants.PREF_SIM2[22]);
         round3N = (EditTextPreference) findPreference(Constants.PREF_SIM3[22]);
 
-        PreferenceCategory sim2 = (PreferenceCategory) getPreferenceScreen().findPreference("sim2");
-        PreferenceCategory sim3 = (PreferenceCategory) getPreferenceScreen().findPreference("sim3");
+        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
+        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isRootAvailable()) {
             autoff1.setChecked(false);
             autoff1.setEnabled(false);

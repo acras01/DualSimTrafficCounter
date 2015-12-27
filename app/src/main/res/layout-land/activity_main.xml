@@ -50,7 +50,7 @@
                         android:textColor="@android:color/primary_text_dark"
                         android:text="@string/transmitted"
                         android:id="@+id/txText"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:layout_column="2"
                         android:gravity="center|fill_vertical"
                         android:visibility="visible" />
@@ -63,7 +63,7 @@
                         android:text="@string/received"
                         android:id="@+id/rxText"
                         android:layout_column="3"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:gravity="center|fill_vertical"
                         android:visibility="visible" />
 
@@ -74,7 +74,7 @@
                         android:id="@+id/totalText"
                         android:layout_column="4"
                         android:gravity="center|fill_vertical"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:textSize="14sp"
                         android:visibility="visible"
                         android:textColor="@android:color/primary_text_dark" />
@@ -105,7 +105,7 @@
                         android:id="@+id/TX1"
                         android:gravity="center_vertical|center"
                         android:layout_column="2"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:textColor="@android:color/primary_text_dark"
                         android:visibility="visible" />
 
@@ -117,7 +117,7 @@
                         android:id="@+id/RX1"
                         android:layout_column="3"
                         android:gravity="center_vertical|center"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:textColor="@android:color/primary_text_dark"
                         android:visibility="visible" />
 
@@ -128,18 +128,27 @@
                         android:id="@+id/Tot1"
                         android:layout_column="4"
                         android:gravity="center_vertical|center"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:visibility="visible"
                         android:textColor="@android:color/primary_text_dark" />
 
                     <Button
-                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:id="@+id/limit1"
+                        android:layout_column="5"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
+
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
                         android:id="@+id/buttonClear1"
-                        android:layout_column="5"
-                        android:visibility="visible" />
+                        android:layout_column="6"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
 
                 </TableRow>
 
@@ -168,7 +177,7 @@
                         android:id="@+id/TX2"
                         android:gravity="center_vertical|center"
                         android:layout_column="2"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:textColor="@android:color/primary_text_dark"
                         android:visibility="visible" />
 
@@ -178,7 +187,7 @@
                         android:textSize="14sp"
                         android:text="0"
                         android:id="@+id/RX2"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:layout_column="3"
                         android:gravity="center_vertical|center"
                         android:textColor="@android:color/primary_text_dark"
@@ -191,18 +200,27 @@
                         android:id="@+id/Tot2"
                         android:layout_column="4"
                         android:gravity="center_vertical|center"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:visibility="visible"
                         android:textColor="@android:color/primary_text_dark" />
 
                     <Button
-                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:id="@+id/limit2"
+                        android:layout_column="5"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
+
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
                         android:id="@+id/buttonClear2"
-                        android:layout_column="5"
-                        android:visibility="visible" />
+                        android:layout_column="6"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
 
                 </TableRow>
 
@@ -231,7 +249,7 @@
                         android:id="@+id/TX3"
                         android:gravity="center_vertical|center"
                         android:layout_column="2"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:textColor="@android:color/primary_text_dark"
                         android:visibility="visible" />
 
@@ -241,7 +259,7 @@
                         android:textSize="14sp"
                         android:text="0"
                         android:id="@+id/RX3"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:layout_column="3"
                         android:gravity="center_vertical|center"
                         android:textColor="@android:color/primary_text_dark"
@@ -254,18 +272,27 @@
                         android:id="@+id/Tot3"
                         android:layout_column="4"
                         android:gravity="center_vertical|center"
-                        android:width="125dp"
+                        android:width="100dp"
                         android:visibility="visible"
                         android:textColor="@android:color/primary_text_dark" />
 
                     <Button
-                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:id="@+id/limit3"
+                        android:layout_column="5"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
+
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
                         android:id="@+id/buttonClear3"
-                        android:layout_column="5"
-                        android:visibility="visible" />
+                        android:layout_column="6"
+                        android:visibility="visible"
+                        style="?android:attr/buttonStyleSmall" />
 
                 </TableRow>
 
