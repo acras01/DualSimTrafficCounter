@@ -185,7 +185,7 @@
             android:layout_alignParentBottom="false"
             android:layout_below="@+id/tableLayout2"
             android:layout_weight=".5"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <Button
             android:layout_width="match_parent"

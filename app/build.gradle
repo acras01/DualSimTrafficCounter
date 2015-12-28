@@ -4,7 +4,7 @@ android {
     signingConfigs {
         acras {
             keyAlias 'acras_1'
-            storeFile file('C:/jjj/acras_keystore.jks')
+            storeFile file('D:/android/development/acras_keystore.jks')
             keyPassword 'ZqwErtY19810506'
             storePassword 'fpfhjdfbhbyf12091977'
         }
@@ -15,8 +15,8 @@ android {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 14
         targetSdkVersion 16
-        versionCode 20
-        versionName '1.2.0'
+        versionCode 22
+        versionName '1.2.2'
         signingConfig signingConfigs.acras
     }
     buildTypes {
