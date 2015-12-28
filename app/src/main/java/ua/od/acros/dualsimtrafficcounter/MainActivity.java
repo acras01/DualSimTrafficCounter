@@ -30,6 +30,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +65,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private boolean showNight1, showNight2, showNight3;
     private String opName1, opName2, opName3;
 
+    private static WeakReference<MainActivity> wrActivity = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         showNight1 = showNight2 = showNight3 = false;
         opName1 = opName2 = opName3 = "";
         context = MainActivity.this;
+        wrActivity = new WeakReference<>(this);
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -369,6 +373,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     public static Context getAppContext() {
         return MainActivity.context;
+    }
+
+    public static Activity getMainActivity() {
+        return wrActivity.get();
     }
 
     private void setLabelText(int sim, String rx, String tx) {
