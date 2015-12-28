@@ -15,7 +15,6 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -104,9 +103,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.choosedate:
-                Activity activity = (Activity) MainActivity.getAppContext();
-                MainActivity.showDialog(Constants.TRAFFIC_FOR_DATE, activity.getFragmentManager());
-                finish();
+                ShowTrafficForDateDialog.newInstance().show(getFragmentManager(), "dialog");
                 break;
         }
     }

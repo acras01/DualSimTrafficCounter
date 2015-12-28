@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -488,19 +487,19 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 }
                 break;
             case R.id.action_mobile_data_on_off:
-                showDialog(Constants.ON_OFF, getFragmentManager());
+                showDialog(Constants.ON_OFF);
                 break;
             case R.id.action_set_usage:
-                showDialog(Constants.SET_USAGE, getFragmentManager());
+                showDialog(Constants.SET_USAGE);
                 break;
             case R.id.action_show_history:
-                showDialog(Constants.TRAFFIC_FOR_DATE, getFragmentManager());
+                showDialog(Constants.TRAFFIC_FOR_DATE);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public static void showDialog(String key, FragmentManager fragmentManager) {
+    public void showDialog(String key) {
         DialogFragment dialog = null;
         switch (key) {
             case Constants.ON_OFF:
@@ -514,7 +513,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
         }
         if (dialog != null)
-            dialog.show(fragmentManager, "dialog");
+            dialog.show(getFragmentManager(), "dialog");
     }
 
     @Override
