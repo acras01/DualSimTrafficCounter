@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -48,7 +50,7 @@ public class SetUsageDialog extends DialogFragment {
         txInput = (EditText) view.findViewById(R.id.txamount);
         rxInput = (EditText) view.findViewById(R.id.rxamount);
         Spinner txSpinner = (Spinner) view.findViewById(R.id.spinnertx);
-        Spinner rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
+        final Spinner rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         sim1 = (RadioButton) view.findViewById(R.id.sim1RB);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -61,6 +63,19 @@ public class SetUsageDialog extends DialogFragment {
         }
         if (simNumber == 2)
             view.findViewById(R.id.sim3RB).setEnabled(false);
+        final CheckBox total = (CheckBox) view.findViewById(R.id.checktotal);
+        total.setChecked(false);
+        total.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                rxSpinner.setEnabled(!isChecked);
+                rxInput.setEnabled(!isChecked);
+                if (isChecked)
+                    txInput.setHint(R.string.total);
+                else
+                    txInput.setHint(R.string.transmitted);
+            }
+        });
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -119,12 +134,18 @@ public class SetUsageDialog extends DialogFragment {
                     @Override
                     public void onClick(View view) {
                         Bundle bundle = new Bundle();
-                        if (chkSIM != Constants.DISABLED && !rxInput.getText().toString().equals("") && !txInput.getText().toString().equals("")) {
+                        if ((chkSIM != Constants.DISABLED && !rxInput.getText().toString().equals("") && !txInput.getText().toString().equals("")) ||
+                                (chkSIM != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
                             bundle.putInt("sim", chkSIM);
-                            bundle.putString("rcvd", rxInput.getText().toString());
                             bundle.putString("trans", txInput.getText().toString());
-                            bundle.putInt("rxV", rxSpinnerSel);
                             bundle.putInt("txV", txSpinnerSel);
+                            if (total.isChecked()) {
+                                bundle.putString("rcvd", "0");
+                                bundle.putInt("rxV", 0);
+                            } else {
+                                bundle.putString("rcvd", rxInput.getText().toString());
+                                bundle.putInt("rxV", rxSpinnerSel);
+                            }
                             dialog.dismiss();
                             Intent intent = new Intent(Constants.SET_USAGE);
                             intent.putExtra("data", bundle);
