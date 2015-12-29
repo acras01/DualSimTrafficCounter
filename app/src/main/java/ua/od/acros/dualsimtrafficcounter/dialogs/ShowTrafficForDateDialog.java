@@ -36,16 +36,22 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     private int myMonth;
     private int myDay;
     private int chkSIM = Constants.NULL;
+    private boolean code = false;
     private Button bOK, bSetDate;
 
 
-    public static ShowTrafficForDateDialog newInstance() {
-        return new ShowTrafficForDateDialog();
+    public static ShowTrafficForDateDialog newInstance(boolean code) {
+        ShowTrafficForDateDialog df = new ShowTrafficForDateDialog();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("code", code);
+        df.setArguments(bundle);
+        return df;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        code = getArguments().getBoolean("code");
         myDay = new DateTime().getDayOfMonth();
         myMonth = new DateTime().getMonthOfYear();
         myYear = new DateTime().getYear();
@@ -107,6 +113,8 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                                     date, chkSIM, getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
                             if (bundle != null) {
                                 dialog.dismiss();
+                                if (code)
+                                    getActivity().finish();
                                 Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
                                 intent.putExtra(Constants.SIM_ACTIVE, chkSIM);
                                 intent.putExtra(Constants.SET_USAGE, bundle);

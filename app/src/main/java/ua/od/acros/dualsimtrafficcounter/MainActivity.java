@@ -509,7 +509,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 dialog = SetUsageDialog.newInstance();
                 break;
             case Constants.TRAFFIC_FOR_DATE:
-                dialog = ShowTrafficForDateDialog.newInstance();
+                dialog = ShowTrafficForDateDialog.newInstance(false);
                 break;
         }
         if (dialog != null)

@@ -21,6 +21,8 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 
 public class ViewTraffic extends Activity implements View.OnClickListener{
 
+    private static final boolean CODE = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +105,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.choosedate:
-                ShowTrafficForDateDialog.newInstance().show(getFragmentManager(), "dialog");
+                ShowTrafficForDateDialog.newInstance(CODE).show(getFragmentManager(), "dialog");
                 break;
         }
     }
