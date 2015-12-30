@@ -89,6 +89,30 @@ public class MobileDataControl {
                     e0.printStackTrace();
                 }
             }
+            if (name.size() == 0) {
+                for (int i = 0; i < simNumber; i++) {
+                    try {
+                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                        Method getName = c.getMethod("getNetworkOperatorName", Long.TYPE);
+                        getName.setAccessible(true);
+                        name.add(i, (String) getName.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i));
+                    } catch (Exception e0) {
+                        e0.printStackTrace();
+                    }
+                }
+            }
+            if (name.size() == 0) {
+                for (int i = 0; i < simNumber; i++) {
+                    try {
+                        Class<?> c = Class.forName("android.telephony.TelephonyManager");
+                        Method getName = c.getMethod("getNetworkOperatorName", Long.TYPE);
+                        getName.setAccessible(true);
+                        name.add(i, (String) getName.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i));
+                    } catch (Exception e0) {
+                        e0.printStackTrace();
+                    }
+                }
+            }
         }
         return name;
     }
@@ -268,17 +292,17 @@ public class MobileDataControl {
             }
         }
         if (sim == Constants.DISABLED) {
-            for (long i = 0; i < simNumber; i++) {
+            for (int i = 0; i < simNumber; i++) {
                 int state = Constants.DISABLED;
                 try {
-                    Class<?> c = Class.forName("android.telephony.TelephonyManager");
+                    Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
                     Method[] cm = c.getDeclaredMethods();
                     for (Method m : cm) {
                         if (m.getName().equalsIgnoreCase("getDataState")) {
                             m.setAccessible(true);
                             m.getParameterTypes();
                             if (m.getParameterTypes().length > 1) {
-                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
                                 break;
                             }
                         }
@@ -293,12 +317,39 @@ public class MobileDataControl {
                     break;
                 }
             }
-            if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+        }
+        if (sim == Constants.DISABLED) {
+            for (int i = 0; i < simNumber; i++) {
+                int state = Constants.DISABLED;
                 try {
-                    sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
-                } catch (Settings.SettingNotFoundException e) {
+                    Class<?> c = Class.forName("android.telephony.TelephonyManager");
+                    Method[] cm = c.getDeclaredMethods();
+                    for (Method m : cm) {
+                        if (m.getName().equalsIgnoreCase("getDataState")) {
+                            m.setAccessible(true);
+                            m.getParameterTypes();
+                            if (m.getParameterTypes().length > 1) {
+                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+                if (state == TelephonyManager.DATA_CONNECTED
+                        || state == TelephonyManager.DATA_CONNECTING
+                        || state == TelephonyManager.DATA_SUSPENDED) {
+                    sim = i;
+                    break;
+                }
+            }
+        }
+        if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            try {
+                sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
             }
         }
         return sim;

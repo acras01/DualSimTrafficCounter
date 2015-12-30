@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -273,11 +271,13 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     .error(R.drawable.none)
                     .into(logo1, picassoCallback);
             logoSum1.setText(getResources().getString(R.string.userpick));
-        } else {
-            int resourceId1 = getApplicationContext().getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", getApplicationContext().getPackageName());
-            Bitmap b1 = BitmapFactory.decodeResource(getApplicationContext().getResources(), resourceId1);
-            logo1.setImageBitmap(b1);
-        }
+        } else
+            Picasso.with(context)
+                    .load(getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .resize(dim, dim)
+                    .centerInside()
+                    .error(R.drawable.none)
+                    .into(logo1, picassoCallback);
         if (prefs.getBoolean(Constants.PREF_WIDGET[9], false)) {
             Picasso.with(context)
                     .load(new File(prefs.getString(Constants.PREF_WIDGET[6], "")))
@@ -286,11 +286,13 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     .error(R.drawable.none)
                     .into(logo2, picassoCallback);
             logoSum2.setText(getResources().getString(R.string.userpick));
-        } else {
-            int resourceId2 = getApplicationContext().getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", getApplicationContext().getPackageName());
-            Bitmap b2 = BitmapFactory.decodeResource(getApplicationContext().getResources(), resourceId2);
-            logo2.setImageBitmap(b2);
-        }
+        } else
+            Picasso.with(context)
+                    .load(getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .resize(dim, dim)
+                    .centerInside()
+                    .error(R.drawable.none)
+                    .into(logo2, picassoCallback);
         if (prefs.getBoolean(Constants.PREF_WIDGET[10], false)) {
             Picasso.with(context)
                     .load(new File(prefs.getString(Constants.PREF_WIDGET[7], "")))
@@ -299,11 +301,13 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     .error(R.drawable.none)
                     .into(logo3, picassoCallback);
             logoSum3.setText(getResources().getString(R.string.userpick));
-        } else {
-            int resourceId3 = getApplicationContext().getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", getApplicationContext().getPackageName());
-            Bitmap b3 = BitmapFactory.decodeResource(getApplicationContext().getResources(), resourceId3);
-            logo3.setImageBitmap(b3);
-        }
+        } else
+            Picasso.with(context)
+                    .load(getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .resize(dim, dim)
+                    .centerInside()
+                    .error(R.drawable.none)
+                    .into(logo3, picassoCallback);
 
         String[] listitems = getResources().getStringArray(R.array.icons_values);
         String[] list = getResources().getStringArray(R.array.icons);
