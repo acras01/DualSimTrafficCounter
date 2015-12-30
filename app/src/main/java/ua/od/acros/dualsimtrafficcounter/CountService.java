@@ -132,7 +132,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (dataMap.get(Constants.LAST_DATE).equals("")) {
             Calendar myCalendar = Calendar.getInstance();
             SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
-            SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss", context.getResources().getConfiguration().locale);
+            SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", context.getResources().getConfiguration().locale);
             dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
             dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
         }
@@ -638,7 +638,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private static void isResetNeeded() {
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-        DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
         DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
         DateTime now = new DateTime();
 
@@ -789,7 +789,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
@@ -952,7 +952,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                         Calendar myCalendar = Calendar.getInstance();
                         SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
-                        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss", context.getResources().getConfiguration().locale);
+                        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", context.getResources().getConfiguration().locale);
                         int choice = 0;
                         if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
@@ -1041,7 +1041,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tot = 0;
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
@@ -1208,7 +1208,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                         Calendar myCalendar = Calendar.getInstance();
                         SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
-                        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss", context.getResources().getConfiguration().locale);
+                        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", context.getResources().getConfiguration().locale);
                         int choice = 0;
                         if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
@@ -1296,7 +1296,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tot = 0;
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
@@ -1460,7 +1460,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                         Calendar myCalendar = Calendar.getInstance();
                         SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
-                        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss", context.getResources().getConfiguration().locale);
+                        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", context.getResources().getConfiguration().locale);
                         int choice = 0;
                         if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {

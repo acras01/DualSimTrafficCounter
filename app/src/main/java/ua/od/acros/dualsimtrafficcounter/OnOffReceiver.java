@@ -7,11 +7,6 @@ import android.os.PowerManager;
 
 import org.acra.ACRA;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 
@@ -36,7 +31,7 @@ public class OnOffReceiver extends BroadcastReceiver {
                     MobileDataControl.getMobileDataInfo(context)[0] == 2)
                 MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
 
-            String out = new SimpleDateFormat("HH:mm", context.getResources().getConfiguration().locale).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +
+            /*String out = new SimpleDateFormat(Constants.TIME_FORMAT, context.getResources().getConfiguration().locale).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +
                     String.valueOf(intent.getBooleanExtra(Constants.ON_OFF, true)) + "\n";
             // to this path add a new directory path
             File dir = new File(String.valueOf(context.getFilesDir()));
@@ -47,7 +42,7 @@ public class OnOffReceiver extends BroadcastReceiver {
             File file = new File(dir, fileName);
             FileOutputStream os = new FileOutputStream(file, true);
             os.write(out.getBytes());
-            os.close();
+            os.close();*/
         } catch (Exception e) {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);

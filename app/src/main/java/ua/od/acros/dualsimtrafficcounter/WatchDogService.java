@@ -11,9 +11,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -101,19 +98,19 @@ public class WatchDogService extends Service{
             if (dataMap.get(Constants.LAST_DATE).equals("")) {
                 Calendar myCalendar = Calendar.getInstance();
                 SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-                SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss", getResources().getConfiguration().locale);
+                SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
                 dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
                 dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
             }
             String lastUpdate = dataMap.get(Constants.LAST_DATE) + " " + dataMap.get(Constants.LAST_TIME);
-            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT + ":ss");
             DateTime last = fmt.parseDateTime(lastUpdate);
             DateTime now = new DateTime();
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
                     (MobileDataControl.getMobileDataInfo(context)[0] == 2 && MobileDataControl.getMobileDataInfo(context)[1] > Constants.DISABLED) &&
                     !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                 stopService(new Intent(context, CountService.class));
-                String out = lastUpdate + " | " + now.toString(fmt) + "\n";
+                /*String out = lastUpdate + " | " + now.toString(fmt) + "\n";
                 File dir = new File(String.valueOf(context.getFilesDir()));
                 // create this directory if not already created
                 dir.mkdir();
@@ -128,7 +125,7 @@ public class WatchDogService extends Service{
                 } catch (IOException e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
-                }
+                }*/
                 startService(new Intent(context, CountService.class));
             }
         }

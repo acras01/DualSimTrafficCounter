@@ -12,7 +12,6 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.stericson.RootShell.execution.Command;
@@ -179,7 +178,7 @@ public class MobileDataControl {
 
     private static long activeSIM(Context context, NetworkInfo networkInfo){
 
-        String out = null;
+        //String out = null;
 
         long sim = Constants.DISABLED;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -191,7 +190,7 @@ public class MobileDataControl {
                         m.setAccessible(true);
                         SubscriptionInfo si = (SubscriptionInfo) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context));
                         sim = si.getSimSlotIndex();
-                        out = "getDefaultDataSubscriptionInfo " + sim + "\n";
+                        //out = "getDefaultDataSubscriptionInfo " + sim + "\n";
                         break;
                     }
                 }
@@ -202,7 +201,7 @@ public class MobileDataControl {
             if (sim == Constants.DISABLED) {
                 try {
                     sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
-                    out = "getFromSettingsGlobal " + sim + "\n";
+                    //out = "getFromSettingsGlobal " + sim + "\n";
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -213,7 +212,7 @@ public class MobileDataControl {
                 for (int i = 0; i < sl.size(); i++) {
                     if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), networkInfo.getExtraInfo())) {
                         sim = sl.get(i).getSimSlotIndex();
-                        out = "getNetworkFromApnsFile " + sim + "\n";
+                        //out = "getNetworkFromApnsFile " + sim + "\n";
                         break;
                     }
                 }
@@ -226,7 +225,7 @@ public class MobileDataControl {
                         if (m.getName().equalsIgnoreCase("getDefaultDataSubId")) {
                             m.setAccessible(true);
                             sim = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context)) - 1;
-                            out = "getDefaultDataSubId " + sim + "\n";
+                            //out = "getDefaultDataSubId " + sim + "\n";
                             break;
                         }
                     }
@@ -234,7 +233,7 @@ public class MobileDataControl {
                     e.printStackTrace();
                 }
             }
-            try {
+            /*try {
                 // to this path add a new directory path
                 File dir = new File(String.valueOf(context.getFilesDir()));
                 // create this directory if not already created
@@ -247,7 +246,7 @@ public class MobileDataControl {
                 os.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
         if (sim == Constants.DISABLED) {
             try {
@@ -580,7 +579,7 @@ public class MobileDataControl {
         }
     }
 
-    private static void commandWait(Command cmd) throws Exception {
+    /*private static void commandWait(Command cmd) throws Exception {
         int waitTill = 50;
         int waitTillMultiplier = 2;
         int waitTillLimit = 3200; //7 tries, 6350 msec
@@ -600,7 +599,7 @@ public class MobileDataControl {
         if (!cmd.isFinished()){
             Log.e("DSTC", "Could not finish root command in " + (waitTill / waitTillMultiplier));
         }
-    }
+    }*/
 }
 
 
