@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -212,7 +211,7 @@ public class InfoWidget extends AppWidgetProvider {
                                 .into(updateViews, R.id.logo1, new int[]{i});
                     else
                         Picasso.with(context)
-                                .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[5], "")))
+                                .load(new File(prefs.getString(Constants.PREF_WIDGET[5], "")))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
@@ -315,7 +314,7 @@ public class InfoWidget extends AppWidgetProvider {
                                 .into(updateViews, R.id.logo2, new int[]{i});
                     else
                         Picasso.with(context)
-                                .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[6], "")))
+                                .load(new File(prefs.getString(Constants.PREF_WIDGET[6], "")))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
@@ -420,7 +419,7 @@ public class InfoWidget extends AppWidgetProvider {
                                 .into(updateViews, R.id.logo3, new int[]{i});
                     else
                         Picasso.with(context)
-                                .load(Uri.parse(prefs.getString(Constants.PREF_WIDGET[7], "")))
+                                .load(new File(prefs.getString(Constants.PREF_WIDGET[7], "")))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
