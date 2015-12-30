@@ -103,7 +103,7 @@ public class WatchDogService extends Service{
                 dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
             }
             String lastUpdate = dataMap.get(Constants.LAST_DATE) + " " + dataMap.get(Constants.LAST_TIME);
-            DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT + ":ss");
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
             DateTime last = fmt.parseDateTime(lastUpdate);
             DateTime now = new DateTime();
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&

@@ -638,7 +638,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private static void isResetNeeded() {
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-        DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
+        DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " +Constants.TIME_FORMAT);
         DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
         DateTime now = new DateTime();
 
@@ -789,7 +789,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
+                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
@@ -1041,7 +1041,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tot = 0;
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
+                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
@@ -1296,7 +1296,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tot = 0;
 
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + Constants.TIME_FORMAT);
+                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
