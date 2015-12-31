@@ -129,4 +129,5 @@
     <string name="night_tafiff">Night limit</string>
     <string name="everyday_onoff">Everyday ON/OFF</string>
     <string name="limit_settings">Limit settings</string>
+    <string name="days">d.</string>
 </resources>

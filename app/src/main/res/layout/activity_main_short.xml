@@ -136,7 +136,8 @@
                         android:id="@+id/limit1"
                         android:layout_column="2"
                         android:visibility="visible"
-                        style="?android:attr/buttonStyleSmall" />
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -145,7 +146,8 @@
                         android:id="@+id/limit2"
                         android:layout_column="2"
                         android:visibility="visible"
-                        style="?android:attr/buttonStyleSmall" />
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -154,7 +156,8 @@
                         android:id="@+id/limit3"
                         android:layout_column="2"
                         android:visibility="visible"
-                        style="?android:attr/buttonStyleSmall" />
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
                 </TableRow>
 
                 <TableRow

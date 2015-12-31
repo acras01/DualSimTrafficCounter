@@ -126,4 +126,5 @@
     <string name="limit_settings">Налаштування ліміту</string>
     <string name="night_tafiff">Нічний тариф</string>
     <string name="operator_round">Округлення трафіку</string>
+    <string name="days">дн.</string>
 </resources>
