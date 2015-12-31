@@ -83,10 +83,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private static int mPriority;
     private static int activeSIM = Constants.DISABLED;
     private static int lastActiveSIM = Constants.DISABLED;
+
+    private static final long MB = 1024 * 1024;
+
     private static DateTime resetTime1;
     private static DateTime resetTime2;
     private static DateTime resetTime3;
-
     private static Map<String, Object> dataMap;
     private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, /*simChange,*/ setUsage, actionReceive;
     private static Context context;
@@ -507,16 +509,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    /**
-     * Called when a shared preference is changed, added, or removed. This
-     * may be called even if a preference is set to its existing value.
-     * <p/>
-     * <p>This callback will be run on your main thread.
-     *
-     * @param sharedPreferences The {@link SharedPreferences} that received
-     *                          the change.
-     * @param key               The key of the preference that was changed, added, or
-     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[12])) {
@@ -764,16 +756,17 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private static class CountTimerTask1 extends TimerTask {
 
-        private static final long MB = 1024 * 1024;
-
         @Override
         public void run() {
             try {
                 int[] data = {2, Constants.SIM1};
-                long speedRX = 0;
-                long speedTX = 0;
+                long speedRX;
+                long speedTX;
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+
+                    if (dataMap.containsValue(null) || dataMap.containsKey(null))
+                        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -1018,16 +1011,17 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private static class CountTimerTask2 extends TimerTask {
 
-        private static final long MB = 1024 * 1024;
-
         @Override
         public void run() {
             try {
                 int[] data = {2, Constants.SIM2};
-                long speedRX = 0;
-                long speedTX = 0;
+                long speedRX;
+                long speedTX;
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+
+                    if (dataMap.containsValue(null) || dataMap.containsKey(null))
+                        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -1274,15 +1268,16 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private static class CountTimerTask3 extends TimerTask {
 
-        private static final long MB = 1024 * 1024;
-
         @Override
         public void run() {
             try {
-                long speedRX = 0;
-                long speedTX = 0;
+                long speedRX;
+                long speedTX;
                 int[] data = {2, Constants.SIM3};
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+
+                    if (dataMap.containsValue(null) || dataMap.containsKey(null))
+                        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
