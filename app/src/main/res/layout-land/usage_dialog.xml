@@ -21,11 +21,21 @@
         android:layout_alignParentEnd="false"
         android:layout_marginRight="10dp" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/only_total"
+        android:id="@+id/checktotal"
+        android:layout_below="@+id/choosesim"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:checked="false" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/choosesim">
+        android:layout_below="@+id/checktotal">
 
         <RadioGroup
             android:layout_width="wrap_content"

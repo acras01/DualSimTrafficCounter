@@ -3,6 +3,7 @@ package ua.od.acros.dualsimtrafficcounter.widget;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -360,8 +361,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{widgetID});
                 if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-                    Map<String, Object> dataMap = new HashMap<>();
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
+                    ContentValues dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, new ContentValues(),
                             new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);

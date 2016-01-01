@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,7 +50,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
 
-    private Map<String, Object> dataMap = new HashMap<>();
+    private ContentValues dataMap;
 
     private BroadcastReceiver dataReceiver, tipReceiver, onoffReceiver;
 
@@ -74,7 +75,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         opName1 = opName2 = opName3 = "";
         context = MainActivity.this;
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(this);
         final int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
@@ -491,16 +492,16 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
-        outState.putLong(Constants.SIM1RX, (Long) dataMap.get(Constants.SIM1RX));
-        outState.putLong(Constants.SIM2RX, (Long) dataMap.get(Constants.SIM2RX));
-        outState.putLong(Constants.SIM3RX, (Long) dataMap.get(Constants.SIM3RX));
-        outState.putLong(Constants.SIM1TX, (Long) dataMap.get(Constants.SIM1TX));
-        outState.putLong(Constants.SIM2TX, (Long) dataMap.get(Constants.SIM2TX));
-        outState.putLong(Constants.SIM3TX, (Long) dataMap.get(Constants.SIM3TX));
-        outState.putLong(Constants.TOTAL1, (Long) dataMap.get(Constants.TOTAL1));
-        outState.putLong(Constants.TOTAL2, (Long) dataMap.get(Constants.TOTAL2));
-        outState.putLong(Constants.TOTAL3, (Long) dataMap.get(Constants.TOTAL3));
+        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
+        outState.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+        outState.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+        outState.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+        outState.putLong(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+        outState.putLong(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+        outState.putLong(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+        outState.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+        outState.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+        outState.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
         outState.putString(Constants.SIM_ACTIVE, SIM.getText().toString());
     }
 
@@ -578,7 +579,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     Intent clear1Intent = new Intent(Constants.CLEAR1);
                     sendBroadcast(clear1Intent);
                 } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
                     if (isNight[0]) {
                         dataMap.put(Constants.SIM1RX_N, 0L);
                         dataMap.put(Constants.SIM1TX_N, 0L);
@@ -609,7 +610,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     Intent clear2Intent = new Intent(Constants.CLEAR2);
                     sendBroadcast(clear2Intent);
                 } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
                     if (isNight[1]) {
                         dataMap.put(Constants.SIM2RX_N, 0L);
                         dataMap.put(Constants.SIM2TX_N, 0L);
@@ -640,7 +641,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     Intent clear2Intent = new Intent(Constants.CLEAR3);
                     sendBroadcast(clear2Intent);
                 } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
                     if (isNight[2]) {
                         dataMap.put(Constants.SIM3RX_N, 0L);
                         dataMap.put(Constants.SIM3TX_N, 0L);

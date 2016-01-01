@@ -7,6 +7,7 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -89,7 +90,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private static DateTime resetTime1;
     private static DateTime resetTime2;
     private static DateTime resetTime3;
-    private static Map<String, Object> dataMap;
+    private static ContentValues dataMap;
     private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, /*simChange,*/ setUsage, actionReceive;
     private static Context context;
     private static TrafficDatabase mDatabaseHelper;
@@ -128,9 +129,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
         context = CountService.this;
 
-        dataMap = new HashMap<>();
+        //dataMap = new HashMap<>();
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
         if (dataMap.get(Constants.LAST_DATE).equals("")) {
             Calendar myCalendar = Calendar.getInstance();
             SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
@@ -278,7 +279,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     ACRA.getErrorReporter().handleException(e);
                 }
                 if (dataMap == null)
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
                 Bundle limitBundle = intent.getBundleExtra("data");
                 simChosen = limitBundle.getInt("sim");
                 switch (simChosen) {
@@ -765,8 +766,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
-                    if (dataMap.containsValue(null) || dataMap.containsKey(null))
-                        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    //if (dataMap.containsValue(null) || dataMap.containsKey(null))
+                    //    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -949,7 +950,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         int choice = 0;
                         if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
-                            String last = (String) TrafficDatabase.read_writeTrafficData(Constants.READ, new HashMap<String, Object>(), mDatabaseHelper).get(Constants.LAST_DATE);
+                            String last = (String) TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper).get(Constants.LAST_DATE);
                             DateTime dt_temp;
                             if (last.equals(""))
                                 dt_temp = new org.joda.time.DateTime();
@@ -1020,8 +1021,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
-                    if (dataMap.containsValue(null) || dataMap.containsKey(null))
-                        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    //if (dataMap.containsValue(null) || dataMap.containsKey(null))
+                    //    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -1206,7 +1207,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         int choice = 0;
                         if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
-                            String last = (String) TrafficDatabase.read_writeTrafficData(Constants.READ, new HashMap<String, Object>(), mDatabaseHelper).get(Constants.LAST_DATE);
+                            String last = (String) TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper).get(Constants.LAST_DATE);
                             DateTime dt_temp;
                             if (last.equals(""))
                                 dt_temp = new org.joda.time.DateTime();
@@ -1276,8 +1277,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 int[] data = {2, Constants.SIM3};
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
-                    if (dataMap.containsValue(null) || dataMap.containsKey(null))
-                        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    //if (dataMap.containsValue(null) || dataMap.containsKey(null))
+                    //    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -1459,7 +1460,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         int choice = 0;
                         if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
-                            String last = (String) TrafficDatabase.read_writeTrafficData(Constants.READ, new HashMap<String, Object>(), mDatabaseHelper).get(Constants.LAST_DATE);
+                            String last = (String) TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper).get(Constants.LAST_DATE);
                             DateTime dt_temp;
                             if (last.equals(""))
                                 dt_temp = new org.joda.time.DateTime();

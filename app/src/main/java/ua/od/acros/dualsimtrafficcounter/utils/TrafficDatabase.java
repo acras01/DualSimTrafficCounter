@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -214,39 +215,14 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static Map<String, Object> read_writeTrafficData(int r_w, Map<String, Object> mMap, TrafficDatabase db) {
+    public static ContentValues read_writeTrafficData(int r_w, ContentValues mMap, TrafficDatabase db) {
 
         if (r_w == Constants.WRITE) {
-            ContentValues values = new ContentValues();
-            values.put(Constants.SIM1RX, (long) mMap.get(Constants.SIM1RX));
-            values.put(Constants.SIM2RX, (long) mMap.get(Constants.SIM2RX));
-            values.put(Constants.SIM3RX, (long) mMap.get(Constants.SIM3RX));
-            values.put(Constants.SIM1TX, (long) mMap.get(Constants.SIM1TX));
-            values.put(Constants.SIM2TX, (long) mMap.get(Constants.SIM2TX));
-            values.put(Constants.SIM3TX, (long) mMap.get(Constants.SIM3TX));
-            values.put(Constants.TOTAL1, (long) mMap.get(Constants.TOTAL1));
-            values.put(Constants.TOTAL2, (long) mMap.get(Constants.TOTAL2));
-            values.put(Constants.TOTAL3, (long) mMap.get(Constants.TOTAL3));
-            values.put(Constants.LAST_ACTIVE_SIM, (int) mMap.get(Constants.LAST_ACTIVE_SIM));
-            values.put(Constants.LAST_TX, (long) mMap.get(Constants.LAST_TX));
-            values.put(Constants.LAST_RX, (long) mMap.get(Constants.LAST_RX));
-            values.put(Constants.LAST_TIME, (String) mMap.get(Constants.LAST_TIME));
-            values.put(Constants.LAST_DATE, (String) mMap.get(Constants.LAST_DATE));
-            values.put(Constants.PERIOD1, (int) mMap.get(Constants.PERIOD1));
-            values.put(Constants.PERIOD2, (int) mMap.get(Constants.PERIOD2));
-            values.put(Constants.PERIOD3, (int) mMap.get(Constants.PERIOD3));
-            values.put(Constants.SIM1RX_N, (long) mMap.get(Constants.SIM1RX_N));
-            values.put(Constants.SIM2RX_N, (long) mMap.get(Constants.SIM2RX_N));
-            values.put(Constants.SIM3RX_N, (long) mMap.get(Constants.SIM3RX_N));
-            values.put(Constants.SIM1TX_N, (long) mMap.get(Constants.SIM1TX_N));
-            values.put(Constants.SIM2TX_N, (long) mMap.get(Constants.SIM2TX_N));
-            values.put(Constants.SIM3TX_N, (long) mMap.get(Constants.SIM3TX_N));
-            values.put(Constants.TOTAL1_N, (long) mMap.get(Constants.TOTAL1_N));
-            values.put(Constants.TOTAL2_N, (long) mMap.get(Constants.TOTAL2_N));
-            values.put(Constants.TOTAL3_N, (long) mMap.get(Constants.TOTAL3_N));
             mSqLiteDatabase = db.getWritableDatabase();
-            mSqLiteDatabase.insert(DATABASE_TABLE, null, values);
+            mSqLiteDatabase.insert(DATABASE_TABLE, null, mMap);
         } else if (r_w == Constants.READ) {
+            if (mMap == null)
+                mMap = new ContentValues();
             mSqLiteDatabase = db.getReadableDatabase();
             Cursor cursor = mSqLiteDatabase.query(DATABASE_TABLE, new String[] {Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
                     Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
@@ -311,36 +287,9 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             }
             cursor.close();
         } else if (r_w ==Constants.UPDATE) {
-            ContentValues values = new ContentValues();
-            values.put(Constants.SIM1RX, (long) mMap.get(Constants.SIM1RX));
-            values.put(Constants.SIM2RX, (long) mMap.get(Constants.SIM2RX));
-            values.put(Constants.SIM3RX, (long) mMap.get(Constants.SIM3RX));
-            values.put(Constants.SIM1TX, (long) mMap.get(Constants.SIM1TX));
-            values.put(Constants.SIM2TX, (long) mMap.get(Constants.SIM2TX));
-            values.put(Constants.SIM3TX, (long) mMap.get(Constants.SIM3TX));
-            values.put(Constants.TOTAL1, (long) mMap.get(Constants.TOTAL1));
-            values.put(Constants.TOTAL2, (long) mMap.get(Constants.TOTAL2));
-            values.put(Constants.TOTAL3, (long) mMap.get(Constants.TOTAL3));
-            values.put(Constants.LAST_ACTIVE_SIM, (int) mMap.get(Constants.LAST_ACTIVE_SIM));
-            values.put(Constants.LAST_TX, (long) mMap.get(Constants.LAST_TX));
-            values.put(Constants.LAST_RX, (long) mMap.get(Constants.LAST_RX));
-            values.put(Constants.LAST_TIME, (String) mMap.get(Constants.LAST_TIME));
-            values.put(Constants.LAST_DATE, (String) mMap.get(Constants.LAST_DATE));
-            values.put(Constants.PERIOD1, (int) mMap.get(Constants.PERIOD1));
-            values.put(Constants.PERIOD2, (int) mMap.get(Constants.PERIOD2));
-            values.put(Constants.PERIOD3, (int) mMap.get(Constants.PERIOD3));
-            values.put(Constants.SIM1RX_N, (long) mMap.get(Constants.SIM1RX_N));
-            values.put(Constants.SIM2RX_N, (long) mMap.get(Constants.SIM2RX_N));
-            values.put(Constants.SIM3RX_N, (long) mMap.get(Constants.SIM3RX_N));
-            values.put(Constants.SIM1TX_N, (long) mMap.get(Constants.SIM1TX_N));
-            values.put(Constants.SIM2TX_N, (long) mMap.get(Constants.SIM2TX_N));
-            values.put(Constants.SIM3TX_N, (long) mMap.get(Constants.SIM3TX_N));
-            values.put(Constants.TOTAL1_N, (long) mMap.get(Constants.TOTAL1_N));
-            values.put(Constants.TOTAL2_N, (long) mMap.get(Constants.TOTAL2_N));
-            values.put(Constants.TOTAL3_N, (long) mMap.get(Constants.TOTAL3_N));
             mSqLiteDatabase = db.getWritableDatabase();
             String filter = Constants.LAST_DATE + "='" + mMap.get(Constants.LAST_DATE) + "'";
-            mSqLiteDatabase.update(DATABASE_TABLE, values, filter, null);
+            mSqLiteDatabase.update(DATABASE_TABLE, mMap, filter, null);
         }
         return mMap;
 

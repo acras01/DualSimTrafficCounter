@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,7 +28,7 @@ public class WatchDogService extends Service{
 
     private SharedPreferences prefs;
     private Context context;
-    private Map<String, Object> dataMap;
+    private ContentValues dataMap;
     private TrafficDatabase mDatabaseHelper;
     private Timer mTimer;
     private boolean isFirstRun;
@@ -47,7 +48,6 @@ public class WatchDogService extends Service{
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         context = WatchDogService.this;
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        dataMap = new HashMap<>();
         // cancel if already existed
         if (mTimer != null) {
             mTimer.cancel();

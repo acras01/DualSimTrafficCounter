@@ -3,6 +3,7 @@ package ua.od.acros.dualsimtrafficcounter.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,8 +35,7 @@ public class InfoWidget extends AppWidgetProvider {
         super.onUpdate(context, widgetManager, widgetId);
         Bundle bundle = new Bundle();
         if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-            Map<String, Object> dataMap = new HashMap<>();
-            dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
+            ContentValues dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, new ContentValues(),
                     new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
             bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
             bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
@@ -96,8 +96,7 @@ public class InfoWidget extends AppWidgetProvider {
     public void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
 
         if (bundle.size() == 0) {
-            Map<String, Object> dataMap = new HashMap<>();
-            dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap,
+            ContentValues dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, new ContentValues(),
                     new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
             bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
             bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
