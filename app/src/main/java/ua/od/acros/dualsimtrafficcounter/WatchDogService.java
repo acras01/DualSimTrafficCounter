@@ -14,8 +14,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -94,7 +92,7 @@ public class WatchDogService extends Service{
                 }
                 isFirstRun = false;
             }
-            dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+            dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
             if (dataMap.get(Constants.LAST_DATE).equals("")) {
                 Calendar myCalendar = Calendar.getInstance();
                 SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);

@@ -29,8 +29,6 @@ import com.squareup.picasso.Picasso;
 import org.acra.ACRA;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -361,8 +359,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{widgetID});
                 if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-                    ContentValues dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, new ContentValues(),
-                            new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+                    ContentValues dataMap = TrafficDatabase.readTrafficData(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);
                     intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));

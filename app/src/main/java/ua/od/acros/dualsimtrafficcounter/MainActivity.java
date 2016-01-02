@@ -30,9 +30,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetUsageDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowTrafficForDateDialog;
@@ -40,7 +37,6 @@ import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
-import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
@@ -75,7 +71,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         opName1 = opName2 = opName3 = "";
         context = MainActivity.this;
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
+        dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(this);
         final int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
@@ -492,7 +488,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
+        dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
         outState.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
         outState.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
         outState.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
@@ -579,7 +575,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     Intent clear1Intent = new Intent(Constants.CLEAR1);
                     sendBroadcast(clear1Intent);
                 } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
+                    dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[0]) {
                         dataMap.put(Constants.SIM1RX_N, 0L);
                         dataMap.put(Constants.SIM1TX_N, 0L);
@@ -589,10 +585,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         dataMap.put(Constants.SIM1TX, 0L);
                         dataMap.put(Constants.TOTAL1, 0L);
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
-                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
-                    else
-                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
+                    TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
@@ -610,7 +603,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     Intent clear2Intent = new Intent(Constants.CLEAR2);
                     sendBroadcast(clear2Intent);
                 } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
+                    dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[1]) {
                         dataMap.put(Constants.SIM2RX_N, 0L);
                         dataMap.put(Constants.SIM2TX_N, 0L);
@@ -620,10 +613,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         dataMap.put(Constants.SIM2TX, 0L);
                         dataMap.put(Constants.TOTAL2, 0L);
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
-                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
-                    else
-                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
+                    TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.SIM2RX_N) :
@@ -641,7 +631,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     Intent clear2Intent = new Intent(Constants.CLEAR3);
                     sendBroadcast(clear2Intent);
                 } else {
-                    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, null, mDatabaseHelper);
+                    dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[2]) {
                         dataMap.put(Constants.SIM3RX_N, 0L);
                         dataMap.put(Constants.SIM3TX_N, 0L);
@@ -651,10 +641,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         dataMap.put(Constants.SIM3TX, 0L);
                         dataMap.put(Constants.TOTAL3, 0L);
                     }
-                    if (DateCompare.isNextDayOrMonth(dt, "0") && !TrafficDatabase.isEmpty(mDatabaseHelper))
-                        TrafficDatabase.read_writeTrafficData(Constants.UPDATE, dataMap, mDatabaseHelper);
-                    else
-                        TrafficDatabase.read_writeTrafficData(Constants.WRITE, dataMap, mDatabaseHelper);
+                    TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
                     if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.SIM3RX_N) :
