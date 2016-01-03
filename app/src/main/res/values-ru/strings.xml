@@ -127,4 +127,5 @@
     <string name="night_tafiff">Ночной тариф</string>
     <string name="operator_round">Округление трафика </string>
     <string name="days">дн.</string>
+    <string name="view_result">Результат</string>
 </resources>
