@@ -29,9 +29,6 @@ public class Constants {
     public static final String APP_PREFERENCES = "ua.od.acros.dualsimtrafficcounter_preferences";
     public static final String WIDGET_PREFERENCES = "widget_preferences";
     public static final String DATA_DEFAULT_SIM = "android.intent.action.DATA_DEFAULT_SIM";
-    public static final int READ = 0;
-    public static final int WRITE = 1;
-    public static final int UPDATE = 2;
     public static final String LAST_ACTIVE_SIM = "last_sim";
     public static final String LAST_TX = "lasttx";
     public static final String LAST_RX = "lastrx";
@@ -48,7 +45,7 @@ public class Constants {
     public static final String ACTION = "action";
     public static final String ALARM_ACTION = "ua.od.acros.dualsimtrafficcounter.ALARM";
     public static final String CONTINUE_ACTION = "continue";
-    public static final long NOTIFY_INTERVAL = 1000; // 0.5 seconds
+    public static final long NOTIFY_INTERVAL = 1000; // 1 second
     public static final String DATABASE_NAME = "mydatabase.db";
     public static final String[] PREF_SIM1 = {"stub", "limit1", "value1", "period1", "round1", "auto1", //5
             "name1", "autooff1", "prefer1", "time1", "day1", "everydayonoff1", "timeoff1", "timeon1", //13

@@ -32,7 +32,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Timer;
@@ -618,14 +617,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    public static String getName(String key1, String key2, int sim) {
-        if (prefs.getBoolean(key1, true)) {
-            ArrayList<String> opNames = MobileDataControl.getOperatorNames(context);
-            return (opNames.size() > sim && opNames.get(sim) != null) ? opNames.get(sim) : context.getString(R.string.single_sim);
-        } else
-            return prefs.getString(key2, "");
-    }
-
     private static void isResetNeeded() {
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
         DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " +Constants.TIME_FORMAT);
@@ -763,8 +754,30 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
-                    //if (dataMap.containsValue(null) || dataMap.containsKey(null))
-                    //    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    //avoid NPE by refreshing dataMap
+                    //begin
+                    dataMap.put(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+                    dataMap.put(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+                    dataMap.put(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+                    dataMap.put(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+                    dataMap.put(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+                    dataMap.put(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+                    dataMap.put(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+                    dataMap.put(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+                    dataMap.put(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+                    dataMap.put(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
+                    dataMap.put(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
+                    dataMap.put(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
+                    dataMap.put(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
+                    dataMap.put(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
+                    dataMap.put(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
+                    dataMap.put(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
+                    dataMap.put(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
+                    dataMap.put(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
+                    dataMap.put(Constants.LAST_TIME, (String) dataMap.get(Constants.LAST_TIME));
+                    dataMap.put(Constants.LAST_DATE, (String) dataMap.get(Constants.LAST_DATE));
+                    dataMap.put(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -945,7 +958,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
                         SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", context.getResources().getConfiguration().locale);
                         int choice = 0;
-                        if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
+                        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
                             String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
                             DateTime dt_temp;
@@ -1018,8 +1031,30 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
-                    //if (dataMap.containsValue(null) || dataMap.containsKey(null))
-                    //    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    //avoid NPE by refreshing dataMap
+                    //begin
+                    dataMap.put(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+                    dataMap.put(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+                    dataMap.put(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+                    dataMap.put(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+                    dataMap.put(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+                    dataMap.put(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+                    dataMap.put(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+                    dataMap.put(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+                    dataMap.put(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+                    dataMap.put(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
+                    dataMap.put(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
+                    dataMap.put(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
+                    dataMap.put(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
+                    dataMap.put(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
+                    dataMap.put(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
+                    dataMap.put(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
+                    dataMap.put(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
+                    dataMap.put(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
+                    dataMap.put(Constants.LAST_TIME, (String) dataMap.get(Constants.LAST_TIME));
+                    dataMap.put(Constants.LAST_DATE, (String) dataMap.get(Constants.LAST_DATE));
+                    dataMap.put(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -1202,7 +1237,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
                         SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", context.getResources().getConfiguration().locale);
                         int choice = 0;
-                        if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
+                        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
                             String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
                             DateTime dt_temp;
@@ -1274,8 +1309,30 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 int[] data = {2, Constants.SIM3};
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
 
-                    //if (dataMap.containsValue(null) || dataMap.containsKey(null))
-                    //    dataMap = TrafficDatabase.read_writeTrafficData(Constants.READ, dataMap, mDatabaseHelper);
+                    //avoid NPE by refreshing dataMap
+                    //begin
+                    dataMap.put(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+                    dataMap.put(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+                    dataMap.put(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+                    dataMap.put(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+                    dataMap.put(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+                    dataMap.put(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+                    dataMap.put(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+                    dataMap.put(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+                    dataMap.put(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+                    dataMap.put(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
+                    dataMap.put(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
+                    dataMap.put(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
+                    dataMap.put(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
+                    dataMap.put(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
+                    dataMap.put(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
+                    dataMap.put(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
+                    dataMap.put(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
+                    dataMap.put(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
+                    dataMap.put(Constants.LAST_TIME, (String) dataMap.get(Constants.LAST_TIME));
+                    dataMap.put(Constants.LAST_DATE, (String) dataMap.get(Constants.LAST_DATE));
+                    dataMap.put(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
                     if (timeDelta < 1) {
@@ -1455,7 +1512,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, context.getResources().getConfiguration().locale);
                         SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", context.getResources().getConfiguration().locale);
                         int choice = 0;
-                        if ((diffrx > MB || difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
+                        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", context.getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                                 || emptyDB) {
                             String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
                             DateTime dt_temp;
@@ -1545,11 +1602,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             intent.putExtra(Constants.SIM_ACTIVE, lastActiveSIM);
         else
             intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-        intent.putExtra(Constants.OPERATOR1, getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+        intent.putExtra(Constants.OPERATOR1, MobileDataControl.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
         if (simNumber >= 2)
-            intent.putExtra(Constants.OPERATOR2, getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+            intent.putExtra(Constants.OPERATOR2, MobileDataControl.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
         if (simNumber == 3)
-            intent.putExtra(Constants.OPERATOR3, getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+            intent.putExtra(Constants.OPERATOR3, MobileDataControl.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
         context.sendBroadcast(intent);
     }
 
@@ -1692,11 +1749,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_alert);
         String opName = "";
         if (alertID == Constants.SIM1)
-            opName = getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+            opName = MobileDataControl.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         else if (alertID == Constants.SIM2)
-            opName = getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+            opName = MobileDataControl.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         else
-            opName = getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+            opName = MobileDataControl.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
         String txt;
         if ((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||

@@ -130,4 +130,5 @@
     <string name="everyday_onoff">Everyday ON/OFF</string>
     <string name="limit_settings">Limit settings</string>
     <string name="days">d.</string>
+    <string name="view_result">View result</string>
 </resources>

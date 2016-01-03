@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class MobileDataControl {
@@ -577,6 +578,15 @@ public class MobileDataControl {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
         }
+    }
+
+    public static String getName(Context context, String key1, String key2, int sim) {
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (prefs.getBoolean(key1, true)) {
+            ArrayList<String> opNames = getOperatorNames(context);
+            return (opNames.size() > sim && opNames.get(sim) != null) ? opNames.get(sim) : context.getResources().getString(R.string.single_sim);
+        } else
+            return prefs.getString(key2, "");
     }
 
     /*private static void commandWait(Command cmd) throws Exception {

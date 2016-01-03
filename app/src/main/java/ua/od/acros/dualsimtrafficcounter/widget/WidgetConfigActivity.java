@@ -30,7 +30,6 @@ import org.acra.ACRA;
 
 import java.io.File;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
@@ -50,8 +49,14 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
             speedTextSum, speedIconsSum, showSimSum, divSum, activesum, daynightSum;
-    private RelativeLayout simLogoL, simFontL, speedFontL, speedArrowsL,
-            showSimL, backColorL, logoL1, logoL2, logoL3;
+    private RelativeLayout simLogoL;
+    private RelativeLayout speedFontL;
+    private RelativeLayout speedArrowsL;
+    private RelativeLayout showSimL;
+    private RelativeLayout backColorL;
+    private RelativeLayout logoL1;
+    private RelativeLayout logoL2;
+    private RelativeLayout logoL3;
     private SharedPreferences prefs;
     private SharedPreferences.Editor edit;
     private int textColor, backColor;
@@ -67,12 +72,12 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private Callback picassoCallback = new Callback() {
         @Override
         public void onSuccess() {
-            Toast.makeText(context, R.string.image_load, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.image_load, Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onError() {
-            Toast.makeText(context, R.string.image_not_load, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.image_not_load, Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -197,7 +202,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
         logoL3 = (RelativeLayout) findViewById(R.id.logoLayout3);
 
-        simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
+        RelativeLayout simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
         simLogoL = (RelativeLayout) findViewById(R.id.simLogoSize);
         speedFontL = (RelativeLayout) findViewById(R.id.speedFontSize);
         speedArrowsL = (RelativeLayout) findViewById(R.id.speedArrowsSize);
@@ -381,11 +386,11 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
                     intent.putExtra(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
                     intent.putExtra(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
-                    intent.putExtra(Constants.OPERATOR1, CountService.getName(Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+                    intent.putExtra(Constants.OPERATOR1, MobileDataControl.getName(this, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
                     if (simNumber >= 2)
-                        intent.putExtra(Constants.OPERATOR2, CountService.getName(Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+                        intent.putExtra(Constants.OPERATOR2, MobileDataControl.getName(this, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
                     if (simNumber == 3)
-                        intent.putExtra(Constants.OPERATOR3, CountService.getName(Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+                        intent.putExtra(Constants.OPERATOR3, MobileDataControl.getName(this, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
                 } else {
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);

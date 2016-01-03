@@ -14,10 +14,10 @@ import org.joda.time.format.DateTimeFormatter;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 
 public class ViewTraffic extends Activity implements View.OnClickListener{
 
@@ -71,7 +71,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
                 break;
         }
 
-        String opName = CountService.getName(prefsConst[5], prefsConst[6], sim);
+        String opName = MobileDataControl.getName(this, prefsConst[5], prefsConst[6], sim);
 
         day.setText(opName);
         night.setText(opName + getResources().getString(R.string.night));
@@ -93,11 +93,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
         }
     }
 
-    /**
-     * Called when a view has been clicked.
-     *
-     * @param v The view that was clicked.
-     */
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

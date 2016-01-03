@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -38,7 +40,8 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     private int chkSIM = Constants.NULL;
     private boolean code = false;
     private Button bOK, bSetDate;
-
+    private Bundle bundle = new Bundle();
+    private GetTAsk task = new GetTAsk();
 
     public static ShowTrafficForDateDialog newInstance(boolean code) {
         ShowTrafficForDateDialog df = new ShowTrafficForDateDialog();
@@ -94,6 +97,8 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        if (task != null)
+                            task.cancel(false);
                         dialog.cancel();
                     }
                 })
@@ -104,26 +109,28 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bOK.setText(getString(android.R.string.ok));
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (chkSIM != Constants.NULL ) {
                             String date = myYear + "-" + myMonth + "-" + myDay;
-                            Bundle bundle = TrafficDatabase.getDataForDate(new TrafficDatabase(getActivity(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
-                                    date, chkSIM, getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
-                            if (bundle != null) {
-                                dialog.dismiss();
-                                if (code)
-                                    getActivity().finish();
-                                Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
-                                intent.putExtra(Constants.SIM_ACTIVE, chkSIM);
-                                intent.putExtra(Constants.SET_USAGE, bundle);
-                                intent.putExtra(Constants.LAST_DATE, date);
-                                getActivity().startActivity(intent);
-                            } else
-                                Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_LONG).show();
+                            if (bOK.getText().equals(getString(android.R.string.ok))) {
+                                task.execute(myYear, myMonth, myDay, chkSIM);
+                            } else {
+                                if (bundle != null) {
+                                    dialog.dismiss();
+                                    if (code)
+                                        getActivity().finish();
+                                    Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
+                                    intent.putExtra(Constants.SIM_ACTIVE, chkSIM);
+                                    intent.putExtra(Constants.SET_USAGE, bundle);
+                                    intent.putExtra(Constants.LAST_DATE, date);
+                                    getActivity().startActivity(intent);
+                                }
+                            }
                         } else
-                            Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -131,11 +138,38 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
         return dialog;
     }
 
-    /**
-     * Called when a view has been clicked.
-     *
-     * @param v The view that was clicked.
-     */
+    class GetTAsk extends AsyncTask<Integer, Void, Bundle> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            bOK.setEnabled(false);
+        }
+
+        @Override
+        protected Bundle doInBackground(Integer... params) {
+            String date = params[0] + "-" + params[1] + "-" + params[2];
+            if (isCancelled())
+                return null;
+            else
+                return TrafficDatabase.getDataForDate(new TrafficDatabase(getActivity(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
+                    date, params[3], getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
+        }
+
+        @Override
+        protected void onPostExecute(Bundle result) {
+            super.onPostExecute(result);
+            bOK.setEnabled(true);
+            if (result != null) {
+                bOK.setText(getString(R.string.view_result));
+                bundle = result;
+            } else {
+                bOK.setText(getString(android.R.string.ok));
+                Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.setdate) {
@@ -144,7 +178,6 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
         }
 
     }
-
 
     DatePickerDialog.OnDateSetListener myCallBack = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
