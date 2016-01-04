@@ -18,7 +18,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 
-public class ShowSimDialog extends DialogFragment {
+public class ShowSimDialog extends DialogFragment implements  CompoundButton.OnCheckedChangeListener {
 
     Button bOK;
     private SharedPreferences.Editor edit;
@@ -54,32 +54,10 @@ public class ShowSimDialog extends DialogFragment {
             sim3.setChecked(false);
             edit.putBoolean(Constants.PREF_WIDGET[20], false).apply();
         }
-        CompoundButton.OnCheckedChangeListener simCheck= new CompoundButton.OnCheckedChangeListener() {
-            /**
-             * Called when the checked state of a compound button has changed.
-             *
-             * @param buttonView The compound button view whose state has changed.
-             * @param isChecked  The new checked state of buttonView.
-             */
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switch (buttonView.getId()) {
-                    case R.id.sim1:
-                        edit.putBoolean(Constants.PREF_WIDGET[18], isChecked);
-                        break;
-                    case R.id.sim2:
-                        edit.putBoolean(Constants.PREF_WIDGET[19], isChecked);
-                        break;
-                    case R.id.sim3:
-                        edit.putBoolean(Constants.PREF_WIDGET[20], isChecked);
-                        break;
-                }
-            }
-        };
 
-        sim1.setOnCheckedChangeListener(simCheck);
-        sim2.setOnCheckedChangeListener(simCheck);
-        sim3.setOnCheckedChangeListener(simCheck);
+        sim1.setOnCheckedChangeListener(this);
+        sim2.setOnCheckedChangeListener(this);
+        sim3.setOnCheckedChangeListener(this);
 
         sim1.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[18], true));
         sim2.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[19], true));
@@ -110,6 +88,21 @@ public class ShowSimDialog extends DialogFragment {
             }
         });
         return dialog;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.sim1:
+                edit.putBoolean(Constants.PREF_WIDGET[18], isChecked);
+                break;
+            case R.id.sim2:
+                edit.putBoolean(Constants.PREF_WIDGET[19], isChecked);
+                break;
+            case R.id.sim3:
+                edit.putBoolean(Constants.PREF_WIDGET[20], isChecked);
+                break;
+        }
     }
 
 }

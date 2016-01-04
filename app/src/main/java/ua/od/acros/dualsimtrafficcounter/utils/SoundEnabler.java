@@ -19,8 +19,8 @@ public class SoundEnabler implements CompoundButton.OnCheckedChangeListener {
 	public void setSwitch(Switch swtch) {
 		if (mSwitch == swtch)
 			return;
-		/*if (mSwitch != null)
-			mSwitch.setOnCheckedChangeListener(null);*/
+		if (mSwitch != null)
+			mSwitch.setOnCheckedChangeListener(null);
 		mSwitch = swtch;
 		mSwitch.setOnCheckedChangeListener(this);
 		mSwitch.setChecked(isSwitchOn());

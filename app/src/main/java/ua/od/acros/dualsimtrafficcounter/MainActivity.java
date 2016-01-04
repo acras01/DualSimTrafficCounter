@@ -26,9 +26,6 @@ import android.widget.TextView;
 import com.stericson.RootTools.RootTools;
 
 import org.acra.ACRA;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetUsageDialog;
@@ -563,12 +560,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     public void onClick(View v) {
         boolean[] isNight =  CountService.getIsNight();
-        DateTime dt;
-        if (!dataMap.get(Constants.LAST_DATE).equals("")) {
-            DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-            dt = fmt.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
-        } else
-            dt = new DateTime();
         switch (v.getId()) {
             case (R.id.buttonClear1):
                 if (isMyServiceRunning(CountService.class)) {

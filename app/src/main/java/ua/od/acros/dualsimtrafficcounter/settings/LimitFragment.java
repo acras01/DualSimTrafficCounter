@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -38,12 +37,6 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     private TwoLineCheckPreference prefer1, prefer2, prefer3; //everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
 
-    private final int SIM1_OFF = 100;
-    private final int SIM1_ON = 101;
-    private final int SIM2_OFF = 110;
-    private final int SIM2_ON = 111;
-    private final int SIM3_OFF = 120;
-    private final int SIM3_ON = 121;
     private int simNumber;
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -357,6 +350,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1Off.putExtra(Constants.ON_OFF, false);
             i1Off.setAction(Constants.ALARM_ACTION);
+            int SIM1_OFF = 100;
             PendingIntent pi1Off = PendingIntent.getBroadcast(getActivity(), SIM1_OFF, i1Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
                 am.cancel(pi1Off);
@@ -373,6 +367,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1On.putExtra(Constants.ON_OFF, true);
             i1On.setAction(Constants.ALARM_ACTION);
+            int SIM1_ON = 101;
             PendingIntent pi1On = PendingIntent.getBroadcast(getActivity(), SIM1_ON, i1On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM1[11], false)) {
                 am.cancel(pi1On);
@@ -390,6 +385,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2Off.putExtra(Constants.ON_OFF, false);
             i2Off.setAction(Constants.ALARM_ACTION);
+            int SIM2_OFF = 110;
             PendingIntent pi2Off = PendingIntent.getBroadcast(getActivity(), SIM2_OFF, i2Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
                 am.cancel(pi2Off);
@@ -406,6 +402,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2On.putExtra(Constants.ON_OFF, true);
             i2On.setAction(Constants.ALARM_ACTION);
+            int SIM2_ON = 111;
             PendingIntent pi2On = PendingIntent.getBroadcast(getActivity(), SIM2_ON, i2On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM2[11], false)) {
                 am.cancel(pi2On);
@@ -423,6 +420,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3Off.putExtra(Constants.ON_OFF, false);
             i3Off.setAction(Constants.ALARM_ACTION);
+            int SIM3_OFF = 120;
             PendingIntent pi3Off = PendingIntent.getBroadcast(getActivity(), SIM3_OFF, i3Off, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
                 am.cancel(pi3Off);
@@ -439,6 +437,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3On.putExtra(Constants.ON_OFF, true);
             i3On.setAction(Constants.ALARM_ACTION);
+            int SIM3_ON = 121;
             PendingIntent pi3On = PendingIntent.getBroadcast(getActivity(), SIM3_ON, i3On, 0);
             if (sharedPreferences.getBoolean(Constants.PREF_SIM3[11], false)) {
                 am.cancel(pi3On);

@@ -12,8 +12,8 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 
 public class SettingsActivity extends PreferenceActivity {
 
-    private List<Header> mHeaders;
-    private static Context mContext;
+    private List<Header> headers;
+    private static Context context;
 
     protected void onResume() {
         super.onResume();
@@ -31,22 +31,22 @@ public class SettingsActivity extends PreferenceActivity {
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.headers, target);
         setTitle(R.string.action_settings);
-        mHeaders = target;
-        mContext = SettingsActivity.this;
+        headers = target;
+        context = SettingsActivity.this;
     }
 
     public static Context getAppContext() {
-        return SettingsActivity.mContext;
+        return SettingsActivity.context;
     }
 
     public void setListAdapter(ListAdapter adapter) {
         int i, count;
-        if (mHeaders == null) {
-            mHeaders = new ArrayList<>();
+        if (headers == null) {
+            headers = new ArrayList<>();
             count = adapter.getCount();
             for (i = 0; i < count; ++i)
-                mHeaders.add((Header) adapter.getItem(i));
+                headers.add((Header) adapter.getItem(i));
         }
-        super.setListAdapter(new MyPrefsHeaderAdapter(this, mHeaders));
+        super.setListAdapter(new MyPrefsHeaderAdapter(this, headers));
     }
 }

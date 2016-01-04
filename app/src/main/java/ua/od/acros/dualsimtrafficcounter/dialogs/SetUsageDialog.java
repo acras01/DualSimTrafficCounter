@@ -25,14 +25,16 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 
-public class SetUsageDialog extends DialogFragment {
+public class SetUsageDialog extends DialogFragment implements CompoundButton.OnCheckedChangeListener,
+        RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
     EditText txInput, rxInput;
 
     int txSpinnerSel, rxSpinnerSel;
     int chkSIM = Constants.DISABLED;
-    RadioButton sim1;
-    Button bSetUsageOK;
+    private RadioButton sim1;
+    private Button bSetUsageOK;
+    private Spinner rxSpinner;
 
 
     /**
@@ -50,7 +52,7 @@ public class SetUsageDialog extends DialogFragment {
         txInput = (EditText) view.findViewById(R.id.txamount);
         rxInput = (EditText) view.findViewById(R.id.rxamount);
         Spinner txSpinner = (Spinner) view.findViewById(R.id.spinnertx);
-        final Spinner rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
+        rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         sim1 = (RadioButton) view.findViewById(R.id.sim1RB);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -65,54 +67,11 @@ public class SetUsageDialog extends DialogFragment {
             view.findViewById(R.id.sim3RB).setEnabled(false);
         final CheckBox total = (CheckBox) view.findViewById(R.id.checktotal);
         total.setChecked(false);
-        total.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                rxSpinner.setEnabled(!isChecked);
-                rxInput.setEnabled(!isChecked);
-                if (isChecked)
-                    txInput.setHint(R.string.total);
-                else
-                    txInput.setHint(R.string.transmitted);
-            }
-        });
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.sim1RB:
-                        chkSIM =  Constants.SIM1;
-                        break;
-                    case R.id.sim2RB:
-                        chkSIM =  Constants.SIM2;
-                        break;
-                    case R.id.sim3RB:
-                        chkSIM =  Constants.SIM3;
-                        break;
-                }
-            }
-        });
 
-        AdapterView.OnItemSelectedListener spinnerSelected = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (parent.getId()) {
-                    case (R.id.spinnertx):
-                        txSpinnerSel = parent.getSelectedItemPosition();
-                        break;
-                    case (R.id.spinnerrx):
-                        rxSpinnerSel = parent.getSelectedItemPosition();
-                        break;
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
-
-        txSpinner.setOnItemSelectedListener(spinnerSelected);
-        rxSpinner.setOnItemSelectedListener(spinnerSelected);
+        total.setOnCheckedChangeListener(this);
+        radioGroup.setOnCheckedChangeListener(this);
+        txSpinner.setOnItemSelectedListener(this);
+        rxSpinner.setOnItemSelectedListener(this);
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
@@ -159,4 +118,46 @@ public class SetUsageDialog extends DialogFragment {
         return dialog;
     }
 
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
+            case R.id.sim1RB:
+                chkSIM =  Constants.SIM1;
+                break;
+            case R.id.sim2RB:
+                chkSIM =  Constants.SIM2;
+                break;
+            case R.id.sim3RB:
+                chkSIM =  Constants.SIM3;
+                break;
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (parent.getId()) {
+            case (R.id.spinnertx):
+                txSpinnerSel = parent.getSelectedItemPosition();
+                break;
+            case (R.id.spinnerrx):
+                rxSpinnerSel = parent.getSelectedItemPosition();
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        rxSpinner.setEnabled(!isChecked);
+        rxInput.setEnabled(!isChecked);
+        if (isChecked)
+            txInput.setHint(R.string.total);
+        else
+            txInput.setHint(R.string.transmitted);
+    }
 }

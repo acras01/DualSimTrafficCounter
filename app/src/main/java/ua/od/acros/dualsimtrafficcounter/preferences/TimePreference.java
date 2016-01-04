@@ -14,8 +14,6 @@ public class TimePreference extends DialogPreference {
     private int lastHour = 0;
     private int lastMinute = 0;
     private TimePicker picker = null;
-    private String hour;
-    private String minute;
 
     public static int getHour(String time) {
         String[] pieces=time.split(":");
@@ -56,8 +54,7 @@ public class TimePreference extends DialogPreference {
         if (positiveResult) {
             lastHour = picker.getCurrentHour();
             lastMinute = picker.getCurrentMinute();
-            hour = "";
-            minute = "";
+            String hour, minute;
             if (lastHour <= 9)
                 hour = "0" + String.valueOf(lastHour);
             else

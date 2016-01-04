@@ -26,7 +26,6 @@ public class WatchDogService extends Service{
 
     private SharedPreferences prefs;
     private Context context;
-    private ContentValues dataMap;
     private TrafficDatabase mDatabaseHelper;
     private Timer mTimer;
     private boolean isFirstRun;
@@ -92,7 +91,7 @@ public class WatchDogService extends Service{
                 }
                 isFirstRun = false;
             }
-            dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+            ContentValues dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
             if (dataMap.get(Constants.LAST_DATE).equals("")) {
                 Calendar myCalendar = Calendar.getInstance();
                 SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);

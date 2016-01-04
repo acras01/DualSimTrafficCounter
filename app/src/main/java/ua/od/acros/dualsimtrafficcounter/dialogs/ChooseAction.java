@@ -17,7 +17,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 public class ChooseAction extends Activity implements View.OnClickListener {
 
     private String action = "";
-    private SharedPreferences prefs;
     private int simid;
     private static boolean shown;
 
@@ -25,7 +24,7 @@ public class ChooseAction extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shown = true;
-        prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setContentView(R.layout.action_dialog);
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
         int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getApplication())

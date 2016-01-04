@@ -21,21 +21,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class MobileDataControl {
@@ -376,7 +371,7 @@ public class MobileDataControl {
                 if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
                     cmd = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + state;
                     if (RootTools.isAccessGiven()) {
-                        final ArrayList<String> out = new ArrayList<>();
+                        /*final ArrayList<String> out = new ArrayList<>();
                         File dir = new File(String.valueOf(context.getFilesDir()));
                         // create this directory if not already created
                         dir.mkdir();
@@ -385,35 +380,35 @@ public class MobileDataControl {
                         Date now = new Date();
                         String fileName = formatter.format(now) + "_log.txt";
                         File file = new File(dir, fileName);
-                        final FileOutputStream os = new FileOutputStream(file);
+                        final FileOutputStream os = new FileOutputStream(file);*/
                         Command command = new Command(0, cmd) {
                             @Override
                             public void commandOutput(int id, String line) {
                                 super.commandOutput(id, line);
-                                out.add(String.valueOf(id) + ": " + line + "\n");
+                                //out.add(String.valueOf(id) + ": " + line + "\n");
                             }
                             @Override
                             public void commandTerminated(int id, String reason) {
                                 super.commandTerminated(id, reason);
-                                try {
+                                /*try {
                                     String s = String.valueOf(id) + ": " + reason;
                                     os.write(s.getBytes());
                                     os.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                }
+                                }*/
                             }
                             @Override
                             public void commandCompleted(int id, int exitcode) {
                                 super.commandCompleted(id, exitcode);
-                                try {
+                                /*try {
                                     for (String s : out) {
                                         os.write(s.getBytes());
                                     }
                                     os.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                }
+                                }*/
                             }
                         };
                         RootTools.getShell(true).add(command);
@@ -424,7 +419,7 @@ public class MobileDataControl {
                 }
             }
         } catch(Exception e) {
-            throw e;
+            e.printStackTrace();
         }
     }
 
@@ -434,23 +429,16 @@ public class MobileDataControl {
     }*/
 
     private static String getTransactionCode(Context context) throws Exception {
-        try {
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
-            final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
-            mTelephonyMethod.setAccessible(true);
-            final Object mTelephonyStub = mTelephonyMethod.invoke(mTelephonyManager);
-            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-            final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
-            field.setAccessible(true);
-            return String.valueOf(field.getInt(null));
-        } catch (Exception e) {
-            // The "TRANSACTION_setDataEnabled" field is not available,
-            // or named differently in the current API level, so we throw
-            // an exception and inform users that the method is not available.
-            throw e;
-        }
+        final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+        final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
+        mTelephonyMethod.setAccessible(true);
+        final Object mTelephonyStub = mTelephonyMethod.invoke(mTelephonyManager);
+        final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+        final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+        final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
+        field.setAccessible(true);
+        return String.valueOf(field.getInt(null));
     }
 
     /*private static void executeCommandViaSu(String option, String command) {
@@ -561,6 +549,7 @@ public class MobileDataControl {
             try {
                 TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -577,6 +566,7 @@ public class MobileDataControl {
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

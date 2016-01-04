@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by Пользователь on 13.11.2015.
- */
 public class MTKUtils {
 
     private static Boolean mIsMtkDevice = null;
