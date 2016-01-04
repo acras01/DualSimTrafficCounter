@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -24,7 +25,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -38,10 +38,13 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     private int myMonth;
     private int myDay;
     private int chkSIM = Constants.NULL;
+    private int simNumber;
     private boolean code = false;
     private Button bOK, bSetDate;
     private Bundle bundle = new Bundle();
-    private GetTAsk task = new GetTAsk();
+    private GetTAsk task;
+    private ProgressBar pb;
+    private RadioGroup radioGroup;
 
     public static ShowTrafficForDateDialog newInstance(boolean code) {
         ShowTrafficForDateDialog df = new ShowTrafficForDateDialog();
@@ -60,11 +63,13 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
         myYear = new DateTime().getYear();
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.show_traffic_dialog, null);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        pb = (ProgressBar) view.findViewById(R.id.progressBar);
+        pb.setVisibility(View.GONE);
+        radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         bSetDate = (Button) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simNumber == 1) {
             view.findViewById(R.id.sim2RB).setEnabled(false);
@@ -100,6 +105,8 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                         if (task != null)
                             task.cancel(false);
                         dialog.cancel();
+                        if (code)
+                            getActivity().finish();
                     }
                 })
                 .create();
@@ -116,6 +123,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                         if (chkSIM != Constants.NULL ) {
                             String date = myYear + "-" + myMonth + "-" + myDay;
                             if (bOK.getText().equals(getString(android.R.string.ok))) {
+                                task = new GetTAsk();
                                 task.execute(myYear, myMonth, myDay, chkSIM);
                             } else {
                                 if (bundle != null) {
@@ -144,6 +152,12 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
         protected void onPreExecute() {
             super.onPreExecute();
             bOK.setEnabled(false);
+            radioGroup.setEnabled(false);
+            for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                radioGroup.getChildAt(i).setEnabled(false);
+            }
+            bSetDate.setEnabled(false);
+            pb.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -159,7 +173,14 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
         @Override
         protected void onPostExecute(Bundle result) {
             super.onPostExecute(result);
+            pb.setVisibility(View.GONE);
             bOK.setEnabled(true);
+            radioGroup.setEnabled(true);
+            for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                if (i < simNumber)
+                    radioGroup.getChildAt(i).setEnabled(true);
+            }
+            bSetDate.setEnabled(true);
             if (result != null) {
                 bOK.setText(getString(R.string.view_result));
                 bundle = result;
@@ -192,6 +213,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
             String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
 
             bSetDate.setText(new SimpleDateFormat(pattern).format(date.toDate()));
+            bOK.setText(getString(android.R.string.ok));
         }
     };
 }
