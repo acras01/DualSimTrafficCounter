@@ -51,52 +51,51 @@ import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 public class CountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static long mLastUpdateTime;
-    private static long mStartRX1 = 0;
-    private static long mStartTX1 = 0;
-    private static long mStartRX2 = 0;
-    private static long mStartTX2 = 0;
-    private static long mStartRX3 = 0;
-    private static long mStartTX3 = 0;
-    private static long mReceived1 = 0;
-    private static long mTransmitted1 = 0;
-    private static long mReceived2 = 0;
-    private static long mTransmitted2 = 0;
-    private static long mReceived3 = 0;
-    private static long mTransmitted3 = 0;
-    private static boolean isFirstRun = false;
-    private static boolean isSIM1OverLimit = false;
-    private static boolean isSIM2OverLimit = false;
-    private static boolean isSIM3OverLimit = false;
-    private static boolean isTimerCancelled = false;
-    private static boolean continueOverLimit = false;
-    private static boolean needsReset3 = false;
-    private static boolean needsReset2 = false;
-    private static boolean needsReset1 = false;
+    private long mLastUpdateTime;
+    private long mStartRX1 = 0;
+    private long mStartTX1 = 0;
+    private long mStartRX2 = 0;
+    private long mStartTX2 = 0;
+    private long mStartRX3 = 0;
+    private long mStartTX3 = 0;
+    private long mReceived1 = 0;
+    private long mTransmitted1 = 0;
+    private long mReceived2 = 0;
+    private long mTransmitted2 = 0;
+    private long mReceived3 = 0;
+    private long mTransmitted3 = 0;
+    private boolean isSIM1OverLimit = false;
+    private boolean isSIM2OverLimit = false;
+    private boolean isSIM3OverLimit = false;
+    private boolean isTimerCancelled = false;
+    private boolean continueOverLimit = false;
+    private boolean needsReset3 = false;
+    private boolean needsReset2 = false;
+    private boolean needsReset1 = false;
     private static boolean isNight1 = false;
     private static boolean isNight2 = false;
     private static boolean isNight3 = false;
-    private static int simChosen = Constants.DISABLED;
-    private static int simNumber = 0;
-    private static int mPriority;
+    private int simChosen = Constants.DISABLED;
+    private int simNumber = 0;
+    private int mPriority;
     private static int activeSIM = Constants.DISABLED;
     private static int lastActiveSIM = Constants.DISABLED;
 
-    private static final long MB = 1024 * 1024;
+    private final long MB = 1024 * 1024;
 
-    private static DateTime resetTime1;
-    private static DateTime resetTime2;
-    private static DateTime resetTime3;
-    private static ContentValues dataMap;
+    private DateTime resetTime1;
+    private DateTime resetTime2;
+    private DateTime resetTime3;
+    private ContentValues dataMap;
     private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, /*simChange,*/ setUsage, actionReceive;
     private static Context context;
-    private static TrafficDatabase mDatabaseHelper;
-    private static Timer mTimer = null;
-    private static SharedPreferences prefs;
-    private static PendingIntent contentIntent;
-    private static NotificationManager nm;
-    private static NotificationCompat.Builder builder;
-    private static Notification n;
+    private TrafficDatabase mDatabaseHelper;
+    private Timer mTimer = null;
+    private SharedPreferences prefs;
+    private PendingIntent contentIntent;
+    private NotificationManager nm;
+    private NotificationCompat.Builder builder;
+    private Notification n;
 
 
     public CountService() {
@@ -437,8 +436,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        isFirstRun = true;
-
         Intent notificationIntent = new Intent(this, MainActivity.class);
         contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -472,7 +469,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         return new boolean[]{isNight1, isNight2, isNight3};
     }
 
-    private static void timerStart(int task) {
+    private void timerStart(int task) {
         TimerTask tTask = null;
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -521,7 +518,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             continueOverLimit = false;
     }
 
-    private static class CheckTimerTask extends TimerTask {
+    private class CheckTimerTask extends TimerTask {
 
         @Override
         public void run() {
@@ -585,8 +582,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     mTimer.cancel();
                     mTimer.purge();
                     isTimerCancelled = true;
-                    CountService.timerStart(Constants.COUNT);
-                    isFirstRun = true;
+                    timerStart(Constants.COUNT);
                 }
                 if (isSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], ""))
                         || (tot2 <= (long) lim2 && (prefs.getBoolean(Constants.PREF_SIM2[8], false)
@@ -596,8 +592,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     mTimer.cancel();
                     mTimer.purge();
                     isTimerCancelled = true;
-                    CountService.timerStart(Constants.COUNT);
-                    isFirstRun = true;
+                    timerStart(Constants.COUNT);
                 }
                 if (isSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], ""))
                         || (tot3 <= (long) lim3 && (prefs.getBoolean(Constants.PREF_SIM3[8], false)
@@ -607,8 +602,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     mTimer.cancel();
                     mTimer.purge();
                     isTimerCancelled = true;
-                    CountService.timerStart(Constants.COUNT);
-                    isFirstRun = true;
+                    timerStart(Constants.COUNT);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -617,7 +611,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private static void isResetNeeded() {
+    private void isResetNeeded() {
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
         DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " +Constants.TIME_FORMAT);
         DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
@@ -743,7 +737,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private static class CountTimerTask1 extends TimerTask {
+    private class CountTimerTask1 extends TimerTask {
 
         @Override
         public void run() {
@@ -1008,7 +1002,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 .build();
                         nm.notify(Constants.STARTED_ID, n);
                     }
-                    isFirstRun = false;
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context))
                         sendDataBroadcast(speedRX, speedTX);
@@ -1020,7 +1013,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private static class CountTimerTask2 extends TimerTask {
+    private class CountTimerTask2 extends TimerTask {
 
         @Override
         public void run() {
@@ -1287,7 +1280,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 .build();
                         nm.notify(Constants.STARTED_ID, n);
                     }
-                    isFirstRun = false;
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context))
                         sendDataBroadcast(speedRX, speedTX);
@@ -1299,7 +1291,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private static class CountTimerTask3 extends TimerTask {
+    private class CountTimerTask3 extends TimerTask {
 
         @Override
         public void run() {
@@ -1562,7 +1554,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 .build();
                         nm.notify(Constants.STARTED_ID, n);
                     }
-                    isFirstRun = false;
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds().length != 0) && isScreenOn(context))
                         sendDataBroadcast(speedRX, speedTX);
@@ -1575,7 +1566,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private static void sendDataBroadcast(long speedRX, long speedTX) {
+    private void sendDataBroadcast(long speedRX, long speedTX) {
         Intent intent = new Intent(Constants.BROADCAST_ACTION);
         intent.putExtra(Constants.WIDGET_IDS, getWidgetIds());
         intent.putExtra(Constants.SPEEDRX, speedRX);
@@ -1610,7 +1601,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         context.sendBroadcast(intent);
     }
 
-    private static void startCheck(int alertID) {
+    private void startCheck(int alertID) {
 
         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
             alertNotify(alertID);
@@ -1729,7 +1720,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private static void alertNotify(int alertID) {
+    private void alertNotify(int alertID) {
         Intent notificationIntent;
         if ((prefs.getBoolean(Constants.PREF_SIM1[7], true) && isSIM1OverLimit) ||
                 (prefs.getBoolean(Constants.PREF_SIM2[7], true) && isSIM2OverLimit) ||
