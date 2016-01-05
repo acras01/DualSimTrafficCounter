@@ -87,6 +87,9 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, context))
+            context.startService(new Intent(context, CountService.class));
+
         dim = (int) getResources().getDimension(R.dimen.logo_size);
 
         Intent intent = getIntent();
@@ -417,8 +420,6 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.SIM_ACTIVE, 0);
                 }
                 sendBroadcast(intent);
-                if (!CheckServiceRunning.isMyServiceRunning(CountService.class, context))
-                    context.startService(new Intent(context, CountService.class));
                 finish();
             }
         } catch (Exception e) {
