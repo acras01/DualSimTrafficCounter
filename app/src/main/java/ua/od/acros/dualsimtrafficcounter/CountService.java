@@ -613,7 +613,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private void isResetNeeded() {
         DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-        DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " +Constants.TIME_FORMAT);
+        DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
         DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
         DateTime now = new DateTime();
 
@@ -1738,7 +1738,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (prefs.getBoolean(Constants.PREF_OTHER[3], false) && prefs.getBoolean(Constants.PREF_OTHER[2], false))
             builder.setDefaults(Notification.DEFAULT_VIBRATE);
         Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_alert);
-        String opName = "";
+        String opName;
         if (alertID == Constants.SIM1)
             opName = MobileDataControl.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         else if (alertID == Constants.SIM2)
