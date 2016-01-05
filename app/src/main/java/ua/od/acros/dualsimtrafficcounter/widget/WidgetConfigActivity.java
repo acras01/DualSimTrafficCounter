@@ -30,9 +30,11 @@ import org.acra.ACRA;
 
 import java.io.File;
 
+import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
+import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.IconsList;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
@@ -415,6 +417,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.SIM_ACTIVE, 0);
                 }
                 sendBroadcast(intent);
+                if (!CheckServiceRunning.isMyServiceRunning(CountService.class, context))
+                    context.startService(new Intent(context, CountService.class));
                 finish();
             }
         } catch (Exception e) {

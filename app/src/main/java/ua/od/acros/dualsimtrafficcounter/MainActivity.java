@@ -1,7 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
@@ -32,6 +31,7 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.SetUsageDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowTrafficForDateDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
@@ -301,9 +301,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), InfoWidget.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent);
-        if (!isMyServiceRunning(WatchDogService.class) && prefs.getBoolean(Constants.PREF_OTHER[4], true))
+        if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, context) && prefs.getBoolean(Constants.PREF_OTHER[4], true))
             startService(new Intent(this, WatchDogService.class));
-        if (!isMyServiceRunning(CountService.class) && !prefs.getBoolean(Constants.PREF_OTHER[5], false))
+        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, context) && !prefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(this, CountService.class));
 
         if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
@@ -374,15 +374,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         }
     }
 
-    public static boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName()))
-                return true;
-        }
-        return false;
-    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mService = menu.getItem(0);
@@ -392,7 +383,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
-        if (isMyServiceRunning(CountService.class)) {
+        if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
             mService.setTitle(R.string.action_stop);
             mService.setIcon(R.drawable.ic_action_disable);
         }
@@ -562,7 +553,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         boolean[] isNight =  CountService.getIsNight();
         switch (v.getId()) {
             case (R.id.buttonClear1):
-                if (isMyServiceRunning(CountService.class)) {
+                if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
                     Intent clear1Intent = new Intent(Constants.CLEAR1);
                     sendBroadcast(clear1Intent);
                 } else {
@@ -590,7 +581,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 }
                 break;
             case (R.id.buttonClear2):
-                if (isMyServiceRunning(CountService.class)) {
+                if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR2);
                     sendBroadcast(clear2Intent);
                 } else {
@@ -618,7 +609,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 }
                 break;
             case (R.id.buttonClear3):
-                if (isMyServiceRunning(CountService.class)) {
+                if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR3);
                     sendBroadcast(clear2Intent);
                 } else {
