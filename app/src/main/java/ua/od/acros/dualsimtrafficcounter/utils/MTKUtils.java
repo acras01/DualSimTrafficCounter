@@ -2,6 +2,8 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.os.Build;
 
+import com.mediatek.compatibility.gemini.GeminiSupport;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,7 +39,7 @@ public class MTKUtils {
 
     public static boolean hasGeminiSupport() {
         if (mHasGeminiSupport != null) return mHasGeminiSupport;
-        mHasGeminiSupport = com.mediatek.compatibility.gemini.GeminiSupport.isGeminiFeatureEnabled();
+        mHasGeminiSupport = GeminiSupport.isGeminiFeatureEnabled();
         return mHasGeminiSupport;
     }
 }
