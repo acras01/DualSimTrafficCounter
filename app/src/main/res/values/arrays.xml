@@ -62,4 +62,16 @@
         <item>yota</item>
         <item>user</item>
     </string-array>
+    <string-array name="onoff">
+        <item>Both</item>
+        <item>Only OFF</item>
+        <item>Only ON</item>
+        <item>Nothing</item>
+    </string-array>
+    <string-array name="onoff_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>

@@ -27,12 +27,11 @@ public class ChooseAction extends Activity implements View.OnClickListener {
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setContentView(R.layout.action_dialog);
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getApplication())
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(this)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
          if (!prefs.getBoolean(Constants.PREF_OTHER[10], true) || simNumber > 1)
              change.setEnabled(true);
-        final Intent intent = getIntent();
-        simid = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+        simid = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         final Button bOK = (Button)findViewById(R.id.buttonOK);
         bOK.setEnabled(false);
         Button bCancel = (Button)findViewById(R.id.buttonCancel);

@@ -74,22 +74,19 @@
         <PreferenceCategory
             android:title="@string/everyday_onoff" >
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:key="everydayonoff1"
             android:title="@string/everyday_on_off"
-            android:defaultValue="false"
-            android:singleLine="false"
-            android:summaryOn="@string/on"
-            android:summaryOff="@string/off" />
+            android:entries="@array/onoff"
+            android:entryValues="@array/onoff_values"
+            android:defaultValue="3"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeoff1"
-            android:dependency="everydayonoff1"
             android:title="@string/time_off"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeon1"
-            android:dependency="everydayonoff1"
             android:title="@string/time_on"/>
 
         </PreferenceCategory>
@@ -237,22 +234,19 @@
         <PreferenceCategory
             android:title="@string/everyday_onoff" >
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:key="everydayonoff2"
             android:title="@string/everyday_on_off"
-            android:defaultValue="false"
-            android:singleLine="false"
-            android:summaryOn="@string/on"
-            android:summaryOff="@string/off" />
+            android:entries="@array/onoff"
+            android:entryValues="@array/onoff_values"
+            android:defaultValue="3"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeoff2"
-            android:dependency="everydayonoff2"
             android:title="@string/time_off"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeon2"
-            android:dependency="everydayonoff2"
             android:title="@string/time_on"/>
 
         </PreferenceCategory>
@@ -400,22 +394,19 @@
         <PreferenceCategory
             android:title="@string/everyday_onoff" >
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:key="everydayonoff3"
             android:title="@string/everyday_on_off"
-            android:singleLine="false"
-            android:defaultValue="false"
-            android:summaryOn="@string/on"
-            android:summaryOff="@string/off" />
+            android:entries="@array/onoff"
+            android:entryValues="@array/onoff_values"
+            android:defaultValue="3"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeoff3"
-            android:dependency="everydayonoff3"
             android:title="@string/time_off"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeon3"
-            android:dependency="everydayonoff3"
             android:title="@string/time_on"/>
 
         </PreferenceCategory>

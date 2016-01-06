@@ -31,4 +31,10 @@
         <item>Yota</item>
         <item>Пользов.</item>
     </string-array>
+    <string-array name="onoff">
+        <item>Откл. и вкл.</item>
+        <item>Только откл.</item>
+        <item>Только вкл.</item>
+        <item>Не использ.</item>
+    </string-array>
 </resources>

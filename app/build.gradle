@@ -15,13 +15,13 @@ android {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 14
         targetSdkVersion 16
-        versionCode 27
-        versionName '1.2.7'
+        versionCode 28
+        versionName '1.2.8'
         signingConfig signingConfigs.acras
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.acras
         }

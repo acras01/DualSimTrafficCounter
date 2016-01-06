@@ -87,7 +87,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private DateTime resetTime2;
     private DateTime resetTime3;
     private ContentValues dataMap;
-    private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, /*simChange,*/ setUsage, actionReceive;
+    private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, setUsage, actionReceive;
     private static Context context;
     private TrafficDatabase mDatabaseHelper;
     private Timer mTimer = null;
@@ -176,28 +176,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         IntentFilter connFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(connReceiver, connFilter);
 
-        /*simChange = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                switch ((int) intent.getLongExtra("simid", Constants.DISABLED + 1)) {
-                    case Constants.DISABLED + 1:
-                        Toast.makeText(context, R.string.data_dis, Toast.LENGTH_LONG).show();
-                        break;
-                    case Constants.SIM1 + 1:
-                        Toast.makeText(context, R.string.sim1_act, Toast.LENGTH_LONG).show();
-                        break;
-                    case  Constants.SIM2 + 1:
-                        Toast.makeText(context, R.string.sim2_act, Toast.LENGTH_LONG).show();
-                            break;
-                    case  Constants.SIM3 + 1:
-                        Toast.makeText(context, R.string.sim3_act, Toast.LENGTH_LONG).show();
-                        break;
-                }
-            }
-        };
-        IntentFilter simChangeFilter = new IntentFilter("android.intent.action.DATA_DEFAULT_SIM");
-        registerReceiver(simChange, simChangeFilter);*/
-
         actionReceive = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -206,33 +184,25 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     switch (intent.getStringExtra(Constants.ACTION)) {
                         case Constants.CHOOSE_ACTION:
                             if (!isSIM2OverLimit && simid == Constants.SIM1) {
-                                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                                 MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM3OverLimit && simid == Constants.SIM1) {
-                                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                                 MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM1OverLimit && simid == Constants.SIM2) {
-                                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                                 MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM3OverLimit && simid == Constants.SIM2) {
-                                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                                 MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM1OverLimit && simid == Constants.SIM3) {
-                                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                                 MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM2OverLimit && simid == Constants.SIM3) {
-                                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                                 MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
                                 timerStart(Constants.COUNT);
-                            } else {
-                                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
+                            } else
                                 timerStart(Constants.CHECK);
-                            }
                             break;
                         case Constants.LIMIT_ACTION:
                             Intent i = new Intent(context, SettingsActivity.class);
@@ -743,10 +713,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         public void run() {
             try {
                 int[] data = {2, Constants.SIM1};
-                long speedRX;
-                long speedTX;
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+
+                    long speedRX;
+                    long speedTX;
 
                     //avoid NPE by refreshing dataMap
                     //begin
@@ -1019,10 +990,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         public void run() {
             try {
                 int[] data = {2, Constants.SIM2};
-                long speedRX;
-                long speedTX;
 
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+
+                    long speedRX;
+                    long speedTX;
 
                     //avoid NPE by refreshing dataMap
                     //begin
@@ -1296,10 +1268,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                long speedRX;
-                long speedTX;
                 int[] data = {2, Constants.SIM3};
+
                 if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+
+                    long speedRX;
+                    long speedTX;
 
                     //avoid NPE by refreshing dataMap
                     //begin
@@ -1606,6 +1580,13 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
             alertNotify(alertID);
 
+        try {
+            MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
+
         if (((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
                 (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true)))) {
@@ -1613,13 +1594,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             isTimerCancelled = true;
             mTimer.cancel();
             mTimer.purge();
-
-            try {
-                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
-            } catch (Exception e) {
-                e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
-            }
 
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_disable);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
@@ -1647,27 +1621,21 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 prefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
                 if (!isSIM2OverLimit && alertID == Constants.SIM1 && simNumber >=2) {
-                    MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM3OverLimit && alertID == Constants.SIM1 && simNumber == 3) {
-                    MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM1OverLimit && alertID == Constants.SIM2) {
-                    MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM3OverLimit && alertID == Constants.SIM2 && simNumber == 3) {
-                    MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM1OverLimit && alertID == Constants.SIM3) {
-                    MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM2OverLimit && alertID == Constants.SIM3) {
-                    MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
                     MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
                     timerStart(Constants.COUNT);
                 } else {
@@ -1783,7 +1751,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         unregisterReceiver(clear1Receiver);
         unregisterReceiver(clear2Receiver);
         unregisterReceiver(clear3Receiver);
-        //unregisterReceiver(simChange);
         unregisterReceiver(setUsage);
         unregisterReceiver(actionReceive);
         unregisterReceiver(connReceiver);
