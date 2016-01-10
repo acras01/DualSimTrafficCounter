@@ -347,7 +347,7 @@ public class MobileDataControl {
                 e.printStackTrace();
             }
         }
-        return sim;
+        return (int) sim;
     }
 
 

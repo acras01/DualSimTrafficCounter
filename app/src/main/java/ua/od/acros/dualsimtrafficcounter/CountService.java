@@ -587,9 +587,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
         DateTime now = new DateTime();
 
-        String reset1 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[9], "00:00");
-        String reset2 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
-        String reset3 = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
+        String reset1 = now.toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[9], "00:00");
+        String reset2 = now.toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
+        String reset3 = now.toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
 
         if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1 ||
                 (prefs.getString(Constants.PREF_SIM1[3], "0").equals("2") && DateCompare.isNextDayOrMonth(dt, "0"))) {
@@ -755,8 +755,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
-                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
-
                     DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
                     DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
@@ -770,6 +768,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isNight1 = false;
 
                     isResetNeeded();
+
+                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
                         dataMap.put(Constants.SIM1RX, 0L);
@@ -1037,10 +1037,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    isResetNeeded();
-
-                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
-
                     if (prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
                         String timeON = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[20], "23:00");
                         String timeOFF = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[21], "06:00");
@@ -1049,6 +1045,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isNight2 = false;
 
                     isResetNeeded();
+
+                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
                         dataMap.put(Constants.SIM1RX, 0L);
@@ -1316,8 +1314,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    isResetNeeded();
-
                     if (prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
                         String timeON = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[20], "23:00");
                         String timeOFF = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[21], "06:00");
@@ -1325,7 +1321,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } else
                         isNight3 = false;
 
+                    isResetNeeded();
+
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
+
                     if (emptyDB) {
                         dataMap.put(Constants.SIM1RX, 0L);
                         dataMap.put(Constants.SIM2RX, 0L);
