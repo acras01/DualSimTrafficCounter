@@ -96,7 +96,7 @@
     <string name="use_watchdog">Использовать сервис контроля</string>
     <string name="other_summary">Включение сервиса контроля и другое</string>
     <string name="watchdog_timer">Интервал проверки (не менее 1 мин)</string>
-    <string name="minute">мин</string>
+    <string name="minute">" мин"</string>
     <string name="use_background">Использовать цветную подложку</string>
     <string name="everyday_on_off">Ежедневное вкл./откл. передачи данных</string>
     <string name="time_off"> Время откл.</string>

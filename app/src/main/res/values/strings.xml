@@ -99,7 +99,7 @@
     <string name="restart">You should restart app to apply changes</string>
     <string name="other_summary">Enable watchdog service and etc.</string>
     <string name="watchdog_timer">Watchdog polling interval (not less then 1m)</string>
-    <string name="minute">m</string>
+    <string name="minute">" m"</string>
     <string name="use_background">Use color backgroud</string>
     <string name="everyday_on_off">Turn on/off mobile data schedule</string>
     <string name="time_off">OFF time</string>

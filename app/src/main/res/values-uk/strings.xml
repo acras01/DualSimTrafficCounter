@@ -96,7 +96,7 @@
     <string name="use_watchdog">Використовувати сервіс контролю</string>
     <string name="other_summary">Увімкнення сервісу контролю та інше</string>
     <string name="watchdog_timer">Інтервал перевірки (не менше 1 хв.)</string>
-    <string name="minute">хв.</string>
+    <string name="minute">" хв."</string>
     <string name="use_background">Використовувати кольоровий фон</string>
     <string name="everyday_on_off">Щоденне перемикання мобільних даних</string>
     <string name="time_off">Час вимкн.</string>
