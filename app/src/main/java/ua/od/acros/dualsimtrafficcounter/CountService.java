@@ -978,6 +978,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                                 .setPriority(mPriority)
                                 .setWhen(System.currentTimeMillis())
+                                .setSmallIcon(idSmall)
+                                .setLargeIcon(bLarge)
                                 .setContentTitle(context.getResources().getString(R.string.notification_title))
                                 .setContentText(text)
                                 .build();
@@ -1552,6 +1554,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                                 .setPriority(mPriority)
                                 .setWhen(System.currentTimeMillis())
+                                .setSmallIcon(idSmall)
+                                .setLargeIcon(bLarge)
                                 .setContentTitle(context.getResources().getString(R.string.notification_title))
                                 .setContentText(text)
                                 .build();
