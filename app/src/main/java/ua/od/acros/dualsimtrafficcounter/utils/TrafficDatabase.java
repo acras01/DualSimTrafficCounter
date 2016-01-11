@@ -22,22 +22,6 @@ public class TrafficDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_TABLE = "data";
     private static SQLiteDatabase mSqLiteDatabase;
 
-    private static final String DATABASE_CREATE_SCRIPT = "create table "
-            + DATABASE_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
-            + " text not null, " + Constants.LAST_ACTIVE_SIM + " integer, "
-            + Constants.LAST_RX + " long, " + Constants.LAST_TX + " long, "
-            + Constants.SIM1RX + " long, " + Constants.SIM1TX + " long, "
-            + Constants.TOTAL1 + " long, " + Constants.SIM2RX + " long, "
-            + Constants.SIM2TX + " long, " + Constants.TOTAL2 + " long, "
-            + Constants.SIM3RX + " long, " + Constants.SIM3TX + " long, "
-            + Constants.TOTAL3 + " long, " + Constants.PERIOD1 + " integer,"
-            + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer, "
-            + Constants.SIM1RX_N + " long, "
-            + Constants.SIM1TX_N + " long, " + Constants.TOTAL1_N + " long, "
-            + Constants.SIM2RX_N + " long, " + Constants.SIM2TX_N + " long, "
-            + Constants.TOTAL2_N + " long, " + Constants.SIM3RX_N + " long,"
-            + Constants.SIM3TX_N + " long, " + Constants.TOTAL3_N + " long);";
-
     public TrafficDatabase(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
     }
@@ -54,12 +38,27 @@ public class TrafficDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        String DATABASE_CREATE_SCRIPT = "create table "
+                + DATABASE_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                + " text not null, " + Constants.LAST_ACTIVE_SIM + " integer, "
+                + Constants.LAST_RX + " long, " + Constants.LAST_TX + " long, "
+                + Constants.SIM1RX + " long, " + Constants.SIM1TX + " long, "
+                + Constants.TOTAL1 + " long, " + Constants.SIM2RX + " long, "
+                + Constants.SIM2TX + " long, " + Constants.TOTAL2 + " long, "
+                + Constants.SIM3RX + " long, " + Constants.SIM3TX + " long, "
+                + Constants.TOTAL3 + " long, " + Constants.PERIOD1 + " integer,"
+                + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer, "
+                + Constants.SIM1RX_N + " long, "
+                + Constants.SIM1TX_N + " long, " + Constants.TOTAL1_N + " long, "
+                + Constants.SIM2RX_N + " long, " + Constants.SIM2TX_N + " long, "
+                + Constants.TOTAL2_N + " long, " + Constants.SIM3RX_N + " long,"
+                + Constants.SIM3TX_N + " long, " + Constants.TOTAL3_N + " long);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String ALTER_TBL = "";
+        String ALTER_TBL;
         if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 1) {
             ALTER_TBL =
                     "ALTER TABLE " + DATABASE_TABLE +

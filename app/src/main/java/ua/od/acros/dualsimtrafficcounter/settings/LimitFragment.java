@@ -153,12 +153,15 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             // the preference screen your item is in must be known
             switch (sim) {
                 case R.id.limit1:
+                case Constants.SIM1:
                     key = "sim1";
                     break;
                 case R.id.limit2:
+                case Constants.SIM2:
                     key = "sim2";
                     break;
                 case R.id.limit3:
+                case Constants.SIM3:
                     key = "sim3";
                     break;
             }

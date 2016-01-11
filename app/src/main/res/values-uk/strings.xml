@@ -47,8 +47,8 @@
     <string name="use_vibration_summary">Увімкніть вібрацію підчас повідомлення</string>
     <string name="not_supported">Ваш пристрій не підтримується</string>
     <string name="error">Помилка!</string>
-    <string name="name_title">Назви операторів</string>
-    <string name="name_summary">Встановлення назви операторів</string>
+    <string name="name_title">Налаштування операторів</string>
+    <string name="name_summary">Встановлення назви та лого операторів</string>
     <string name="auto_name_text">Назва з мережі</string>
     <string name="name_text">Назва користувача</string>
     <string name="off">Вимк.</string>
@@ -128,4 +128,9 @@
     <string name="operator_round">Округлення трафіку</string>
     <string name="days">дн.</string>
     <string name="view_result">Результат</string>
+    <string name="show_logo_in_statusbar">Відображати лого оператора замість іконки додатку в статус барі</string>
+    <string name="name_sim1">Назва для SIM1</string>
+    <string name="name_sim2">Назва для SIM2</string>
+    <string name="name_sim3">Назва для SIM3</string>
+    <string name="show_logo">Лого операторів в статус барі</string>
 </resources>

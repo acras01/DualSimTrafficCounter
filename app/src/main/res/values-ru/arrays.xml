@@ -31,6 +31,26 @@
         <item>Yota</item>
         <item>Пользов.</item>
     </string-array>
+    <string-array name="logo">
+        <item>Нет</item>
+        <item>3Mob</item>
+        <item>Билайн</item>
+        <item>Djuice</item>
+        <item>Киевстар</item>
+        <item>Life:)</item>
+        <item>Мегафон</item>
+        <item>Motiv</item>
+        <item>МТС</item>
+        <item>O!</item>
+        <item>Orange</item>
+        <item>Play</item>
+        <item>Ростелеком</item>
+        <item>Смартс</item>
+        <item>Tele2</item>
+        <item>Velcom</item>
+        <item>Vodafone</item>
+        <item>Yota</item>
+    </string-array>
     <string-array name="onoff">
         <item>Откл. и вкл.</item>
         <item>Только откл.</item>

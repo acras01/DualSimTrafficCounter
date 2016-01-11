@@ -62,6 +62,46 @@
         <item>yota</item>
         <item>user</item>
     </string-array>
+    <string-array name="logo">
+        <item>None</item>
+        <item>3Mob</item>
+        <item>Beeline</item>
+        <item>Djuice</item>
+        <item>Kyivstar</item>
+        <item>Life:)</item>
+        <item>Megafon</item>
+        <item>Motiv</item>
+        <item>MTS</item>
+        <item>O!</item>
+        <item>Orange</item>
+        <item>Play</item>
+        <item>Rostelecom</item>
+        <item>Smarts</item>
+        <item>Tele2</item>
+        <item>Velcom</item>
+        <item>Vodafone</item>
+        <item>Yota</item>
+    </string-array>
+    <string-array name="logo_values">
+        <item>none</item>
+        <item>trimob</item>
+        <item>beeline</item>
+        <item>djuice</item>
+        <item>kyivstar</item>
+        <item>life</item>
+        <item>megafon</item>
+        <item>motiv</item>
+        <item>mts</item>
+        <item>o</item>
+        <item>orange</item>
+        <item>play</item>
+        <item>rostelecom</item>
+        <item>smarts</item>
+        <item>tele2</item>
+        <item>velcom</item>
+        <item>vodafone</item>
+        <item>yota</item>
+    </string-array>
     <string-array name="onoff">
         <item>Both</item>
         <item>Only OFF</item>

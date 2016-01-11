@@ -49,17 +49,20 @@ public class Constants {
     public static final String DATABASE_NAME = "mydatabase.db";
     public static final String[] PREF_SIM1 = {"stub", "limit1", "value1", "period1", "round1", "auto1", //5
             "name1", "autooff1", "prefer1", "time1", "day1", "everydayonoff1", "timeoff1", "timeon1", //13
-            "op_round1", "op_limit1", "op_value1", "usenight1", "limitnight1", "valuenight1", "nighton1", "nightoff1", "nightround1"}; //22
+            "op_round1", "op_limit1", "op_value1", "usenight1", "limitnight1", //18
+            "valuenight1", "nighton1", "nightoff1", "nightround1", "operator_logo1", "reset1"}; //24
     public static final String[] PREF_SIM2 = {"stub", "limit2", "value2", "period2", "round2", "auto2", //5
             "name2", "autooff2", "prefer2", "time2", "day2", "everydayonoff2", "timeoff2", "timeon2", //13
-            "op_round2", "op_limit2", "op_value2", "usenight2", "limitnight2", "valuenight2", "nighton2", "nightoff2", "nightround2"}; //22
+            "op_round2", "op_limit2", "op_value2", "usenight2", "limitnight2", //18
+            "valuenight2", "nighton2", "nightoff2", "nightround2", "operator_logo2", "reset2"}; //24
     public static final String[] PREF_SIM3 = {"stub", "limit3", "value3", "period3", "round3", "auto3", //5
             "name3", "autooff3", "prefer3", "time3", "day3", "everydayonoff3", "timeoff3", "timeon3", //13
-            "op_round3", "op_limit31", "op_value3", "usenight3", "limitnight3", "valuenight3", "nighton3", "nightoff3", "nightround3"}; //22
+            "op_round3", "op_limit31", "op_value3", "usenight3", "limitnight3", //18
+            "valuenight3", "nighton3", "nightoff3", "nightround3", "operator_logo3", "reset3"}; //24
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
-            "status_icon", "auto_sim", "user_sim"}; //14
+            "status_icon", "auto_sim", "user_sim", "operator_logo"}; //15
     public static final String[] PREF_WIDGET = {"stub", "names", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10

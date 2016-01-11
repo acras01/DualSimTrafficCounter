@@ -6,11 +6,11 @@ import ua.od.acros.dualsimtrafficcounter.R;
 
 public class DataFormat {
 
-    static double kb = 1024.0;
-    static double mb = kb * kb;
-    static double gb = kb * mb;
+    private static double kb = 1024.0;
+    private static double mb = kb * kb;
+    private static double gb = kb * mb;
 
-    public static String formatData (Context mContext, long data) {
+    public static String formatData(Context mContext, long data) {
         if (data < mb)
             return (String.format("%.2f", data / kb)) + mContext.getString(R.string.kb);
         else if (data > gb)
@@ -19,7 +19,7 @@ public class DataFormat {
             return (String.format("%.2f", data / mb)) + mContext.getString(R.string.mb);
     }
 
-    public static long getFormatLong (String data, int value) {
+    public static long getFormatLong(String data, int value) {
         long res = 0;
         double dData = Double.valueOf(data);
         switch (value) {

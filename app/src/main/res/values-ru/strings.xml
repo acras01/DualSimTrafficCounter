@@ -47,8 +47,8 @@
     <string name="round">Точность подсчета (%)</string>
     <string name="not_supported">Ваше устройство не поддерживается</string>
     <string name="error">Ошибка!</string>
-    <string name="name_title">Названия операторов</string>
-    <string name="name_summary">Установка названия операторов</string>
+    <string name="name_title">Настройки операторов</string>
+    <string name="name_summary">Установка названия и лого операторов</string>
     <string name="auto_name_text">Название из сети</string>
     <string name="name_text">Название пользователя</string>
     <string name="off">Выкл.</string>
@@ -128,4 +128,9 @@
     <string name="operator_round">Округление трафика </string>
     <string name="days">дн.</string>
     <string name="view_result">Результат</string>
+    <string name="show_logo_in_statusbar">Показывать лого оператора вместо иконки приложения в статус баре</string>
+    <string name="name_sim1">Название для SIM1</string>
+    <string name="name_sim2">Название для SIM2</string>
+    <string name="name_sim3">Название для SIM3</string>
+    <string name="show_logo">Лого операторов в статус баре</string>
 </resources>

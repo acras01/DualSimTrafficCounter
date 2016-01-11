@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="SIM1"
+    <PreferenceScreen
+        android:title="@string/name_sim1"
         android:key="sim1" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
@@ -20,10 +20,10 @@
             android:dependency="auto1"
             android:summary="" />
 
-    </PreferenceCategory>
+    </PreferenceScreen>
 
-    <PreferenceCategory
-        android:title="SIM2"
+    <PreferenceScreen
+        android:title="@string/name_sim2"
         android:key="sim2" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
@@ -41,10 +41,10 @@
             android:dependency="auto2"
             android:summary="" />
 
-    </PreferenceCategory>
+    </PreferenceScreen>
 
-    <PreferenceCategory
-        android:title="SIM3"
+    <PreferenceScreen
+        android:title="@string/name_sim3"
         android:key="sim3" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
@@ -62,6 +62,42 @@
             android:dependency="auto3"
             android:summary="" />
 
-    </PreferenceCategory>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:title="@string/show_logo"
+        android:key="logo" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="operator_logo"
+            android:title="@string/show_logo_in_statusbar"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:defaultValue="false"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
+            android:key="operator_logo1"
+            android:dependency="operator_logo"
+            android:title="@string/operator_logo_1"
+            android:entries="@array/logo"
+            android:entryValues="@array/logo_values"
+            android:defaultValue="none"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
+            android:key="operator_logo2"
+            android:dependency="operator_logo"
+            android:title="@string/operator_logo_2"
+            android:entries="@array/logo"
+            android:entryValues="@array/logo_values"
+            android:defaultValue="none"/>
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
+            android:key="operator_logo3"
+            android:dependency="operator_logo"
+            android:title="@string/operator_logo_3"
+            android:entries="@array/logo"
+            android:entryValues="@array/logo_values"
+            android:defaultValue="none"/>
+
+    </PreferenceScreen>
 
 </PreferenceScreen>

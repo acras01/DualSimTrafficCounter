@@ -18,7 +18,7 @@
 
     <header
         android:id="@+id/name_settings"
-        android:fragment="ua.od.acros.dualsimtrafficcounter.settings.NameFragment"
+        android:fragment="ua.od.acros.dualsimtrafficcounter.settings.OperatorFragment"
         android:summary="@string/name_summary"
         android:title="@string/name_title">
     </header>

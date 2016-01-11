@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 import android.net.Uri;
@@ -24,9 +25,13 @@ import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import org.acra.ACRA;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
+import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -83,6 +88,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private final long MB = 1024 * 1024;
 
+    DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+    DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
     private DateTime resetTime1;
     private DateTime resetTime2;
     private DateTime resetTime3;
@@ -96,6 +103,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private NotificationManager nm;
     private NotificationCompat.Builder builder;
     private Notification n;
+    private Bitmap bLarge;
+    private Target target;
+    private int idSmall;
 
 
     public CountService() {
@@ -206,9 +216,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             break;
                         case Constants.LIMIT_ACTION:
                             Intent i = new Intent(context, SettingsActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
                             i.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                            i.putExtra(Constants.SIM_ACTIVE, simid);
                             startActivity(i);
                             timerStart(Constants.CHECK);
                             break;
@@ -411,9 +421,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(this);
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+        n = builder.setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
+                .setSmallIcon(R.drawable.ic_launcher_small)
                 .setLargeIcon(bm)
                 .setTicker(getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
@@ -444,6 +455,39 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         activeSIM = MobileDataControl.getMobileDataInfo(context)[1];
+        target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                bLarge = bitmap;
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable drawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable drawable) {
+            }
+        };
+        Picasso.with(context).load(R.mipmap.ic_launcher).into(target);
+
+        if (prefs.getBoolean(Constants.PREF_OTHER[15], false)) {
+            String[] pref = new String[25];
+            switch (activeSIM) {
+                case Constants.SIM1:
+                    pref = Constants.PREF_SIM1;
+                    break;
+                case Constants.SIM2:
+                    pref = Constants.PREF_SIM2;
+                    break;
+                case Constants.SIM3:
+                    pref = Constants.PREF_SIM3;
+                    break;
+            }
+            idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
+        } else
+            idSmall = R.drawable.ic_launcher_small;
+
         sendDataBroadcast(0L, 0L);
         if (task == Constants.COUNT) {
             switch (activeSIM) {
@@ -486,6 +530,28 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             continueOverLimit = false;
         if ((key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2])) && activeSIM == Constants.SIM3 && continueOverLimit)
             continueOverLimit = false;
+        if (key.equals(Constants.PREF_OTHER[15]))
+            if (sharedPreferences.getBoolean(key, false)) {
+                String[] pref = new String[24];
+                switch (activeSIM) {
+                    case Constants.SIM1:
+                        pref = Constants.PREF_SIM1;
+                        break;
+                    case Constants.SIM2:
+                        pref = Constants.PREF_SIM2;
+                        break;
+                    case Constants.SIM3:
+                        pref = Constants.PREF_SIM3;
+                        break;
+                }
+                idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
+            } else
+                idSmall = R.drawable.ic_launcher_small;
+        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[15], false)) {
+            if (key.equals(Constants.PREF_SIM1[23]) || key.equals(Constants.PREF_SIM2[23]) ||
+                    key.equals(Constants.PREF_SIM3[23]))
+                idSmall = getResources().getIdentifier(prefs.getString(key, "none"), "drawable", context.getPackageName());
+        }
     }
 
     private class CheckTimerTask extends TimerTask {
@@ -495,8 +561,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
             context.sendBroadcast(new Intent(Constants.TIP));
 
-            DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-            DateTime dt = fmt.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+            DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
 
             String limit1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
             String limit2 = isNight2 ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
@@ -581,130 +646,57 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
     }
 
-    private void isResetNeeded() {
-        DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-        DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
-        DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+    private DateTime getResetTime(int simid) {
         DateTime now = new DateTime();
+        String[] pref = new String[25];
+        int period = 0;
+        switch (simid) {
+            case Constants.SIM1:
+                pref = Constants.PREF_SIM1;
+                break;
+            case Constants.SIM2:
+                pref = Constants.PREF_SIM2;
+                break;
+            case Constants.SIM3:
+                pref = Constants.PREF_SIM3;
+                break;
+        }
+        DateTime last = now;
+        String date = prefs.getString(pref[24], "");
+        if (!date.equals(""))
+            last = fmtDateTime.parseDateTime(date);
+        switch (prefs.getString(pref[3], "")) {
+            case "0":
+                period = 1;
+                break;
+            case "1":
+                switch (now.getMonthOfYear()) {
+                    case 2:
+                        if (now.year().isLeap())
+                            period = 29;
+                        else
+                            period = 28;
+                        break;
+                    case 4:
+                    case 6:
+                    case 9:
+                    case 11:
+                        period = 30;
+                        break;
+                    default:
+                        period = 31;
+                        break;
+                }
+                break;
+            case "2":
+                period = Integer.parseInt(prefs.getString(pref[10], "1"));
+                break;
+        }
 
-        String reset1 = now.toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[9], "00:00");
-        String reset2 = now.toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[9], "00:00");
-        String reset3 = now.toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[9], "00:00");
-
-        if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], "")) || needsReset1 ||
-                (prefs.getString(Constants.PREF_SIM1[3], "0").equals("2") && DateCompare.isNextDayOrMonth(dt, "0"))) {
-            needsReset1 = true;
-            switch (prefs.getString(Constants.PREF_SIM1[3], "")) {
-                case "0":
-                    resetTime1 = fmtnow.parseDateTime(reset1);
-                    break;
-                case "1":
-                    int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                    if (day1 >= 28)
-                        switch (now.getMonthOfYear()) {
-                            case 2:
-                                if (now.year().isLeap())
-                                    day1 = 29;
-                                else
-                                    day1 = 28;
-                                break;
-                            case 4:
-                            case 6:
-                            case 9:
-                            case 11:
-                                if (day1 == 31)
-                                    day1 = 30;
-                                break;
-                        }
-                    if (day1 >= now.getDayOfMonth())
-                        resetTime1 = fmtnow.parseDateTime(reset1);
-                    break;
-                case "2":
-                    int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM1[10], "1"));
-                    if ((int) dataMap.get(Constants.PERIOD1) >= day2 + 1) {
-                        resetTime1 = fmtnow.parseDateTime(reset1);
-                        dataMap.put(Constants.PERIOD1, 0);
-                    }
-                    else
-                        dataMap.put(Constants.PERIOD1, (int) dataMap.get(Constants.PERIOD1) + 1);
-            }
-        }
-        if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], "")) || needsReset2 ||
-                (prefs.getString(Constants.PREF_SIM2[3], "0").equals("2") && DateCompare.isNextDayOrMonth(dt, "0"))) {
-            needsReset2 = true;
-            switch (prefs.getString(Constants.PREF_SIM2[3], "")) {
-                case "0":
-                    resetTime2 = fmtnow.parseDateTime(reset2);
-                    break;
-                case "1":
-                    int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                    if (day1 >= 28)
-                        switch (now.getMonthOfYear()) {
-                            case 2:
-                                if (now.year().isLeap())
-                                    day1 = 29;
-                                else
-                                    day1 = 28;
-                                break;
-                            case 4:
-                            case 6:
-                            case 9:
-                            case 11:
-                                if (day1 == 31)
-                                    day1 = 30;
-                                break;
-                        }
-                    if (day1 >= now.getDayOfMonth())
-                        resetTime2 = fmtnow.parseDateTime(reset2);
-                    break;
-                case "2":
-                    int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM2[10], "1"));
-                    if ((int) dataMap.get(Constants.PERIOD2) >= day2 + 1) {
-                        resetTime2 = fmtnow.parseDateTime(reset2);
-                        dataMap.put(Constants.PERIOD2, 0);
-                    }
-                    else
-                        dataMap.put(Constants.PERIOD2, (int) dataMap.get(Constants.PERIOD2) + 1);
-            }
-        }
-        if (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], "")) || needsReset3 ||
-                (prefs.getString(Constants.PREF_SIM3[3], "0").equals("2") && DateCompare.isNextDayOrMonth(dt, "0"))) {
-            needsReset3 = true;
-            switch (prefs.getString(Constants.PREF_SIM3[3], "")) {
-                case "0":
-                    resetTime3 = fmtnow.parseDateTime(reset3);
-                    break;
-                case "1":
-                    int day1 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                    if (day1 >= 28)
-                        switch (now.getMonthOfYear()) {
-                            case 2:
-                                if (now.year().isLeap())
-                                    day1 = 29;
-                                else
-                                    day1 = 28;
-                                break;
-                            case 4:
-                            case 6:
-                            case 9:
-                            case 11:
-                                if (day1 == 31)
-                                    day1 = 30;
-                                break;
-                        }
-                    if (day1 >= now.getDayOfMonth())
-                        resetTime3 = fmtnow.parseDateTime(reset3);
-                    break;
-                case "2":
-                    int day2 = Integer.parseInt(prefs.getString(Constants.PREF_SIM3[10], "1"));
-                    if ((int) dataMap.get(Constants.PERIOD3) >= day2 + 1) {
-                        resetTime3 = fmtnow.parseDateTime(reset3);
-                        dataMap.put(Constants.PERIOD3, 0);
-                    }
-                    else
-                        dataMap.put(Constants.PERIOD3, (int) dataMap.get(Constants.PERIOD3) + 1);
-            }
-        }
+        if (Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays() >= period)
+            return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + prefs.getString(pref[9], "00:00"));
+        else
+            return null;
     }
 
     private class CountTimerTask1 extends TimerTask {
@@ -755,19 +747,24 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
-                    DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
-                    DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+                    DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
                     if (prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                        String timeON = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[20], "23:00");
-                        String timeOFF = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM1[21], "06:00");
-                        isNight1 = DateTimeComparator.getInstance().compare(now, fmtnow.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtnow.parseDateTime(timeOFF)) <= 0;
+                        String timeON = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[20], "23:00");
+                        String timeOFF = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[21], "06:00");
+                        isNight1 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         isNight1 = false;
 
-                    isResetNeeded();
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0) {
+                        resetTime1 = getResetTime(Constants.SIM1);
+                        needsReset1 = true;
+                        resetTime2 = getResetTime(Constants.SIM2);
+                        needsReset2 = true;
+                        resetTime3 = getResetTime(Constants.SIM3);
+                        needsReset3 = true;
+                    }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
@@ -806,6 +803,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             dataMap.put(Constants.SIM1TX_N, 0L);
                             dataMap.put(Constants.TOTAL1_N, 0L);
                             rx = tx = mReceived1 = mTransmitted1 = 0;
+                            prefs.edit().putString(Constants.PREF_SIM1[24], now.toString(fmtDateTime)).apply();
                             needsReset1 = false;
                         }
                         if (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2) {
@@ -826,6 +824,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived2 = mTransmitted2 = 0;
                             needsReset2 = false;
+                            prefs.edit().putString(Constants.PREF_SIM2[24], now.toString(fmtDateTime)).apply();
                         }
                         if (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3) {
                             dataMap.put(Constants.SIM3RX, 0L);
@@ -845,6 +844,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived3 = mTransmitted3 = 0;
                             needsReset3 = false;
+                            prefs.edit().putString(Constants.PREF_SIM3[24], now.toString(fmtDateTime)).apply();
                         }
                     } else {
                         if (!isNight1) {
@@ -930,7 +930,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             if (last.equals(""))
                                 dt_temp = new org.joda.time.DateTime();
                             else
-                                dt_temp = fmtdate.parseDateTime(last);
+                                dt_temp = fmtDate.parseDateTime(last);
                             if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
                                     && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
                                 choice = 1;
@@ -962,11 +962,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
                                     + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
 
-                        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-                        n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                        n = builder.setContentIntent(contentIntent)
                                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                                 .setPriority(mPriority)
-                                .setLargeIcon(bm)
                                 .setWhen(System.currentTimeMillis())
                                 .setContentTitle(context.getResources().getString(R.string.notification_title))
                                 .setContentText(text)
@@ -1032,19 +1030,24 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
-                    DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
-                    DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+                    DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
                     if (prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                        String timeON = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[20], "23:00");
-                        String timeOFF = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM2[21], "06:00");
-                        isNight2 = DateTimeComparator.getInstance().compare(now, fmtnow.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtnow.parseDateTime(timeOFF)) <= 0;
+                        String timeON = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[20], "23:00");
+                        String timeOFF = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[21], "06:00");
+                        isNight2 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         isNight2 = false;
 
-                    isResetNeeded();
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0) {
+                        resetTime1 = getResetTime(Constants.SIM1);
+                        needsReset1 = true;
+                        resetTime2 = getResetTime(Constants.SIM2);
+                        needsReset2 = true;
+                        resetTime3 = getResetTime(Constants.SIM3);
+                        needsReset3 = true;
+                    }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
@@ -1093,6 +1096,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived1 = mTransmitted1 = 0;
                             needsReset1 = false;
+                            prefs.edit().putString(Constants.PREF_SIM1[24], now.toString(fmtDateTime)).apply();
                         }
                         if (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2) {
                             dataMap.put(Constants.SIM2RX, 0L);
@@ -1103,6 +1107,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             dataMap.put(Constants.TOTAL2_N, 0L);
                             rx = tx = mReceived2 = mTransmitted2 = 0;
                             needsReset2 = false;
+                            prefs.edit().putString(Constants.PREF_SIM2[24], now.toString(fmtDateTime)).apply();
                         }
                         if (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3) {
                             dataMap.put(Constants.SIM3RX, 0L);
@@ -1122,6 +1127,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived3 = mTransmitted3 = 0;
                             needsReset3 = false;
+                            prefs.edit().putString(Constants.PREF_SIM3[24], now.toString(fmtDateTime)).apply();
                         }
                     } else {
                         if (!isNight2) {
@@ -1207,7 +1213,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             if (last.equals(""))
                                 dt_temp = new org.joda.time.DateTime();
                             else
-                                dt_temp = fmtdate.parseDateTime(last);
+                                dt_temp = fmtDate.parseDateTime(last);
                             if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
                                     && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
                                 choice = 1;
@@ -1239,12 +1245,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
                                     + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
 
-                        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-                        n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                        n = builder.setContentIntent(contentIntent)
                                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                                 .setPriority(mPriority)
-                                .setLargeIcon(bm)
                                 .setWhen(System.currentTimeMillis())
+                                .setSmallIcon(idSmall)
+                                .setLargeIcon(bLarge)
                                 .setContentTitle(context.getResources().getString(R.string.notification_title))
                                 .setContentText(text)
                                 .build();
@@ -1309,19 +1315,24 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
-                    DateTimeFormatter fmtdate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-                    DateTimeFormatter fmtnow = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
-                    DateTime dt = fmtdate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+                    DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
                     if (prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                        String timeON = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[20], "23:00");
-                        String timeOFF = new DateTime().toString(fmtdate) + " " + prefs.getString(Constants.PREF_SIM3[21], "06:00");
-                        isNight3 = DateTimeComparator.getInstance().compare(now, fmtnow.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtnow.parseDateTime(timeOFF)) <= 0;
+                        String timeON = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[20], "23:00");
+                        String timeOFF = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[21], "06:00");
+                        isNight3 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         isNight3 = false;
 
-                    isResetNeeded();
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0) {
+                        resetTime1 = getResetTime(Constants.SIM1);
+                        needsReset1 = true;
+                        resetTime2 = getResetTime(Constants.SIM2);
+                        needsReset2 = true;
+                        resetTime3 = getResetTime(Constants.SIM3);
+                        needsReset3 = true;
+                    }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
@@ -1370,6 +1381,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived1 = mTransmitted1 = 0;
                             needsReset1 = false;
+                            prefs.edit().putString(Constants.PREF_SIM1[24], now.toString(fmtDateTime)).apply();
                         }
                         if (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2) {
                             dataMap.put(Constants.SIM2RX, 0L);
@@ -1389,6 +1401,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived2 = mTransmitted2 = 0;
                             needsReset2 = false;
+                            prefs.edit().putString(Constants.PREF_SIM2[24], now.toString(fmtDateTime)).apply();
                         }
                         if (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3) {
                             dataMap.put(Constants.SIM3RX, 0L);
@@ -1399,6 +1412,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             dataMap.put(Constants.TOTAL3_N, 0L);
                             rx = tx = mReceived3 = mTransmitted3 = 0;
                             needsReset3 = false;
+                            prefs.edit().putString(Constants.PREF_SIM3[24], now.toString(fmtDateTime)).apply();
                         }
                     } else {
                         if (!isNight2) {
@@ -1484,7 +1498,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             if (last.equals(""))
                                 dt_temp = new org.joda.time.DateTime();
                             else
-                                dt_temp = fmtdate.parseDateTime(last);
+                                dt_temp = fmtDate.parseDateTime(last);
                             if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
                                     && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
                                 choice = 1;
@@ -1516,11 +1530,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
                                     + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
 
-                        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-                        n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+                        n = builder.setContentIntent(contentIntent)
                                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                                 .setPriority(mPriority)
-                                .setLargeIcon(bm)
                                 .setWhen(System.currentTimeMillis())
                                 .setContentTitle(context.getResources().getString(R.string.notification_title))
                                 .setContentText(text)
@@ -1597,7 +1609,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_disable);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+            Notification n = builder.setContentIntent(contentIntent)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setPriority(mPriority)
                     .setLargeIcon(bm)
@@ -1674,7 +1686,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_disable);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification n = builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher_small)
+            Notification n = builder.setContentIntent(contentIntent)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setPriority(mPriority)
                     .setLargeIcon(bm)
@@ -1741,6 +1753,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Picasso.with(this).cancelRequest(target);
         isTimerCancelled = true;
         mTimer.cancel();
         mTimer.purge();

@@ -47,8 +47,8 @@
     <string name="round">Precision (%)</string>
     <string name="not_supported">Your device is not supported</string>
     <string name="error">Error!</string>
-    <string name="name_summary">Edit operator\'s names</string>
-    <string name="name_title">Operator\'s name</string>
+    <string name="name_summary">Edit operator\'s settings</string>
+    <string name="name_title">Operator\'s settings</string>
     <string name="auto_name_text">Name by network</string>
     <string name="name_text">Name by User</string>
     <string name="on">On</string>
@@ -131,4 +131,9 @@
     <string name="limit_settings">Limit settings</string>
     <string name="days">d.</string>
     <string name="view_result">View result</string>
+    <string name="show_logo_in_statusbar">Show operator logo instead of app icon in status bar</string>
+    <string name="show_logo">Logo in statusbar</string>
+    <string name="name_sim3">Name for SIM3</string>
+    <string name="name_sim2">Name for SIM2</string>
+    <string name="name_sim1">Name for SIM1</string>
 </resources>
