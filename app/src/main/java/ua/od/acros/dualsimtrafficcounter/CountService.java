@@ -759,11 +759,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0) {
                         resetTime1 = getResetTime(Constants.SIM1);
-                        needsReset1 = true;
+                        if (resetTime1 != null)
+                            needsReset1 = true;
                         resetTime2 = getResetTime(Constants.SIM2);
-                        needsReset2 = true;
+                        if (resetTime2 != null)
+                            needsReset2 = true;
                         resetTime3 = getResetTime(Constants.SIM3);
-                        needsReset3 = true;
+                        if (resetTime3 != null)
+                            needsReset3 = true;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
@@ -1042,11 +1045,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0) {
                         resetTime1 = getResetTime(Constants.SIM1);
-                        needsReset1 = true;
+                        if (resetTime1 != null)
+                            needsReset1 = true;
                         resetTime2 = getResetTime(Constants.SIM2);
-                        needsReset2 = true;
+                        if (resetTime2 != null)
+                            needsReset2 = true;
                         resetTime3 = getResetTime(Constants.SIM3);
-                        needsReset3 = true;
+                        if (resetTime3 != null)
+                            needsReset3 = true;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
@@ -1327,11 +1333,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0) {
                         resetTime1 = getResetTime(Constants.SIM1);
-                        needsReset1 = true;
+                        if (resetTime1 != null)
+                            needsReset1 = true;
                         resetTime2 = getResetTime(Constants.SIM2);
-                        needsReset2 = true;
+                        if (resetTime2 != null)
+                            needsReset2 = true;
                         resetTime3 = getResetTime(Constants.SIM3);
-                        needsReset3 = true;
+                        if (resetTime3 != null)
+                            needsReset3 = true;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
