@@ -649,20 +649,20 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private DateTime getResetTime(int simid) {
         DateTime now = new DateTime();
         String[] pref = new String[25];
-        int period = 0;
-        String day = "";
+        int delta = 0;
+        String period = "";
         switch (simid) {
             case Constants.SIM1:
                 pref = Constants.PREF_SIM1;
-                day = Constants.PERIOD1;
+                period = Constants.PERIOD1;
                 break;
             case Constants.SIM2:
                 pref = Constants.PREF_SIM2;
-                day = Constants.PERIOD2;
+                period = Constants.PERIOD2;
                 break;
             case Constants.SIM3:
                 pref = Constants.PREF_SIM3;
-                day = Constants.PERIOD3;
+                period = Constants.PERIOD3;
                 break;
         }
         DateTime last = now;
@@ -671,38 +671,38 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             last = fmtDateTime.parseDateTime(date);
         switch (prefs.getString(pref[3], "")) {
             case "0":
-                period = 1;
+                delta = 1;
                 break;
             case "1":
                 switch (now.getMonthOfYear()) {
                     case 2:
                         if (now.year().isLeap())
-                            period = 29;
+                            delta = 29;
                         else
-                            period = 28;
+                            delta = 28;
                         break;
                     case 4:
                     case 6:
                     case 9:
                     case 11:
-                        period = 30;
+                        delta = 30;
                         break;
                     default:
-                        period = 31;
+                        delta = 31;
                         break;
                 }
                 break;
             case "2":
-                period = Integer.parseInt(prefs.getString(pref[10], "1"));
+                delta = Integer.parseInt(prefs.getString(pref[10], "1"));
                 break;
         }
 
         int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
         if (prefs.getString(pref[3], "").equals("2"))
-            dataMap.put(day, diff);
-        if (diff >= period) {
+            dataMap.put(period, diff);
+        if (diff >= delta) {
             if (prefs.getString(pref[3], "").equals("2"))
-                dataMap.put(day, 0);
+                dataMap.put(period, 0);
             return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + prefs.getString(pref[9], "00:00"));
         } else
             return null;
