@@ -420,12 +420,26 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(this);
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                bLarge = bitmap;
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable drawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable drawable) {
+            }
+        };
+        Picasso.with(context).load(R.mipmap.ic_launcher).into(target);
         n = builder.setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
                 .setSmallIcon(R.drawable.ic_launcher_small)
-                .setLargeIcon(bm)
+                .setLargeIcon(bLarge)
                 .setTicker(getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
                 .setOnlyAlertOnce(true)
@@ -455,21 +469,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         activeSIM = MobileDataControl.getMobileDataInfo(context)[1];
-        target = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                bLarge = bitmap;
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable drawable) {
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable drawable) {
-            }
-        };
-        Picasso.with(context).load(R.mipmap.ic_launcher).into(target);
 
         if (prefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[25];
