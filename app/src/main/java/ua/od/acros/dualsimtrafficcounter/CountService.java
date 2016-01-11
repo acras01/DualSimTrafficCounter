@@ -650,15 +650,19 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         DateTime now = new DateTime();
         String[] pref = new String[25];
         int period = 0;
+        String day = "";
         switch (simid) {
             case Constants.SIM1:
                 pref = Constants.PREF_SIM1;
+                day = Constants.PERIOD1;
                 break;
             case Constants.SIM2:
                 pref = Constants.PREF_SIM2;
+                day = Constants.PERIOD2;
                 break;
             case Constants.SIM3:
                 pref = Constants.PREF_SIM3;
+                day = Constants.PERIOD3;
                 break;
         }
         DateTime last = now;
@@ -693,9 +697,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 break;
         }
 
-        if (Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays() >= period)
+        int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
+        if (prefs.getString(pref[3], "").equals("2"))
+            dataMap.put(day, diff);
+        if (diff >= period) {
+            if (prefs.getString(pref[3], "").equals("2"))
+                dataMap.put(day, 0);
             return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + prefs.getString(pref[9], "00:00"));
-        else
+        } else
             return null;
     }
 
