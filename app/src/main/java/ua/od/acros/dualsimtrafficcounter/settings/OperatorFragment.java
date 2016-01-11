@@ -75,15 +75,17 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
         String[] listitems = getResources().getStringArray(R.array.logo_values);
         String[] list = getResources().getStringArray(R.array.logo);
         for (int i = 0; i < list.length; i++) {
-            if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM1[23], "none")))
-                if (logo1 != null)
-                    logo1.setSummary(list[i]);
-            if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM2[23], "none")))
-                if (logo2 != null)
-                    logo2.setSummary(list[i]);
-            if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM3[23], "none")))
-                if (logo3 != null)
-                    logo3.setSummary(list[i]);
+            if (showLogo != null) {
+                if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM1[23], "none")))
+                    if (logo1 != null)
+                        logo1.setSummary(list[i]);
+                if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM2[23], "none")))
+                    if (logo2 != null)
+                        logo2.setSummary(list[i]);
+                if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM3[23], "none")))
+                    if (logo3 != null)
+                        logo3.setSummary(list[i]);
+            }
         }
     }
 
