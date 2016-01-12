@@ -766,8 +766,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     DateTime now = new DateTime();
 
                     if (prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                        String timeON = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[20], "23:00");
-                        String timeOFF = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[21], "06:00");
+                        String timeON = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[20], "23:00");
+                        String timeOFF = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[21], "06:00");
                         isNight1 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         isNight1 = false;
@@ -1055,8 +1055,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     DateTime now = new DateTime();
 
                     if (prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                        String timeON = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[20], "23:00");
-                        String timeOFF = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[21], "06:00");
+                        String timeON = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[20], "23:00");
+                        String timeOFF = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[21], "06:00");
                         isNight2 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         isNight2 = false;
@@ -1344,8 +1344,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     DateTime now = new DateTime();
 
                     if (prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                        String timeON = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[20], "23:00");
-                        String timeOFF = new DateTime().toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[21], "06:00");
+                        String timeON = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[20], "23:00");
+                        String timeOFF = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[21], "06:00");
                         isNight3 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         isNight3 = false;
