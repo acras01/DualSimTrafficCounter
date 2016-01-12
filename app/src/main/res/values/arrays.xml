@@ -83,24 +83,24 @@
         <item>Yota</item>
     </string-array>
     <string-array name="logo_values">
-        <item>none</item>
-        <item>trimob</item>
-        <item>beeline</item>
-        <item>djuice</item>
-        <item>kyivstar</item>
-        <item>life</item>
-        <item>megafon</item>
-        <item>motiv</item>
-        <item>mts</item>
-        <item>o</item>
-        <item>orange</item>
-        <item>play</item>
-        <item>rostelecom</item>
-        <item>smarts</item>
-        <item>tele2</item>
-        <item>velcom</item>
-        <item>vodafone</item>
-        <item>yota</item>
+        <item>logo_none</item>
+        <item>logo_trimob</item>
+        <item>logo_beeline</item>
+        <item>logo_djuice</item>
+        <item>logo_kyivstar</item>
+        <item>logo_life</item>
+        <item>logo_megafon</item>
+        <item>logo_motiv</item>
+        <item>logo_mts</item>
+        <item>logo_o</item>
+        <item>logo_orange</item>
+        <item>logo_play</item>
+        <item>logo_rostelecom</item>
+        <item>logo_smarts</item>
+        <item>logo_tele2</item>
+        <item>logo_velcom</item>
+        <item>logo_vodafone</item>
+        <item>logo_yota</item>
     </string-array>
     <string-array name="onoff">
         <item>Both</item>
