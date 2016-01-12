@@ -22,7 +22,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
 public class OnOffDialog extends DialogFragment {
 
     private int chkSIM = Constants.NULL;
-    private Button bSetUsageOK;
+    private Button bOK;
 
     public static OnOffDialog newInstance() {
         return new OnOffDialog();
@@ -77,8 +77,8 @@ public class OnOffDialog extends DialogFragment {
 
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                bSetUsageOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                bSetUsageOK.setOnClickListener(new View.OnClickListener() {
+                bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (chkSIM != Constants.NULL) {

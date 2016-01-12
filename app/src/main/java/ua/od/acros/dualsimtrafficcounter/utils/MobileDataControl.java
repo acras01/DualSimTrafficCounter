@@ -509,22 +509,22 @@ public class MobileDataControl {
     }
 
     public static void toggleMobileDataConnection(boolean ON, Context context, int sim) throws Exception {
-        if (!ON) {
-            alt = false;
-            if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport()) {
+        alt = false;
+        if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport()) {
+            try {
+                lastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_sim_setting");
+                alt = true;
+            } catch (Settings.SettingNotFoundException e0) {
+                e0.printStackTrace();
                 try {
-                    lastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_sim_setting");
+                    lastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_setting");
                     alt = true;
-                } catch (Settings.SettingNotFoundException e0) {
-                    e0.printStackTrace();
-                    try {
-                        lastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_setting");
-                        alt = true;
-                    } catch (Settings.SettingNotFoundException e1) {
-                        e1.printStackTrace();
-                    }
+                } catch (Settings.SettingNotFoundException e1) {
+                    e1.printStackTrace();
                 }
             }
+        }
+        if (!ON) {
             if (!alt)
                 lastActiveSIM = (int) activeSIM(context, activeNetworkInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
