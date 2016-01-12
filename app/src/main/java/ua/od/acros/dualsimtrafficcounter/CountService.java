@@ -704,8 +704,23 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
         if (prefs.getString(pref[3], "").equals("1")) {
-            int month= now.getDayOfMonth();
-            if (now.getDayOfMonth() > delta && diff < 31)
+            int month= now.getMonthOfYear();
+            int daysInMonth = 31;
+            switch (last.getMonthOfYear()) {
+                case 2:
+                    if (last.year().isLeap())
+                        daysInMonth = 29;
+                    else
+                        daysInMonth = 28;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    daysInMonth = 30;
+                    break;
+            }
+            if (now.getDayOfMonth() > delta && diff < daysInMonth)
                 month += 1;
             date = now.getYear() + "-" + month + "-" + delta;
             return fmtDateTime.parseDateTime(date + " " + prefs.getString(pref[9], "00:00"));
