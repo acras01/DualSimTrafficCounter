@@ -680,38 +680,45 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 delta = 1;
                 break;
             case "1":
-                switch (now.getMonthOfYear()) {
-                    case 2:
-                        if (now.year().isLeap())
-                            delta = 29;
-                        else
-                            delta = 28;
-                        break;
-                    case 4:
-                    case 6:
-                    case 9:
-                    case 11:
-                        delta = 30;
-                        break;
-                    default:
-                        delta = 31;
-                        break;
-                }
+                delta = Integer.parseInt(prefs.getString(pref[10], "1"));
+                if (delta >= 28)
+                    switch (now.getMonthOfYear()) {
+                        case 2:
+                            if (now.year().isLeap())
+                                delta = 29;
+                            else
+                                delta = 28;
+                            break;
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11:
+                            if (delta == 31)
+                                delta = 30;
+                            break;
+                    }
                 break;
             case "2":
                 delta = Integer.parseInt(prefs.getString(pref[10], "1"));
                 break;
         }
-
         int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
-        if (prefs.getString(pref[3], "").equals("2"))
-            dataMap.put(period, diff);
-        if (diff >= delta) {
+        if (prefs.getString(pref[3], "").equals("1")) {
+            int month= now.getDayOfMonth();
+            if (now.getDayOfMonth() > delta && diff < 31)
+                month += 1;
+            date = now.getYear() + "-" + month + "-" + delta;
+            return fmtDateTime.parseDateTime(date + " " + prefs.getString(pref[9], "00:00"));
+        } else {
             if (prefs.getString(pref[3], "").equals("2"))
-                dataMap.put(period, 0);
-            return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + prefs.getString(pref[9], "00:00"));
-        } else
-            return null;
+                dataMap.put(period, diff);
+            if (diff >= delta) {
+                if (prefs.getString(pref[3], "").equals("2"))
+                    dataMap.put(period, 0);
+                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + prefs.getString(pref[9], "00:00"));
+            } else
+                return null;
+        }
     }
 
     private class CountTimerTask1 extends TimerTask {
