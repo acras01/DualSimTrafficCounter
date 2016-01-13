@@ -483,7 +483,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     pref = Constants.PREF_SIM3;
                     break;
             }
-            idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
+            if (prefs.getString(pref[23], "none").equals("auto"))
+                idSmall = getResources().getIdentifier(MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+            else
+                idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
         } else
             idSmall = R.drawable.ic_launcher_small;
 
@@ -543,7 +546,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         pref = Constants.PREF_SIM3;
                         break;
                 }
-                idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
+                if (prefs.getString(pref[23], "none").equals("auto"))
+                    idSmall = getResources().getIdentifier(MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+                else
+                    idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
             } else
                 idSmall = R.drawable.ic_launcher_small;
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[15], false)) {

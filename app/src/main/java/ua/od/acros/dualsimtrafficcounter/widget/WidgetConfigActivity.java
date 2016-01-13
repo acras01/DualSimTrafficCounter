@@ -513,7 +513,23 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         String[] list = getResources().getStringArray(R.array.icons);
         if (position < list.length - 1) {
             user_pick = "";
-            int resourceId = getApplicationContext().getResources().getIdentifier(listitems[position], "drawable", getApplicationContext().getPackageName());
+            int sim = Constants.DISABLED;
+            switch (logo) {
+                case "logo1":
+                    sim = Constants.SIM1;
+                    break;
+                case "logo2":
+                    sim = Constants.SIM2;
+                    break;
+                case "logo3":
+                    sim = Constants.SIM3;
+                    break;
+            }
+            int resourceId;
+            if (prefs.getString(logo, "none").equals("auto"))
+                resourceId = getApplicationContext().getResources().getIdentifier(MobileUtils.getLogoFromCode(getApplicationContext(), sim), "drawable", getApplicationContext().getPackageName());
+            else
+                resourceId = getApplicationContext().getResources().getIdentifier(listitems[position], "drawable", getApplicationContext().getPackageName());
             if (logo.equals(Constants.PREF_WIDGET[5])) {
                 edit.putBoolean(Constants.PREF_WIDGET[8], false);
                 edit.putString(Constants.PREF_WIDGET[5], listitems[position]);

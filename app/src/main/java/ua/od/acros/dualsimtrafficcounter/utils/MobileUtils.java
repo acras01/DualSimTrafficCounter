@@ -618,11 +618,15 @@ public class MobileUtils {
                 case "310660":
                 case "310800":
                     return "tmobile";
-                case "25011":
                 case "25044":
                 case "25099":
                 case "25502":
                 case "45207":
+                case "40101":
+                case "28204":
+                case "45609":
+                case "43605":
+                case "43404":
                     return "beeline";
                 case "25507":
                     return "trimob";
@@ -759,6 +763,61 @@ public class MobileUtils {
                 case "310890":
                 case "310910":
                     return "verizon";
+                case "27602":
+                case "50503":
+                case "28001":
+                case "23003":
+                case "23099":
+                case "60202":
+                case "28802":
+                case "54201":
+                case "26202":
+                case "26209":
+                case "62002":
+                case "20205":
+                case "21670":
+                case "27402":
+                case "27403":
+                case "40401":
+                case "40405":
+                case "40411":
+                case "40413":
+                case "40415":
+                case "40420":
+                case "40427":
+                case "40430":
+                case "40443":
+                case "40446":
+                case "40460":
+                case "40566":
+                case "40567":
+                case "40484":
+                case "40486":
+                case "40488":
+                case "405750":
+                case "405751":
+                case "405752":
+                case "405753":
+                case "405754":
+                case "405755":
+                case "405756":
+                case "27201":
+                case "22210":
+                case "27801":
+                case "20404":
+                case "53001":
+                case "26801":
+                case "42702":
+                case "22601":
+                case "21401":
+                case "21406":
+                case "28602":
+                case "23403":
+                case "23415":
+                case "23491":
+                    return "vodafone";
+                case "25011":
+                    return "yota";
                 default:
                     return "none";
             }
