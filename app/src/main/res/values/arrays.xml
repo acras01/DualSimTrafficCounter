@@ -25,8 +25,11 @@
         <item>3Mob</item>
         <item>AT&amp;T</item>
         <item>Beeline</item>
+        <item>Bouygues Telecom</item>
         <item>China Mobile</item>
+        <item>Cosmote</item>
         <item>Djuice</item>
+        <item>France Telecom</item>
         <item>Kyivstar</item>
         <item>Life:)</item>
         <item>Megafon</item>
@@ -51,8 +54,11 @@
         <item>trimob</item>
         <item>att</item>
         <item>beeline</item>
+        <item>bouygues_telecom</item>
         <item>china_mobile</item>
+        <item>cosmote</item>
         <item>djuice</item>
+        <item>france_telecom</item>
         <item>kyivstar</item>
         <item>life</item>
         <item>megafon</item>
@@ -77,8 +83,11 @@
         <item>3Mob</item>
         <item>AT&amp;T</item>
         <item>Beeline</item>
+        <item>Bouygues Telecom</item>
         <item>China Mobile</item>
+        <item>Cosmote</item>
         <item>Djuice</item>
+        <item>France Telecom</item>
         <item>Kyivstar</item>
         <item>Life:)</item>
         <item>Megafon</item>
@@ -98,29 +107,32 @@
         <item>Yota</item>
     </string-array>
     <string-array name="logo_values">
-        <item>logo_none</item>
-        <item>logo_trimob</item>
-        <item>logo_att</item>
-        <item>logo_beeline</item>
-        <item>logo_china_mobile</item>
-        <item>logo_djuice</item>
-        <item>logo_kyivstar</item>
-        <item>logo_life</item>
-        <item>logo_megafon</item>
-        <item>logo_motiv</item>
-        <item>logo_mts</item>
-        <item>logo_o2</item>
-        <item>logo_o</item>
-        <item>logo_orange</item>
-        <item>logo_play</item>
-        <item>logo_rostelecom</item>
-        <item>logo_smarts</item>
-        <item>logo_tele2</item>
-        <item>logo_tmobile</item>
-        <item>logo_velcom</item>
-        <item>logo_verizon</item>
-        <item>logo_vodafone</item>
-        <item>logo_yota</item>
+        <item>none</item>
+        <item>trimob</item>
+        <item>att</item>
+        <item>beeline</item>
+        <item>bouygues_telecom</item>
+        <item>china_mobile</item>
+        <item>cosmote</item>
+        <item>djuice</item>
+        <item>france_telecom</item>
+        <item>kyivstar</item>
+        <item>life</item>
+        <item>megafon</item>
+        <item>motiv</item>
+        <item>mts</item>
+        <item>o2</item>
+        <item>o</item>
+        <item>orange</item>
+        <item>play</item>
+        <item>rostelecom</item>
+        <item>smarts</item>
+        <item>tele2</item>
+        <item>tmobile</item>
+        <item>velcom</item>
+        <item>verizon</item>
+        <item>vodafone</item>
+        <item>yota</item>
     </string-array>
     <string-array name="onoff">
         <item>Both</item>
