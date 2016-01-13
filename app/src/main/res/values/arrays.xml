@@ -23,20 +23,25 @@
     <string-array name="icons">
         <item>None</item>
         <item>3Mob</item>
+        <item>AT&amp;T</item>
         <item>Beeline</item>
+        <item>China Mobile</item>
         <item>Djuice</item>
         <item>Kyivstar</item>
         <item>Life:)</item>
         <item>Megafon</item>
         <item>Motiv</item>
         <item>MTS</item>
+        <item>O2</item>
         <item>O!</item>
         <item>Orange</item>
         <item>Play</item>
         <item>Rostelecom</item>
         <item>Smarts</item>
         <item>Tele2</item>
+        <item>T-Mobile</item>
         <item>Velcom</item>
+        <item>Verizon</item>
         <item>Vodafone</item>
         <item>Yota</item>
         <item>User</item>
@@ -44,20 +49,25 @@
     <string-array name="icons_values">
         <item>none</item>
         <item>trimob</item>
+        <item>att</item>
         <item>beeline</item>
+        <item>china_mobile</item>
         <item>djuice</item>
         <item>kyivstar</item>
         <item>life</item>
         <item>megafon</item>
         <item>motiv</item>
         <item>mts</item>
+        <item>o2</item>
         <item>o</item>
         <item>orange</item>
         <item>play</item>
         <item>rostelecom</item>
         <item>smarts</item>
         <item>tele2</item>
+        <item>tmobile</item>
         <item>velcom</item>
+        <item>verizon</item>
         <item>vodafone</item>
         <item>yota</item>
         <item>user</item>
@@ -65,40 +75,50 @@
     <string-array name="logo">
         <item>None</item>
         <item>3Mob</item>
+        <item>AT&amp;T</item>
         <item>Beeline</item>
+        <item>China Mobile</item>
         <item>Djuice</item>
         <item>Kyivstar</item>
         <item>Life:)</item>
         <item>Megafon</item>
         <item>Motiv</item>
         <item>MTS</item>
+        <item>O2</item>
         <item>O!</item>
         <item>Orange</item>
         <item>Play</item>
         <item>Rostelecom</item>
         <item>Smarts</item>
         <item>Tele2</item>
+        <item>T-Mobile</item>
         <item>Velcom</item>
+        <item>Verizon</item>
         <item>Vodafone</item>
         <item>Yota</item>
     </string-array>
     <string-array name="logo_values">
         <item>logo_none</item>
         <item>logo_trimob</item>
+        <item>logo_att</item>
         <item>logo_beeline</item>
+        <item>logo_china_mobile</item>
         <item>logo_djuice</item>
         <item>logo_kyivstar</item>
         <item>logo_life</item>
         <item>logo_megafon</item>
         <item>logo_motiv</item>
         <item>logo_mts</item>
+        <item>logo_o2</item>
         <item>logo_o</item>
         <item>logo_orange</item>
         <item>logo_play</item>
         <item>logo_rostelecom</item>
         <item>logo_smarts</item>
         <item>logo_tele2</item>
+        <item>logo_tmobile</item>
         <item>logo_velcom</item>
+        <item>logo_verizon</item>
         <item>logo_vodafone</item>
         <item>logo_yota</item>
     </string-array>
