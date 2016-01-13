@@ -25,10 +25,10 @@ public class OnOffReceiver extends BroadcastReceiver {
         try {
             int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
             if (intent.getBooleanExtra(Constants.ON_OFF, true) && CountService.getLastActiveSIM() == sim &&
-                    MobileDataControl.getMobileDataInfo(context)[0] == 0)
+                    MobileDataControl.getMobileDataInfo(context, false)[0] == 0)
                 MobileDataControl.toggleMobileDataConnection(true, context, sim);
             else if (!intent.getBooleanExtra(Constants.ON_OFF, true) && CountService.getActiveSIM() == sim &&
-                    MobileDataControl.getMobileDataInfo(context)[0] == 2)
+                    MobileDataControl.getMobileDataInfo(context, false)[0] == 2)
                 MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
 
             /*String out = new SimpleDateFormat(Constants.TIME_FORMAT, context.getResources().getConfiguration().locale).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +

@@ -37,7 +37,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -180,7 +179,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         ACRA.getErrorReporter().handleException(e);
                     }                    
                 } else
-                    if (MobileDataControl.getMobileDataInfo(context)[0] == 2)
+                    if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2)
                         timerStart(Constants.COUNT);
             }
         };
@@ -469,7 +468,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         TimerTask tTask = null;
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        activeSIM = MobileDataControl.getMobileDataInfo(context)[1];
+        activeSIM = MobileDataControl.getMobileDataInfo(context, true)[1];
 
         if (prefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[25];
@@ -741,9 +740,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                int[] data = {2, Constants.SIM1};
-
-                if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+                if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
@@ -1030,9 +1027,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                int[] data = {2, Constants.SIM2};
-
-                if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+                if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
@@ -1319,9 +1314,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                int[] data = {2, Constants.SIM3};
-
-                if (Arrays.equals(MobileDataControl.getMobileDataInfo(context), data) && !isTimerCancelled) {
+                if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
 
                     long speedRX;
                     long speedTX;

@@ -350,19 +350,13 @@ public class MobileDataControl {
         return (int) sim;
     }
 
-
-    /*private static String getActiveSubscriberId(Context context) {
-        final TelephonyManager tele = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);;
-        return tele.getSubscriberId();
-    }*/
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     private static void setMobileNetworkFromLollipop(final Context context, int sim) throws Exception {
         String cmd;
         int state;
         try {
             // Get the current state of the mobile network.
-            state = getMobileDataInfo(context)[0] == 2 ? 0 : 1;
+            state = getMobileDataInfo(context, false)[0] == 2 ? 0 : 1;
             // Get the value of the "TRANSACTION_setDataEnabled" field.
             String transactionCode = getTransactionCode(context);
             SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
@@ -423,11 +417,6 @@ public class MobileDataControl {
         }
     }
 
-    /*@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private static boolean isMobileDataEnabledFromLollipop(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
-    }*/
-
     private static String getTransactionCode(Context context) throws Exception {
         final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
@@ -441,48 +430,20 @@ public class MobileDataControl {
         return String.valueOf(field.getInt(null));
     }
 
-    /*private static void executeCommandViaSu(String option, String command) {
-        boolean success = false;
-        String su = "su";
-        for (int i=0; i < 3; i++) {
-            // Default "su" command executed successfully, then quit.
-            if (success) {
-                break;
-            }
-            // Else, execute other "su" commands.
-            if (i == 1) {
-                su = "/system/xbin/su";
-            } else if (i == 2) {
-                su = "/system/bin/su";
-            }
-            try {
-                // Execute command as "su".
-                Process p = Runtime.getRuntime().exec(su);
-                DataOutputStream os = new DataOutputStream(p.getOutputStream());
-                os.writeBytes(command + "\n");
-                //Runtime.getRuntime().exec(new String[]{su, option , command});
-            } catch (IOException e) {
-                success = false;
-                // Oops! Cannot execute `su` for some reason.
-                // Log error here.
-            } finally {
-                success = true;
-            }
-        }
-    }*/
-
-    public static int[] getMobileDataInfo(Context context) {
+    public static int[] getMobileDataInfo(Context context, boolean sim) {
         int[] mobileDataEnabled = {0, -1}; // Assume disabled
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         activeNetworkInfo = cm.getActiveNetworkInfo();
         if (activeNetworkInfo != null) {
-
             String typeName = activeNetworkInfo.getTypeName().toLowerCase();
             boolean isConnected = activeNetworkInfo.isConnectedOrConnecting();
             int type = activeNetworkInfo.getType();
             if ((isNetworkTypeMobile(type)) && (typeName.contains("mobile")) && isConnected) {
                 mobileDataEnabled[0] = 2;
-                mobileDataEnabled[1] = (int) activeSIM(context, activeNetworkInfo);
+                if (sim)
+                    mobileDataEnabled[1] = (int) activeSIM(context, activeNetworkInfo);
+                else
+                    mobileDataEnabled[1] = Constants.DISABLED;
             }
             else if ((!isNetworkTypeMobile(type)) && (!typeName.contains("mobile")) && isConnected)
                 mobileDataEnabled[0] = 1;
@@ -579,58 +540,4 @@ public class MobileDataControl {
             return prefs.getString(key2, "");
     }
 
-    /*private static void commandWait(Command cmd) throws Exception {
-        int waitTill = 50;
-        int waitTillMultiplier = 2;
-        int waitTillLimit = 3200; //7 tries, 6350 msec
-
-        while (!cmd.isFinished() && waitTill <= waitTillLimit) {
-            synchronized (cmd) {
-                try {
-                    if (!cmd.isFinished()) {
-                        cmd.wait(waitTill);
-                        waitTill *= waitTillMultiplier;
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if (!cmd.isFinished()){
-            Log.e("DSTC", "Could not finish root command in " + (waitTill / waitTillMultiplier));
-        }
-    }*/
 }
-
-
-        /*String id = getActiveSubscriberId(mContext);
-        try {
-            Object tmpl = null;
-            long stats = 0;
-            Class<?> a = Class.forName("android.net.NetworkTemplate");
-            Class<?> b = Class.forName("android.net.INetworkStatsService");
-            Method getState = b.getMethod("getNetworkTotalBytes", a, long.class, long.class);
-            Method[] am = a.getDeclaredMethods();
-            for (Method m : am) {
-                if (m.getName().equalsIgnoreCase("buildTemplateMobileAll")) {
-                    m.setAccessible(true);
-                    tmpl = m.invoke(a.getClass(), id)
-                    break;
-                }
-            }
-            Object object = Proxy.newProxyInstance(b.getClass().getClassLoader(), b.getInterfaces(), new InvocationHandler() {
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    if (method.getName().equals("getNetworkTotalBytes")) {
-                        return method.invoke(args[0], args[1], args[2], args[3]);
-                    }
-                    throw new RuntimeException("no method found");
-                }
-            });
-            Object[] args = {b.getClass(), tmpl, Long.MIN_VALUE, Long.MAX_VALUE};
-            stats = (long) ((b) object).getState(args);
-        } catch (ClassNotFoundException e0) {
-        } catch (NoSuchMethodException e0) {
-        } catch (IllegalAccessException e0) {
-        } catch (InvocationTargetException e0) {
-        } catch (NoSuchFieldException e0) {
-        }*/

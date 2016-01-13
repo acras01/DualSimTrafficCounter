@@ -338,7 +338,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     }
 
     private void setLabelText(int sim, String rx, String tx) {
-        int swtch = MobileDataControl.getMobileDataInfo(context)[0];
+        int swtch = MobileDataControl.getMobileDataInfo(context, false)[0];
         switch (sim) {
             default:
                 if (swtch== 0)
@@ -397,7 +397,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
-            switch (MobileDataControl.getMobileDataInfo(context)[0]) {
+            switch (MobileDataControl.getMobileDataInfo(context, false)[0]) {
                 case 0:
                     mMobileData.setEnabled(true);
                     mMobileData.setTitle(R.string.action_enable);
