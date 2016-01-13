@@ -12,7 +12,7 @@ import android.widget.RadioGroup;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class ChooseAction extends Activity implements View.OnClickListener {
 
@@ -27,7 +27,7 @@ public class ChooseAction extends Activity implements View.OnClickListener {
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setContentView(R.layout.action_dialog);
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(this)
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(this)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
          if (!prefs.getBoolean(Constants.PREF_OTHER[10], true) || simNumber > 1)
              change.setEnabled(true);

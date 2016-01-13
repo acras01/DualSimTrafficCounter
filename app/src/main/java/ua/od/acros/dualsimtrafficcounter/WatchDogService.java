@@ -19,7 +19,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 
 public class WatchDogService extends Service{
@@ -104,7 +104,7 @@ public class WatchDogService extends Service{
             DateTime last = fmt.parseDateTime(lastUpdate);
             DateTime now = new DateTime();
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
-                    (MobileDataControl.getMobileDataInfo(context, false)[0] == 2 && MobileDataControl.getMobileDataInfo(context, true)[1] > Constants.DISABLED) &&
+                    (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && MobileUtils.getMobileDataInfo(context, true)[1] > Constants.DISABLED) &&
                     !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                 stopService(new Intent(context, CountService.class));
                 /*String out = lastUpdate + " | " + now.toString(fmt) + "\n";

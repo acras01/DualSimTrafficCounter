@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class ViewTraffic extends Activity implements View.OnClickListener{
 
@@ -71,7 +71,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
                 break;
         }
 
-        String opName = MobileDataControl.getName(this, prefsConst[5], prefsConst[6], sim);
+        String opName = MobileUtils.getName(this, prefsConst[5], prefsConst[6], sim);
 
         day.setText(opName);
         night.setText(opName + getResources().getString(R.string.night));

@@ -22,6 +22,7 @@
     </string-array>
     <string-array name="icons">
         <item>None</item>
+        <item>Automatic</item>
         <item>3Mob</item>
         <item>AT&amp;T</item>
         <item>Beeline</item>
@@ -53,6 +54,7 @@
     </string-array>
     <string-array name="icons_values">
         <item>none</item>
+        <item>auto</item>
         <item>trimob</item>
         <item>att</item>
         <item>beeline</item>
@@ -84,6 +86,7 @@
     </string-array>
     <string-array name="logo">
         <item>None</item>
+        <item>Automatic</item>
         <item>3Mob</item>
         <item>AT&amp;T</item>
         <item>Beeline</item>
@@ -114,6 +117,7 @@
     </string-array>
     <string-array name="logo_values">
         <item>none</item>
+        <item>auto</item>
         <item>trimob</item>
         <item>att</item>
         <item>beeline</item>

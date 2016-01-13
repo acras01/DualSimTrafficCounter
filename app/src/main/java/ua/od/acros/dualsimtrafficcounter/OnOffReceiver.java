@@ -8,7 +8,7 @@ import android.os.PowerManager;
 import org.acra.ACRA;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class OnOffReceiver extends BroadcastReceiver {
 
@@ -25,11 +25,11 @@ public class OnOffReceiver extends BroadcastReceiver {
         try {
             int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
             if (intent.getBooleanExtra(Constants.ON_OFF, true) && CountService.getLastActiveSIM() == sim &&
-                    MobileDataControl.getMobileDataInfo(context, false)[0] == 0)
-                MobileDataControl.toggleMobileDataConnection(true, context, sim);
+                    MobileUtils.getMobileDataInfo(context, false)[0] == 0)
+                MobileUtils.toggleMobileDataConnection(true, context, sim);
             else if (!intent.getBooleanExtra(Constants.ON_OFF, true) && CountService.getActiveSIM() == sim &&
-                    MobileDataControl.getMobileDataInfo(context, false)[0] == 2)
-                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
+                    MobileUtils.getMobileDataInfo(context, false)[0] == 2)
+                MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
 
             /*String out = new SimpleDateFormat(Constants.TIME_FORMAT, context.getResources().getConfiguration().locale).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +
                     String.valueOf(intent.getBooleanExtra(Constants.ON_OFF, true)) + "\n";

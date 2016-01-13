@@ -12,7 +12,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 
 public class OperatorFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -47,7 +47,7 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
 
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (simNumber == 1) {

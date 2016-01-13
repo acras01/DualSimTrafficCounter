@@ -48,7 +48,7 @@ import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
@@ -179,7 +179,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         ACRA.getErrorReporter().handleException(e);
                     }                    
                 } else
-                    if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2)
+                    if (MobileUtils.getMobileDataInfo(context, false)[0] == 2)
                         timerStart(Constants.COUNT);
             }
         };
@@ -194,22 +194,22 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     switch (intent.getStringExtra(Constants.ACTION)) {
                         case Constants.CHOOSE_ACTION:
                             if (!isSIM2OverLimit && simid == Constants.SIM1) {
-                                MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
+                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM3OverLimit && simid == Constants.SIM1) {
-                                MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
+                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM1OverLimit && simid == Constants.SIM2) {
-                                MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
+                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM3OverLimit && simid == Constants.SIM2) {
-                                MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
+                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM1OverLimit && simid == Constants.SIM3) {
-                                MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
+                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
                                 timerStart(Constants.COUNT);
                             } else if (!isSIM2OverLimit && simid == Constants.SIM3) {
-                                MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
+                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                                 timerStart(Constants.COUNT);
                             } else
                                 timerStart(Constants.CHECK);
@@ -223,7 +223,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             timerStart(Constants.CHECK);
                             break;
                         case Constants.CONTINUE_ACTION:
-                            MobileDataControl.toggleMobileDataConnection(true, context, simid);
+                            MobileUtils.toggleMobileDataConnection(true, context, simid);
                             continueOverLimit = true;
                             timerStart(Constants.COUNT);
                             break;
@@ -466,9 +466,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private void timerStart(int task) {
         TimerTask tTask = null;
-        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
+        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        activeSIM = MobileDataControl.getMobileDataInfo(context, true)[1];
+        activeSIM = MobileUtils.getMobileDataInfo(context, true)[1];
 
         if (prefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[25];
@@ -616,7 +616,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (tot1 <= (long) lim1 && (prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
                     mTimer.cancel();
                     mTimer.purge();
                     isTimerCancelled = true;
@@ -626,7 +626,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (tot2 <= (long) lim2 && (prefs.getBoolean(Constants.PREF_SIM2[8], false)
                         || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                     mTimer.cancel();
                     mTimer.purge();
                     isTimerCancelled = true;
@@ -636,7 +636,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (tot3 <= (long) lim3 && (prefs.getBoolean(Constants.PREF_SIM3[8], false)
                         || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
                     mTimer.cancel();
                     mTimer.purge();
                     isTimerCancelled = true;
@@ -740,7 +740,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
@@ -1027,7 +1027,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
@@ -1314,7 +1314,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileDataControl.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
@@ -1624,11 +1624,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             intent.putExtra(Constants.SIM_ACTIVE, lastActiveSIM);
         else
             intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-        intent.putExtra(Constants.OPERATOR1, MobileDataControl.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+        intent.putExtra(Constants.OPERATOR1, MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
         if (simNumber >= 2)
-            intent.putExtra(Constants.OPERATOR2, MobileDataControl.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+            intent.putExtra(Constants.OPERATOR2, MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
         if (simNumber == 3)
-            intent.putExtra(Constants.OPERATOR3, MobileDataControl.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+            intent.putExtra(Constants.OPERATOR3, MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
         context.sendBroadcast(intent);
     }
 
@@ -1638,7 +1638,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             alertNotify(alertID);
 
         try {
-            MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
+            MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
         } catch (Exception e) {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
@@ -1678,22 +1678,22 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 prefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
                 if (!isSIM2OverLimit && alertID == Constants.SIM1 && simNumber >=2) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM3OverLimit && alertID == Constants.SIM1 && simNumber == 3) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM1OverLimit && alertID == Constants.SIM2) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM3OverLimit && alertID == Constants.SIM2 && simNumber == 3) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM3);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM1OverLimit && alertID == Constants.SIM3) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM1);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
                     timerStart(Constants.COUNT);
                 } else if (!isSIM2OverLimit && alertID == Constants.SIM3) {
-                    MobileDataControl.toggleMobileDataConnection(true, context, Constants.SIM2);
+                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                     timerStart(Constants.COUNT);
                 } else {
                     Intent intent = new Intent(Constants.TIP);
@@ -1723,7 +1723,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             mTimer.cancel();
             mTimer.purge();
             try {
-                MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
+                MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
@@ -1765,11 +1765,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
         String opName;
         if (alertID == Constants.SIM1)
-            opName = MobileDataControl.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+            opName = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         else if (alertID == Constants.SIM2)
-            opName = MobileDataControl.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+            opName = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         else
-            opName = MobileDataControl.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+            opName = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
         String txt;
         if ((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||

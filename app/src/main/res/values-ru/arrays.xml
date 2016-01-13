@@ -12,6 +12,7 @@
     </string-array>
     <string-array name="icons">
         <item>Нет</item>
+        <item>Автомат.</item>
         <item>3Mob</item>
         <item>AT&amp;T</item>
         <item>Билайн</item>
@@ -43,6 +44,7 @@
     </string-array>
     <string-array name="logo">
         <item>Нет</item>
+        <item>Автомат.</item>
         <item>3Mob</item>
         <item>AT&amp;T</item>
         <item>Билайн</item>

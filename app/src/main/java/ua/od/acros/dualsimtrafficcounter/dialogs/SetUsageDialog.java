@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class SetUsageDialog extends DialogFragment implements CompoundButton.OnCheckedChangeListener,
         RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
@@ -56,7 +56,7 @@ public class SetUsageDialog extends DialogFragment implements CompoundButton.OnC
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         sim1 = (RadioButton) view.findViewById(R.id.sim1RB);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simNumber == 1) {
             sim1.setChecked(true);

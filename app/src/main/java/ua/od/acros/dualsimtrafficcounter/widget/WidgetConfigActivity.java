@@ -37,7 +37,7 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.IconsList;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -104,7 +104,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         }
 
         prefs = getSharedPreferences(String.valueOf(widgetID) + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
+        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         edit = prefs.edit();
         if (prefs.getAll().size() == 0) {
@@ -391,11 +391,11 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
                     intent.putExtra(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
                     intent.putExtra(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
-                    intent.putExtra(Constants.OPERATOR1, MobileDataControl.getName(this, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+                    intent.putExtra(Constants.OPERATOR1, MobileUtils.getName(this, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
                     if (simNumber >= 2)
-                        intent.putExtra(Constants.OPERATOR2, MobileDataControl.getName(this, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+                        intent.putExtra(Constants.OPERATOR2, MobileUtils.getName(this, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
                     if (simNumber == 3)
-                        intent.putExtra(Constants.OPERATOR3, MobileDataControl.getName(this, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+                        intent.putExtra(Constants.OPERATOR3, MobileUtils.getName(this, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
                 } else {
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);

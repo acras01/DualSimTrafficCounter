@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
-public class MobileDataControl {
+public class MobileUtils {
 
     private static int lastActiveSIM;
     private static boolean alt;
@@ -103,6 +103,56 @@ public class MobileDataControl {
                         Method getName = c.getMethod("getNetworkOperatorName", Long.TYPE);
                         getName.setAccessible(true);
                         name.add(i, (String) getName.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i));
+                    } catch (Exception e0) {
+                        e0.printStackTrace();
+                    }
+                }
+            }
+        }
+        return name;
+    }
+
+    public static ArrayList<String> getOperatorCodes(Context context) {
+        ArrayList<String> name = new ArrayList<>();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+            SubscriptionManager sm = SubscriptionManager.from(context);
+            List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+            for (SubscriptionInfo si : sl) {
+                name.add(String.valueOf(si.getMcc()) + String.valueOf(si.getMnc()));
+            }
+        } else {
+            SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+            int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
+                    : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+            for (int i = 0; i < simNumber; i++) {
+                try {
+                    Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                    Method getCode = c.getMethod("getSimOperator", Integer.TYPE);
+                    getCode.setAccessible(true);
+                    name.add(i, (String) getCode.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i));
+                } catch (Exception e0) {
+                    e0.printStackTrace();
+                }
+            }
+            if (name.size() == 0) {
+                for (int i = 0; i < simNumber; i++) {
+                    try {
+                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                        Method getCode = c.getMethod("getSimOperator", Long.TYPE);
+                        getCode.setAccessible(true);
+                        name.add(i, (String) getCode.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i));
+                    } catch (Exception e0) {
+                        e0.printStackTrace();
+                    }
+                }
+            }
+            if (name.size() == 0) {
+                for (int i = 0; i < simNumber; i++) {
+                    try {
+                        Class<?> c = Class.forName("android.telephony.TelephonyManager");
+                        Method getCode = c.getMethod("getSimOperator", Long.TYPE);
+                        getCode.setAccessible(true);
+                        name.add(i, (String) getCode.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i));
                     } catch (Exception e0) {
                         e0.printStackTrace();
                     }
@@ -538,6 +588,183 @@ public class MobileDataControl {
             return (opNames.size() > sim && opNames.get(sim) != null) ? opNames.get(sim) : context.getResources().getString(R.string.single_sim);
         } else
             return prefs.getString(key2, "");
+    }
+
+    public static String getLogoFromCode(Context context, int sim) {
+        ArrayList<String> opCodes = getOperatorCodes(context);
+        if (opCodes.size() > sim && opCodes.get(sim) != null) {
+            switch (opCodes.get(sim)) {
+                case "20416":
+                case "21901":
+                case "23001":
+                case "23102":
+                case "23203":
+                case "23430":
+                case "26201":
+                case "26206":
+                case "29401":
+                case "29702":
+                case "310160":
+                case "310200":
+                case "310210":
+                case "310220":
+                case "310230":
+                case "310240":
+                case "310250":
+                case "310260":
+                case "310270":
+                case "310490":
+                case "310580":
+                case "310660":
+                case "310800":
+                    return "tmobile";
+                case "25011":
+                case "25044":
+                case "25099":
+                case "25502":
+                case "45207":
+                    return "beeline";
+                case "25507":
+                    return "trimob";
+                case "320370":
+                case "320720":
+                case "310170":
+                case "310150":
+                case "310680":
+                case "310070":
+                case "310560":
+                case "310410":
+                case "310380":
+                case "310980":
+                case "31038":
+                    return "att";
+                case "20888":
+                case "20821":
+                case "20820":
+                case "34020":
+                    return "bouygues_telecom";
+                case "46007":
+                case "46000":
+                case "46002":
+                case "45413":
+                case "45412":
+                    return "china_mobile";
+                case "46003":
+                case "46005":
+                case "45502":
+                    return "china_telecom";
+                case "46001":
+                case "46006":
+                case "45507":
+                    return "china_unicom";
+                case "20201":
+                case "20202":
+                case "22603":
+                    return "cosmote";
+                case "25503":
+                    return "kyivstar";
+                case "25506":
+                case "25704":
+                    return "life";
+                case "25002":
+                    return "megafon";
+                case "25035":
+                    return "motiv";
+                case "25050":
+                case "25001":
+                case "25702":
+                case "43801":
+                case "25501":
+                case "43407":
+                    return "mts";
+                case "23002":
+                case "23010":
+                case "26207":
+                case "26208":
+                case "27202":
+                case "23106":
+                case "23402":
+                case "23410":
+                case "23411":
+                    return "o2";
+                case "43709":
+                    return "o";
+                case "28310":
+                case "23205":
+                case "23206":
+                case "65202":
+                case "26402":
+                case "62303":
+                case "61203":
+                case "63086":
+                case "37001":
+                case "20800":
+                case "20801":
+                case "20802":
+                case "74201":
+                case "61101":
+                case "63203":
+                case "42501":
+                case "41677":
+                case "29502":
+                case "27099":
+                case "64602":
+                case "61002":
+                case "34001":
+                case "340993":
+                case "61701":
+                case "25901":
+                case "61404":
+                case "26003":
+                case "64700":
+                case "647997":
+                case "22610":
+                case "60801":
+                case "23101":
+                case "23105":
+                case "21403":
+                case "21409":
+                case "21433":
+                case "22803":
+                case "60501":
+                case "64114":
+                case "23433":
+                case "23434":
+                    return "orange";
+                case "26006":
+                    return "play";
+                case "25007":
+                case "25015":
+                    return "smarts";
+                case "25020":
+                case "24007":
+                case "22808":
+                case "21902":
+                case "24707":
+                case "24606":
+                case "20402":
+                case "24204":
+                    return "tele2";
+                case "25701":
+                    return "velcom";
+                case "31003":
+                case "31004":
+                case "31005":
+                case "31010":
+                case "31012":
+                case "310110":
+                case "310280":
+                case "310390":
+                case "310480":
+                case "310890":
+                case "310910":
+                    return "verizon";
+                default:
+                    return "none";
+            }
+        } else
+            return context.getResources().getString(R.string.single_sim);
+
     }
 
 }

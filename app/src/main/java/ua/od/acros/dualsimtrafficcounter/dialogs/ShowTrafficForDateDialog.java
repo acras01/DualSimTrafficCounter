@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 
 public class ShowTrafficForDateDialog extends DialogFragment implements View.OnClickListener{
@@ -69,7 +69,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
         bSetDate = (Button) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(getActivity())
+        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simNumber == 1) {
             view.findViewById(R.id.sim2RB).setEnabled(false);

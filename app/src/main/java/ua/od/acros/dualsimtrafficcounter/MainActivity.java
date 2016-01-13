@@ -35,7 +35,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileDataControl;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(this);
-        final int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileDataControl.isMultiSim(context)
+        final int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             setContentView(R.layout.activity_main);
@@ -233,9 +233,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 int simChosen = intent.getIntExtra("sim", Constants.NULL);
                 try {
                     if (simChosen > Constants.DISABLED)
-                        MobileDataControl.toggleMobileDataConnection(true, context, simChosen);
+                        MobileUtils.toggleMobileDataConnection(true, context, simChosen);
                     else
-                        MobileDataControl.toggleMobileDataConnection(false, context, Constants.DISABLED);
+                        MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
                 } catch (Exception e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
@@ -338,7 +338,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     }
 
     private void setLabelText(int sim, String rx, String tx) {
-        int swtch = MobileDataControl.getMobileDataInfo(context, false)[0];
+        int swtch = MobileUtils.getMobileDataInfo(context, false)[0];
         switch (sim) {
             default:
                 if (swtch== 0)
@@ -397,7 +397,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
-            switch (MobileDataControl.getMobileDataInfo(context, false)[0]) {
+            switch (MobileUtils.getMobileDataInfo(context, false)[0]) {
                 case 0:
                     mMobileData.setEnabled(true);
                     mMobileData.setTitle(R.string.action_enable);
