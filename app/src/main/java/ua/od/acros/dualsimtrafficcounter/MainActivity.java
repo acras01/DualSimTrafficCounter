@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         showNight1 = showNight2 = showNight3 = false;
         opName1 = opName2 = opName3 = "";
         context = MainActivity.this;
-        mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+        mDatabaseHelper = new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -297,15 +297,15 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 bLim3.setVisibility(View.VISIBLE);
             } else
                 findViewById(R.id.sim3row).setVisibility(View.VISIBLE);
-        Intent intent = new Intent(this, InfoWidget.class);
+        Intent intent = new Intent(context, InfoWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), InfoWidget.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent);
         if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, context) && prefs.getBoolean(Constants.PREF_OTHER[4], true))
-            startService(new Intent(this, WatchDogService.class));
+            startService(new Intent(context, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, context) && !prefs.getBoolean(Constants.PREF_OTHER[5], false))
-            startService(new Intent(this, CountService.class));
+            startService(new Intent(context, CountService.class));
 
         if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             new AlertDialog.Builder(context)
@@ -350,7 +350,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
             case Constants.SIM1:
                 if (swtch == 2)
-                    SIM.setText(String.format(context.getResources().getString(R.string.sim1_act), tx, rx));
+                    SIM.setText(String.format(getResources().getString(R.string.sim1_act), tx, rx));
                 else if (swtch == 1)
                     SIM.setText(R.string.other_network);
                 if (swtch == 0)
@@ -431,14 +431,14 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             case R.id.action_service_start_stop:
                 if (item.getTitle().toString().equals(getResources().getString(R.string.action_stop))) {
                     prefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
-                    stopService(new Intent(this, CountService.class));
+                    stopService(new Intent(context, CountService.class));
                     TIP.setText(getResources().getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
                 }
                 else {
                     prefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
-                    startService(new Intent(this, CountService.class));
+                    startService(new Intent(context, CountService.class));
                     TIP.setText(getResources().getString(R.string.tip));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
@@ -538,10 +538,10 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[4])) {
             if (!sharedPreferences.getBoolean(key, false)) {
-                stopService(new Intent(this, WatchDogService.class));
+                stopService(new Intent(context, WatchDogService.class));
                 prefs.edit().putBoolean(Constants.PREF_OTHER[6], true).apply();
             } else {
-                startService(new Intent(this, WatchDogService.class));
+                startService(new Intent(context, WatchDogService.class));
                 prefs.edit().putBoolean(Constants.PREF_OTHER[6], false).apply();
             }
         }
@@ -710,7 +710,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             case R.id.limit1:
             case R.id.limit2:
             case R.id.limit3:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                Intent intent = new Intent(context, SettingsActivity.class);
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
                 intent.putExtra(Constants.SIM_ACTIVE, v.getId());
