@@ -137,4 +137,6 @@
     <string name="name_sim2">Name for SIM2</string>
     <string name="name_sim1">Name for SIM1</string>
     <string name="go_to_settings">Go to Settings-Data Usage</string>
+    <string name="ask_for_logo">Add your logo</string>
+    <string name="ask_for_logo_sum">E-mail to developer and ask for adding your logo</string>
 </resources>

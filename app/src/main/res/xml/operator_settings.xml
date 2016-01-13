@@ -98,6 +98,15 @@
             android:entryValues="@array/logo_values"
             android:defaultValue="none"/>
 
+        <Preference
+            android:title="@string/ask_for_logo"
+            android:summary="@string/ask_for_logo_sum">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="mailto:acras1@gmail.com?subject=Add logo of my operator">
+            </intent>
+        </Preference>
+
     </PreferenceScreen>
 
 </PreferenceScreen>

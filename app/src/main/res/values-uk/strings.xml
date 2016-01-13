@@ -134,4 +134,6 @@
     <string name="name_sim3">Назва для SIM3</string>
     <string name="show_logo">Лого операторів в статус барі</string>
     <string name="go_to_settings">Перейти в Налаштування - Використання даних</string>
+    <string name="ask_for_logo">Додати своє лого</string>
+    <string name="ask_for_logo_sum">Лист розробнику з проханням додати своє лого</string>
 </resources>
