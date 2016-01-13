@@ -27,6 +27,8 @@
         <item>Beeline</item>
         <item>Bouygues Telecom</item>
         <item>China Mobile</item>
+        <item>China Telecom</item>
+        <item>China Unicom</item>
         <item>Cosmote</item>
         <item>Djuice</item>
         <item>France Telecom</item>
@@ -56,6 +58,8 @@
         <item>beeline</item>
         <item>bouygues_telecom</item>
         <item>china_mobile</item>
+        <item>china_telecom</item>
+        <item>china_unicom</item>
         <item>cosmote</item>
         <item>djuice</item>
         <item>france_telecom</item>
@@ -85,6 +89,8 @@
         <item>Beeline</item>
         <item>Bouygues Telecom</item>
         <item>China Mobile</item>
+        <item>China Telecom</item>
+        <item>China Unicom</item>
         <item>Cosmote</item>
         <item>Djuice</item>
         <item>France Telecom</item>
@@ -113,6 +119,8 @@
         <item>beeline</item>
         <item>bouygues_telecom</item>
         <item>china_mobile</item>
+        <item>china_telecom</item>
+        <item>china_unicom</item>
         <item>cosmote</item>
         <item>djuice</item>
         <item>france_telecom</item>
