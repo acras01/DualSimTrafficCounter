@@ -126,7 +126,7 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
 
                     <Button
@@ -137,7 +137,10 @@
                         android:layout_column="2"
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:width="@dimen/limit_button_width"
+                        android:minLines="2"
+                        android:maxLines="2" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -147,7 +150,10 @@
                         android:layout_column="2"
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:width="@dimen/limit_button_width"
+                        android:minLines="2"
+                        android:maxLines="2" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -157,7 +163,10 @@
                         android:layout_column="2"
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                        android:width="@dimen/limit_button_width"
+                        android:minLines="2"
+                        android:maxLines="2" />
                 </TableRow>
 
                 <TableRow
@@ -203,7 +212,7 @@
             android:text="@string/tip"
             android:id="@+id/tip"
             android:layout_below="@+id/horizontalScrollView"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentBottom="false"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
@@ -213,5 +222,15 @@
             android:layout_marginRight="10dp"
             android:textColor="@android:color/primary_text_dark" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/go_to_settings"
+            android:id="@+id/settings"
+            android:layout_alignParentBottom="false"
+            android:layout_below="@+id/tip"
+            android:layout_centerHorizontal="true" />
+
     </RelativeLayout>
+
 </LinearLayout>

@@ -52,7 +52,7 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
             pref.setEnabled(available);
             if (pref.getKey().equals(Constants.PREF_OTHER[1]))
                 pref.setSummary(RingtoneManager.getRingtone(SettingsActivity.getAppContext(),
-                        Uri.parse(pref.getSharedPreferences().getString(Constants.PREF_OTHER[1], SettingsActivity.getAppContext().getResources().getString(R.string.sound_not_set))))
+                        Uri.parse(pref.getSharedPreferences().getString(Constants.PREF_OTHER[1], SettingsActivity.getAppContext().getResources().getString(R.string.not_set))))
                         .getTitle(SettingsActivity.getAppContext()));
         }
     }

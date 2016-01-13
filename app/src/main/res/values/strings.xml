@@ -42,7 +42,7 @@
     <string name="measure_value">Measure value</string>
     <string name="period_value">Period of measurement</string>
     <string name="limit">Value</string>
-    <string name="sound_not_set">Not set</string>
+    <string name="not_set">Not set</string>
     <string name="from_boot">Since\nreboot</string>
     <string name="round">Precision (%)</string>
     <string name="not_supported">Your device is not supported</string>
@@ -136,4 +136,5 @@
     <string name="name_sim3">Name for SIM3</string>
     <string name="name_sim2">Name for SIM2</string>
     <string name="name_sim1">Name for SIM1</string>
+    <string name="go_to_settings">Go to Settings-Data Usage</string>
 </resources>

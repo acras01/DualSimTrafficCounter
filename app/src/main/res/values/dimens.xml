@@ -8,4 +8,5 @@
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="widget_text_size">5sp</dimen>
     <dimen name="logo_size">40dp</dimen>
+    <dimen name="limit_button_width">50dp</dimen>
 </resources>

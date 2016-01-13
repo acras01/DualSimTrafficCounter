@@ -42,7 +42,7 @@
     <string name="period_value">Период измерения</string>
     <string name="measure_value">Единица измерения</string>
     <string name="limit">Значение</string>
-    <string name="sound_not_set">Не установлено</string>
+    <string name="not_set">Не уст.</string>
     <string name="from_boot">С момента\nперезагрузки</string>
     <string name="round">Точность подсчета (%)</string>
     <string name="not_supported">Ваше устройство не поддерживается</string>
@@ -133,4 +133,5 @@
     <string name="name_sim2">Название для SIM2</string>
     <string name="name_sim3">Название для SIM3</string>
     <string name="show_logo">Лого операторов в статус баре</string>
+    <string name="go_to_settings">Перейти в Настройки - Мобильный трафик</string>
 </resources>

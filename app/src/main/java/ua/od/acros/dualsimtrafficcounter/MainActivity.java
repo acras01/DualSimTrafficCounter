@@ -100,6 +100,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         findViewById(R.id.buttonClear1).setOnClickListener(this);
         findViewById(R.id.buttonClear2).setOnClickListener(this);
         findViewById(R.id.buttonClear3).setOnClickListener(this);
+        findViewById(R.id.settings).setOnClickListener(this);
         SIM1.setOnClickListener(this);
         SIM2.setOnClickListener(this);
         SIM3.setOnClickListener(this);
@@ -552,7 +553,14 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     public void onClick(View v) {
         boolean[] isNight =  CountService.getIsNight();
         switch (v.getId()) {
-            case (R.id.buttonClear1):
+            case R.id.settings:
+                final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
+                Intent settIntent = new Intent(Intent.ACTION_MAIN);
+                settIntent.setComponent(cn);
+                settIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(settIntent);
+                break;
+            case R.id.buttonClear1:
                 if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
                     Intent clear1Intent = new Intent(Constants.CLEAR1);
                     sendBroadcast(clear1Intent);
@@ -580,7 +588,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                             (long) dataMap.get(Constants.TOTAL1)));
                 }
                 break;
-            case (R.id.buttonClear2):
+            case R.id.buttonClear2:
                 if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR2);
                     sendBroadcast(clear2Intent);
@@ -608,7 +616,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                             (long) dataMap.get(Constants.TOTAL2)));
                 }
                 break;
-            case (R.id.buttonClear3):
+            case R.id.buttonClear3:
                 if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR3);
                     sendBroadcast(clear2Intent);
@@ -740,29 +748,29 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         double lim2 = !limit2.equals("") ? DataFormat.getFormatLong(limit2, value2) : Double.MAX_VALUE;
         double lim3 = !limit3.equals("") ? DataFormat.getFormatLong(limit3, value3) : Double.MAX_VALUE;
 
-        limit1 = !limit1.equals("") ? DataFormat.formatData(context, (long) lim1) : getResources().getString(R.string.sound_not_set);
-        limit2 = !limit2.equals("") ? DataFormat.formatData(context, (long) lim2) : getResources().getString(R.string.sound_not_set);
-        limit3 = !limit3.equals("") ? DataFormat.formatData(context, (long) lim3) : getResources().getString(R.string.sound_not_set);
+        limit1 = !limit1.equals("") ? DataFormat.formatData(context, (long) lim1) : getResources().getString(R.string.not_set);
+        limit2 = !limit2.equals("") ? DataFormat.formatData(context, (long) lim2) : getResources().getString(R.string.not_set);
+        limit3 = !limit3.equals("") ? DataFormat.formatData(context, (long) lim3) : getResources().getString(R.string.not_set);
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.period);
 
         for (int i = 0; i < list.length; i++) {
-            if (!limit1.equals(getResources().getString(R.string.sound_not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM1[3], "0"))) {
+            if (!limit1.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM1[3], "0"))) {
                 if (listitems[i].equals("2"))
                     limit1 += "/" + prefs.getString(Constants.PREF_SIM1[10], "1") + getResources().getString(R.string.days);
                 else
                     limit1 += "/" + list[i];
 
             }
-            if (!limit2.equals(getResources().getString(R.string.sound_not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM2[3], "0"))) {
+            if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM2[3], "0"))) {
                 if (listitems[i].equals("2"))
                     limit2 += "/" + prefs.getString(Constants.PREF_SIM2[10], "1") + getResources().getString(R.string.days);
                 else
                     limit2 += "/" + list[i];
 
             }
-            if (!limit3.equals(getResources().getString(R.string.sound_not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM3[3], "0"))) {
+            if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM3[3], "0"))) {
                 if (listitems[i].equals("2"))
                     limit3 += "/" + prefs.getString(Constants.PREF_SIM3[10], "1") + getResources().getString(R.string.days);
                 else

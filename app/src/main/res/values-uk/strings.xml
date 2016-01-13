@@ -38,7 +38,7 @@
     <string name="sim2_act">Активна SIM2: %1$s/с || %2$s/с</string>
     <string name="sim1_limit">Ліміт для SIM1</string>
     <string name="sim2_limit">Ліміт для SIM2</string>
-    <string name="sound_not_set">Не встановлено</string>
+    <string name="not_set">Не вст.</string>
     <string name="total">Разом</string>
     <string name="transmitted">Відправлено</string>
     <string name="use_notification_summary">Оповіщення при досягненні ліміту</string>
@@ -133,4 +133,5 @@
     <string name="name_sim2">Назва для SIM2</string>
     <string name="name_sim3">Назва для SIM3</string>
     <string name="show_logo">Лого операторів в статус барі</string>
+    <string name="go_to_settings">Перейти в Налаштування - Використання даних</string>
 </resources>
