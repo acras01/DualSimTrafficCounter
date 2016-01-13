@@ -543,7 +543,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 logoSum1.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[6])) {
                 edit.putBoolean(Constants.PREF_WIDGET[9], false);
-                edit.putString(Constants.PREF_WIDGET[6], listitems[position]);
+                edit.putString(Constants.PREF_WIDGET[6], opLogo);
                 Picasso.with(context)
                         .load(resourceId)
                         .resize(dim, dim)
@@ -553,7 +553,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 logoSum2.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[7])) {
                 edit.putBoolean(Constants.PREF_WIDGET[10], false);
-                edit.putString(Constants.PREF_WIDGET[7], listitems[position]);
+                edit.putString(Constants.PREF_WIDGET[7], opLogo);
                 Picasso.with(context)
                         .load(resourceId)
                         .resize(dim, dim)
