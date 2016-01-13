@@ -525,14 +525,15 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     sim = Constants.SIM3;
                     break;
             }
-            int resourceId;
-            if (prefs.getString(logo, "none").equals("auto"))
-                resourceId = getApplicationContext().getResources().getIdentifier(MobileUtils.getLogoFromCode(getApplicationContext(), sim), "drawable", getApplicationContext().getPackageName());
+            String opLogo;
+            if (listitems[position].equals("auto"))
+                opLogo = MobileUtils.getLogoFromCode(getApplicationContext(), sim);
             else
-                resourceId = getApplicationContext().getResources().getIdentifier(listitems[position], "drawable", getApplicationContext().getPackageName());
+                opLogo = listitems[position];
+            int resourceId = getApplicationContext().getResources().getIdentifier(opLogo, "drawable", getApplicationContext().getPackageName());
             if (logo.equals(Constants.PREF_WIDGET[5])) {
                 edit.putBoolean(Constants.PREF_WIDGET[8], false);
-                edit.putString(Constants.PREF_WIDGET[5], listitems[position]);
+                edit.putString(Constants.PREF_WIDGET[5], opLogo);
                 Picasso.with(context)
                         .load(resourceId)
                         .resize(dim, dim)

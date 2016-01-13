@@ -484,7 +484,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     break;
             }
             if (prefs.getString(pref[23], "none").equals("auto"))
-                idSmall = getResources().getIdentifier(MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+                idSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
             else
                 idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
         } else
@@ -547,7 +547,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         break;
                 }
                 if (prefs.getString(pref[23], "none").equals("auto"))
-                    idSmall = getResources().getIdentifier(MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+                    idSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
                 else
                     idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
             } else
@@ -555,7 +555,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[15], false)) {
             if (key.equals(Constants.PREF_SIM1[23]) || key.equals(Constants.PREF_SIM2[23]) ||
                     key.equals(Constants.PREF_SIM3[23]))
-                idSmall = getResources().getIdentifier(prefs.getString(key, "none"), "drawable", context.getPackageName());
+                if (prefs.getString(key, "none").equals("auto"))
+                    idSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+                else
+                    idSmall = getResources().getIdentifier(prefs.getString(key, "none"), "drawable", context.getPackageName());
         }
         if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
