@@ -1532,13 +1532,25 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         } else {
             switch (sim) {
                 case Constants.SIM1:
-                    text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+                    if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
+                        text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+                    else
+                        text = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1) +
+                                DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
                     break;
                 case Constants.SIM2:
-                    text = DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
+                    if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
+                        text = DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
+                    else
+                        text = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2) +
+                                DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
                     break;
                 case Constants.SIM3:
-                    text = DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
+                    if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
+                        text = DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
+                    else
+                        text = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3) +
+                                DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
                     break;
             }
         }
