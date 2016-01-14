@@ -85,11 +85,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private int mPriority;
     private static int activeSIM = Constants.DISABLED;
     private static int lastActiveSIM = Constants.DISABLED;
-
-    private final long MB = 1024 * 1024;
-
-    DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-    DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
+    private DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+    private DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
     private DateTime resetTime1;
     private DateTime resetTime2;
     private DateTime resetTime3;
@@ -106,7 +103,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private Target target;
     private int idSmall;
     private boolean resetRuleChanged;
-    private String[] operatorNames;
+    private String[] operatorNames = new String[3];
 
 
     public CountService() {
@@ -1460,6 +1457,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
         SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
         int choice = 0;
+        long MB = 1024 * 1024;
         if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                 || emptyDB) {
             String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
