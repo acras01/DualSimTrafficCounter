@@ -106,6 +106,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private Target target;
     private int idSmall;
     private boolean resetRuleChanged;
+    private String[] operatorNames;
 
 
     public CountService() {
@@ -469,6 +470,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         activeSIM = MobileUtils.getMobileDataInfo(context, true)[1];
+        operatorNames[0] = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        operatorNames[1] = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        operatorNames[2] = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
 
         if (prefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[25];
@@ -1512,19 +1516,18 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             intent.putExtra(Constants.SIM_ACTIVE, lastActiveSIM);
         else
             intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-        intent.putExtra(Constants.OPERATOR1, MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+        intent.putExtra(Constants.OPERATOR1, operatorNames[0]);
         if (simNumber >= 2)
-            intent.putExtra(Constants.OPERATOR2, MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+            intent.putExtra(Constants.OPERATOR2, operatorNames[1]);
         if (simNumber == 3)
-            intent.putExtra(Constants.OPERATOR3, MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+            intent.putExtra(Constants.OPERATOR3, operatorNames[2]);
         context.sendBroadcast(intent);
     }
 
     private void pushNotification(int sim) {
         String text = "";
         if (prefs.getBoolean(Constants.PREF_OTHER[16], true)) {
-            if (simNumber >= 1)
-                text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
             if (simNumber >= 2)
                 text += " || " + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
             if (simNumber == 3)
@@ -1535,21 +1538,21 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
                         text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
                     else
-                        text = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1) + ": " +
+                        text = operatorNames[0] + ": " +
                                 DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
                     break;
                 case Constants.SIM2:
                     if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
                         text = DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
                     else
-                        text = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2) + ": " +
+                        text = operatorNames[1] + ": " +
                                 DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
                     break;
                 case Constants.SIM3:
                     if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
                         text = DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
                     else
-                        text = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3) + ": " +
+                        text = operatorNames[2] + ": " +
                                 DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
                     break;
             }
