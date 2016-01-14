@@ -565,6 +565,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
                 key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))
             resetRuleChanged = true;
+        if (key.equals(Constants.PREF_SIM1[5]))
+            operatorNames[0] = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        if (key.equals(Constants.PREF_SIM2[5]))
+            operatorNames[1] = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        if (key.equals(Constants.PREF_SIM3[5]))
+            operatorNames[2] = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
     }
 
     private class CheckTimerTask extends TimerTask {
