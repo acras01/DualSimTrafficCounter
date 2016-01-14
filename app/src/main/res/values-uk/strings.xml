@@ -136,4 +136,5 @@
     <string name="go_to_settings">Перейти в Налаштування - Використання даних</string>
     <string name="ask_for_logo">Додати своє лого</string>
     <string name="ask_for_logo_sum">Лист розробнику з проханням додати своє лого</string>
+    <string name="show_info_status">Відображати в шторці дані про трафік</string>
 </resources>

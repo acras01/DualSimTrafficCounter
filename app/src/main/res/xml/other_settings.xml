@@ -53,4 +53,11 @@
         android:summary=""
         android:dependency="auto_sim"/>
 
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="info_status"
+        android:title="@string/show_info_status"
+        android:summaryOn="@string/all"
+        android:summaryOff="@string/only_active"
+        android:defaultValue="true"/>
+
 </PreferenceScreen>

@@ -136,4 +136,5 @@
     <string name="go_to_settings">Перейти в Настройки - Мобильный трафик</string>
     <string name="ask_for_logo">Добавить свое лого</string>
     <string name="ask_for_logo_sum">Письмо разработчику с запросом на добавление лого оператора</string>
+    <string name="show_info_status">Показывать в шторке данные о трафике</string>
 </resources>

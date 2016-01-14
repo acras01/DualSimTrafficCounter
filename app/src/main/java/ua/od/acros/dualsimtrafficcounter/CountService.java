@@ -965,60 +965,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                         dataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         dataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-
-                        Calendar myCalendar = Calendar.getInstance();
-                        SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-                        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-                        int choice = 0;
-                        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
-                                || emptyDB) {
-                            String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
-                            DateTime dt_temp;
-                            if (last.equals(""))
-                                dt_temp = new org.joda.time.DateTime();
-                            else
-                                dt_temp = fmtDate.parseDateTime(last);
-                            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
-                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
-                                choice = 1;
-                            else
-                                choice = 2;
-                        }
-                        dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-                        dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
-                        switch (choice) {
-                            default:
-                                break;
-                            case 1:
-                                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                                break;
-                            case 2:
-                                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                                continueOverLimit = false;
-                                break;
-                        }
-
-                        String text = "";
-                        if (simNumber == 1)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
-                        else if (simNumber == 2)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
-                        else if (simNumber == 3)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
-
-                        n = builder.setContentIntent(contentIntent)
-                                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                                .setPriority(mPriority)
-                                .setWhen(System.currentTimeMillis())
-                                .setSmallIcon(idSmall)
-                                .setLargeIcon(bLarge)
-                                .setContentTitle(getResources().getString(R.string.notification_title))
-                                .setContentText(text)
-                                .build();
-                        nm.notify(Constants.STARTED_ID, n);
+                        writeToDataBase(diffrx, difftx, emptyDB, dt);
+                        pushNotification(Constants.SIM1);
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && isScreenOn(context))
@@ -1252,60 +1200,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                         dataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         dataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-
-                        Calendar myCalendar = Calendar.getInstance();
-                        SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-                        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-                        int choice = 0;
-                        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
-                                || emptyDB) {
-                            String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
-                            DateTime dt_temp;
-                            if (last.equals(""))
-                                dt_temp = new org.joda.time.DateTime();
-                            else
-                                dt_temp = fmtDate.parseDateTime(last);
-                            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
-                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
-                                choice = 1;
-                            else
-                                choice = 2;
-                        }
-                        dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-                        dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
-                        switch (choice) {
-                            default:
-                                break;
-                            case 1:
-                                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                                break;
-                            case 2:
-                                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                                continueOverLimit = false;
-                                break;
-                        }
-
-                        String text = "";
-                        if (simNumber == 1)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
-                        else if (simNumber == 2)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
-                        else if (simNumber == 3)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
-
-                        n = builder.setContentIntent(contentIntent)
-                                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                                .setPriority(mPriority)
-                                .setWhen(System.currentTimeMillis())
-                                .setSmallIcon(idSmall)
-                                .setLargeIcon(bLarge)
-                                .setContentTitle(getResources().getString(R.string.notification_title))
-                                .setContentText(text)
-                                .build();
-                        nm.notify(Constants.STARTED_ID, n);
+                        writeToDataBase(diffrx, difftx, emptyDB, dt);
+                        pushNotification(Constants.SIM2);
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && isScreenOn(context))
@@ -1539,60 +1435,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                         dataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         dataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-
-                        Calendar myCalendar = Calendar.getInstance();
-                        SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-                        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-                        int choice = 0;
-                        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
-                                || emptyDB) {
-                            String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
-                            DateTime dt_temp;
-                            if (last.equals(""))
-                                dt_temp = new org.joda.time.DateTime();
-                            else
-                                dt_temp = fmtDate.parseDateTime(last);
-                            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
-                                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
-                                choice = 1;
-                            else
-                                choice = 2;
-                        }
-                        dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-                        dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
-                        switch (choice) {
-                            default:
-                                break;
-                            case 1:
-                                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                                break;
-                            case 2:
-                                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                                continueOverLimit = false;
-                                break;
-                        }
-
-                        String text = "";
-                        if (simNumber == 1)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
-                        else if (simNumber == 2)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
-                        else if (simNumber == 3)
-                            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
-                                    + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
-
-                        n = builder.setContentIntent(contentIntent)
-                                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                                .setPriority(mPriority)
-                                .setWhen(System.currentTimeMillis())
-                                .setSmallIcon(idSmall)
-                                .setLargeIcon(bLarge)
-                                .setContentTitle(getResources().getString(R.string.notification_title))
-                                .setContentText(text)
-                                .build();
-                        nm.notify(Constants.STARTED_ID, n);
+                        writeToDataBase(diffrx, difftx, emptyDB, dt);
+                        pushNotification(Constants.SIM3);
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && isScreenOn(context))
@@ -1603,6 +1447,41 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
+        }
+    }
+
+    private void writeToDataBase(long diffrx, long difftx, boolean emptyDB, DateTime dt) {
+
+        Calendar myCalendar = Calendar.getInstance();
+        SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
+        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
+        int choice = 0;
+        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
+                || emptyDB) {
+            String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
+            DateTime dt_temp;
+            if (last.equals(""))
+                dt_temp = new org.joda.time.DateTime();
+            else
+                dt_temp = fmtDate.parseDateTime(last);
+            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
+                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
+                choice = 1;
+            else
+                choice = 2;
+        }
+        dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
+        dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+        switch (choice) {
+            default:
+                break;
+            case 1:
+                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                break;
+            case 2:
+                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                continueOverLimit = false;
+                break;
         }
     }
 
@@ -1639,6 +1518,44 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (simNumber == 3)
             intent.putExtra(Constants.OPERATOR3, MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
         context.sendBroadcast(intent);
+    }
+
+    private void pushNotification(int sim) {
+        String text = "";
+        if (prefs.getBoolean(Constants.PREF_OTHER[16], true)) {
+            if (simNumber == 1)
+                text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+            else if (simNumber == 2)
+                text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
+                        + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
+            else if (simNumber == 3)
+                text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
+                        + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
+                        + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
+        } else {
+            switch (sim) {
+                case Constants.SIM1:
+                    text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+                    break;
+                case Constants.SIM2:
+                    text = DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
+                    break;
+                case Constants.SIM3:
+                    text = DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
+                    break;
+            }
+        }
+
+        n = builder.setContentIntent(contentIntent)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setPriority(mPriority)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(idSmall)
+                .setLargeIcon(bLarge)
+                .setContentTitle(getResources().getString(R.string.notification_title))
+                .setContentText(text)
+                .build();
+        nm.notify(Constants.STARTED_ID, n);
     }
 
     private void startCheck(int alertID) {
@@ -1805,24 +1722,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Picasso.with(context).cancelRequest(target);
-        isTimerCancelled = true;
-        mTimer.cancel();
-        mTimer.purge();
-        nm.cancel(Constants.STARTED_ID);
-        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-        prefs.unregisterOnSharedPreferenceChangeListener(this);
-        unregisterReceiver(clear1Receiver);
-        unregisterReceiver(clear2Receiver);
-        unregisterReceiver(clear3Receiver);
-        unregisterReceiver(setUsage);
-        unregisterReceiver(actionReceive);
-        unregisterReceiver(connReceiver);
-    }
-
     private static int[] getWidgetIds(Context context) {
         int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, InfoWidget.class));
         if (ids.length == 0) {
@@ -1845,5 +1744,23 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             return pm.isInteractive();
         else
             return pm.isScreenOn();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Picasso.with(context).cancelRequest(target);
+        isTimerCancelled = true;
+        mTimer.cancel();
+        mTimer.purge();
+        nm.cancel(Constants.STARTED_ID);
+        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
+        unregisterReceiver(clear1Receiver);
+        unregisterReceiver(clear2Receiver);
+        unregisterReceiver(clear3Receiver);
+        unregisterReceiver(setUsage);
+        unregisterReceiver(actionReceive);
+        unregisterReceiver(connReceiver);
     }
 }

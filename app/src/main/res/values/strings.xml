@@ -139,4 +139,5 @@
     <string name="go_to_settings">Go to Settings-Data Usage</string>
     <string name="ask_for_logo">Add your logo</string>
     <string name="ask_for_logo_sum">E-mail to developer and ask for adding your logo</string>
+    <string name="show_info_status">Show SIM in notification</string>
 </resources>
