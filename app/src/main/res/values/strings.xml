@@ -84,7 +84,7 @@
     <string name="show_icons">Show operator logo</string>
     <string name="operator_logo_1">Logo for SIM1</string>
     <string name="operator_logo_2">Logo for SIM2</string>
-    <string name="show_full_text">Show all traffic information</string>
+    <string name="show_full_text">Traffic data on main screen</string>
     <string name="only_total">Only total</string>
     <string name="all">All</string>
     <string name="title_activity_widget_config" translatable="false">WidgetConfigActivity</string>
@@ -139,5 +139,5 @@
     <string name="go_to_settings">Go to Settings-Data Usage</string>
     <string name="ask_for_logo">Add your logo</string>
     <string name="ask_for_logo_sum">E-mail to developer and ask for adding your logo</string>
-    <string name="show_info_status">Show SIM in notification</string>
+    <string name="show_info_status">Traffic data in notification area</string>
 </resources>

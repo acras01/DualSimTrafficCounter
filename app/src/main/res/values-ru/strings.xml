@@ -83,7 +83,7 @@
     <string name="operator_logo_1">Лого для SIM1</string>
     <string name="operator_logo_2">Лого для SIM2</string>
     <string name="only_total">Только общий объем</string>
-    <string name="show_full_text">Информация о трафике</string>
+    <string name="show_full_text">Информация о трафике на главном экране</string>
     <string name="all">Все</string>
     <string name="icon_size">Размер иконок</string>
     <string name="operator_logo_3">Лого для SIM3</string>
@@ -136,5 +136,5 @@
     <string name="go_to_settings">Перейти в Настройки - Мобильный трафик</string>
     <string name="ask_for_logo">Добавить свое лого</string>
     <string name="ask_for_logo_sum">Письмо разработчику с запросом на добавление лого оператора</string>
-    <string name="show_info_status">Показывать в шторке данные о трафике</string>
+    <string name="show_info_status">Информация о трафике в шторке</string>
 </resources>

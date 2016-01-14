@@ -24,10 +24,10 @@
         android:summaryOff="@string/only_total"/>
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="acra.enable"
-        android:title="@string/pref_disable_acra"
-        android:summaryOn="@string/on"
-        android:summaryOff="@string/off"
+        android:key="info_status"
+        android:title="@string/show_info_status"
+        android:summaryOn="@string/all"
+        android:summaryOff="@string/only_active"
         android:defaultValue="true"/>
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
@@ -54,10 +54,10 @@
         android:dependency="auto_sim"/>
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="info_status"
-        android:title="@string/show_info_status"
-        android:summaryOn="@string/all"
-        android:summaryOff="@string/only_active"
+        android:key="acra.enable"
+        android:title="@string/pref_disable_acra"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off"
         android:defaultValue="true"/>
 
 </PreferenceScreen>
