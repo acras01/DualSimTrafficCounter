@@ -235,7 +235,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             timerStart(Constants.CHECK);
                             break;
                         case Constants.CONTINUE_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 MobileUtils.toggleMobileDataConnection(true, context, simid);
                             continueOverLimit = true;
@@ -243,7 +243,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 timerStart(Constants.COUNT);
                             break;
                         case Constants.OFF_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 timerStart(Constants.CHECK);
                             else
@@ -983,7 +983,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isSIM1OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
@@ -1228,7 +1228,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isSIM2OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
@@ -1473,7 +1473,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isSIM3OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
