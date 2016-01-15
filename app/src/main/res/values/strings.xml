@@ -140,5 +140,5 @@
     <string name="ask_for_logo">Add your logo</string>
     <string name="ask_for_logo_sum">E-mail to developer and ask for adding your logo</string>
     <string name="show_info_status">Traffic data in notification area</string>
-    <string name="on_off_not_supported">The app can\'t control mobile data state on your device</string>
+    <string name="on_off_not_supported">The app isn\'t fully operational on your device</string>
 </resources>

@@ -43,6 +43,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
+    private static final String MTK = "mtk";
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
 
     private ContentValues dataMap;
@@ -314,6 +315,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP &&
                     !RootTools.isAccessGiven())
                 showDialog(ANDROID_5_0);
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP_MR1 &&
+                    !MTKUtils.isMtkDevice())
+                showDialog(MTK);
             prefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         }
     }
@@ -458,6 +462,18 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.set_sim_number)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+                break;
+            case MTK:
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.attention)
+                        .setMessage(R.string.on_off_not_supported)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

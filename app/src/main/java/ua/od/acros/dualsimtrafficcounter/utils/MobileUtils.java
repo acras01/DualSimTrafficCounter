@@ -397,7 +397,7 @@ public class MobileUtils {
                 e.printStackTrace();
             }
         }
-        return (int) sim;
+        return sim;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

@@ -1629,6 +1629,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     }
 
     private void startCheck(int alertID) {
+
         try {
             MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
         } catch (Exception e) {
