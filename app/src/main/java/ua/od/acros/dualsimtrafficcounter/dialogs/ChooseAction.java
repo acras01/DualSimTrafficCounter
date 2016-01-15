@@ -57,7 +57,7 @@ public class ChooseAction extends Activity implements View.OnClickListener {
                         action = Constants.LIMIT_ACTION;
                         break;
                     case R.id.actionchange:
-                        action = Constants.CHOOSE_ACTION;
+                        action = Constants.CHANGE_ACTION;
                         break;
                     case R.id.actioncontinue:
                         action = Constants.CONTINUE_ACTION;

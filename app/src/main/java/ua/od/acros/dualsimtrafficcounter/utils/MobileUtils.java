@@ -402,19 +402,28 @@ public class MobileUtils {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     private static void setMobileNetworkFromLollipop(final Context context, int sim) throws Exception {
-        String cmd;
+        String cmd = null;
         int state;
         try {
             // Get the current state of the mobile network.
             state = getMobileDataInfo(context, false)[0] == 2 ? 0 : 1;
             // Get the value of the "TRANSACTION_setDataEnabled" field.
             String transactionCode = getTransactionCode(context);
-            SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-            List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-            for (SubscriptionInfo si : sl) {
-                if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                    cmd = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + state;
-                    if (RootTools.isAccessGiven()) {
+            // Android 5.1+ (API 22) and later.
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                for (SubscriptionInfo si : sl) {
+                    if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
+                        cmd = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + state;
+                        break;
+                    }
+                }
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+                // Android 5.0 (API 21) only.
+                if (transactionCode != null && transactionCode.length() > 0)
+                    cmd = "service call phone " + transactionCode + " i32 " + state;
+            if (RootTools.isAccessGiven() && cmd != null) {
                         /*final ArrayList<String> out = new ArrayList<>();
                         File dir = new File(String.valueOf(context.getFilesDir()));
                         // create this directory if not already created
@@ -425,15 +434,16 @@ public class MobileUtils {
                         String fileName = formatter.format(now) + "_log.txt";
                         File file = new File(dir, fileName);
                         final FileOutputStream os = new FileOutputStream(file);*/
-                        Command command = new Command(0, cmd) {
-                            @Override
-                            public void commandOutput(int id, String line) {
-                                super.commandOutput(id, line);
-                                //out.add(String.valueOf(id) + ": " + line + "\n");
-                            }
-                            @Override
-                            public void commandTerminated(int id, String reason) {
-                                super.commandTerminated(id, reason);
+                Command command = new Command(0, cmd) {
+                    @Override
+                    public void commandOutput(int id, String line) {
+                        super.commandOutput(id, line);
+                        //out.add(String.valueOf(id) + ": " + line + "\n");
+                    }
+
+                    @Override
+                    public void commandTerminated(int id, String reason) {
+                        super.commandTerminated(id, reason);
                                 /*try {
                                     String s = String.valueOf(id) + ": " + reason;
                                     os.write(s.getBytes());
@@ -441,10 +451,11 @@ public class MobileUtils {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }*/
-                            }
-                            @Override
-                            public void commandCompleted(int id, int exitcode) {
-                                super.commandCompleted(id, exitcode);
+                    }
+
+                    @Override
+                    public void commandCompleted(int id, int exitcode) {
+                        super.commandCompleted(id, exitcode);
                                 /*try {
                                     for (String s : out) {
                                         os.write(s.getBytes());
@@ -453,15 +464,11 @@ public class MobileUtils {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }*/
-                            }
-                        };
-                        RootTools.getShell(true).add(command);
-                        //commandWait(command);
-                    } else
-                        Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
-                    break;
-                }
-            }
+                    }
+                };
+                RootTools.getShell(true).add(command);
+            } else
+                Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -538,7 +545,7 @@ public class MobileUtils {
         if (!ON) {
             if (!alt)
                 lastActiveSIM = (int) activeSIM(context, activeNetworkInfo);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, lastActiveSIM);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
@@ -547,7 +554,7 @@ public class MobileUtils {
             }
         }
         if (ON && sim == Constants.DISABLED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, lastActiveSIM);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
@@ -563,7 +570,7 @@ public class MobileUtils {
                 e.printStackTrace();
             }
         } else if (sim != Constants.DISABLED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, sim);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);

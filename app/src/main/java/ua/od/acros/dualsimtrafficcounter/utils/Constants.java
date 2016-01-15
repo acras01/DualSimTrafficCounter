@@ -40,6 +40,8 @@ public class Constants {
     public static final String SET_USAGE = "usage";
     public static final String ON_OFF = "onoff";
     public static final String CHOOSE_ACTION = "choose";
+    public static final String CHANGE_ACTION = "change";
+    public static final String SETTINGS_ACTION = "mobile_data";
     public static final String LIMIT_ACTION = "limit";
     public static final String OFF_ACTION = "off";
     public static final String ACTION = "action";
@@ -88,5 +90,4 @@ public class Constants {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm";
     public static final String TRAFFIC_FOR_DATE = "traffic";
-    public static final String SETTINGS_ACTION = "mobile_data";
 }

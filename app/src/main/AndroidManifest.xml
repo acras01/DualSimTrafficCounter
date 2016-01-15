@@ -43,7 +43,7 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:process=":error_report"
-            android:theme="@android:style/Theme.Holo.Dialog" />
+            android:theme="@style/AppTheme.Dialog" />
 
         <activity
             android:name=".settings.SettingsActivity"
@@ -95,7 +95,7 @@
             android:name=".dialogs.ChooseAction"
             android:label="@string/attention"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Holo.Dialog" >
+            android:theme="@style/AppTheme.Dialog" >
         </activity>
 
         <activity
@@ -128,7 +128,7 @@
         <activity
             android:name=".dialogs.ViewTraffic"
             android:label="@string/traffic_data"
-            android:theme="@android:style/Theme.Holo.Dialog" >
+            android:theme="@style/AppTheme.Dialog" >
         </activity>
 
     </application>

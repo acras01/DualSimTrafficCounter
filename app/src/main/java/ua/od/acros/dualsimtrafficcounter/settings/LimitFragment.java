@@ -121,7 +121,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
-        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
+        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) ||
                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
             autoff1.setChecked(false);
             autoff1.setEnabled(false);
@@ -129,13 +129,14 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             autoff2.setEnabled(false);
             autoff3.setChecked(false);
             autoff3.setEnabled(false);
-            changeSIM.setEnabled(false);
-            changeSIM.setChecked(false);
             getPreferenceScreen().findPreference("everyday1").setEnabled(false);
             getPreferenceScreen().findPreference("everyday2").setEnabled(false);
             getPreferenceScreen().findPreference("everyday3").setEnabled(false);
         }
-
+        if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) {
+            changeSIM.setEnabled(false);
+            changeSIM.setChecked(false);
+        }
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
 

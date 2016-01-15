@@ -196,7 +196,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 int simid = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 try {
                     switch (intent.getStringExtra(Constants.ACTION)) {
-                        case Constants.CHOOSE_ACTION:
+                        case Constants.CHANGE_ACTION:
                             if (!isSIM2OverLimit && simid == Constants.SIM1) {
                                 MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                                 timerStart(Constants.COUNT);
@@ -235,18 +235,16 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             timerStart(Constants.CHECK);
                             break;
                         case Constants.CONTINUE_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
-                                    (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) ||
-                                    android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP)
+                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                                    (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 MobileUtils.toggleMobileDataConnection(true, context, simid);
                             continueOverLimit = true;
                             if (isTimerCancelled)
                                 timerStart(Constants.COUNT);
                             break;
                         case Constants.OFF_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
-                                    (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) ||
-                                    android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP)
+                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                                    (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 timerStart(Constants.CHECK);
                             else
                                 continueOverLimit = true;
@@ -985,9 +983,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isSIM1OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) ||
-                                android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP)
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
                                 Intent dialogIntent = new Intent(context, ChooseAction.class);
@@ -1231,9 +1228,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isSIM2OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) ||
-                                android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP)
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
                                 Intent dialogIntent = new Intent(context, ChooseAction.class);
@@ -1477,9 +1473,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         isSIM3OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) ||
-                                android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP)
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && RootTools.isAccessGiven()) ||
+                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
                                 Intent dialogIntent = new Intent(context, ChooseAction.class);

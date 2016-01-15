@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -15,7 +16,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +42,6 @@ import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener, Button.OnClickListener{
 
     private static final String FIRST_RUN = "first_run";
-    private static final String ANDROID_5_1 = "API22";
     private static final String ANDROID_5_0 = "API21";
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
 
@@ -312,10 +311,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
         if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 &&
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP &&
                     !RootTools.isAccessGiven())
-                showDialog(ANDROID_5_1);
-            if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP)
                 showDialog(ANDROID_5_0);
             prefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         }
@@ -380,9 +377,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mService.setTitle(R.string.action_start);
             mService.setIcon(R.drawable.ic_action_enable);
         }
-        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) ||
-                android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) ||
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
@@ -471,18 +467,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         .show();
                 break;
             case ANDROID_5_0:
-                new AlertDialog.Builder(context)
-                        .setTitle(R.string.attention)
-                        .setMessage(R.string.on_off_not_supported)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-                break;
-            case ANDROID_5_1:
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.need_root)
