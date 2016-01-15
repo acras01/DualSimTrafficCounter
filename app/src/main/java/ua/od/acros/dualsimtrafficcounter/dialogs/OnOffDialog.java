@@ -35,14 +35,20 @@ public class OnOffDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.onoff_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if (simNumber == 1) {
+        if (android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP) {
+            int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+                    : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+            if (simNumber == 1) {
+                view.findViewById(R.id.sim2RB).setEnabled(false);
+                view.findViewById(R.id.sim3RB).setEnabled(false);
+            }
+            if (simNumber == 2)
+                view.findViewById(R.id.sim3RB).setEnabled(false);
+        } else {
+            view.findViewById(R.id.sim1RB).setEnabled(false);
             view.findViewById(R.id.sim2RB).setEnabled(false);
             view.findViewById(R.id.sim3RB).setEnabled(false);
         }
-        if (simNumber == 2)
-            view.findViewById(R.id.sim3RB).setEnabled(false);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
