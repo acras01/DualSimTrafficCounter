@@ -309,19 +309,31 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
         if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             new AlertDialog.Builder(context)
-                    .setMessage(R.string.set_sim_number)
                     .setTitle(R.string.attention)
+                    .setMessage(R.string.set_sim_number)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) {
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 &&
+                                    !RootTools.isAccessGiven()) {
                                 new AlertDialog.Builder(context)
                                         .setTitle(R.string.attention)
                                         .setMessage(R.string.need_root)
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 dialog.dismiss();
+                                                if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                                    new AlertDialog.Builder(context)
+                                                            .setTitle(R.string.attention)
+                                                            .setMessage(R.string.on_off_not_supported)
+                                                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int id) {
+                                                                    dialog.dismiss();
+                                                                }
+                                                            })
+                                                            .show();
+                                                }
                                             }
                                         })
                                         .show();
