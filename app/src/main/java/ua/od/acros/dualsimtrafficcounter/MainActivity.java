@@ -212,7 +212,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 if (!intent.getBooleanExtra(Constants.TIP, false))
                     TIP.setText(getResources().getString(R.string.tip));
                 else
-                    TIP.setText(getResources().getString(R.string.service_disabled_tip));
+                    TIP.setText(getResources().getString(R.string.count_stopped_tip));
                 String rxSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDRX, 0L));
                 String txSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDTX, 0L));
                 setLabelText(intent.getIntExtra(Constants.SIM_ACTIVE, 0), txSpeed, rxSpeed);
@@ -224,7 +224,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
         tipReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                TIP.setText(getResources().getString(R.string.service_disabled_tip));
+                TIP.setText(getResources().getString(R.string.count_stopped_tip));
             }
         };
         IntentFilter tipFilter = new IntentFilter(Constants.TIP);

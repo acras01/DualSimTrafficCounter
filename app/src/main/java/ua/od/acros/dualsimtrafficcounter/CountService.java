@@ -181,10 +181,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         ACRA.getErrorReporter().handleException(e);
-                    }                    
-                } else
-                    if (MobileUtils.getMobileDataInfo(context, false)[0] == 2)
-                        timerStart(Constants.COUNT);
+                    }
+                } else if (MobileUtils.getMobileDataInfo(context, false)[0] == 2)
+                    timerStart(Constants.COUNT);
             }
         };
         IntentFilter connFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -277,7 +276,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 Bundle limitBundle = intent.getBundleExtra("data");
                 simChosen = limitBundle.getInt("sim");
                 switch (simChosen) {
-                    case  Constants.SIM1:
+                    case Constants.SIM1:
                         mReceived1 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted1 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
                         if (isNight1) {
@@ -291,7 +290,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                         TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
                         break;
-                    case  Constants.SIM2:
+                    case Constants.SIM2:
                         mReceived2 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted2 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
                         if (isNight2) {
@@ -305,7 +304,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                         TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
                         break;
-                    case  Constants.SIM3:
+                    case Constants.SIM3:
                         mReceived3 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted3 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
                         if (isNight3) {
@@ -319,7 +318,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                         TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
                         break;
-                    }
+                }
                 builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
                         .setCategory(NotificationCompat.CATEGORY_SERVICE)
                         .setPriority(mPriority)
@@ -744,7 +743,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
         if (prefs.getString(pref[3], "").equals("1")) {
-            int month= now.getMonthOfYear();
+            int month = now.getMonthOfYear();
             int daysInMonth = 31;
             switch (last.getMonthOfYear()) {
                 case 2:
@@ -987,11 +986,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
-                                Intent dialogIntent = new Intent(context, ChooseAction.class);
-                                dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(dialogIntent);
-                            }
+                            Intent dialogIntent = new Intent(context, ChooseAction.class);
+                            dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
+                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(dialogIntent);
+                        }
                     }
 
                     if (!isSIM1OverLimit) {
@@ -1232,11 +1231,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
-                                Intent dialogIntent = new Intent(context, ChooseAction.class);
-                                dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(dialogIntent);
-                            }
+                            Intent dialogIntent = new Intent(context, ChooseAction.class);
+                            dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
+                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(dialogIntent);
+                        }
                     }
 
                     if (!isSIM2OverLimit) {
@@ -1259,7 +1258,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && isScreenOn(context))
                         sendDataBroadcast(speedRX, speedTX);
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
@@ -1477,11 +1476,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(activeSIM);
                         else if (!ChooseAction.isShown()) {
-                                Intent dialogIntent = new Intent(context, ChooseAction.class);
-                                dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(dialogIntent);
-                            }
+                            Intent dialogIntent = new Intent(context, ChooseAction.class);
+                            dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
+                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(dialogIntent);
+                        }
                     }
 
                     if (!isSIM3OverLimit) {
@@ -1629,7 +1628,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     }
 
     private void startCheck(int alertID) {
-
         try {
             MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
         } catch (Exception e) {
@@ -1637,35 +1635,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             ACRA.getErrorReporter().handleException(e);
         }
 
+        isTimerCancelled = true;
+        mTimer.cancel();
+        mTimer.purge();
+        boolean choice = false;
+
         if (((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true)))) {
-
-            isTimerCancelled = true;
-            mTimer.cancel();
-            mTimer.purge();
-
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_disable);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification n = builder.setContentIntent(contentIntent)
-                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                    .setPriority(mPriority)
-                    .setLargeIcon(bm)
-                    .setWhen(System.currentTimeMillis())
-                    .setContentTitle(getResources().getString(R.string.service_stopped_title))
-                    .build();
-            nm.notify(Constants.STARTED_ID, n);
-        }
-
-        if (!prefs.getBoolean(Constants.PREF_SIM1[7], true) || !prefs.getBoolean(Constants.PREF_SIM2[7], true)
-                || !prefs.getBoolean(Constants.PREF_SIM3[7], true) || !prefs.getBoolean(Constants.PREF_OTHER[10], true)) {
-            Intent dialogIntent = new Intent(context, ChooseAction.class);
-            dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
-            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (!ChooseAction.isShown())
-                context.startActivity(dialogIntent);
-        } else if (((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
                 (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
                 prefs.getBoolean(Constants.PREF_OTHER[10], true)) {
@@ -1688,44 +1663,34 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 } else if (!isSIM2OverLimit && alertID == Constants.SIM3) {
                     MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                     timerStart(Constants.COUNT);
-                } else {
-                    Intent intent = new Intent(Constants.TIP);
-                    context.sendBroadcast(intent);
-                    timerStart(Constants.CHECK);
-                }
+                } else
+                    choice = true;
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
-        } else if ((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
+        } else if (((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true))) {
+                (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
+                !prefs.getBoolean(Constants.PREF_OTHER[10], true))
+            choice = true;
+        else if ((alertID == Constants.SIM1 && !prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
+                (alertID == Constants.SIM2 && !prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
+                (alertID == Constants.SIM3 && !prefs.getBoolean(Constants.PREF_SIM3[7], true)) ||
+                (isSIM1OverLimit && isSIM2OverLimit && isSIM3OverLimit && prefs.getBoolean(Constants.PREF_OTHER[10], true))) {
             Intent dialogIntent = new Intent(context, ChooseAction.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (!ChooseAction.isShown())
                 context.startActivity(dialogIntent);
-        } else if (isSIM1OverLimit && isSIM2OverLimit && isSIM3OverLimit && prefs.getBoolean(Constants.PREF_OTHER[10], true)) {
-            Intent dialogIntent = new Intent(context, ChooseAction.class);
-            dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
-            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (!ChooseAction.isShown())
-                context.startActivity(dialogIntent);
-        } else if (isSIM1OverLimit && isSIM2OverLimit && isSIM2OverLimit) {
-            isTimerCancelled = true;
-            mTimer.cancel();
-            mTimer.purge();
-            try {
-                MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
-            } catch (Exception e) {
-                e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
-            }
-
+        } else if (isSIM1OverLimit && isSIM2OverLimit && isSIM2OverLimit)
+            choice = true;
+        if (choice) {
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_disable);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification n = builder.setContentIntent(contentIntent)
+                    .setSmallIcon(R.drawable.ic_disable_small)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setPriority(mPriority)
                     .setLargeIcon(bm)
@@ -1733,6 +1698,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     .setContentTitle(getResources().getString(R.string.service_stopped_title))
                     .build();
             nm.notify(Constants.STARTED_ID, n);
+
+            Intent intent = new Intent(Constants.TIP);
+            context.sendBroadcast(intent);
 
             timerStart(Constants.CHECK);
         }
@@ -1771,9 +1739,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         else
             txt = getResources().getString(R.string.data_dis_tip);
 
-        Notification n = builder.setContentIntent(pIntent).setSmallIcon(R.drawable.ic_launcher_small)
+        Notification n = builder.setContentIntent(pIntent)
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setSmallIcon(R.drawable.ic_alert_small)
                 .setLargeIcon(bm)
                 .setTicker(context.getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())

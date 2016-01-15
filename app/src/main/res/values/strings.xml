@@ -29,7 +29,7 @@
     <string name="service_disabled">Service disabled by user.</string>
     <string name="service_stopped">Service stopped due to reaching limit</string>
     <string name="service_stopped_title">Service stopped</string>
-    <string name="service_disabled_tip">Service is disabled due to reaching limit on one of SIM. You can manually choose other SIM for mobile data. In other way, mobile data will be enabled at the beginning of next period (day/month) according to settings you\'ve chosen. If you increase the limit the service will automatically started.</string>
+    <string name="count_stopped_tip">Counting has been stopped due to reaching limit on one of SIM. You can manually choose other SIM for mobile data. In other way, mobile data will be enabled at the beginning of next period (day/month) according to settings you\'ve chosen. If you increase the limit the service will automatically started.</string>
     <string name="notification_title">Traffic stats</string>
     <string name="use_notification_title">Notification</string>
     <string name="use_notification_summary">Notification when reaching limit</string>
