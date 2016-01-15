@@ -10,8 +10,12 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.stericson.RootTools.RootTools;
+
+import ua.od.acros.dualsimtrafficcounter.CountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class ChooseAction extends Activity implements View.OnClickListener {
@@ -29,8 +33,12 @@ public class ChooseAction extends Activity implements View.OnClickListener {
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
         int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(this)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-         if (!prefs.getBoolean(Constants.PREF_OTHER[10], true) || simNumber > 1)
-             change.setEnabled(true);
+        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) ||
+                android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP)
+            change.setEnabled(false);
+        if (prefs.getBoolean(Constants.PREF_OTHER[10], true) || simNumber == 1)
+            change.setEnabled(false);
         simid = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         final Button bOK = (Button)findViewById(R.id.buttonOK);
         bOK.setEnabled(false);
@@ -42,6 +50,9 @@ public class ChooseAction extends Activity implements View.OnClickListener {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
+                    case R.id.actionmobiledata:
+                        action = Constants.SETTINGS_ACTION;
+                        break;
                     case R.id.actionsettings:
                         action = Constants.LIMIT_ACTION;
                         break;
@@ -69,6 +80,7 @@ public class ChooseAction extends Activity implements View.OnClickListener {
                 intent.putExtra(Constants.ACTION, Constants.OFF_ACTION);
                 break;
         }
+        CountService.setActionChoosed(true);
         sendBroadcast(intent);
         finish();
     }

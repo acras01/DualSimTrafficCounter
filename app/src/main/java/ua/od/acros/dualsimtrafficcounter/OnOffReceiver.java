@@ -47,5 +47,7 @@ public class OnOffReceiver extends BroadcastReceiver {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
+        if (wl.isHeld())
+            wl.release();
     }
 }

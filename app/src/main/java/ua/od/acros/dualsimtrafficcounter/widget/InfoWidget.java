@@ -116,7 +116,7 @@ public class InfoWidget extends AppWidgetProvider {
         }
 
         for (int i : ids) {
-            SharedPreferences prefs = context.getSharedPreferences(String.valueOf(i) + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences(i + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();

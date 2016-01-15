@@ -72,6 +72,7 @@
         </PreferenceCategory>
 
         <PreferenceCategory
+            android:key="everyday1"
             android:title="@string/everyday_onoff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
@@ -232,6 +233,7 @@
         </PreferenceCategory>
 
         <PreferenceCategory
+            android:key="everyday2"
             android:title="@string/everyday_onoff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
@@ -392,6 +394,7 @@
         </PreferenceCategory>
 
         <PreferenceCategory
+            android:key="everyday3"
             android:title="@string/everyday_onoff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference

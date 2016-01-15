@@ -88,4 +88,5 @@ public class Constants {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm";
     public static final String TRAFFIC_FOR_DATE = "traffic";
+    public static final String SETTINGS_ACTION = "mobile_data";
 }

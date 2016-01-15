@@ -26,6 +26,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
+import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -38,17 +39,18 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     private TwoLineCheckPreference prefer1, prefer2, prefer3;
     private TwoLineListPreference everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
+    private SharedPreferences prefs;
 
     private int simNumber;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .registerOnSharedPreferenceChangeListener(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        prefs.registerOnSharedPreferenceChangeListener(this);
 
         //remove in next release
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+        prefs.edit()
                 .remove(Constants.PREF_SIM1[11])
                 .remove(Constants.PREF_SIM2[11])
                 .remove(Constants.PREF_SIM3[11])
@@ -119,17 +121,23 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isRootAvailable()) {
+        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
             autoff1.setChecked(false);
             autoff1.setEnabled(false);
             autoff2.setChecked(false);
             autoff2.setEnabled(false);
             autoff3.setChecked(false);
             autoff3.setEnabled(false);
+            changeSIM.setEnabled(false);
+            changeSIM.setChecked(false);
+            getPreferenceScreen().findPreference("everyday1").setEnabled(false);
+            getPreferenceScreen().findPreference("everyday2").setEnabled(false);
+            getPreferenceScreen().findPreference("everyday3").setEnabled(false);
         }
 
-        simNumber = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
-                : Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(Constants.PREF_OTHER[14], "1"));
+        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (simNumber == 1) {
             getPreferenceScreen().removePreference(sim2);
@@ -286,11 +294,11 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 }
             }
         if (time1 != null)
-            time1.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM1[9], "00:00"));
+            time1.setSummary(prefs.getString(Constants.PREF_SIM1[9], "00:00"));
         if (time2 != null)
-            time2.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM2[9], "00:00"));
+            time2.setSummary(prefs.getString(Constants.PREF_SIM2[9], "00:00"));
         if (time3 != null)
-            time3.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM3[9], "00:00"));
+            time3.setSummary(prefs.getString(Constants.PREF_SIM3[9], "00:00"));
 
         if (everyday1 != null) {
             everyday1.setSummary(everyday1.getEntry());
@@ -360,17 +368,17 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         }
 
         if (tOn1 != null)
-            tOn1.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM1[13], "00:05"));
+            tOn1.setSummary(prefs.getString(Constants.PREF_SIM1[13], "00:05"));
         if (tOn2 != null)
-            tOn2.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM2[13], "00:05"));
+            tOn2.setSummary(prefs.getString(Constants.PREF_SIM2[13], "00:05"));
         if (tOn3 != null)
-            tOn3.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM3[13], "00:05"));
+            tOn3.setSummary(prefs.getString(Constants.PREF_SIM3[13], "00:05"));
         if (tOff1 != null)
-            tOff1.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM1[12], "23:55"));
+            tOff1.setSummary(prefs.getString(Constants.PREF_SIM1[12], "23:55"));
         if (tOff2 != null)
-            tOff2.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM2[12], "23:55"));
+            tOff2.setSummary(prefs.getString(Constants.PREF_SIM2[12], "23:55"));
         if (tOff3 != null)
-            tOff3.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM3[12], "23:55"));
+            tOff3.setSummary(prefs.getString(Constants.PREF_SIM3[12], "23:55"));
 
         //night
         if (round1N != null)
@@ -380,17 +388,17 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         if (round3N != null)
             round3N.setSummary(round3N.getText() + "%");
         if (tOn1N != null)
-            tOn1N.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM1[20], "23:00"));
+            tOn1N.setSummary(prefs.getString(Constants.PREF_SIM1[20], "23:00"));
         if (tOn2N != null)
-            tOn2N.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM2[20], "23:00"));
+            tOn2N.setSummary(prefs.getString(Constants.PREF_SIM2[20], "23:00"));
         if (tOn3N != null)
-            tOn3N.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM3[20], "23:00"));
+            tOn3N.setSummary(prefs.getString(Constants.PREF_SIM3[20], "23:00"));
         if (tOff1N != null)
-            tOff1N.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM1[21], "06:00"));
+            tOff1N.setSummary(prefs.getString(Constants.PREF_SIM1[21], "06:00"));
         if (tOff2N != null)
-            tOff2N.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM2[21], "06:00"));
+            tOff2N.setSummary(prefs.getString(Constants.PREF_SIM2[21], "06:00"));
         if (tOff3N != null)
-            tOff3N.setSummary(getPreferenceScreen().getSharedPreferences().getString(Constants.PREF_SIM3[21], "06:00"));
+            tOff3N.setSummary(prefs.getString(Constants.PREF_SIM3[21], "06:00"));
 
         if (opLimit1 != null)
             opLimit1.setSummary(opLimit1.getText());
@@ -409,15 +417,13 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     @Override
     public void onResume() {
         super.onResume();
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

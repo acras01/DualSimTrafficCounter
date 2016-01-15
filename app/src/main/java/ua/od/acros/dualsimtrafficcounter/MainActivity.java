@@ -393,7 +393,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mService.setIcon(R.drawable.ic_action_enable);
         }
         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !MTKUtils.isMtkDevice())) {
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) ||
+                android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
