@@ -400,7 +400,7 @@ public class MobileUtils {
         return (int) sim;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static void setMobileNetworkFromLollipop(final Context context, int sim) throws Exception {
         String cmd = null;
         int state;
