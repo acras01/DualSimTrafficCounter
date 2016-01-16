@@ -75,7 +75,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private boolean isSIM2OverLimit = false;
     private boolean isSIM3OverLimit = false;
     private boolean isTimerCancelled = false;
-    private boolean continueOverLimit = false;
+    private boolean continueOverLimit;
     private boolean needsReset3 = false;
     private boolean needsReset2 = false;
     private boolean needsReset1 = false;
@@ -105,14 +105,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private int idSmall;
     private boolean resetRuleChanged;
     private String[] operatorNames = new String[3];
-    private static boolean actionChoosed = false;
+    private static boolean actionChosen;
 
 
     public CountService() {
     }
 
-    public static void setActionChoosed(boolean actionChoosed) {
-        CountService.actionChoosed = actionChoosed;
+    public static void setActionChosen(boolean actionChosen) {
+        CountService.actionChosen = actionChosen;
     }
 
     @Override
@@ -136,6 +136,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
         prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(this);
+        continueOverLimit = prefs.getBoolean(Constants.PREF_OTHER[17], false);
+        actionChosen = prefs.getBoolean(Constants.PREF_OTHER[18], false);
 
         mPriority = prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
@@ -481,7 +483,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private void timerStart(int task) {
         TimerTask tTask = null;
-        actionChoosed = false;
+        actionChosen = false;
         simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         activeSIM = MobileUtils.getMobileDataInfo(context, true)[1];
@@ -547,15 +549,15 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && activeSIM == Constants.SIM1 && continueOverLimit) {
             continueOverLimit = false;
-            actionChoosed = false;
+            actionChosen = false;
         }
         if ((key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2])) && activeSIM == Constants.SIM2 && continueOverLimit) {
             continueOverLimit = false;
-            actionChoosed = false;
+            actionChosen = false;
         }
         if ((key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2])) && activeSIM == Constants.SIM3 && continueOverLimit) {
             continueOverLimit = false;
-            actionChoosed = false;
+            actionChosen = false;
         }
         if (key.equals(Constants.PREF_OTHER[15]))
             if (sharedPreferences.getBoolean(key, false)) {
@@ -978,7 +980,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         tot = tx + rx;
                         simChosen = Constants.DISABLED;
                         isSIM1OverLimit = false;
-                    } else if (!actionChoosed) {
+                    } else if (!actionChosen) {
                         isSIM1OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
@@ -1223,7 +1225,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         tot = tx + rx;
                         simChosen = Constants.DISABLED;
                         isSIM2OverLimit = false;
-                    } else if (!actionChoosed) {
+                    } else if (!actionChosen) {
                         isSIM2OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
@@ -1468,7 +1470,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         tot = tx + rx;
                         simChosen = Constants.DISABLED;
                         isSIM3OverLimit = false;
-                    } else if (!actionChoosed) {
+                    } else if (!actionChosen) {
                         isSIM3OverLimit = true;
                         if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(activeSIM);
@@ -1785,6 +1787,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     @Override
     public void onDestroy() {
         super.onDestroy();
+        prefs.edit().putBoolean(Constants.PREF_OTHER[17], continueOverLimit)
+                .putBoolean(Constants.PREF_OTHER[18], actionChosen)
+                .apply();
         Picasso.with(context).cancelRequest(target);
         isTimerCancelled = true;
         mTimer.cancel();

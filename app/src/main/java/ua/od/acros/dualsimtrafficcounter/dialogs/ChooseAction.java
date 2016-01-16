@@ -80,7 +80,7 @@ public class ChooseAction extends Activity implements View.OnClickListener {
                 intent.putExtra(Constants.ACTION, Constants.OFF_ACTION);
                 break;
         }
-        CountService.setActionChoosed(true);
+        CountService.setActionChosen(true);
         sendBroadcast(intent);
         finish();
     }
