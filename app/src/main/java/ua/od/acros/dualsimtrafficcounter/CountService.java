@@ -1793,11 +1793,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
         String opName;
         if (alertID == Constants.SIM1)
-            opName = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+            opName = operatorNames[0];
         else if (alertID == Constants.SIM2)
-            opName = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+            opName = operatorNames[1];
         else
-            opName = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+            opName = operatorNames[2];
         String txt;
         if ((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
