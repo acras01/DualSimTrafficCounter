@@ -138,4 +138,7 @@
     <string name="ask_for_logo_sum">Письмо разработчику с запросом на добавление лого оператора</string>
     <string name="show_info_status">Информация о трафике в шторке</string>
     <string name="on_off_not_supported">Не все функции приложения на Вашем устройстве могут быть доступны</string>
+    <string name="remain">Остаток</string>
+    <string name="show_remaining">Показывать остаток трафика в панели уведомлений</string>
+    <string name="used">Использ.</string>
 </resources>

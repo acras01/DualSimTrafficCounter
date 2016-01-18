@@ -138,4 +138,7 @@
     <string name="ask_for_logo_sum">Лист розробнику з проханням додати своє лого</string>
     <string name="show_info_status">Інформація про трафік в шторці</string>
     <string name="on_off_not_supported">Не всі функції додатку на Вашому пристрої можуть бути доступними</string>
+    <string name="remain">Залишок</string>
+    <string name="show_remaining">Вiдображати залишок трафiку в панелi повiдомлень</string>
+    <string name="used">Використ.</string>
 </resources>

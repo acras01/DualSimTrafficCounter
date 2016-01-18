@@ -141,4 +141,7 @@
     <string name="ask_for_logo_sum">E-mail to developer and ask for adding your logo</string>
     <string name="show_info_status">Traffic data in notification area</string>
     <string name="on_off_not_supported">The app isn\'t fully operational on your device</string>
+    <string name="show_remaining">Show remaining traffic in notification area</string>
+    <string name="remain">Remaining</string>
+    <string name="used">Used</string>
 </resources>

@@ -93,13 +93,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private DateTime resetTime2;
     private DateTime resetTime3;
     private ContentValues dataMap;
-    private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, setUsage, actionReceive;
+    private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, setUsageReceiver, actionReceiver;
     private TrafficDatabase mDatabaseHelper;
     private Timer mTimer = null;
     private SharedPreferences prefs;
-    private PendingIntent contentIntent;
-    private NotificationManager nm;
-    private NotificationCompat.Builder builder;
     private Bitmap bLarge;
     private Target target;
     private int idSmall;
@@ -191,7 +188,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         IntentFilter connFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(connReceiver, connFilter);
 
-        actionReceive = new BroadcastReceiver() {
+        actionReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int simid = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
@@ -258,10 +255,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         };
         IntentFilter actionFilter = new IntentFilter(Constants.ACTION);
-        registerReceiver(actionReceive, actionFilter);
+        registerReceiver(actionReceiver, actionFilter);
 
 
-        setUsage = new BroadcastReceiver() {
+        setUsageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mTimer.cancel();
@@ -321,7 +318,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
                         break;
                 }
-                builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
+                Intent notificationIntent = new Intent(context, MainActivity.class);
+                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
                         .setCategory(NotificationCompat.CATEGORY_SERVICE)
                         .setPriority(mPriority)
                         .setContentText(DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
@@ -414,7 +414,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         IntentFilter clear1ServiceFilter = new IntentFilter(Constants.CLEAR1);
         IntentFilter clear2ServiceFilter = new IntentFilter(Constants.CLEAR2);
         IntentFilter clear3ServiceFilter = new IntentFilter(Constants.CLEAR3);
-        registerReceiver(setUsage, setUsageFilter);
+        registerReceiver(setUsageReceiver, setUsageFilter);
         registerReceiver(clear1Receiver, clear1ServiceFilter);
         registerReceiver(clear2Receiver, clear2ServiceFilter);
         registerReceiver(clear3Receiver, clear3ServiceFilter);
@@ -436,8 +436,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
-        contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -453,7 +452,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         };
         Picasso.with(context).load(R.mipmap.ic_launcher).into(target);
-        builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
                 .setSmallIcon(R.drawable.ic_launcher_small)
@@ -545,7 +545,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (key.equals(Constants.PREF_OTHER[12])) {
             if (sharedPreferences.getBoolean(key, true))
                 mPriority = sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
+            NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.cancel(Constants.STARTED_ID);
+
         }
         if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && activeSIM == Constants.SIM1 && continueOverLimit) {
             continueOverLimit = false;
@@ -1586,39 +1588,101 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private void pushNotification(int sim) {
         String text = "";
+        long tot1 = 0, tot2 = 0, tot3 = 0;
+        if (prefs.getBoolean(Constants.PREF_OTHER[19], false)) {
+            if (simNumber == 1) {
+                String limit1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
+                String round1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[22], "") : prefs.getString(Constants.PREF_SIM1[4], "0");
+                int value1;
+                if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+                    value1 = 0;
+                else
+                    value1 = isNight1 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], "")) :
+                            Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
+                float valuer1;
+                double lim1 = Double.MAX_VALUE;
+                if (!limit1.equals("")) {
+                    valuer1 = 1 - Float.valueOf(round1) / 100;
+                    lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
+                }
+                tot1 = isNight1 ? (long) lim1 - (long) dataMap.get(Constants.TOTAL1_N) : (long) lim1 - (long) dataMap.get(Constants.TOTAL1);
+            }
+            if (simNumber >= 2) {
+                String limit2 = isNight2 ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
+                String round2 = isNight2 ? prefs.getString(Constants.PREF_SIM2[22], "") : prefs.getString(Constants.PREF_SIM2[4], "0");
+                int value2;
+                if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+                    value2 = 0;
+                else
+                    value2 = isNight2 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], "")) :
+                            Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+                float valuer2;
+                double lim2 = Double.MAX_VALUE;
+                if (!limit2.equals("")) {
+                    valuer2 = 1 - Float.valueOf(round2) / 100;
+                    lim2 = valuer2 * DataFormat.getFormatLong(limit2, value2);
+                }
+                tot2 = isNight2 ? (long) lim2 - (long) dataMap.get(Constants.TOTAL2_N) : (long) lim2 - (long) dataMap.get(Constants.TOTAL2);
+            }
+            if (simNumber == 3) {
+                String limit3 = isNight3 ? prefs.getString(Constants.PREF_SIM3[18], "") : prefs.getString(Constants.PREF_SIM3[1], "");
+                String round3 = isNight3 ? prefs.getString(Constants.PREF_SIM3[22], "") : prefs.getString(Constants.PREF_SIM3[4], "0");
+                int value3;
+                if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+                    value3 = 0;
+                else
+                    value3 = isNight3 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], "")) :
+                            Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+                float valuer3;
+                double lim3 = Double.MAX_VALUE;
+                if (!limit3.equals("")) {
+                    valuer3 = 1 - Float.valueOf(round3) / 100;
+                    lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
+                }
+                tot3 = isNight3 ? (long) lim3 - (long) dataMap.get(Constants.TOTAL3_N) : (long) lim3 - (long) dataMap.get(Constants.TOTAL3);
+            }
+        }
+        else {
+            tot1 = isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1);
+            tot2 = isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2);
+            tot3 = isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3);
+        }
         if (prefs.getBoolean(Constants.PREF_OTHER[16], true)) {
-            text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+            text = DataFormat.formatData(context, tot1);
             if (simNumber >= 2)
-                text += "  ||  " + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
+                text += "  ||  " + DataFormat.formatData(context, tot2);
             if (simNumber == 3)
-                text += "  ||  " + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
+                text += "  ||  " + DataFormat.formatData(context, tot3);
         } else {
             switch (sim) {
                 case Constants.SIM1:
                     if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+                        text = DataFormat.formatData(context, tot1);
                     else
                         text = operatorNames[0] + ": " +
-                                DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1));
+                                DataFormat.formatData(context, tot1);
                     break;
                 case Constants.SIM2:
                     if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
+                        text = DataFormat.formatData(context, tot2);
                     else
                         text = operatorNames[1] + ": " +
-                                DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2));
+                                DataFormat.formatData(context, tot2);
                     break;
                 case Constants.SIM3:
                     if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
+                        text = DataFormat.formatData(context, tot3);
                     else
                         text = operatorNames[2] + ": " +
-                                DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3));
+                                DataFormat.formatData(context, tot3);
                     break;
             }
         }
-
-        builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
                 .setWhen(System.currentTimeMillis())
@@ -1689,17 +1753,18 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             choice = true;
         if (choice) {
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_disable);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            Intent notificationIntent = new Intent(context, MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification n = builder.setContentIntent(contentIntent)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                    .setContentIntent(contentIntent)
                     .setSmallIcon(R.drawable.ic_disable_small)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setPriority(mPriority)
                     .setLargeIcon(bm)
                     .setWhen(System.currentTimeMillis())
-                    .setContentTitle(getResources().getString(R.string.service_stopped_title))
-                    .build();
-            nm.notify(Constants.STARTED_ID, n);
+                    .setContentTitle(getResources().getString(R.string.service_stopped_title));
+            nm.notify(Constants.STARTED_ID, builder.build());
 
             Intent intent = new Intent(Constants.TIP);
             context.sendBroadcast(intent);
@@ -1741,7 +1806,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         else
             txt = getResources().getString(R.string.data_dis_tip);
 
-        Notification n = builder.setContentIntent(pIntent)
+        Notification n = builder
+                .setContentIntent(pIntent)
                 .setCategory(NotificationCompat.CATEGORY_STATUS)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSmallIcon(R.drawable.ic_alert_small)
@@ -1794,14 +1860,15 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         isTimerCancelled = true;
         mTimer.cancel();
         mTimer.purge();
+        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
         prefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(clear1Receiver);
         unregisterReceiver(clear2Receiver);
         unregisterReceiver(clear3Receiver);
-        unregisterReceiver(setUsage);
-        unregisterReceiver(actionReceive);
+        unregisterReceiver(setUsageReceiver);
+        unregisterReceiver(actionReceiver);
         unregisterReceiver(connReceiver);
     }
 }
