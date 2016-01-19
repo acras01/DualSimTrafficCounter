@@ -405,6 +405,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL3_N, 0L);
                     intent.putExtra(Constants.SIM_ACTIVE, 0);
                 }
+                sendBroadcast(intent);
                 setResult(RESULT_OK, mResultValueIntent);
                 finish();
             }
