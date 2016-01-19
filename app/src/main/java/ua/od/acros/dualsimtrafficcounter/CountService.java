@@ -1840,7 +1840,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         return ids;
     }
-    
+
     private static boolean isScreenOn(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
