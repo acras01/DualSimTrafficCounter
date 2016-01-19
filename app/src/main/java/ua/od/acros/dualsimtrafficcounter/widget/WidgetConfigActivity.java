@@ -352,7 +352,6 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         try {
             if (item.getItemId() == R.id.save) {
                 mEdit.apply();
-                setResult(RESULT_OK, mResultValueIntent);
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
                 if (!TrafficDatabase.isEmpty(new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
@@ -406,7 +405,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL3_N, 0L);
                     intent.putExtra(Constants.SIM_ACTIVE, 0);
                 }
-                sendBroadcast(intent);
+                setResult(RESULT_OK, mResultValueIntent);
                 finish();
             }
         } catch (Exception e) {

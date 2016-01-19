@@ -90,7 +90,7 @@ public class InfoWidget extends AppWidgetProvider {
             updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
     }
 
-    public void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
+    private void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
 
         if (bundle.size() == 0) {
             ContentValues dataMap = TrafficDatabase.readTrafficData(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
