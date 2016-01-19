@@ -151,9 +151,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         connReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mTimer.cancel();
-                mTimer.purge();
-                mIsTimerCancelled = true;
+                if (mTimer != null) {
+                    mTimer.cancel();
+                    mTimer.purge();
+                    mIsTimerCancelled = true;
+                }
                 if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                     mLastActiveSIM = mActiveSIM;
                     if (mPrefs.getBoolean(Constants.PREF_SIM1[14], true) && mLastActiveSIM == Constants.SIM1) {
@@ -260,9 +262,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         setUsageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mTimer.cancel();
-                mTimer.purge();
-                mIsTimerCancelled = true;
+                if (mTimer != null) {
+                    mTimer.cancel();
+                    mTimer.purge();
+                    mIsTimerCancelled = true;
+                }
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
@@ -334,9 +338,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         clear1Receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mTimer.cancel();
-                mTimer.purge();
-                mIsTimerCancelled = true;
+                if (mTimer != null) {
+                    mTimer.cancel();
+                    mTimer.purge();
+                    mIsTimerCancelled = true;
+                }
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
@@ -360,9 +366,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         clear2Receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mTimer.cancel();
-                mTimer.purge();
-                mIsTimerCancelled = true;
+                if (mTimer != null) {
+                    mTimer.cancel();
+                    mTimer.purge();
+                    mIsTimerCancelled = true;
+                }
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
@@ -386,9 +394,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         clear3Receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mTimer.cancel();
-                mTimer.purge();
-                mIsTimerCancelled = true;
+                if (mTimer != null) {
+                    mTimer.cancel();
+                    mTimer.purge();
+                    mIsTimerCancelled = true;
+                }
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
@@ -660,9 +670,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
+                    if (mTimer != null) {
+                        mTimer.cancel();
+                        mTimer.purge();
+                        mIsTimerCancelled = true;
+                    }
                     timerStart(Constants.COUNT);
                 }
                 if (mIsSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
@@ -670,9 +682,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
+                    if (mTimer != null) {
+                        mTimer.cancel();
+                        mTimer.purge();
+                        mIsTimerCancelled = true;
+                    }
                     timerStart(Constants.COUNT);
                 }
                 if (mIsSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
@@ -680,9 +694,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
+                    if (mTimer != null) {
+                        mTimer.cancel();
+                        mTimer.purge();
+                        mIsTimerCancelled = true;
+                    }
                     timerStart(Constants.COUNT);
                 }
             } catch (Exception e) {
@@ -1856,9 +1872,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .putBoolean(Constants.PREF_OTHER[18], mIsActionChosen)
                 .apply();
         Picasso.with(mContext).cancelRequest(mTarget);
-        mIsTimerCancelled = true;
-        mTimer.cancel();
-        mTimer.purge();
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+            mIsTimerCancelled = true;
+        }
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
