@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -34,15 +33,15 @@ import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 
 public class ShowTrafficForDateDialog extends DialogFragment implements View.OnClickListener{
 
-    private int myYear;
-    private int myMonth;
-    private int myDay;
-    private int chkSIM = Constants.NULL;
-    private int simNumber;
-    private boolean code = false;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+    private int mSimChecked = Constants.NULL;
+    private int mSimQuantity;
+    private boolean mCode = false;
     private Button bOK, bSetDate;
-    private Bundle bundle = new Bundle();
-    private GetTAsk task;
+    private Bundle mBundle = new Bundle();
+    private GetTask mTask;
     private ProgressBar pb;
     private RadioGroup radioGroup;
 
@@ -57,41 +56,40 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        code = getArguments().getBoolean("code");
-        myDay = new DateTime().getDayOfMonth();
-        myMonth = new DateTime().getMonthOfYear();
-        myYear = new DateTime().getYear();
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.show_traffic_dialog, null);
+        mCode = getArguments().getBoolean("code");
+        mDay = new DateTime().getDayOfMonth();
+        mMonth = new DateTime().getMonthOfYear();
+        mYear = new DateTime().getYear();
+        View view = View.inflate(getActivity(), R.layout.show_traffic_dialog, null);
         pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.GONE);
         radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         bSetDate = (Button) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if (simNumber == 1) {
+        if (mSimQuantity == 1) {
             view.findViewById(R.id.sim2RB).setEnabled(false);
             view.findViewById(R.id.sim3RB).setEnabled(false);
         }
-        if (simNumber == 2)
+        if (mSimQuantity == 2)
             view.findViewById(R.id.sim3RB).setEnabled(false);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.sim1RB:
-                        chkSIM = Constants.SIM1;
+                        mSimChecked = Constants.SIM1;
                         break;
                     case R.id.sim2RB:
-                        chkSIM = Constants.SIM2;
+                        mSimChecked = Constants.SIM2;
                         break;
                     case R.id.sim3RB:
-                        chkSIM = Constants.SIM3;
+                        mSimChecked = Constants.SIM3;
                         break;
                     case R.id.offRB:
-                        chkSIM = Constants.DISABLED;
+                        mSimChecked = Constants.DISABLED;
                         break;
                 }
             }
@@ -102,10 +100,10 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (task != null)
-                            task.cancel(false);
+                        if (mTask != null)
+                            mTask.cancel(false);
                         dialog.cancel();
-                        if (code)
+                        if (mCode)
                             getActivity().finish();
                     }
                 })
@@ -120,19 +118,19 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (chkSIM != Constants.NULL ) {
-                            String date = myYear + "-" + myMonth + "-" + myDay;
+                        if (mSimChecked != Constants.NULL ) {
+                            String date = mYear + "-" + mMonth + "-" + mDay;
                             if (bOK.getText().equals(getString(android.R.string.ok))) {
-                                task = new GetTAsk();
-                                task.execute(myYear, myMonth, myDay, chkSIM);
+                                mTask = new GetTask();
+                                mTask.execute(mYear, mMonth, mDay, mSimChecked);
                             } else {
-                                if (bundle != null) {
+                                if (mBundle != null) {
                                     dialog.dismiss();
-                                    if (code)
+                                    if (mCode)
                                         getActivity().finish();
                                     Intent intent = new Intent(MainActivity.getAppContext(), ViewTraffic.class);
-                                    intent.putExtra(Constants.SIM_ACTIVE, chkSIM);
-                                    intent.putExtra(Constants.SET_USAGE, bundle);
+                                    intent.putExtra(Constants.SIM_ACTIVE, mSimChecked);
+                                    intent.putExtra(Constants.SET_USAGE, mBundle);
                                     intent.putExtra(Constants.LAST_DATE, date);
                                     getActivity().startActivity(intent);
                                 }
@@ -146,7 +144,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
         return dialog;
     }
 
-    class GetTAsk extends AsyncTask<Integer, Void, Bundle> {
+    class GetTask extends AsyncTask<Integer, Void, Bundle> {
 
         @Override
         protected void onPreExecute() {
@@ -177,13 +175,13 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
             bOK.setEnabled(true);
             radioGroup.setEnabled(true);
             for (int i = 0; i < radioGroup.getChildCount(); i++) {
-                if (i < simNumber)
+                if (i < mSimQuantity)
                     radioGroup.getChildAt(i).setEnabled(true);
             }
             bSetDate.setEnabled(true);
             if (result != null) {
                 bOK.setText(getString(R.string.view_result));
-                bundle = result;
+                mBundle = result;
             } else {
                 bOK.setText(getString(android.R.string.ok));
                 Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
@@ -194,20 +192,20 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.setdate) {
-            DatePickerDialog tpd = new DatePickerDialog(getActivity(), myCallBack, myYear, myMonth - 1, myDay);
+            DatePickerDialog tpd = new DatePickerDialog(getActivity(), mCallBack, mYear, mMonth - 1, mDay);
             tpd.show();
         }
 
     }
 
-    DatePickerDialog.OnDateSetListener myCallBack = new DatePickerDialog.OnDateSetListener() {
+    DatePickerDialog.OnDateSetListener mCallBack = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            myYear = year;
-            myMonth = monthOfYear + 1;
-            myDay = dayOfMonth;
+            mYear = year;
+            mMonth = monthOfYear + 1;
+            mDay = dayOfMonth;
 
             DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-            DateTime date = fmt.parseDateTime(myYear + "-" + myMonth + "-" + myDay);
+            DateTime date = fmt.parseDateTime(mYear + "-" + mMonth + "-" + mDay);
 
             Format dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
             String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();

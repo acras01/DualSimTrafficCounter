@@ -7,23 +7,23 @@ import org.acra.ACRA;
 
 public class InputFilterMinMax implements InputFilter {
 
-    private int min, max;
+    private int mMin, mMax;
 
     public InputFilterMinMax(int min, int max) {
-        this.min = min;
-        this.max = max;
+        this.mMin = min;
+        this.mMax = max;
     }
 
     public InputFilterMinMax(String min, String max) {
-        this.min = Integer.parseInt(min);
-        this.max = Integer.parseInt(max);
+        this.mMin = Integer.parseInt(min);
+        this.mMax = Integer.parseInt(max);
     }
 
     @Override
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
         try {
             int input = Integer.parseInt(dest.toString() + source.toString());
-            if (isInRange(min, max, input))
+            if (isInRange(mMin, mMax, input))
                 return null;
         } catch (NumberFormatException nfe) {
             ACRA.getErrorReporter().handleException(nfe);

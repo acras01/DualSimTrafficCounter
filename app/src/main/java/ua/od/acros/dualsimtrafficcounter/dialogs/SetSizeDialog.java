@@ -16,16 +16,18 @@ import ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity;
 
 public class SetSizeDialog extends DialogFragment implements TextView.OnEditorActionListener {
 
-    private String size;
-    private int dialog;
-    private static final String key1 = "size";
-    private static final String key2 = "id";
+    private String mSize;
+    private int mDialog;
+    private static final String mKey1 = "size";
+    private static final String mKey2 = "id";
+
+    private EditText mEditText;
 
     public static DialogFragment newInstance(String size, int dialog) {
         SetSizeDialog f = new SetSizeDialog();
         Bundle args = new Bundle();
-        args.putString(key1, size);
-        args.putInt(key2, dialog);
+        args.putString(mKey1, size);
+        args.putInt(mKey2, dialog);
         f.setArguments(args);
         return f;
     }
@@ -34,15 +36,13 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get back arguments
-        size = getArguments().getString(key1, "");
-        dialog = getArguments().getInt(key2, -1);
+        mSize = getArguments().getString(mKey1, "");
+        mDialog = getArguments().getInt(mKey2, -1);
     }
 
     public interface TextSizeDialogListener {
         void onFinishEditDialog(String inputText, int dialog);
     }
-
-    private EditText mEditText;
 
     public SetSizeDialog() {
         // Empty constructor required for DialogFragment
@@ -52,7 +52,7 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_text_size, container);
         mEditText = (EditText) view.findViewById(R.id.txtSize);
-        mEditText.setText(size);
+        mEditText.setText(mSize);
         getDialog().setTitle(R.string.text_size);
         // Show soft keyboard automatically
         mEditText.requestFocus();
@@ -67,7 +67,7 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
         if (EditorInfo.IME_ACTION_DONE == actionId) {
             // Return input text to activity
             WidgetConfigActivity activity = (WidgetConfigActivity) getActivity();
-            activity.onFinishEditDialog(mEditText.getText().toString(), dialog);
+            activity.onFinishEditDialog(mEditText.getText().toString(), mDialog);
             this.dismiss();
             return true;
         }

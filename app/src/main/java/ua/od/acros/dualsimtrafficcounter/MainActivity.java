@@ -46,20 +46,20 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private static final String MTK = "mtk";
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
 
-    private ContentValues dataMap;
+    private ContentValues mDataMap;
 
     private BroadcastReceiver dataReceiver, tipReceiver, onoffReceiver;
 
     private Button bLim1, bLim2, bLim3;
 
     private MenuItem mService, mMobileData;
-    private static Context context;
+    private static Context mContext;
     private TrafficDatabase mDatabaseHelper;
-    private SharedPreferences prefs;
-    private boolean needsRestart = false;
-    private boolean showNight1, showNight2, showNight3;
-    private String opName1, opName2, opName3;
-    private boolean[] isNight;
+    private SharedPreferences mPrefs;
+    private boolean mNeedsRestart = false;
+    private boolean mShowNightTraffic1, mShowNightTraffic2, mShowNightTraffic3;
+    private String mOperatorName1, mOperatorName2, mOperatorName3;
+    private boolean[] mIsNight;
 
 
     @Override
@@ -67,16 +67,16 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         super.onCreate(savedInstanceState);
 
         MyApplication.activityResumed();
-        showNight1 = showNight2 = showNight3 = false;
-        opName1 = opName2 = opName3 = "";
-        context = MainActivity.this;
-        mDatabaseHelper = new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
-        prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-        final int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+        mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
+        mOperatorName1 = mOperatorName2 = mOperatorName3 = "";
+        mContext = MainActivity.this;
+        mDatabaseHelper = new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+        mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
+        final int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             setContentView(R.layout.activity_main);
             RX1 = (TextView) findViewById(R.id.RX1);
             TX1 = (TextView) findViewById(R.id.TX1);
@@ -111,47 +111,47 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         bLim2.setOnClickListener(this);
         bLim3.setOnClickListener(this);
 
-        isNight =  CountService.getIsNight();
+        mIsNight =  CountService.getIsNight();
 
         setButtonLimitText();
 
-        if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
-                    (long) dataMap.get(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1TX_N) :
-                    (long) dataMap.get(Constants.SIM1TX)));
-            RX2.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM2RX_N) :
-                    (long) dataMap.get(Constants.SIM2RX)));
-            TX2.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM2TX_N) :
-                    (long) dataMap.get(Constants.SIM2TX)));
-            RX3.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM3RX_N) :
-                    (long) dataMap.get(Constants.SIM3RX)));
-            TX3.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM3TX_N) :
-                    (long) dataMap.get(Constants.SIM3TX)));
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+            RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
+                    (long) mDataMap.get(Constants.SIM1RX)));
+            TX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
+                    (long) mDataMap.get(Constants.SIM1TX)));
+            RX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM2RX_N) :
+                    (long) mDataMap.get(Constants.SIM2RX)));
+            TX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM2TX_N) :
+                    (long) mDataMap.get(Constants.SIM2TX)));
+            RX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM3RX_N) :
+                    (long) mDataMap.get(Constants.SIM3RX)));
+            TX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM3TX_N) :
+                    (long) mDataMap.get(Constants.SIM3TX)));
         }
-        TOT1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.TOTAL1_N) :
-                (long) dataMap.get(Constants.TOTAL1)));
-        TOT2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.TOTAL2_N) :
-                (long) dataMap.get(Constants.TOTAL2)));
-        TOT3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.TOTAL3_N) :
-                (long) dataMap.get(Constants.TOTAL3)));
+        TOT1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
+                (long) mDataMap.get(Constants.TOTAL1)));
+        TOT2.setText(DataFormat.formatData(mContext, mIsNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
+                (long) mDataMap.get(Constants.TOTAL2)));
+        TOT3.setText(DataFormat.formatData(mContext, mIsNight[2] ? (long) mDataMap.get(Constants.TOTAL3_N) :
+                (long) mDataMap.get(Constants.TOTAL3)));
 
-        setLabelText((int) dataMap.get(Constants.LAST_ACTIVE_SIM), "0", "0");
+        setLabelText((int) mDataMap.get(Constants.LAST_ACTIVE_SIM), "0", "0");
 
         dataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 boolean[] isNight =  CountService.getIsNight();
-                if (!showNight1)
+                if (!mShowNightTraffic1)
                     TOT1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
                         intent.getLongExtra(Constants.TOTAL1, 0L)));
-                if (!showNight2)
+                if (!mShowNightTraffic2)
                     TOT2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
                         intent.getLongExtra(Constants.TOTAL2, 0L)));
-                if (!showNight3)
+                if (!mShowNightTraffic3)
                     TOT3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
                         intent.getLongExtra(Constants.TOTAL3, 0L)));
-                if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                    if (!showNight1) {
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                    if (!mShowNightTraffic1) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
                                     intent.getLongExtra(Constants.SIM1RX, 0L)));
@@ -159,7 +159,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                             TX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1TX_N, 0L) :
                                     intent.getLongExtra(Constants.SIM1TX, 0L)));
                     }
-                    if (!showNight2) {
+                    if (!mShowNightTraffic2) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
                                     intent.getLongExtra(Constants.SIM2RX, 0L)));
@@ -167,7 +167,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                             TX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2TX_N, 0L) :
                                     intent.getLongExtra(Constants.SIM2TX, 0L)));
                     }
-                    if (!showNight3) {
+                    if (!mShowNightTraffic3) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
                                     intent.getLongExtra(Constants.SIM3RX, 0L)));
@@ -176,35 +176,35 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                                     intent.getLongExtra(Constants.SIM3TX, 0L)));
                     }
                 }
-                if (!showNight1) {
+                if (!mShowNightTraffic1) {
                     if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
                         SIM1.setText(isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
                     else {
-                        opName1 = intent.getStringExtra(Constants.OPERATOR1);
-                        SIM1.setText(isNight[0] ? opName1 + getResources().getString(R.string.night) : opName1);
+                        mOperatorName1 = intent.getStringExtra(Constants.OPERATOR1);
+                        SIM1.setText(isNight[0] ? mOperatorName1 + getResources().getString(R.string.night) : mOperatorName1);
                     }
                 }
                 if (simNumber < 2) {
                     SIM2.setText(getResources().getString(R.string.single_sim));
                     SIM3.setText(getResources().getString(R.string.single_sim));
                 } else {
-                    if (!showNight2) {
+                    if (!mShowNightTraffic2) {
                         if (simNumber >= 2) {
                             if (!intent.hasExtra(Constants.OPERATOR2) || intent.getStringExtra(Constants.OPERATOR2).equals(""))
                                 SIM2.setText(isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
                             else {
-                                opName2 = intent.getStringExtra(Constants.OPERATOR2);
-                                SIM2.setText(isNight[1] ? opName2 + getResources().getString(R.string.night) : opName2);
+                                mOperatorName2 = intent.getStringExtra(Constants.OPERATOR2);
+                                SIM2.setText(isNight[1] ? mOperatorName2 + getResources().getString(R.string.night) : mOperatorName2);
                             }
                         }
                     }
                     if (simNumber == 3) {
-                        if (!showNight3) {
+                        if (!mShowNightTraffic3) {
                             if (!intent.hasExtra(Constants.OPERATOR3) || intent.getStringExtra(Constants.OPERATOR3).equals(""))
                                 SIM3.setText(isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
                             else {
-                                opName3 = intent.getStringExtra(Constants.OPERATOR3);
-                                SIM3.setText(isNight[2] ? opName3 + getResources().getString(R.string.night) : opName3);
+                                mOperatorName3 = intent.getStringExtra(Constants.OPERATOR3);
+                                SIM3.setText(isNight[2] ? mOperatorName3 + getResources().getString(R.string.night) : mOperatorName3);
                             }
                         }
                     }
@@ -250,7 +250,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         registerReceiver(onoffReceiver, onoffFilter);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                 if (TX2 != null)
                     TX2.setVisibility(View.GONE);
                 if (RX2 != null)
@@ -274,7 +274,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         }
         if (simNumber >= 2)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (TX2 != null)
                         TX2.setVisibility(View.VISIBLE);
                     if (RX2 != null)
@@ -288,7 +288,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
         if (simNumber == 3)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (TX3 != null)
                         TX3.setVisibility(View.VISIBLE);
                     if (RX3 != null)
@@ -300,17 +300,17 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 bLim3.setVisibility(View.VISIBLE);
             } else
                 findViewById(R.id.sim3row).setVisibility(View.VISIBLE);
-        Intent intent = new Intent(context, InfoWidget.class);
+        Intent intent = new Intent(mContext, InfoWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), InfoWidget.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent);
-        if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, context) && prefs.getBoolean(Constants.PREF_OTHER[4], true))
-            startService(new Intent(context, WatchDogService.class));
-        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, context) && !prefs.getBoolean(Constants.PREF_OTHER[5], false))
-            startService(new Intent(context, CountService.class));
+        if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+            startService(new Intent(mContext, WatchDogService.class));
+        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
+            startService(new Intent(mContext, CountService.class));
 
-        if (prefs.getBoolean(Constants.PREF_OTHER[9], true)) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP &&
                     !RootTools.isAccessGiven())
@@ -318,16 +318,16 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !MTKUtils.isMtkDevice())
                 showDialog(MTK);
-            prefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
+            mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         }
     }
 
     public static Context getAppContext() {
-        return MainActivity.context;
+        return MainActivity.mContext;
     }
 
     private void setLabelText(int sim, String rx, String tx) {
-        int swtch = MobileUtils.getMobileDataInfo(context, false)[0];
+        int swtch = MobileUtils.getMobileDataInfo(mContext, false)[0];
         switch (sim) {
             default:
                 if (swtch== 0)
@@ -373,7 +373,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
-        if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
+        if (CheckServiceRunning.isMyServiceRunning(CountService.class, mContext)) {
             mService.setTitle(R.string.action_stop);
             mService.setIcon(R.drawable.ic_action_disable);
         }
@@ -386,7 +386,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
-            switch (MobileUtils.getMobileDataInfo(context, false)[0]) {
+            switch (MobileUtils.getMobileDataInfo(mContext, false)[0]) {
                 case 0:
                     mMobileData.setEnabled(true);
                     mMobileData.setTitle(R.string.action_enable);
@@ -414,20 +414,20 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent = new Intent(context, SettingsActivity.class);
+                Intent intent = new Intent(mContext, SettingsActivity.class);
                 startActivityForResult(intent, 0);
                 break;
             case R.id.action_service_start_stop:
                 if (item.getTitle().toString().equals(getResources().getString(R.string.action_stop))) {
-                    prefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
-                    stopService(new Intent(context, CountService.class));
+                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
+                    stopService(new Intent(mContext, CountService.class));
                     TIP.setText(getResources().getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
                 }
                 else {
-                    prefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
-                    startService(new Intent(context, CountService.class));
+                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
+                    startService(new Intent(mContext, CountService.class));
                     TIP.setText(getResources().getString(R.string.tip));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
@@ -459,7 +459,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 dialog = ShowTrafficForDateDialog.newInstance(false);
                 break;
             case FIRST_RUN:
-                new AlertDialog.Builder(context)
+                new AlertDialog.Builder(mContext)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.set_sim_number)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -471,7 +471,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         .show();
                 break;
             case MTK:
-                new AlertDialog.Builder(context)
+                new AlertDialog.Builder(mContext)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.on_off_not_supported)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -483,7 +483,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         .show();
                 break;
             case ANDROID_5_0:
-                new AlertDialog.Builder(context)
+                new AlertDialog.Builder(mContext)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.need_root)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -502,32 +502,32 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
-        outState.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-        outState.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-        outState.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-        outState.putLong(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-        outState.putLong(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-        outState.putLong(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-        outState.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-        outState.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-        outState.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+        mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+        outState.putLong(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
+        outState.putLong(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
+        outState.putLong(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
+        outState.putLong(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
+        outState.putLong(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
+        outState.putLong(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
+        outState.putLong(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
+        outState.putLong(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
+        outState.putLong(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
         outState.putString(Constants.SIM_ACTIVE, SIM.getText().toString());
     }
 
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM1TX)));
-            RX2.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM2RX)));
-            TX2.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM2TX)));
-            RX3.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM3RX)));
-            TX3.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.SIM3TX)));
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+            RX1.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.SIM1RX)));
+            TX1.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.SIM1TX)));
+            RX2.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.SIM2RX)));
+            TX2.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.SIM2TX)));
+            RX3.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.SIM3RX)));
+            TX3.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.SIM3TX)));
         }
-        TOT1.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.TOTAL1)));
-        TOT2.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.TOTAL2)));
-        TOT3.setText(DataFormat.formatData(context, savedInstanceState.getLong(Constants.TOTAL3)));
+        TOT1.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.TOTAL1)));
+        TOT2.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.TOTAL2)));
+        TOT3.setText(DataFormat.formatData(mContext, savedInstanceState.getLong(Constants.TOTAL3)));
         SIM.setText(savedInstanceState.getString(Constants.SIM_ACTIVE));
     }
 
@@ -536,7 +536,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         super.onResume();
         MyApplication.activityResumed();
         setButtonLimitText();
-        if (needsRestart)
+        if (mNeedsRestart)
             finish();
     }
 
@@ -556,22 +556,22 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             unregisterReceiver(tipReceiver);
         if (onoffReceiver != null)
             unregisterReceiver(onoffReceiver);
-        prefs.unregisterOnSharedPreferenceChangeListener(this);
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[4])) {
             if (!sharedPreferences.getBoolean(key, false)) {
-                stopService(new Intent(context, WatchDogService.class));
-                prefs.edit().putBoolean(Constants.PREF_OTHER[6], true).apply();
+                stopService(new Intent(mContext, WatchDogService.class));
+                mPrefs.edit().putBoolean(Constants.PREF_OTHER[6], true).apply();
             } else {
-                startService(new Intent(context, WatchDogService.class));
-                prefs.edit().putBoolean(Constants.PREF_OTHER[6], false).apply();
+                startService(new Intent(mContext, WatchDogService.class));
+                mPrefs.edit().putBoolean(Constants.PREF_OTHER[6], false).apply();
             }
         }
         if (key.equals(Constants.PREF_OTHER[7]))
-            needsRestart = true;
+            mNeedsRestart = true;
     }
 
     @Override
@@ -586,156 +586,156 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 startActivity(settIntent);
                 break;
             case R.id.buttonClear1:
-                if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
+                if (CheckServiceRunning.isMyServiceRunning(CountService.class, mContext)) {
                     Intent clear1Intent = new Intent(Constants.CLEAR1);
                     sendBroadcast(clear1Intent);
                 } else {
-                    dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[0]) {
-                        dataMap.put(Constants.SIM1RX_N, 0L);
-                        dataMap.put(Constants.SIM1TX_N, 0L);
-                        dataMap.put(Constants.TOTAL1_N, 0L);
+                        mDataMap.put(Constants.SIM1RX_N, 0L);
+                        mDataMap.put(Constants.SIM1TX_N, 0L);
+                        mDataMap.put(Constants.TOTAL1_N, 0L);
                     } else {
-                        dataMap.put(Constants.SIM1RX, 0L);
-                        dataMap.put(Constants.SIM1TX, 0L);
-                        dataMap.put(Constants.TOTAL1, 0L);
+                        mDataMap.put(Constants.SIM1RX, 0L);
+                        mDataMap.put(Constants.SIM1TX, 0L);
+                        mDataMap.put(Constants.TOTAL1, 0L);
                     }
-                    TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                    TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
-                            RX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
-                                    (long) dataMap.get(Constants.SIM1RX)));
+                            RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
+                                    (long) mDataMap.get(Constants.SIM1RX)));
                         if (TX1 != null)
-                            TX1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.SIM1TX_N) :
-                                    (long) dataMap.get(Constants.SIM1TX)));
+                            TX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
+                                    (long) mDataMap.get(Constants.SIM1TX)));
                     }
-                    TOT1.setText(DataFormat.formatData(context, isNight[0] ? (long) dataMap.get(Constants.TOTAL1_N) :
-                            (long) dataMap.get(Constants.TOTAL1)));
+                    TOT1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
+                            (long) mDataMap.get(Constants.TOTAL1)));
                 }
                 break;
             case R.id.buttonClear2:
-                if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
+                if (CheckServiceRunning.isMyServiceRunning(CountService.class, mContext)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR2);
                     sendBroadcast(clear2Intent);
                 } else {
-                    dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[1]) {
-                        dataMap.put(Constants.SIM2RX_N, 0L);
-                        dataMap.put(Constants.SIM2TX_N, 0L);
-                        dataMap.put(Constants.TOTAL2_N, 0L);
+                        mDataMap.put(Constants.SIM2RX_N, 0L);
+                        mDataMap.put(Constants.SIM2TX_N, 0L);
+                        mDataMap.put(Constants.TOTAL2_N, 0L);
                     } else {
-                        dataMap.put(Constants.SIM2RX, 0L);
-                        dataMap.put(Constants.SIM2TX, 0L);
-                        dataMap.put(Constants.TOTAL2, 0L);
+                        mDataMap.put(Constants.SIM2RX, 0L);
+                        mDataMap.put(Constants.SIM2TX, 0L);
+                        mDataMap.put(Constants.TOTAL2, 0L);
                     }
-                    TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                    TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
-                            RX2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.SIM2RX_N) :
-                                    (long) dataMap.get(Constants.SIM2RX)));
+                            RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
+                                    (long) mDataMap.get(Constants.SIM2RX)));
                         if (TX2 != null)
-                            TX2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.SIM2TX_N) :
-                                    (long) dataMap.get(Constants.SIM2TX)));
+                            TX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mDataMap.get(Constants.SIM2TX_N) :
+                                    (long) mDataMap.get(Constants.SIM2TX)));
                     }
-                    TOT2.setText(DataFormat.formatData(context, isNight[1] ? (long) dataMap.get(Constants.TOTAL2_N) :
-                            (long) dataMap.get(Constants.TOTAL2)));
+                    TOT2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
+                            (long) mDataMap.get(Constants.TOTAL2)));
                 }
                 break;
             case R.id.buttonClear3:
-                if (CheckServiceRunning.isMyServiceRunning(CountService.class, context)) {
+                if (CheckServiceRunning.isMyServiceRunning(CountService.class, mContext)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR3);
                     sendBroadcast(clear2Intent);
                 } else {
-                    dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[2]) {
-                        dataMap.put(Constants.SIM3RX_N, 0L);
-                        dataMap.put(Constants.SIM3TX_N, 0L);
-                        dataMap.put(Constants.TOTAL3_N, 0L);
+                        mDataMap.put(Constants.SIM3RX_N, 0L);
+                        mDataMap.put(Constants.SIM3TX_N, 0L);
+                        mDataMap.put(Constants.TOTAL3_N, 0L);
                     } else {
-                        dataMap.put(Constants.SIM3RX, 0L);
-                        dataMap.put(Constants.SIM3TX, 0L);
-                        dataMap.put(Constants.TOTAL3, 0L);
+                        mDataMap.put(Constants.SIM3RX, 0L);
+                        mDataMap.put(Constants.SIM3TX, 0L);
+                        mDataMap.put(Constants.TOTAL3, 0L);
                     }
-                    TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                    if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                    TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX3 != null)
-                            RX3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.SIM3RX_N) :
-                                    (long) dataMap.get(Constants.SIM3RX)));
+                            RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mDataMap.get(Constants.SIM3RX_N) :
+                                    (long) mDataMap.get(Constants.SIM3RX)));
                         if (TX3 != null)
-                            TX3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.SIM3TX_N) :
-                                    (long) dataMap.get(Constants.SIM3TX)));
+                            TX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mDataMap.get(Constants.SIM3TX_N) :
+                                    (long) mDataMap.get(Constants.SIM3TX)));
                     }
-                    TOT3.setText(DataFormat.formatData(context, isNight[2] ? (long) dataMap.get(Constants.TOTAL3_N) :
-                            (long) dataMap.get(Constants.TOTAL3)));
+                    TOT3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mDataMap.get(Constants.TOTAL3_N) :
+                            (long) mDataMap.get(Constants.TOTAL3)));
                 }
                 break;
             case R.id.sim1_name:
-                if (prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                    showNight1 = !showNight1;
-                    if (showNight1) {
-                        if (opName1.equals(""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM1[17], false)) {
+                    mShowNightTraffic1 = !mShowNightTraffic1;
+                    if (mShowNightTraffic1) {
+                        if (mOperatorName1.equals(""))
                             SIM1.setText(!isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
                         else
-                            SIM1.setText(!isNight[0] ? opName1 + getResources().getString(R.string.night) : opName1);
-                        if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                            SIM1.setText(!isNight[0] ? mOperatorName1 + getResources().getString(R.string.night) : mOperatorName1);
+                        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                             if (RX1 != null)
-                                RX1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.SIM1RX_N) :
-                                        (long) dataMap.get(Constants.SIM1RX)));
+                                RX1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
+                                        (long) mDataMap.get(Constants.SIM1RX)));
                             if (TX1 != null)
-                                TX1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.SIM1TX_N) :
-                                        (long) dataMap.get(Constants.SIM1TX)));
+                                TX1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
+                                        (long) mDataMap.get(Constants.SIM1TX)));
                         }
-                        TOT1.setText(DataFormat.formatData(context, !isNight[0] ? (long) dataMap.get(Constants.TOTAL1_N) :
-                                (long) dataMap.get(Constants.TOTAL1)));
+                        TOT1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
+                                (long) mDataMap.get(Constants.TOTAL1)));
                     }
                 }
                 break;
             case R.id.sim2_name:
-                if (prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                    showNight2 = !showNight2;
-                    if (showNight2) {
-                        if (opName2.equals(""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM2[17], false)) {
+                    mShowNightTraffic2 = !mShowNightTraffic2;
+                    if (mShowNightTraffic2) {
+                        if (mOperatorName2.equals(""))
                             SIM2.setText(!isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
                         else
-                            SIM2.setText(!isNight[1] ? opName2 + getResources().getString(R.string.night) : opName2);
-                        if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                            SIM2.setText(!isNight[1] ? mOperatorName2 + getResources().getString(R.string.night) : mOperatorName2);
+                        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                             if (RX2 != null)
-                                RX2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM2RX_N) :
-                                        (long) dataMap.get(Constants.SIM2RX)));
+                                RX2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
+                                        (long) mDataMap.get(Constants.SIM2RX)));
                             if (TX2 != null)
-                                TX2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM2TX_N) :
-                                        (long) dataMap.get(Constants.SIM2TX)));
+                                TX2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM2TX_N) :
+                                        (long) mDataMap.get(Constants.SIM2TX)));
                         }
-                        TOT2.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.TOTAL2_N) :
-                                (long) dataMap.get(Constants.TOTAL2)));
+                        TOT2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
+                                (long) mDataMap.get(Constants.TOTAL2)));
                     }
                 }
                 break;
             case R.id.sim3_name:
-                if (prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                    showNight3 = !showNight3;
-                    if (showNight3) {
-                        if (prefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                            if (opName3.equals(""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM3[17], false)) {
+                    mShowNightTraffic3 = !mShowNightTraffic3;
+                    if (mShowNightTraffic3) {
+                        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                            if (mOperatorName3.equals(""))
                                 SIM3.setText(!isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
                             else
-                                SIM3.setText(!isNight[2] ? opName3 + getResources().getString(R.string.night) : opName3);
+                                SIM3.setText(!isNight[2] ? mOperatorName3 + getResources().getString(R.string.night) : mOperatorName3);
                             if (RX3 != null)
-                                RX3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM3RX_N) :
-                                        (long) dataMap.get(Constants.SIM3RX)));
+                                RX3.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM3RX_N) :
+                                        (long) mDataMap.get(Constants.SIM3RX)));
                             if (TX3 != null)
-                                TX3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.SIM3TX_N) :
-                                        (long) dataMap.get(Constants.SIM2TX)));
+                                TX3.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM3TX_N) :
+                                        (long) mDataMap.get(Constants.SIM2TX)));
                         }
-                        TOT3.setText(DataFormat.formatData(context, !isNight[1] ? (long) dataMap.get(Constants.TOTAL3_N) :
-                                (long) dataMap.get(Constants.TOTAL3)));
+                        TOT3.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.TOTAL3_N) :
+                                (long) mDataMap.get(Constants.TOTAL3)));
                     }
                 }
                 break;
             case R.id.limit1:
             case R.id.limit2:
             case R.id.limit3:
-                Intent intent = new Intent(context, SettingsActivity.class);
+                Intent intent = new Intent(mContext, SettingsActivity.class);
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
                 intent.putExtra(Constants.SIM_ACTIVE, v.getId());
@@ -746,58 +746,58 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     private void setButtonLimitText() {
 
-        String limit1 = isNight[0] ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
-        String limit2 = isNight[1] ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
-        String limit3 = isNight[2] ? prefs.getString(Constants.PREF_SIM3[18], "") : prefs.getString(Constants.PREF_SIM3[1], "");
+        String limit1 = mIsNight[0] ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
+        String limit2 = mIsNight[1] ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
+        String limit3 = mIsNight[2] ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
 
         int value1;
-        if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+        if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
             value1 = 0;
         else
-            value1 = isNight[0] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], "")) :
-                    Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
+            value1 = mIsNight[0] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
+                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
         int value2;
-        if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+        if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
             value2 = 0;
         else
-            value2 = isNight[1] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], "")) :
-                    Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+            value2 = mIsNight[1] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
+                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
         int value3;
-        if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+        if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
             value3 = 0;
         else
-            value3 = isNight[2] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], "")) :
-                    Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+            value3 = mIsNight[2] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
+                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
 
         double lim1 = !limit1.equals("") ? DataFormat.getFormatLong(limit1, value1) : Double.MAX_VALUE;
         double lim2 = !limit2.equals("") ? DataFormat.getFormatLong(limit2, value2) : Double.MAX_VALUE;
         double lim3 = !limit3.equals("") ? DataFormat.getFormatLong(limit3, value3) : Double.MAX_VALUE;
 
-        limit1 = !limit1.equals("") ? DataFormat.formatData(context, (long) lim1) : getResources().getString(R.string.not_set);
-        limit2 = !limit2.equals("") ? DataFormat.formatData(context, (long) lim2) : getResources().getString(R.string.not_set);
-        limit3 = !limit3.equals("") ? DataFormat.formatData(context, (long) lim3) : getResources().getString(R.string.not_set);
+        limit1 = !limit1.equals("") ? DataFormat.formatData(mContext, (long) lim1) : getResources().getString(R.string.not_set);
+        limit2 = !limit2.equals("") ? DataFormat.formatData(mContext, (long) lim2) : getResources().getString(R.string.not_set);
+        limit3 = !limit3.equals("") ? DataFormat.formatData(mContext, (long) lim3) : getResources().getString(R.string.not_set);
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.period);
 
         for (int i = 0; i < list.length; i++) {
-            if (!limit1.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM1[3], "0"))) {
+            if (!limit1.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1[3], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit1 += "/" + prefs.getString(Constants.PREF_SIM1[10], "1") + getResources().getString(R.string.days);
+                    limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1[10], "1") + getResources().getString(R.string.days);
                 else
                     limit1 += "/" + list[i];
 
             }
-            if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM2[3], "0"))) {
+            if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2[3], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit2 += "/" + prefs.getString(Constants.PREF_SIM2[10], "1") + getResources().getString(R.string.days);
+                    limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2[10], "1") + getResources().getString(R.string.days);
                 else
                     limit2 += "/" + list[i];
 
             }
-            if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(prefs.getString(Constants.PREF_SIM3[3], "0"))) {
+            if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3[3], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit3 += "/" + prefs.getString(Constants.PREF_SIM3[10], "1") + getResources().getString(R.string.days);
+                    limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3[10], "1") + getResources().getString(R.string.days);
                 else
                     limit3 += "/" + list[i];
 

@@ -6,17 +6,17 @@ import ua.od.acros.dualsimtrafficcounter.R;
 
 public class DataFormat {
 
-    private static double kb = 1024.0;
-    private static double mb = kb * kb;
-    private static double gb = kb * mb;
+    private final static double KB = 1024.0;
+    private final static double MB = KB * KB;
+    private final static double GB = KB * MB;
 
     public static String formatData(Context mContext, long data) {
-        if (data < mb)
-            return (String.format("%.2f", data / kb)) + mContext.getString(R.string.kb);
-        else if (data > gb)
-            return (String.format("%.2f", data / gb)) + mContext.getString(R.string.gb);
+        if (data < MB)
+            return (String.format("%.2f", data / KB)) + mContext.getString(R.string.kb);
+        else if (data > GB)
+            return (String.format("%.2f", data / GB)) + mContext.getString(R.string.gb);
         else
-            return (String.format("%.2f", data / mb)) + mContext.getString(R.string.mb);
+            return (String.format("%.2f", data / MB)) + mContext.getString(R.string.mb);
     }
 
     public static long getFormatLong(String data, int value) {
@@ -24,13 +24,13 @@ public class DataFormat {
         double dData = Double.valueOf(data);
         switch (value) {
             case 0:
-                res = (long) (dData * kb);
+                res = (long) (dData * KB);
                 break;
             case 1:
-                res = (long) (dData * mb);
+                res = (long) (dData * MB);
                 break;
             case 2:
-                res = (long) (dData * gb);
+                res = (long) (dData * GB);
                 break;
     }
     return res;
@@ -40,13 +40,13 @@ public class DataFormat {
         double div = Double.valueOf(round);
         switch (value) {
             case "0":
-                div = div * kb;
+                div = div * KB;
                 break;
             case "1":
-                div = div * mb;
+                div = div * MB;
                 break;
             case "2":
-                div = div * kb;
+                div = div * KB;
                 break;
         }
         return (long) (Math.ceil(data / div) * div);

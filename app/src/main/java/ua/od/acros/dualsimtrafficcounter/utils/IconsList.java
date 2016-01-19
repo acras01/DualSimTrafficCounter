@@ -15,9 +15,12 @@ import ua.od.acros.dualsimtrafficcounter.R;
 
 public class IconsList extends DialogFragment implements AdapterView.OnItemClickListener {
 
-    private String[] listitems;
-    private ListView mylist;
-    private String logo;
+    private String[] mListItems;
+    private ListView lv;
+    private String mLogo;
+
+    private OnCompleteListener mListener;
+
     private static final String ID = "id";
 
     public static IconsList newInstance(String id) {
@@ -32,14 +35,14 @@ public class IconsList extends DialogFragment implements AdapterView.OnItemClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get back arguments
-        logo = getArguments().getString(ID, "");
+        mLogo = getArguments().getString(ID, "");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        listitems = getResources().getStringArray(R.array.icons);
-        View view = inflater.inflate(R.layout.icons_list_layout, null, false);
-        mylist = (ListView) view.findViewById(R.id.list);
+        mListItems = getResources().getStringArray(R.array.icons);
+        View view = inflater.inflate(R.layout.icons_list_layout, container, false);
+        lv = (ListView) view.findViewById(R.id.list);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return view;
     }
@@ -47,22 +50,20 @@ public class IconsList extends DialogFragment implements AdapterView.OnItemClick
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listitems);
-        mylist.setAdapter(adapter);
-        mylist.setOnItemClickListener(this);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mListItems);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         dismiss();
-        this.mListener.onComplete(position, logo);
+        this.mListener.onComplete(position, mLogo);
     }
 
     public interface OnCompleteListener {
         void onComplete(int position, String logo);
     }
-
-    private OnCompleteListener mListener;
 
     public void onAttach(Activity activity) {
         super.onAttach(activity);

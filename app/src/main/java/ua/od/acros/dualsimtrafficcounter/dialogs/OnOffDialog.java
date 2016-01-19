@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
@@ -21,7 +20,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class OnOffDialog extends DialogFragment {
 
-    private int chkSIM = Constants.NULL;
+    private int mSimChecked = Constants.NULL;
     private Button bOK;
 
     public static OnOffDialog newInstance() {
@@ -31,8 +30,7 @@ public class OnOffDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.onoff_dialog, null);
+        View view = View.inflate(getActivity(), R.layout.onoff_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -54,16 +52,16 @@ public class OnOffDialog extends DialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.sim1RB:
-                        chkSIM = Constants.SIM1;
+                        mSimChecked = Constants.SIM1;
                         break;
                     case R.id.sim2RB:
-                        chkSIM = Constants.SIM2;
+                        mSimChecked = Constants.SIM2;
                         break;
                     case R.id.sim3RB:
-                        chkSIM = Constants.SIM3;
+                        mSimChecked = Constants.SIM3;
                         break;
                     case R.id.offRB:
-                        chkSIM = Constants.DISABLED;
+                        mSimChecked = Constants.DISABLED;
                         break;
                 }
             }
@@ -87,10 +85,10 @@ public class OnOffDialog extends DialogFragment {
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (chkSIM != Constants.NULL) {
+                        if (mSimChecked != Constants.NULL) {
                             dialog.dismiss();
                             Intent intent = new Intent(Constants.ON_OFF);
-                            intent.putExtra("sim", chkSIM);
+                            intent.putExtra("sim", mSimChecked);
                             getActivity().sendBroadcast(intent);
                         } else
                             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();

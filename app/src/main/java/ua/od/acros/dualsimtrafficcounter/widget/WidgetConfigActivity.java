@@ -21,9 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.acra.ACRA;
@@ -45,8 +43,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         CompoundButton.OnCheckedChangeListener, View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int SELECT_PHOTO = 101;
-    private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private Intent resultValue;
+    private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private Intent mResultValueIntent;
     private ImageView tiv, biv, logo1, logo2, logo3;
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
@@ -59,107 +57,96 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private RelativeLayout logoL1;
     private RelativeLayout logoL2;
     private RelativeLayout logoL3;
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor edit;
-    private int textColor, backColor;
+    private SharedPreferences mPrefs;
+    private SharedPreferences.Editor mEdit;
+    private int mTextColor, mBackColor;
     private final int KEY_TEXT = 0;
     private final int KEY_ICON = 1;
     private final int KEY_TEXT_S = 2;
     private final int KEY_ICON_S = 3;
-    private int simNumber;
-    private int dim;
-    private String user_pick;
+    private int mSimQuantity;
+    private int mDim;
+    private String mUserPickedImage;
 
-    private final Context context = this;
-    private Callback picassoCallback = new Callback() {
-        @Override
-        public void onSuccess() {
-            Toast.makeText(context, R.string.image_load, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onError() {
-            Toast.makeText(context, R.string.image_not_load, Toast.LENGTH_SHORT).show();
-        }
-    };
+    private final Context mContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, context))
-            context.startService(new Intent(context, CountService.class));
+        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext))
+            mContext.startService(new Intent(mContext, CountService.class));
 
-        dim = (int) getResources().getDimension(R.dimen.logo_size);
+        mDim = (int) getResources().getDimension(R.dimen.logo_size);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            widgetID = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+            mWidgetID = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        if (widgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
+        if (mWidgetID == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
         }
 
-        prefs = getSharedPreferences(String.valueOf(widgetID) + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        edit = prefs.edit();
-        if (prefs.getAll().size() == 0) {
-            edit.putBoolean(Constants.PREF_WIDGET[1], true);
-            edit.putBoolean(Constants.PREF_WIDGET[2], true);
-            edit.putBoolean(Constants.PREF_WIDGET[3], false);
-            edit.putBoolean(Constants.PREF_WIDGET[4], true);
-            edit.putString(Constants.PREF_WIDGET[5], "none");
-            edit.putString(Constants.PREF_WIDGET[6], "none");
-            edit.putString(Constants.PREF_WIDGET[7], "none");
-            edit.putBoolean(Constants.PREF_WIDGET[8], false);
-            edit.putBoolean(Constants.PREF_WIDGET[9], false);
-            edit.putBoolean(Constants.PREF_WIDGET[10], false);
-            edit.putString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE);
-            edit.putString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE);
-            edit.putInt(Constants.PREF_WIDGET[13], Color.WHITE);
-            edit.putBoolean(Constants.PREF_WIDGET[14], true);
-            edit.putInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
-            edit.putString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
-            edit.putString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE);
-            edit.putBoolean(Constants.PREF_WIDGET[18], true);
-            edit.putBoolean(Constants.PREF_WIDGET[19], true);
-            edit.putBoolean(Constants.PREF_WIDGET[20], true);
-            edit.putBoolean(Constants.PREF_WIDGET[21], true);
-            edit.putBoolean(Constants.PREF_WIDGET[22], false);
-            edit.putBoolean(Constants.PREF_WIDGET[23], false);
-            edit.apply();
+        mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mEdit = mPrefs.edit();
+        if (mPrefs.getAll().size() == 0) {
+            mEdit.putBoolean(Constants.PREF_WIDGET[1], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET[2], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET[3], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET[4], true);
+            mEdit.putString(Constants.PREF_WIDGET[5], "none");
+            mEdit.putString(Constants.PREF_WIDGET[6], "none");
+            mEdit.putString(Constants.PREF_WIDGET[7], "none");
+            mEdit.putBoolean(Constants.PREF_WIDGET[8], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET[9], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET[10], false);
+            mEdit.putString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE);
+            mEdit.putString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE);
+            mEdit.putInt(Constants.PREF_WIDGET[13], Color.WHITE);
+            mEdit.putBoolean(Constants.PREF_WIDGET[14], true);
+            mEdit.putInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
+            mEdit.putString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
+            mEdit.putString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE);
+            mEdit.putBoolean(Constants.PREF_WIDGET[18], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET[19], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET[20], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET[21], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET[22], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET[23], false);
+            mEdit.apply();
         }
 
-        textColor = prefs.getInt(Constants.PREF_WIDGET[13], Color.WHITE);
-        backColor = prefs.getInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
+        mTextColor = mPrefs.getInt(Constants.PREF_WIDGET[13], Color.WHITE);
+        mBackColor = mPrefs.getInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
 
-        resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
+        mResultValueIntent = new Intent();
+        mResultValueIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetID);
 
-        setResult(RESULT_CANCELED, resultValue);
+        setResult(RESULT_CANCELED, mResultValueIntent);
 
         setContentView(R.layout.activity_widget_config);
 
         CheckBox names = (CheckBox) findViewById(R.id.names);
-        names.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[1], true));
+        names.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[1], true));
         CheckBox info = (CheckBox) findViewById(R.id.info);
-        info.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[2], true));
+        info.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[2], true));
         CheckBox icons = (CheckBox) findViewById(R.id.icons);
-        icons.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[4], true));
+        icons.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[4], true));
         CheckBox speed = (CheckBox) findViewById(R.id.speed);
-        speed.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[3], true));
+        speed.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[3], true));
         CheckBox back = (CheckBox) findViewById(R.id.useBack);
-        back.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[14], true));
+        back.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[14], true));
         CheckBox div = (CheckBox) findViewById(R.id.divider);
-        div.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[21], true));
+        div.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[21], true));
         CheckBox active = (CheckBox) findViewById(R.id.activesim);
-        active.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[22], false));
+        active.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[22], false));
         CheckBox daynight = (CheckBox) findViewById(R.id.daynight_icons);
-        daynight.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[23], false));
+        daynight.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[23], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -216,35 +203,35 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
 
 
         onOff(logoL1, icons.isChecked());
-        onOff(logoL2, simNumber >= 2 && icons.isChecked());
-        onOff(logoL3, simNumber == 3 && icons.isChecked());
+        onOff(logoL2, mSimQuantity >= 2 && icons.isChecked());
+        onOff(logoL3, mSimQuantity == 3 && icons.isChecked());
         onOff(speedFontL, speed.isChecked());
         onOff(speedArrowsL, speed.isChecked());
         onOff(showSimL, !active.isChecked());
         onOff(backColorL, back.isChecked());
 
         textSizeSum = (TextView) findViewById(R.id.textSizeSum);
-        textSizeSum.setText(prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE));
+        textSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE));
 
         iconsSizeSum = (TextView) findViewById(R.id.iconSizeSum);
-        iconsSizeSum.setText(prefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE));
+        iconsSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE));
 
         speedTextSum = (TextView) findViewById(R.id.speedTextSizeSum);
-        speedTextSum.setText(prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE));
+        speedTextSum.setText(mPrefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE));
 
         speedIconsSum = (TextView) findViewById(R.id.speedIconsSizeSum);
-        speedIconsSum.setText(prefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE));
+        speedIconsSum.setText(mPrefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE));
 
         showSimSum = (TextView) findViewById(R.id.simChooseSum);
         String sum = "";
-        if (prefs.getBoolean(Constants.PREF_WIDGET[18], true))
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET[18], true))
             sum = "SIM1";
-        if (prefs.getBoolean(Constants.PREF_WIDGET[19], true))
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET[19], true))
             if (sum.equals(""))
                 sum = "SIM2";
             else
                 sum += ", SIM2";
-        if (prefs.getBoolean(Constants.PREF_WIDGET[20], true))
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET[20], true))
             if (sum.equals(""))
                 sum = "SIM3";
             else
@@ -262,8 +249,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
         biv = (ImageView) findViewById(R.id.backColorPreview);
-        tiv.setBackgroundColor(textColor);
-        biv.setBackgroundColor(backColor);
+        tiv.setBackgroundColor(mTextColor);
+        biv.setBackgroundColor(mBackColor);
 
         logo1 = (ImageView) findViewById(R.id.logoPreview1);
         logo2 = (ImageView) findViewById(R.id.logoPreview2);
@@ -272,60 +259,60 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         logoSum2 = (TextView) findViewById(R.id.logoSum2);
         logoSum3 = (TextView) findViewById(R.id.logoSum3);
 
-        if (prefs.getBoolean(Constants.PREF_WIDGET[8], false)) {
-            Picasso.with(context)
-                    .load(new File(prefs.getString(Constants.PREF_WIDGET[5], "")))
-                    .resize(dim, dim)
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET[8], false)) {
+            Picasso.with(mContext)
+                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET[5], "")))
+                    .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo1, picassoCallback);
+                    .into(logo1);
             logoSum1.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(context)
-                    .load(getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", getApplicationContext().getPackageName()))
-                    .resize(dim, dim)
+            Picasso.with(mContext)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo1, picassoCallback);
-        if (prefs.getBoolean(Constants.PREF_WIDGET[9], false)) {
-            Picasso.with(context)
-                    .load(new File(prefs.getString(Constants.PREF_WIDGET[6], "")))
-                    .resize(dim, dim)
+                    .into(logo1);
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET[9], false)) {
+            Picasso.with(mContext)
+                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET[6], "")))
+                    .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo2, picassoCallback);
+                    .into(logo2);
             logoSum2.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(context)
-                    .load(getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", getApplicationContext().getPackageName()))
-                    .resize(dim, dim)
+            Picasso.with(mContext)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo2, picassoCallback);
-        if (prefs.getBoolean(Constants.PREF_WIDGET[10], false)) {
-            Picasso.with(context)
-                    .load(new File(prefs.getString(Constants.PREF_WIDGET[7], "")))
-                    .resize(dim, dim)
+                    .into(logo2);
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET[10], false)) {
+            Picasso.with(mContext)
+                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET[7], "")))
+                    .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo3, picassoCallback);
+                    .into(logo3);
             logoSum3.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(context)
-                    .load(getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", getApplicationContext().getPackageName()))
-                    .resize(dim, dim)
+            Picasso.with(mContext)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
-                    .into(logo3, picassoCallback);
+                    .into(logo3);
 
         String[] listitems = getResources().getStringArray(R.array.icons_values);
         String[] list = getResources().getStringArray(R.array.icons);
         for (int i = 0; i < list.length; i++) {
-            if (!prefs.getBoolean(Constants.PREF_WIDGET[8], false) && listitems[i].equals(prefs.getString(Constants.PREF_WIDGET[5], "none")))
+            if (!mPrefs.getBoolean(Constants.PREF_WIDGET[8], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET[5], "none")))
                 logoSum1.setText(list[i]);
-            if (!prefs.getBoolean(Constants.PREF_WIDGET[9], false) && listitems[i].equals(prefs.getString(Constants.PREF_WIDGET[6], "none")))
+            if (!mPrefs.getBoolean(Constants.PREF_WIDGET[9], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET[6], "none")))
                 logoSum2.setText(list[i]);
-            if (!prefs.getBoolean(Constants.PREF_WIDGET[10], false) && listitems[i].equals(prefs.getString(Constants.PREF_WIDGET[7], "none")))
+            if (!mPrefs.getBoolean(Constants.PREF_WIDGET[10], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET[7], "none")))
                 logoSum3.setText(list[i]);
         }
 
@@ -341,7 +328,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         setOnClickListenerWithChild(showSimL);
         backColorL.setOnClickListener(this);
 
-        prefs.registerOnSharedPreferenceChangeListener(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     private void setOnClickListenerWithChild(ViewGroup v) {
@@ -364,12 +351,12 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     public boolean onOptionsItemSelected(MenuItem item) {
         try {
             if (item.getItemId() == R.id.save) {
-                edit.apply();
-                setResult(RESULT_OK, resultValue);
+                mEdit.apply();
+                setResult(RESULT_OK, mResultValueIntent);
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
-                intent.putExtra(Constants.WIDGET_IDS, new int[]{widgetID});
-                if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-                    ContentValues dataMap = TrafficDatabase.readTrafficData(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+                intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
+                if (!TrafficDatabase.isEmpty(new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
+                    ContentValues dataMap = TrafficDatabase.readTrafficData(new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);
                     intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
@@ -392,9 +379,9 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     intent.putExtra(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
                     intent.putExtra(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
                     intent.putExtra(Constants.OPERATOR1, MobileUtils.getName(this, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                    if (simNumber >= 2)
+                    if (mSimQuantity >= 2)
                         intent.putExtra(Constants.OPERATOR2, MobileUtils.getName(this, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                    if (simNumber == 3)
+                    if (mSimQuantity == 3)
                         intent.putExtra(Constants.OPERATOR3, MobileUtils.getName(this, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
                 } else {
                     intent.putExtra(Constants.SPEEDRX, 0L);
@@ -456,27 +443,27 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             case R.id.simFontSize:
             case R.id.textSize:
             case R.id.textSizeSum:
-                dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE), KEY_TEXT);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE), KEY_TEXT);
                 break;
             case R.id.simLogoSize:
             case R.id.iconSize:
             case R.id.iconSizeSum:
-                dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE), KEY_ICON);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE), KEY_ICON);
                 break;
             case R.id.speedFontSize:
             case R.id.speedTextSize:
             case R.id.speedTextSizeSum:
-                dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE), KEY_TEXT_S);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE), KEY_TEXT_S);
                 break;
             case R.id.speedArrowsSize:
             case R.id.speedIconsSize:
             case R.id.speedIconsSizeSum:
-                dialog = SetSizeDialog.newInstance(prefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE), KEY_ICON_S);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE), KEY_ICON_S);
                 break;
             case R.id.showSim:
             case R.id.simChoose:
             case R.id.simChooseSum:
-                dialog = ShowSimDialog.newInstance(widgetID);
+                dialog = ShowSimDialog.newInstance(mWidgetID);
                 break;
         }
         if (dialog != null) {
@@ -488,19 +475,19 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         if (!inputText.equals("")) {
             switch (dialog) {
                 case KEY_TEXT:
-                    edit.putString(Constants.PREF_WIDGET[12], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET[12], inputText);
                     textSizeSum.setText(inputText);
                     break;
                 case KEY_ICON:
-                    edit.putString(Constants.PREF_WIDGET[11], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET[11], inputText);
                     iconsSizeSum.setText(inputText);
                     break;
                 case KEY_TEXT_S:
-                    edit.putString(Constants.PREF_WIDGET[16], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET[16], inputText);
                     speedTextSum.setText(inputText);
                     break;
                 case KEY_ICON_S:
-                    edit.putString(Constants.PREF_WIDGET[17], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET[17], inputText);
                     speedIconsSum.setText(inputText);
                     break;
             }
@@ -512,7 +499,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         String[] listitems = getResources().getStringArray(R.array.icons_values);
         String[] list = getResources().getStringArray(R.array.icons);
         if (position < list.length - 1) {
-            user_pick = "";
+            mUserPickedImage = "";
             int sim = Constants.DISABLED;
             switch (logo) {
                 case "logo1":
@@ -532,38 +519,38 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 opLogo = listitems[position];
             int resourceId = getApplicationContext().getResources().getIdentifier(opLogo, "drawable", getApplicationContext().getPackageName());
             if (logo.equals(Constants.PREF_WIDGET[5])) {
-                edit.putBoolean(Constants.PREF_WIDGET[8], false);
-                edit.putString(Constants.PREF_WIDGET[5], opLogo);
-                Picasso.with(context)
+                mEdit.putBoolean(Constants.PREF_WIDGET[8], false);
+                mEdit.putString(Constants.PREF_WIDGET[5], opLogo);
+                Picasso.with(mContext)
                         .load(resourceId)
-                        .resize(dim, dim)
+                        .resize(mDim, mDim)
                         .centerInside()
                         .error(R.drawable.none)
-                        .into(logo1, picassoCallback);
+                        .into(logo1);
                 logoSum1.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[6])) {
-                edit.putBoolean(Constants.PREF_WIDGET[9], false);
-                edit.putString(Constants.PREF_WIDGET[6], opLogo);
-                Picasso.with(context)
+                mEdit.putBoolean(Constants.PREF_WIDGET[9], false);
+                mEdit.putString(Constants.PREF_WIDGET[6], opLogo);
+                Picasso.with(mContext)
                         .load(resourceId)
-                        .resize(dim, dim)
+                        .resize(mDim, mDim)
                         .centerInside()
                         .error(R.drawable.none)
-                        .into(logo2, picassoCallback);
+                        .into(logo2);
                 logoSum2.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET[7])) {
-                edit.putBoolean(Constants.PREF_WIDGET[10], false);
-                edit.putString(Constants.PREF_WIDGET[7], opLogo);
-                Picasso.with(context)
+                mEdit.putBoolean(Constants.PREF_WIDGET[10], false);
+                mEdit.putString(Constants.PREF_WIDGET[7], opLogo);
+                Picasso.with(mContext)
                         .load(resourceId)
-                        .resize(dim, dim)
+                        .resize(mDim, mDim)
                         .centerInside()
                         .error(R.drawable.none)
-                        .into(logo3, picassoCallback);
+                        .into(logo3);
                 logoSum3.setText(list[position]);
             }
         } else {
-            user_pick = logo;
+            mUserPickedImage = logo;
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, SELECT_PHOTO);
@@ -579,41 +566,41 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
-                    if (user_pick.equals(Constants.PREF_WIDGET[5])) {
-                        edit.putBoolean(Constants.PREF_WIDGET[8], true);
+                    if (mUserPickedImage.equals(Constants.PREF_WIDGET[5])) {
+                        mEdit.putBoolean(Constants.PREF_WIDGET[8], true);
                         String path = getRealPathFromURI(getApplicationContext(), selectedImage);
-                        edit.putString(Constants.PREF_WIDGET[5], path);
-                        Picasso.with(context)
+                        mEdit.putString(Constants.PREF_WIDGET[5], path);
+                        Picasso.with(mContext)
                                 .load(new File(path))
-                                .resize(dim, dim)
+                                .resize(mDim, mDim)
                                 .centerInside()
                                 .error(R.drawable.none)
-                                .into(logo1, picassoCallback);
+                                .into(logo1);
                         logoSum3.setText(getResources().getString(R.string.userpick));
-                    } else if (user_pick.equals(Constants.PREF_WIDGET[6])) {
-                        edit.putBoolean(Constants.PREF_WIDGET[9], true);
+                    } else if (mUserPickedImage.equals(Constants.PREF_WIDGET[6])) {
+                        mEdit.putBoolean(Constants.PREF_WIDGET[9], true);
                         String path = getRealPathFromURI(getApplicationContext(), selectedImage);
-                        edit.putString(Constants.PREF_WIDGET[6], path);
-                        Picasso.with(context)
+                        mEdit.putString(Constants.PREF_WIDGET[6], path);
+                        Picasso.with(mContext)
                                 .load(new File(path))
-                                .resize(dim, dim)
+                                .resize(mDim, mDim)
                                 .centerInside()
                                 .error(R.drawable.none)
-                                .into(logo2, picassoCallback);
+                                .into(logo2);
                         logoSum3.setText(getResources().getString(R.string.userpick));
-                    } else if (user_pick.equals(Constants.PREF_WIDGET[7])) {
-                        edit.putBoolean(Constants.PREF_WIDGET[10], true);
+                    } else if (mUserPickedImage.equals(Constants.PREF_WIDGET[7])) {
+                        mEdit.putBoolean(Constants.PREF_WIDGET[10], true);
                         String path = getRealPathFromURI(getApplicationContext(), selectedImage);
-                        edit.putString(Constants.PREF_WIDGET[7], path);
-                        Picasso.with(context)
+                        mEdit.putString(Constants.PREF_WIDGET[7], path);
+                        Picasso.with(mContext)
                                 .load(new File(path))
-                                .resize(dim, dim)
+                                .resize(mDim, mDim)
                                 .centerInside()
                                 .error(R.drawable.none)
-                                .into(logo3, picassoCallback);
+                                .into(logo3);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     }
-                    user_pick = "";
+                    mUserPickedImage = "";
                 }
                 break;
         }
@@ -644,21 +631,21 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.names:
-                edit.putBoolean(Constants.PREF_WIDGET[1], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[1], isChecked);
                 if (isChecked)
                     namesSum.setText(R.string.on);
                 else
                     namesSum.setText(R.string.off);
                 break;
             case R.id.info:
-                edit.putBoolean(Constants.PREF_WIDGET[2], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[2], isChecked);
                 if (isChecked)
                     infoSum.setText(R.string.all);
                 else
                     infoSum.setText(R.string.only_total);
                 break;
             case R.id.speed:
-                edit.putBoolean(Constants.PREF_WIDGET[3], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[3], isChecked);
                 onOff(speedFontL, isChecked);
                 onOff(speedArrowsL, isChecked);
                 if (isChecked) {
@@ -670,14 +657,14 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     speedSum.setText(R.string.off);
                 break;
             case R.id.divider:
-                edit.putBoolean(Constants.PREF_WIDGET[21], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[21], isChecked);
                 if (isChecked)
                     divSum.setText(R.string.on);
                 else
                     divSum.setText(R.string.off);
                 break;
             case R.id.useBack:
-                edit.putBoolean(Constants.PREF_WIDGET[14], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[14], isChecked);
                 if (isChecked)
                     backSum.setText(R.string.on);
                 else
@@ -685,7 +672,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 onOff(backColorL, isChecked);
                 break;
             case R.id.icons:
-                edit.putBoolean(Constants.PREF_WIDGET[4], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[4], isChecked);
                 onOff(logoL1, isChecked);
                 onOff(logoL2, isChecked);
                 onOff(logoL3, isChecked);
@@ -701,7 +688,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                     iconsSum.setText(R.string.off);
                 break;
             case R.id.activesim:
-                edit.putBoolean(Constants.PREF_WIDGET[22], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[22], isChecked);
                 onOff(showSimL, !isChecked);
                 if (isChecked)
                     activesum.setText(R.string.on);
@@ -711,7 +698,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 }
                 break;
             case R.id.daynight_icons:
-                edit.putBoolean(Constants.PREF_WIDGET[23], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET[23], isChecked);
                 if (isChecked)
                     daynightSum.setText(R.string.on);
                 else
@@ -725,10 +712,10 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
         AmbilWarnaDialog dialog = null;
         switch (v.getId()) {
             case R.id.textColorPreview:
-                dialog = new AmbilWarnaDialog(context, textColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                dialog = new AmbilWarnaDialog(mContext, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
-                        edit.putInt(Constants.PREF_WIDGET[13], color);
+                        mEdit.putInt(Constants.PREF_WIDGET[13], color);
                         tiv.setBackgroundColor(color);
                     }
                     @Override
@@ -738,10 +725,10 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 });
                 break;
             case R.id.backColorPreview:
-                dialog = new AmbilWarnaDialog(context, backColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                dialog = new AmbilWarnaDialog(mContext, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
-                        edit.putInt(Constants.PREF_WIDGET[15], color);
+                        mEdit.putInt(Constants.PREF_WIDGET[15], color);
                         biv.setBackgroundColor(color);
                     }
                     @Override
@@ -796,6 +783,6 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        prefs.unregisterOnSharedPreferenceChangeListener(this);
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 }

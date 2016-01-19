@@ -25,16 +25,16 @@ public class MyApplication extends Application {
     }
 
     public static boolean isActivityVisible() {
-        return activityVisible;
+        return mIsActivityVisible;
     }
 
     public static void activityResumed() {
-        activityVisible = true;
+        mIsActivityVisible = true;
     }
 
     public static void activityPaused() {
-        activityVisible = false;
+        mIsActivityVisible = false;
     }
 
-    private static boolean activityVisible;
+    private static boolean mIsActivityVisible;
 }

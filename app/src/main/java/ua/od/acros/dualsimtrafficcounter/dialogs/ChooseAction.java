@@ -20,14 +20,14 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class ChooseAction extends Activity implements View.OnClickListener {
 
-    private String action = "";
-    private int simid;
-    private static boolean shown;
+    private String mAction = "";
+    private int mSimID;
+    private static boolean mIsShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shown = true;
+        mIsShown = true;
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setContentView(R.layout.action_dialog);
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
@@ -39,7 +39,7 @@ public class ChooseAction extends Activity implements View.OnClickListener {
             change.setEnabled(false);
         if (prefs.getBoolean(Constants.PREF_OTHER[10], true) || simNumber == 1)
             change.setEnabled(false);
-        simid = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+        mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         final Button bOK = (Button)findViewById(R.id.buttonOK);
         bOK.setEnabled(false);
         Button bCancel = (Button)findViewById(R.id.buttonCancel);
@@ -51,16 +51,16 @@ public class ChooseAction extends Activity implements View.OnClickListener {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.actionmobiledata:
-                        action = Constants.SETTINGS_ACTION;
+                        mAction = Constants.SETTINGS_ACTION;
                         break;
                     case R.id.actionsettings:
-                        action = Constants.LIMIT_ACTION;
+                        mAction = Constants.LIMIT_ACTION;
                         break;
                     case R.id.actionchange:
-                        action = Constants.CHANGE_ACTION;
+                        mAction = Constants.CHANGE_ACTION;
                         break;
                     case R.id.actioncontinue:
-                        action = Constants.CONTINUE_ACTION;
+                        mAction = Constants.CONTINUE_ACTION;
                         break;
                 }
                 bOK.setEnabled(true);
@@ -73,37 +73,37 @@ public class ChooseAction extends Activity implements View.OnClickListener {
         Intent intent = new Intent(Constants.ACTION);
         switch (v.getId()) {
             case R.id.buttonOK:
-                intent.putExtra(Constants.SIM_ACTIVE, simid);
-                intent.putExtra(Constants.ACTION, action);
+                intent.putExtra(Constants.SIM_ACTIVE, mSimID);
+                intent.putExtra(Constants.ACTION, mAction);
                 break;
             case R.id.buttonCancel:
                 intent.putExtra(Constants.ACTION, Constants.OFF_ACTION);
                 break;
         }
-        CountService.setActionChosen(true);
+        CountService.setIsActionChosen(true);
         sendBroadcast(intent);
         finish();
     }
 
     public static boolean isShown() {
-        return shown;
+        return mIsShown;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        shown = true;
+        mIsShown = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        shown = false;
+        mIsShown = false;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        shown = false;
+        mIsShown = false;
     }
 }

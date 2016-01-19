@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -30,16 +29,12 @@ public class SetUsageDialog extends DialogFragment implements CompoundButton.OnC
 
     EditText txInput, rxInput;
 
-    int txSpinnerSel, rxSpinnerSel;
-    int chkSIM = Constants.DISABLED;
-    private RadioButton sim1;
+    int mTXSpinnerSel, mRXSpinnerSel;
+    int mSimChecked = Constants.DISABLED;
     private Button bSetUsageOK;
     private Spinner rxSpinner;
 
 
-    /**
-     * @return
-     */
     public static SetUsageDialog newInstance() {
         return new SetUsageDialog();
     }
@@ -47,14 +42,13 @@ public class SetUsageDialog extends DialogFragment implements CompoundButton.OnC
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.usage_dialog, null);
+        View view = View.inflate(getActivity(), R.layout.usage_dialog, null);
         txInput = (EditText) view.findViewById(R.id.txamount);
         rxInput = (EditText) view.findViewById(R.id.rxamount);
         Spinner txSpinner = (Spinner) view.findViewById(R.id.spinnertx);
         rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        sim1 = (RadioButton) view.findViewById(R.id.sim1RB);
+        RadioButton sim1 = (RadioButton) view.findViewById(R.id.sim1RB);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -93,17 +87,17 @@ public class SetUsageDialog extends DialogFragment implements CompoundButton.OnC
                     @Override
                     public void onClick(View view) {
                         Bundle bundle = new Bundle();
-                        if ((chkSIM != Constants.DISABLED && !rxInput.getText().toString().equals("") && !txInput.getText().toString().equals("")) ||
-                                (chkSIM != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
-                            bundle.putInt("sim", chkSIM);
+                        if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") && !txInput.getText().toString().equals("")) ||
+                                (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
+                            bundle.putInt("sim", mSimChecked);
                             bundle.putString("trans", txInput.getText().toString());
-                            bundle.putInt("txV", txSpinnerSel);
+                            bundle.putInt("txV", mTXSpinnerSel);
                             if (total.isChecked()) {
                                 bundle.putString("rcvd", "0");
                                 bundle.putInt("rxV", 0);
                             } else {
                                 bundle.putString("rcvd", rxInput.getText().toString());
-                                bundle.putInt("rxV", rxSpinnerSel);
+                                bundle.putInt("rxV", mRXSpinnerSel);
                             }
                             dialog.dismiss();
                             Intent intent = new Intent(Constants.SET_USAGE);
@@ -123,13 +117,13 @@ public class SetUsageDialog extends DialogFragment implements CompoundButton.OnC
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.sim1RB:
-                chkSIM =  Constants.SIM1;
+                mSimChecked =  Constants.SIM1;
                 break;
             case R.id.sim2RB:
-                chkSIM =  Constants.SIM2;
+                mSimChecked =  Constants.SIM2;
                 break;
             case R.id.sim3RB:
-                chkSIM =  Constants.SIM3;
+                mSimChecked =  Constants.SIM3;
                 break;
         }
     }
@@ -138,10 +132,10 @@ public class SetUsageDialog extends DialogFragment implements CompoundButton.OnC
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case (R.id.spinnertx):
-                txSpinnerSel = parent.getSelectedItemPosition();
+                mTXSpinnerSel = parent.getSelectedItemPosition();
                 break;
             case (R.id.spinnerrx):
-                rxSpinnerSel = parent.getSelectedItemPosition();
+                mRXSpinnerSel = parent.getSelectedItemPosition();
                 break;
         }
     }

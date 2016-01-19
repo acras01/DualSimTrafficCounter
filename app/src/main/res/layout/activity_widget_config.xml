@@ -97,7 +97,7 @@
             <CheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/show_full_text"
+                android:text="@string/show_full_text_on_widget"
                 android:id="@+id/info"
                 android:button="@null"
                 android:drawableRight="?android:attr/listChoiceIndicatorMultiple"

@@ -20,13 +20,13 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
     private TwoLineCheckPreference auto1, auto2, auto3, showLogo;
     private EditTextPreference name1, name2, name3;
     private TwoLineListPreference logo1, logo2, logo3;
-    private SharedPreferences prefs;
+    private SharedPreferences mPrefs;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        prefs.registerOnSharedPreferenceChangeListener(this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.operator_settings);
 
@@ -47,8 +47,8 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
 
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (simNumber == 1) {
             getPreferenceScreen().removePreference(sim2);
@@ -76,13 +76,13 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
         String[] list = getResources().getStringArray(R.array.logo);
         for (int i = 0; i < list.length; i++) {
             if (showLogo != null) {
-                if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM1[23], "none")))
+                if (showLogo.isChecked() && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1[23], "none")))
                     if (logo1 != null)
                         logo1.setSummary(list[i]);
-                if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM2[23], "none")))
+                if (showLogo.isChecked() && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2[23], "none")))
                     if (logo2 != null)
                         logo2.setSummary(list[i]);
-                if (showLogo.isChecked() && listitems[i].equals(prefs.getString(Constants.PREF_SIM3[23], "none")))
+                if (showLogo.isChecked() && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3[23], "none")))
                     if (logo3 != null)
                         logo3.setSummary(list[i]);
             }
@@ -92,13 +92,13 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onResume() {
         super.onResume();
-        prefs.registerOnSharedPreferenceChangeListener(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        prefs.unregisterOnSharedPreferenceChangeListener(this);
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

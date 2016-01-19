@@ -24,11 +24,11 @@ import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
 
 public class WatchDogService extends Service{
 
-    private SharedPreferences prefs;
-    private Context context;
+    private SharedPreferences mPrefs;
+    private Context mContext;
     private TrafficDatabase mDatabaseHelper;
     private Timer mTimer;
-    private boolean isFirstRun;
+    private boolean mIsFirstRun;
 
     public WatchDogService() {
     }
@@ -42,8 +42,8 @@ public class WatchDogService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        context = WatchDogService.this;
+        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mContext = WatchDogService.this;
         mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         // cancel if already existed
         if (mTimer != null) {
@@ -59,9 +59,9 @@ public class WatchDogService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        isFirstRun = true;
+        mIsFirstRun = true;
         // schedule task
-        mTimer.scheduleAtFixedRate(new WatchDogTask(), 0, Long.parseLong(prefs.getString(Constants.PREF_OTHER[8], "1")) * 60 * 1000);
+        mTimer.scheduleAtFixedRate(new WatchDogTask(), 0, Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")) * 60 * 1000);
 
         return START_STICKY;
     }
@@ -71,7 +71,7 @@ public class WatchDogService extends Service{
         super.onDestroy();
         mTimer.cancel();
         mTimer.purge();
-        prefs.edit().putBoolean(Constants.PREF_OTHER[6], true).apply();
+        mPrefs.edit().putBoolean(Constants.PREF_OTHER[6], true).apply();
     }
 
     private class WatchDogTask extends TimerTask {
@@ -82,14 +82,14 @@ public class WatchDogService extends Service{
         @Override
         public void run() {
 
-            if (isFirstRun) {
+            if (mIsFirstRun) {
                 try {
-                    TimeUnit.MINUTES.sleep(Long.parseLong(prefs.getString(Constants.PREF_OTHER[8], "1")));
+                    TimeUnit.MINUTES.sleep(Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
-                isFirstRun = false;
+                mIsFirstRun = false;
             }
             ContentValues dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
             if (dataMap.get(Constants.LAST_DATE).equals("")) {
@@ -104,11 +104,11 @@ public class WatchDogService extends Service{
             DateTime last = fmt.parseDateTime(lastUpdate);
             DateTime now = new DateTime();
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
-                    (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && MobileUtils.getMobileDataInfo(context, true)[1] > Constants.DISABLED) &&
-                    !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
-                stopService(new Intent(context, CountService.class));
+                    (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && MobileUtils.getMobileDataInfo(mContext, true)[1] > Constants.DISABLED) &&
+                    !mPrefs.getBoolean(Constants.PREF_OTHER[5], false)) {
+                stopService(new Intent(mContext, CountService.class));
                 /*String out = lastUpdate + " | " + now.toString(fmt) + "\n";
-                File dir = new File(String.valueOf(context.getFilesDir()));
+                File dir = new File(String.valueOf(mContext.getFilesDir()));
                 // create this directory if not already created
                 dir.mkdir();
                 // create the file in which we will write the contents
@@ -123,7 +123,7 @@ public class WatchDogService extends Service{
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }*/
-                startService(new Intent(context, CountService.class));
+                startService(new Intent(mContext, CountService.class));
             }
         }
     }

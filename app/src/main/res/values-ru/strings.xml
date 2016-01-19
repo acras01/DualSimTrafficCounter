@@ -141,4 +141,5 @@
     <string name="remain">Остаток</string>
     <string name="show_remaining">Показывать остаток трафика в панели уведомлений</string>
     <string name="used">Использ.</string>
+    <string name="show_full_text_on_widget">Информация о трафике на виджете</string>
 </resources>

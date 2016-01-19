@@ -11,9 +11,9 @@ import android.widget.TimePicker;
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class TimePreference extends DialogPreference {
-    private int lastHour = 0;
-    private int lastMinute = 0;
-    private TimePicker picker = null;
+    private int mLastHour = 0;
+    private int mLastMinute = 0;
+    private TimePicker mPicker = null;
 
     public static int getHour(String time) {
         String[] pieces=time.split(":");
@@ -33,36 +33,36 @@ public class TimePreference extends DialogPreference {
 
     @Override
     protected View onCreateDialogView() {
-        picker = new TimePicker(getContext());
+        mPicker = new TimePicker(getContext());
         if (!DateFormat.is24HourFormat(getContext()))
-            picker.setIs24HourView(false);
+            mPicker.setIs24HourView(false);
         else
-            picker.setIs24HourView(true);
-        return(picker);
+            mPicker.setIs24HourView(true);
+        return(mPicker);
     }
 
     @Override
     protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
-        picker.setCurrentHour(lastHour);
-        picker.setCurrentMinute(lastMinute);
+        mPicker.setCurrentHour(mLastHour);
+        mPicker.setCurrentMinute(mLastMinute);
     }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (positiveResult) {
-            lastHour = picker.getCurrentHour();
-            lastMinute = picker.getCurrentMinute();
+            mLastHour = mPicker.getCurrentHour();
+            mLastMinute = mPicker.getCurrentMinute();
             String hour, minute;
-            if (lastHour <= 9)
-                hour = "0" + String.valueOf(lastHour);
+            if (mLastHour <= 9)
+                hour = "0" + String.valueOf(mLastHour);
             else
-                hour = String.valueOf(lastHour);
-            if (lastMinute <= 9)
-                minute = "0" + String.valueOf(lastMinute);
+                hour = String.valueOf(mLastHour);
+            if (mLastMinute <= 9)
+                minute = "0" + String.valueOf(mLastMinute);
             else
-                minute = String.valueOf(lastMinute);
+                minute = String.valueOf(mLastMinute);
             String time = hour + ":" + minute;
             if (callChangeListener(time)) {
                 persistString(time);
@@ -89,7 +89,7 @@ public class TimePreference extends DialogPreference {
         else {
             time = defaultValue.toString();
         }
-        lastHour = getHour(time);
-        lastMinute = getMinute(time);
+        mLastHour = getHour(time);
+        mLastMinute = getMinute(time);
     }
 }

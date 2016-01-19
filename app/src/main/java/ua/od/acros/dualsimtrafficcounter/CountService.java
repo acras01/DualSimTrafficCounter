@@ -57,7 +57,7 @@ import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 public class CountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static Context context;
+    private static Context mContext;
     private long mLastUpdateTime;
     private long mStartRX1 = 0;
     private long mStartTX1 = 0;
@@ -71,45 +71,45 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private long mTransmitted2 = 0;
     private long mReceived3 = 0;
     private long mTransmitted3 = 0;
-    private boolean isSIM1OverLimit = false;
-    private boolean isSIM2OverLimit = false;
-    private boolean isSIM3OverLimit = false;
-    private boolean isTimerCancelled = false;
-    private boolean continueOverLimit;
-    private boolean needsReset3 = false;
-    private boolean needsReset2 = false;
-    private boolean needsReset1 = false;
-    private static boolean isNight1 = false;
-    private static boolean isNight2 = false;
-    private static boolean isNight3 = false;
-    private int simChosen = Constants.DISABLED;
-    private int simNumber = 0;
+    private boolean mIsSIM1OverLimit = false;
+    private boolean mIsSIM2OverLimit = false;
+    private boolean mIsSIM3OverLimit = false;
+    private boolean mIsTimerCancelled = false;
+    private boolean mContinueOverLimit;
+    private boolean mIsResetNeeded3 = false;
+    private boolean mIsResetNeeded2 = false;
+    private boolean mIsResetNeeded1 = false;
+    private static boolean mIsNight1 = false;
+    private static boolean mIsNight2 = false;
+    private static boolean mIsNight3 = false;
+    private int mSimChosen = Constants.DISABLED;
+    private int mSimQuantity = 0;
     private int mPriority;
-    private static int activeSIM = Constants.DISABLED;
-    private static int lastActiveSIM = Constants.DISABLED;
+    private static int mActiveSIM = Constants.DISABLED;
+    private static int mLastActiveSIM = Constants.DISABLED;
     private DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
     private DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
-    private DateTime resetTime1;
-    private DateTime resetTime2;
-    private DateTime resetTime3;
-    private ContentValues dataMap;
+    private DateTime mResetTime1;
+    private DateTime mResetTime2;
+    private DateTime mResetTime3;
+    private ContentValues mDataMap;
     private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, setUsageReceiver, actionReceiver;
     private TrafficDatabase mDatabaseHelper;
     private Timer mTimer = null;
-    private SharedPreferences prefs;
-    private Bitmap bLarge;
-    private Target target;
-    private int idSmall;
-    private boolean resetRuleChanged;
-    private String[] operatorNames = new String[3];
-    private static boolean actionChosen;
+    private SharedPreferences mPrefs;
+    private Bitmap mBitmapLarge;
+    private Target mTarget;
+    private int mIDSmall;
+    private boolean mIsResetRuleChanged;
+    private String[] mOperatorNames = new String[3];
+    private static boolean mIsActionChosen;
 
 
     public CountService() {
     }
 
-    public static void setActionChosen(boolean actionChosen) {
-        CountService.actionChosen = actionChosen;
+    public static void setIsActionChosen(boolean mIsActionChosen) {
+        CountService.mIsActionChosen = mIsActionChosen;
     }
 
     @Override
@@ -118,61 +118,61 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     }
 
     public static int getLastActiveSIM() {
-        return lastActiveSIM;
+        return mLastActiveSIM;
     }
 
     public static int getActiveSIM() {
-        return activeSIM;
+        return mActiveSIM;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        context = CountService.this;
+        mContext = CountService.this;
 
-        prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-        continueOverLimit = prefs.getBoolean(Constants.PREF_OTHER[17], false);
-        actionChosen = prefs.getBoolean(Constants.PREF_OTHER[18], false);
+        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
+        mContinueOverLimit = mPrefs.getBoolean(Constants.PREF_OTHER[17], false);
+        mIsActionChosen = mPrefs.getBoolean(Constants.PREF_OTHER[18], false);
 
-        mPriority = prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
+        mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
-        mDatabaseHelper = new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
-        if (dataMap.get(Constants.LAST_DATE).equals("")) {
+        mDatabaseHelper = new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+        mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+        if (mDataMap.get(Constants.LAST_DATE).equals("")) {
             Calendar myCalendar = Calendar.getInstance();
             SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
             SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-            dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-            dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+            mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
+            mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
         }
 
         connReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
-                    lastActiveSIM = activeSIM;
+                    mLastActiveSIM = mActiveSIM;
                     mTimer.cancel();
                     mTimer.purge();
-                    isTimerCancelled = true;
+                    mIsTimerCancelled = true;
 
-                    if (prefs.getBoolean(Constants.PREF_SIM1[14], true) && lastActiveSIM == Constants.SIM1) {
-                        dataMap.put(Constants.TOTAL1, DataFormat.getRoundLong((long) dataMap.get(Constants.TOTAL1),
-                                prefs.getString(Constants.PREF_SIM1[15], "1"), prefs.getString(Constants.PREF_SIM1[16], "0")));
-                        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                    if (mPrefs.getBoolean(Constants.PREF_SIM1[14], true) && mLastActiveSIM == Constants.SIM1) {
+                        mDataMap.put(Constants.TOTAL1, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL1),
+                                mPrefs.getString(Constants.PREF_SIM1[15], "1"), mPrefs.getString(Constants.PREF_SIM1[16], "0")));
+                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     }
 
-                    if (prefs.getBoolean(Constants.PREF_SIM2[14], true) && lastActiveSIM == Constants.SIM2) {
-                        dataMap.put(Constants.TOTAL2, DataFormat.getRoundLong((long) dataMap.get(Constants.TOTAL2),
-                                prefs.getString(Constants.PREF_SIM2[15], "1"), prefs.getString(Constants.PREF_SIM2[16], "0")));
-                        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                    if (mPrefs.getBoolean(Constants.PREF_SIM2[14], true) && mLastActiveSIM == Constants.SIM2) {
+                        mDataMap.put(Constants.TOTAL2, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL2),
+                                mPrefs.getString(Constants.PREF_SIM2[15], "1"), mPrefs.getString(Constants.PREF_SIM2[16], "0")));
+                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     }
 
-                    if (prefs.getBoolean(Constants.PREF_SIM3[14], true) && lastActiveSIM == Constants.SIM3) {
-                        dataMap.put(Constants.TOTAL3, DataFormat.getRoundLong((long) dataMap.get(Constants.TOTAL3),
-                                prefs.getString(Constants.PREF_SIM3[15], "1"), prefs.getString(Constants.PREF_SIM3[16], "0")));
-                        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                    if (mPrefs.getBoolean(Constants.PREF_SIM3[14], true) && mLastActiveSIM == Constants.SIM3) {
+                        mDataMap.put(Constants.TOTAL3, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL3),
+                                mPrefs.getString(Constants.PREF_SIM3[15], "1"), mPrefs.getString(Constants.PREF_SIM3[16], "0")));
+                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     }
 
                     try {
@@ -195,22 +195,22 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 try {
                     switch (intent.getStringExtra(Constants.ACTION)) {
                         case Constants.CHANGE_ACTION:
-                            if (!isSIM2OverLimit && simid == Constants.SIM1) {
+                            if (!mIsSIM2OverLimit && simid == Constants.SIM1) {
                                 MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                                 timerStart(Constants.COUNT);
-                            } else if (!isSIM3OverLimit && simid == Constants.SIM1) {
+                            } else if (!mIsSIM3OverLimit && simid == Constants.SIM1) {
                                 MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
                                 timerStart(Constants.COUNT);
-                            } else if (!isSIM1OverLimit && simid == Constants.SIM2) {
+                            } else if (!mIsSIM1OverLimit && simid == Constants.SIM2) {
                                 MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
                                 timerStart(Constants.COUNT);
-                            } else if (!isSIM3OverLimit && simid == Constants.SIM2) {
+                            } else if (!mIsSIM3OverLimit && simid == Constants.SIM2) {
                                 MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
                                 timerStart(Constants.COUNT);
-                            } else if (!isSIM1OverLimit && simid == Constants.SIM3) {
+                            } else if (!mIsSIM1OverLimit && simid == Constants.SIM3) {
                                 MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
                                 timerStart(Constants.COUNT);
-                            } else if (!isSIM2OverLimit && simid == Constants.SIM3) {
+                            } else if (!mIsSIM2OverLimit && simid == Constants.SIM3) {
                                 MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
                                 timerStart(Constants.COUNT);
                             } else
@@ -236,8 +236,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 MobileUtils.toggleMobileDataConnection(true, context, simid);
-                            continueOverLimit = true;
-                            if (isTimerCancelled)
+                            mContinueOverLimit = true;
+                            if (mIsTimerCancelled)
                                 timerStart(Constants.COUNT);
                             break;
                         case Constants.OFF_ACTION:
@@ -245,7 +245,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 timerStart(Constants.CHECK);
                             else
-                                continueOverLimit = true;
+                                mContinueOverLimit = true;
                             break;
                     }
                 } catch (Exception e) {
@@ -263,59 +263,59 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             public void onReceive(Context context, Intent intent) {
                 mTimer.cancel();
                 mTimer.purge();
-                isTimerCancelled = true;
+                mIsTimerCancelled = true;
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
-                if (dataMap == null)
-                    dataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                if (mDataMap == null)
+                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                 Bundle limitBundle = intent.getBundleExtra("data");
-                simChosen = limitBundle.getInt("sim");
-                switch (simChosen) {
+                mSimChosen = limitBundle.getInt("sim");
+                switch (mSimChosen) {
                     case Constants.SIM1:
                         mReceived1 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted1 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
-                        if (isNight1) {
-                            dataMap.put(Constants.SIM1RX_N, mReceived1);
-                            dataMap.put(Constants.SIM1TX_N, mTransmitted1);
-                            dataMap.put(Constants.TOTAL1_N, mReceived1 + mTransmitted1);
+                        if (mIsNight1) {
+                            mDataMap.put(Constants.SIM1RX_N, mReceived1);
+                            mDataMap.put(Constants.SIM1TX_N, mTransmitted1);
+                            mDataMap.put(Constants.TOTAL1_N, mReceived1 + mTransmitted1);
                         } else {
-                            dataMap.put(Constants.SIM1RX, mReceived1);
-                            dataMap.put(Constants.SIM1TX, mTransmitted1);
-                            dataMap.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
+                            mDataMap.put(Constants.SIM1RX, mReceived1);
+                            mDataMap.put(Constants.SIM1TX, mTransmitted1);
+                            mDataMap.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
                         }
-                        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                         break;
                     case Constants.SIM2:
                         mReceived2 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted2 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
-                        if (isNight2) {
-                            dataMap.put(Constants.SIM2RX_N, mReceived2);
-                            dataMap.put(Constants.SIM2TX_N, mTransmitted2);
-                            dataMap.put(Constants.TOTAL2_N, mReceived2 + mTransmitted2);
+                        if (mIsNight2) {
+                            mDataMap.put(Constants.SIM2RX_N, mReceived2);
+                            mDataMap.put(Constants.SIM2TX_N, mTransmitted2);
+                            mDataMap.put(Constants.TOTAL2_N, mReceived2 + mTransmitted2);
                         } else {
-                            dataMap.put(Constants.SIM2RX, mReceived2);
-                            dataMap.put(Constants.SIM2TX, mTransmitted2);
-                            dataMap.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
+                            mDataMap.put(Constants.SIM2RX, mReceived2);
+                            mDataMap.put(Constants.SIM2TX, mTransmitted2);
+                            mDataMap.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
                         }
-                        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                         break;
                     case Constants.SIM3:
                         mReceived3 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted3 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
-                        if (isNight3) {
-                            dataMap.put(Constants.SIM3RX_N, mReceived3);
-                            dataMap.put(Constants.SIM3TX_N, mTransmitted3);
-                            dataMap.put(Constants.TOTAL3_N, mReceived3 + mTransmitted3);
+                        if (mIsNight3) {
+                            mDataMap.put(Constants.SIM3RX_N, mReceived3);
+                            mDataMap.put(Constants.SIM3TX_N, mTransmitted3);
+                            mDataMap.put(Constants.TOTAL3_N, mReceived3 + mTransmitted3);
                         } else {
-                            dataMap.put(Constants.SIM3RX, mReceived3);
-                            dataMap.put(Constants.SIM3TX, mTransmitted3);
-                            dataMap.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
+                            mDataMap.put(Constants.SIM3RX, mReceived3);
+                            mDataMap.put(Constants.SIM3TX, mTransmitted3);
+                            mDataMap.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
                         }
-                        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                         break;
                 }
                 Intent notificationIntent = new Intent(context, MainActivity.class);
@@ -324,9 +324,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
                         .setCategory(NotificationCompat.CATEGORY_SERVICE)
                         .setPriority(mPriority)
-                        .setContentText(DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                                + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
-                                + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3)));
+                        .setContentText(DataFormat.formatData(context, mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1)) + "   ||   "
+                                + DataFormat.formatData(context, mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2)) + "   ||   "
+                                + DataFormat.formatData(context, mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3)));
                 nm.notify(Constants.STARTED_ID, builder.build());
                 timerStart(Constants.COUNT);
             }
@@ -337,23 +337,23 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             public void onReceive(Context context, Intent intent) {
                 mTimer.cancel();
                 mTimer.purge();
-                isTimerCancelled = true;
+                mIsTimerCancelled = true;
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
-                if (isNight1) {
-                    dataMap.put(Constants.SIM1RX_N, 0L);
-                    dataMap.put(Constants.SIM1TX_N, 0L);
-                    dataMap.put(Constants.TOTAL1_N, 0L);
+                if (mIsNight1) {
+                    mDataMap.put(Constants.SIM1RX_N, 0L);
+                    mDataMap.put(Constants.SIM1TX_N, 0L);
+                    mDataMap.put(Constants.TOTAL1_N, 0L);
                 } else {
-                    dataMap.put(Constants.SIM1RX, 0L);
-                    dataMap.put(Constants.SIM1TX, 0L);
-                    dataMap.put(Constants.TOTAL1, 0L);
+                    mDataMap.put(Constants.SIM1RX, 0L);
+                    mDataMap.put(Constants.SIM1TX, 0L);
+                    mDataMap.put(Constants.TOTAL1, 0L);
                 }
-                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 timerStart(Constants.COUNT);
             }
         };
@@ -363,23 +363,23 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             public void onReceive(Context context, Intent intent) {
                 mTimer.cancel();
                 mTimer.purge();
-                isTimerCancelled = true;
+                mIsTimerCancelled = true;
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
-                if (isNight2) {
-                    dataMap.put(Constants.SIM2RX_N, 0L);
-                    dataMap.put(Constants.SIM2TX_N, 0L);
-                    dataMap.put(Constants.TOTAL2_N, 0L);
+                if (mIsNight2) {
+                    mDataMap.put(Constants.SIM2RX_N, 0L);
+                    mDataMap.put(Constants.SIM2TX_N, 0L);
+                    mDataMap.put(Constants.TOTAL2_N, 0L);
                 } else {
-                    dataMap.put(Constants.SIM2RX, 0L);
-                    dataMap.put(Constants.SIM2TX, 0L);
-                    dataMap.put(Constants.TOTAL2, 0L);
+                    mDataMap.put(Constants.SIM2RX, 0L);
+                    mDataMap.put(Constants.SIM2TX, 0L);
+                    mDataMap.put(Constants.TOTAL2, 0L);
                 }
-                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 timerStart(Constants.COUNT);
             }
         };
@@ -389,23 +389,23 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             public void onReceive(Context context, Intent intent) {
                 mTimer.cancel();
                 mTimer.purge();
-                isTimerCancelled = true;
+                mIsTimerCancelled = true;
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
-                if (isNight3) {
-                    dataMap.put(Constants.SIM3RX_N, 0L);
-                    dataMap.put(Constants.SIM3TX_N, 0L);
-                    dataMap.put(Constants.TOTAL3_N, 0L);
+                if (mIsNight3) {
+                    mDataMap.put(Constants.SIM3RX_N, 0L);
+                    mDataMap.put(Constants.SIM3TX_N, 0L);
+                    mDataMap.put(Constants.TOTAL3_N, 0L);
                 } else {
-                    dataMap.put(Constants.SIM3RX, 0L);
-                    dataMap.put(Constants.SIM3TX, 0L);
-                    dataMap.put(Constants.TOTAL3, 0L);
+                    mDataMap.put(Constants.SIM3RX, 0L);
+                    mDataMap.put(Constants.SIM3TX, 0L);
+                    mDataMap.put(Constants.TOTAL3, 0L);
                 }
-                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 timerStart(Constants.COUNT);
             }
         };
@@ -419,8 +419,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         registerReceiver(clear2Receiver, clear2ServiceFilter);
         registerReceiver(clear3Receiver, clear3ServiceFilter);
 
-        activeSIM = Constants.DISABLED;
-        lastActiveSIM = (int) dataMap.get(Constants.LAST_ACTIVE_SIM);
+        mActiveSIM = Constants.DISABLED;
+        mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
 
         // cancel if already existed
         if (mTimer != null) {
@@ -435,12 +435,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        target = new Target() {
+        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                bLarge = bitmap;
+                mBitmapLarge = bitmap;
             }
 
             @Override
@@ -451,21 +451,21 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             public void onPrepareLoad(Drawable drawable) {
             }
         };
-        Picasso.with(context).load(R.mipmap.ic_launcher).into(target);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
                 .setSmallIcon(R.drawable.ic_launcher_small)
-                .setLargeIcon(bLarge)
+                .setLargeIcon(mBitmapLarge)
                 .setTicker(getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
                 .setOnlyAlertOnce(true)
                 .setOngoing(true)
                 .setContentTitle(getResources().getString(R.string.notification_title))
-                .setContentText(DataFormat.formatData(context, isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1)) + "   ||   "
-                        + DataFormat.formatData(context, isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2)) + "   ||   "
-                        + DataFormat.formatData(context, isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3)));
+                .setContentText(DataFormat.formatData(mContext, mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1)) + "   ||   "
+                        + DataFormat.formatData(mContext, mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2)) + "   ||   "
+                        + DataFormat.formatData(mContext, mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3)));
         startForeground(Constants.STARTED_ID, builder.build());
         // schedule task
         timerStart(Constants.COUNT);
@@ -474,26 +474,26 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     }
 
     protected static Context getAppContext() {
-        return CountService.context;
+        return CountService.mContext;
     }
 
     public static boolean[] getIsNight() {
-        return new boolean[]{isNight1, isNight2, isNight3};
+        return new boolean[]{mIsNight1, mIsNight2, mIsNight3};
     }
 
     private void timerStart(int task) {
         TimerTask tTask = null;
-        actionChosen = false;
-        simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        activeSIM = MobileUtils.getMobileDataInfo(context, true)[1];
-        operatorNames[0] = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        operatorNames[1] = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        operatorNames[2] = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mIsActionChosen = false;
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
+        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
 
-        if (prefs.getBoolean(Constants.PREF_OTHER[15], false)) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[25];
-            switch (activeSIM) {
+            switch (mActiveSIM) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;
                     break;
@@ -504,16 +504,16 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     pref = Constants.PREF_SIM3;
                     break;
             }
-            if (prefs.getString(pref[23], "none").equals("auto"))
-                idSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+            if (mPrefs.getString(pref[23], "none").equals("auto"))
+                mIDSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
             else
-                idSmall = getResources().getIdentifier(prefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
+                mIDSmall = getResources().getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", mContext.getPackageName());
         } else
-            idSmall = R.drawable.ic_launcher_small;
+            mIDSmall = R.drawable.ic_launcher_small;
 
         sendDataBroadcast(0L, 0L);
         if (task == Constants.COUNT) {
-            switch (activeSIM) {
+            switch (mActiveSIM) {
                 case Constants.SIM1:
                     mStartRX1 = TrafficStats.getMobileRxBytes();
                     mStartTX1 = TrafficStats.getMobileTxBytes();
@@ -532,9 +532,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         } else
             tTask = new CheckTimerTask();
-        if (isTimerCancelled)
+        if (mIsTimerCancelled)
             mTimer = new Timer();
-        isTimerCancelled = false;
+        mIsTimerCancelled = false;
         if (tTask != null) {
             mTimer.scheduleAtFixedRate(tTask, 0, Constants.NOTIFY_INTERVAL);
         }
@@ -545,26 +545,26 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (key.equals(Constants.PREF_OTHER[12])) {
             if (sharedPreferences.getBoolean(key, true))
                 mPriority = sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
-            NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.cancel(Constants.STARTED_ID);
 
         }
-        if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && activeSIM == Constants.SIM1 && continueOverLimit) {
-            continueOverLimit = false;
-            actionChosen = false;
+        if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && mActiveSIM == Constants.SIM1 && mContinueOverLimit) {
+            mContinueOverLimit = false;
+            mIsActionChosen = false;
         }
-        if ((key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2])) && activeSIM == Constants.SIM2 && continueOverLimit) {
-            continueOverLimit = false;
-            actionChosen = false;
+        if ((key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2])) && mActiveSIM == Constants.SIM2 && mContinueOverLimit) {
+            mContinueOverLimit = false;
+            mIsActionChosen = false;
         }
-        if ((key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2])) && activeSIM == Constants.SIM3 && continueOverLimit) {
-            continueOverLimit = false;
-            actionChosen = false;
+        if ((key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2])) && mActiveSIM == Constants.SIM3 && mContinueOverLimit) {
+            mContinueOverLimit = false;
+            mIsActionChosen = false;
         }
         if (key.equals(Constants.PREF_OTHER[15]))
             if (sharedPreferences.getBoolean(key, false)) {
                 String[] pref = new String[24];
-                switch (activeSIM) {
+                switch (mActiveSIM) {
                     case Constants.SIM1:
                         pref = Constants.PREF_SIM1;
                         break;
@@ -575,30 +575,30 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         pref = Constants.PREF_SIM3;
                         break;
                 }
-                if (prefs.getString(pref[23], "none").equals("auto"))
-                    idSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+                if (mPrefs.getString(pref[23], "none").equals("auto"))
+                    mIDSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
                 else
-                    idSmall = getResources().getIdentifier(prefs.getString(pref[23], "none"), "drawable", context.getPackageName());
+                    mIDSmall = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
             } else
-                idSmall = R.drawable.ic_launcher_small;
+                mIDSmall = R.drawable.ic_launcher_small;
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[15], false)) {
             if (key.equals(Constants.PREF_SIM1[23]) || key.equals(Constants.PREF_SIM2[23]) ||
                     key.equals(Constants.PREF_SIM3[23]))
-                if (prefs.getString(key, "none").equals("auto"))
-                    idSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, activeSIM), "drawable", context.getPackageName());
+                if (mPrefs.getString(key, "none").equals("auto"))
+                    mIDSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
                 else
-                    idSmall = getResources().getIdentifier(prefs.getString(key, "none"), "drawable", context.getPackageName());
+                    mIDSmall = getResources().getIdentifier(mPrefs.getString(key, "none"), "drawable", mContext.getPackageName());
         }
         if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
                 key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))
-            resetRuleChanged = true;
+            mIsResetRuleChanged = true;
         if (key.equals(Constants.PREF_SIM1[5]))
-            operatorNames[0] = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+            mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         if (key.equals(Constants.PREF_SIM2[5]))
-            operatorNames[1] = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+            mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         if (key.equals(Constants.PREF_SIM3[5]))
-            operatorNames[2] = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+            mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
     }
 
     private class CheckTimerTask extends TimerTask {
@@ -606,34 +606,34 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
 
-            context.sendBroadcast(new Intent(Constants.TIP));
+            mContext.sendBroadcast(new Intent(Constants.TIP));
 
-            DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+            DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
 
-            String limit1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
-            String limit2 = isNight2 ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
-            String limit3 = isNight3 ? prefs.getString(Constants.PREF_SIM3[18], "") : prefs.getString(Constants.PREF_SIM3[1], "");
-            String round1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[22], "") : prefs.getString(Constants.PREF_SIM1[4], "0");
-            String round2 = isNight2 ? prefs.getString(Constants.PREF_SIM2[22], "") : prefs.getString(Constants.PREF_SIM2[4], "0");
-            String round3 = isNight3 ? prefs.getString(Constants.PREF_SIM3[22], "") : prefs.getString(Constants.PREF_SIM3[4], "0");
+            String limit1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
+            String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
+            String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
+            String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
+            String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
+            String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
             int value1;
-            if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+            if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
                 value1 = 0;
             else
-                value1 = isNight1 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], "")) :
-                        Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
+                value1 = mIsNight1 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
+                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
             int value2;
-            if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+            if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
                 value2 = 0;
             else
-                value2 = isNight2 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], "")) :
-                        Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+                value2 = mIsNight2 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
+                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
             int value3;
-            if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+            if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
                 value3 = 0;
             else
-                value3 = isNight3 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], "")) :
-                        Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+                value3 = mIsNight3 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
+                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
             float valuer1;
             float valuer2;
             float valuer3;
@@ -652,38 +652,38 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 valuer3 = 1 - Float.valueOf(round3) / 100;
                 lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
             }
-            long tot1 = isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1);
-            long tot2 = isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2);
-            long tot3 = isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3);
+            long tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
+            long tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
+            long tot3 = mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3);
             try {
-                if (isSIM1OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM1[3], ""))
-                        || (tot1 <= (long) lim1 && (prefs.getBoolean(Constants.PREF_SIM1[8], false)
-                        || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
-                        && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
+                if (mIsSIM1OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
+                        || (tot1 <= (long) lim1 && (mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
+                        || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
+                        && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
                     mTimer.cancel();
                     mTimer.purge();
-                    isTimerCancelled = true;
+                    mIsTimerCancelled = true;
                     timerStart(Constants.COUNT);
                 }
-                if (isSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM2[3], ""))
-                        || (tot2 <= (long) lim2 && (prefs.getBoolean(Constants.PREF_SIM2[8], false)
-                        || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
-                        && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
+                if (mIsSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
+                        || (tot2 <= (long) lim2 && (mPrefs.getBoolean(Constants.PREF_SIM2[8], false)
+                        || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
+                        && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
                     mTimer.cancel();
                     mTimer.purge();
-                    isTimerCancelled = true;
+                    mIsTimerCancelled = true;
                     timerStart(Constants.COUNT);
                 }
-                if (isSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, prefs.getString(Constants.PREF_SIM3[3], ""))
-                        || (tot3 <= (long) lim3 && (prefs.getBoolean(Constants.PREF_SIM3[8], false)
-                        || (!prefs.getBoolean(Constants.PREF_SIM1[8], false)
-                        && !prefs.getBoolean(Constants.PREF_SIM2[8], false) && !prefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
+                if (mIsSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
+                        || (tot3 <= (long) lim3 && (mPrefs.getBoolean(Constants.PREF_SIM3[8], false)
+                        || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
+                        && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
                     mTimer.cancel();
                     mTimer.purge();
-                    isTimerCancelled = true;
+                    mIsTimerCancelled = true;
                     timerStart(Constants.COUNT);
                 }
             } catch (Exception e) {
@@ -713,17 +713,17 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 break;
         }
         DateTime last;
-        String date = prefs.getString(pref[24], "");
+        String date = mPrefs.getString(pref[24], "");
         if (!date.equals(""))
             last = fmtDateTime.parseDateTime(date);
         else
             last = fmtDateTime.parseDateTime("1970-01-01 00:00");
-        switch (prefs.getString(pref[3], "")) {
+        switch (mPrefs.getString(pref[3], "")) {
             case "0":
                 delta = 1;
                 break;
             case "1":
-                delta = Integer.parseInt(prefs.getString(pref[10], "1"));
+                delta = Integer.parseInt(mPrefs.getString(pref[10], "1"));
                 if (delta >= 28)
                     switch (now.getMonthOfYear()) {
                         case 2:
@@ -742,11 +742,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     }
                 break;
             case "2":
-                delta = Integer.parseInt(prefs.getString(pref[10], "1"));
+                delta = Integer.parseInt(mPrefs.getString(pref[10], "1"));
                 break;
         }
         int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
-        if (prefs.getString(pref[3], "").equals("1")) {
+        if (mPrefs.getString(pref[3], "").equals("1")) {
             int month = now.getMonthOfYear();
             int daysInMonth = 31;
             switch (last.getMonthOfYear()) {
@@ -766,14 +766,14 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             if (now.getDayOfMonth() > delta && diff < daysInMonth)
                 month += 1;
             date = now.getYear() + "-" + month + "-" + delta;
-            return fmtDateTime.parseDateTime(date + " " + prefs.getString(pref[9], "00:00"));
+            return fmtDateTime.parseDateTime(date + " " + mPrefs.getString(pref[9], "00:00"));
         } else {
-            if (prefs.getString(pref[3], "").equals("2"))
-                dataMap.put(period, diff);
+            if (mPrefs.getString(pref[3], "").equals("2"))
+                mDataMap.put(period, diff);
             if (diff >= delta) {
-                if (prefs.getString(pref[3], "").equals("2"))
-                    dataMap.put(period, 0);
-                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + prefs.getString(pref[9], "00:00"));
+                if (mPrefs.getString(pref[3], "").equals("2"))
+                    mDataMap.put(period, 0);
+                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + mPrefs.getString(pref[9], "00:00"));
             } else
                 return null;
         }
@@ -784,34 +784,34 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mIsTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
 
-                    //avoid NPE by refreshing dataMap
+                    //avoid NPE by refreshing mDataMap
                     //begin
-                    dataMap.put(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                    dataMap.put(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                    dataMap.put(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                    dataMap.put(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                    dataMap.put(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                    dataMap.put(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                    dataMap.put(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                    dataMap.put(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                    dataMap.put(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    dataMap.put(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
-                    dataMap.put(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
-                    dataMap.put(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
-                    dataMap.put(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
-                    dataMap.put(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
-                    dataMap.put(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
-                    dataMap.put(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
-                    dataMap.put(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
-                    dataMap.put(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-                    dataMap.put(Constants.LAST_TIME, (String) dataMap.get(Constants.LAST_TIME));
-                    dataMap.put(Constants.LAST_DATE, (String) dataMap.get(Constants.LAST_DATE));
-                    dataMap.put(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    mDataMap.put(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
+                    mDataMap.put(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
+                    mDataMap.put(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
+                    mDataMap.put(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
+                    mDataMap.put(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
+                    mDataMap.put(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
+                    mDataMap.put(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
+                    mDataMap.put(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
+                    mDataMap.put(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
+                    mDataMap.put(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
+                    mDataMap.put(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
+                    mDataMap.put(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
+                    mDataMap.put(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
+                    mDataMap.put(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
+                    mDataMap.put(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
+                    mDataMap.put(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
+                    mDataMap.put(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
+                    mDataMap.put(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
+                    mDataMap.put(Constants.LAST_TIME, (String) mDataMap.get(Constants.LAST_TIME));
+                    mDataMap.put(Constants.LAST_DATE, (String) mDataMap.get(Constants.LAST_DATE));
+                    mDataMap.put(Constants.LAST_ACTIVE_SIM, (int) mDataMap.get(Constants.LAST_ACTIVE_SIM));
                     //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -825,118 +825,118 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
-                    DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+                    DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    if (prefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                        String timeON = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[20], "23:00");
-                        String timeOFF = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM1[21], "06:00");
-                        isNight1 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
+                    if (mPrefs.getBoolean(Constants.PREF_SIM1[17], false)) {
+                        String timeON = now.toString(fmtDate) + " " + mPrefs.getString(Constants.PREF_SIM1[20], "23:00");
+                        String timeOFF = now.toString(fmtDate) + " " + mPrefs.getString(Constants.PREF_SIM1[21], "06:00");
+                        mIsNight1 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
-                        isNight1 = false;
+                        mIsNight1 = false;
 
-                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || resetRuleChanged) {
-                        resetTime1 = getResetTime(Constants.SIM1);
-                        if (resetTime1 != null)
-                            needsReset1 = true;
-                        resetTime2 = getResetTime(Constants.SIM2);
-                        if (resetTime2 != null)
-                            needsReset2 = true;
-                        resetTime3 = getResetTime(Constants.SIM3);
-                        if (resetTime3 != null)
-                            needsReset3 = true;
-                        resetRuleChanged = false;
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
+                        mResetTime1 = getResetTime(Constants.SIM1);
+                        if (mResetTime1 != null)
+                            mIsResetNeeded1 = true;
+                        mResetTime2 = getResetTime(Constants.SIM2);
+                        if (mResetTime2 != null)
+                            mIsResetNeeded2 = true;
+                        mResetTime3 = getResetTime(Constants.SIM3);
+                        if (mResetTime3 != null)
+                            mIsResetNeeded3 = true;
+                        mIsResetRuleChanged = false;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
-                        dataMap.put(Constants.SIM1RX, 0L);
-                        dataMap.put(Constants.SIM2RX, 0L);
-                        dataMap.put(Constants.SIM3RX, 0L);
-                        dataMap.put(Constants.SIM1TX, 0L);
-                        dataMap.put(Constants.SIM2TX, 0L);
-                        dataMap.put(Constants.SIM3TX, 0L);
-                        dataMap.put(Constants.TOTAL1, 0L);
-                        dataMap.put(Constants.TOTAL2, 0L);
-                        dataMap.put(Constants.TOTAL3, 0L);
-                        dataMap.put(Constants.SIM1RX_N, 0L);
-                        dataMap.put(Constants.SIM2RX_N, 0L);
-                        dataMap.put(Constants.SIM3RX_N, 0L);
-                        dataMap.put(Constants.SIM1TX_N, 0L);
-                        dataMap.put(Constants.SIM2TX_N, 0L);
-                        dataMap.put(Constants.SIM3TX_N, 0L);
-                        dataMap.put(Constants.TOTAL1_N, 0L);
-                        dataMap.put(Constants.TOTAL2_N, 0L);
-                        dataMap.put(Constants.TOTAL3_N, 0L);
-                        dataMap.put(Constants.LAST_RX, 0L);
-                        dataMap.put(Constants.LAST_TX, 0L);
-                        dataMap.put(Constants.LAST_TIME, "");
-                        dataMap.put(Constants.LAST_DATE, "");
-                        dataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
-                    } else if ((DateTimeComparator.getInstance().compare(now, resetTime1) >= 0 && needsReset1)
-                            || (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2)
-                            || (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3)) {
-                        if (DateTimeComparator.getInstance().compare(now, resetTime1) >= 0 && needsReset1) {
-                            dataMap.put(Constants.SIM1RX, 0L);
-                            dataMap.put(Constants.SIM1TX, 0L);
-                            dataMap.put(Constants.TOTAL1, 0L);
-                            dataMap.put(Constants.SIM1RX_N, 0L);
-                            dataMap.put(Constants.SIM1TX_N, 0L);
-                            dataMap.put(Constants.TOTAL1_N, 0L);
+                        mDataMap.put(Constants.SIM1RX, 0L);
+                        mDataMap.put(Constants.SIM2RX, 0L);
+                        mDataMap.put(Constants.SIM3RX, 0L);
+                        mDataMap.put(Constants.SIM1TX, 0L);
+                        mDataMap.put(Constants.SIM2TX, 0L);
+                        mDataMap.put(Constants.SIM3TX, 0L);
+                        mDataMap.put(Constants.TOTAL1, 0L);
+                        mDataMap.put(Constants.TOTAL2, 0L);
+                        mDataMap.put(Constants.TOTAL3, 0L);
+                        mDataMap.put(Constants.SIM1RX_N, 0L);
+                        mDataMap.put(Constants.SIM2RX_N, 0L);
+                        mDataMap.put(Constants.SIM3RX_N, 0L);
+                        mDataMap.put(Constants.SIM1TX_N, 0L);
+                        mDataMap.put(Constants.SIM2TX_N, 0L);
+                        mDataMap.put(Constants.SIM3TX_N, 0L);
+                        mDataMap.put(Constants.TOTAL1_N, 0L);
+                        mDataMap.put(Constants.TOTAL2_N, 0L);
+                        mDataMap.put(Constants.TOTAL3_N, 0L);
+                        mDataMap.put(Constants.LAST_RX, 0L);
+                        mDataMap.put(Constants.LAST_TX, 0L);
+                        mDataMap.put(Constants.LAST_TIME, "");
+                        mDataMap.put(Constants.LAST_DATE, "");
+                        mDataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
+                    } else if ((DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1)
+                            || (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2)
+                            || (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3)) {
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
+                            mDataMap.put(Constants.SIM1RX, 0L);
+                            mDataMap.put(Constants.SIM1TX, 0L);
+                            mDataMap.put(Constants.TOTAL1, 0L);
+                            mDataMap.put(Constants.SIM1RX_N, 0L);
+                            mDataMap.put(Constants.SIM1TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL1_N, 0L);
                             rx = tx = mReceived1 = mTransmitted1 = 0;
-                            prefs.edit().putString(Constants.PREF_SIM1[24], resetTime1.toString(fmtDateTime)).apply();
-                            needsReset1 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
+                            mIsResetNeeded1 = false;
                         }
-                        if (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2) {
-                            dataMap.put(Constants.SIM2RX, 0L);
-                            dataMap.put(Constants.SIM2TX, 0L);
-                            dataMap.put(Constants.TOTAL2, 0L);
-                            dataMap.put(Constants.SIM2RX_N, 0L);
-                            dataMap.put(Constants.SIM2TX_N, 0L);
-                            dataMap.put(Constants.TOTAL2_N, 0L);
-                            if (!isNight1) {
-                                rx = (long) dataMap.get(Constants.SIM1RX);
-                                tx = (long) dataMap.get(Constants.SIM1TX);
-                                tot = (long) dataMap.get(Constants.TOTAL1);
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
+                            mDataMap.put(Constants.SIM2RX, 0L);
+                            mDataMap.put(Constants.SIM2TX, 0L);
+                            mDataMap.put(Constants.TOTAL2, 0L);
+                            mDataMap.put(Constants.SIM2RX_N, 0L);
+                            mDataMap.put(Constants.SIM2TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL2_N, 0L);
+                            if (!mIsNight1) {
+                                rx = (long) mDataMap.get(Constants.SIM1RX);
+                                tx = (long) mDataMap.get(Constants.SIM1TX);
+                                tot = (long) mDataMap.get(Constants.TOTAL1);
                             } else {
-                                rx = (long) dataMap.get(Constants.SIM1RX_N);
-                                tx = (long) dataMap.get(Constants.SIM1TX_N);
-                                tot = (long) dataMap.get(Constants.TOTAL1_N);
+                                rx = (long) mDataMap.get(Constants.SIM1RX_N);
+                                tx = (long) mDataMap.get(Constants.SIM1TX_N);
+                                tot = (long) mDataMap.get(Constants.TOTAL1_N);
                             }
                             mReceived2 = mTransmitted2 = 0;
-                            needsReset2 = false;
-                            prefs.edit().putString(Constants.PREF_SIM2[24], resetTime2.toString(fmtDateTime)).apply();
+                            mIsResetNeeded2 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
                         }
-                        if (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3) {
-                            dataMap.put(Constants.SIM3RX, 0L);
-                            dataMap.put(Constants.SIM3TX, 0L);
-                            dataMap.put(Constants.TOTAL3, 0L);
-                            dataMap.put(Constants.SIM3RX_N, 0L);
-                            dataMap.put(Constants.SIM3TX_N, 0L);
-                            dataMap.put(Constants.TOTAL3_N, 0L);
-                            if (!isNight1) {
-                                rx = (long) dataMap.get(Constants.SIM1RX);
-                                tx = (long) dataMap.get(Constants.SIM1TX);
-                                tot = (long) dataMap.get(Constants.TOTAL1);
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
+                            mDataMap.put(Constants.SIM3RX, 0L);
+                            mDataMap.put(Constants.SIM3TX, 0L);
+                            mDataMap.put(Constants.TOTAL3, 0L);
+                            mDataMap.put(Constants.SIM3RX_N, 0L);
+                            mDataMap.put(Constants.SIM3TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL3_N, 0L);
+                            if (!mIsNight1) {
+                                rx = (long) mDataMap.get(Constants.SIM1RX);
+                                tx = (long) mDataMap.get(Constants.SIM1TX);
+                                tot = (long) mDataMap.get(Constants.TOTAL1);
                             } else {
-                                rx = (long) dataMap.get(Constants.SIM1RX_N);
-                                tx = (long) dataMap.get(Constants.SIM1TX_N);
-                                tot = (long) dataMap.get(Constants.TOTAL1_N);
+                                rx = (long) mDataMap.get(Constants.SIM1RX_N);
+                                tx = (long) mDataMap.get(Constants.SIM1TX_N);
+                                tot = (long) mDataMap.get(Constants.TOTAL1_N);
                             }
                             mReceived3 = mTransmitted3 = 0;
-                            needsReset3 = false;
-                            prefs.edit().putString(Constants.PREF_SIM3[24], resetTime3.toString(fmtDateTime)).apply();
+                            mIsResetNeeded3 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
                         }
                     } else {
-                        if (!isNight1) {
-                            rx = (long) dataMap.get(Constants.SIM1RX);
-                            tx = (long) dataMap.get(Constants.SIM1TX);
-                            tot = (long) dataMap.get(Constants.TOTAL1);
+                        if (!mIsNight1) {
+                            rx = (long) mDataMap.get(Constants.SIM1RX);
+                            tx = (long) mDataMap.get(Constants.SIM1TX);
+                            tot = (long) mDataMap.get(Constants.TOTAL1);
                         } else {
-                            rx = (long) dataMap.get(Constants.SIM1RX_N);
-                            tx = (long) dataMap.get(Constants.SIM1TX_N);
-                            tot = (long) dataMap.get(Constants.TOTAL1_N);
+                            rx = (long) mDataMap.get(Constants.SIM1RX_N);
+                            tx = (long) mDataMap.get(Constants.SIM1TX_N);
+                            tot = (long) mDataMap.get(Constants.TOTAL1_N);
                         }
                     }
 
@@ -946,20 +946,20 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     float valuer;
                     double lim = Double.MAX_VALUE;
 
-                    if (isNight1) {
-                        limit = prefs.getString(Constants.PREF_SIM1[18], "");
-                        round = prefs.getString(Constants.PREF_SIM1[22], "0");
-                        if (prefs.getString(Constants.PREF_SIM1[19], "").equals(""))
+                    if (mIsNight1) {
+                        limit = mPrefs.getString(Constants.PREF_SIM1[18], "");
+                        round = mPrefs.getString(Constants.PREF_SIM1[22], "0");
+                        if (mPrefs.getString(Constants.PREF_SIM1[19], "").equals(""))
                             value = 0;
                         else
-                            value = Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], ""));
+                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], ""));
                     } else {
-                        limit = prefs.getString(Constants.PREF_SIM1[1], "");
-                        round = prefs.getString(Constants.PREF_SIM1[4], "0");
-                        if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+                        limit = mPrefs.getString(Constants.PREF_SIM1[1], "");
+                        round = mPrefs.getString(Constants.PREF_SIM1[4], "0");
+                        if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
                             value = 0;
                         else
-                            value = Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
+                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
                     }
 
                     if (!limit.equals("")) {
@@ -975,46 +975,46 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX1 = TrafficStats.getMobileRxBytes();
                     mStartTX1 = TrafficStats.getMobileTxBytes();
-                    if ((tot <= (long) lim) || continueOverLimit) {
-                        dataMap.put(Constants.LAST_ACTIVE_SIM, activeSIM);
+                    if ((tot <= (long) lim) || mContinueOverLimit) {
+                        mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        simChosen = Constants.DISABLED;
-                        isSIM1OverLimit = false;
-                    } else if (!actionChosen) {
-                        isSIM1OverLimit = true;
-                        if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
-                            alertNotify(activeSIM);
+                        mSimChosen = Constants.DISABLED;
+                        mIsSIM1OverLimit = false;
+                    } else if (!mIsActionChosen) {
+                        mIsSIM1OverLimit = true;
+                        if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
+                            alertNotify(mActiveSIM);
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
-                            startCheck(activeSIM);
+                            startCheck(mActiveSIM);
                         else if (!ChooseAction.isShown()) {
-                            Intent dialogIntent = new Intent(context, ChooseAction.class);
-                            dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
+                            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
+                            dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(dialogIntent);
+                            mContext.startActivity(dialogIntent);
                         }
                     }
 
-                    if (!isSIM1OverLimit) {
+                    if (!mIsSIM1OverLimit) {
 
-                        if (!isNight1) {
-                            dataMap.put(Constants.SIM1RX, rx);
-                            dataMap.put(Constants.SIM1TX, tx);
-                            dataMap.put(Constants.TOTAL1, tot);
+                        if (!mIsNight1) {
+                            mDataMap.put(Constants.SIM1RX, rx);
+                            mDataMap.put(Constants.SIM1TX, tx);
+                            mDataMap.put(Constants.TOTAL1, tot);
                         } else {
-                            dataMap.put(Constants.SIM1RX_N, rx);
-                            dataMap.put(Constants.SIM1TX_N, tx);
-                            dataMap.put(Constants.TOTAL1_N, tot);
+                            mDataMap.put(Constants.SIM1RX_N, rx);
+                            mDataMap.put(Constants.SIM1TX_N, tx);
+                            mDataMap.put(Constants.TOTAL1_N, tot);
                         }
-                        dataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        dataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
+                        mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
+                        mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
                         pushNotification(Constants.SIM1);
                     }
 
-                    if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && isScreenOn(context))
+                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1029,34 +1029,34 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mIsTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
 
-                    //avoid NPE by refreshing dataMap
+                    //avoid NPE by refreshing mDataMap
                     //begin
-                    dataMap.put(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                    dataMap.put(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                    dataMap.put(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                    dataMap.put(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                    dataMap.put(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                    dataMap.put(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                    dataMap.put(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                    dataMap.put(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                    dataMap.put(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    dataMap.put(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
-                    dataMap.put(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
-                    dataMap.put(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
-                    dataMap.put(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
-                    dataMap.put(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
-                    dataMap.put(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
-                    dataMap.put(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
-                    dataMap.put(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
-                    dataMap.put(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-                    dataMap.put(Constants.LAST_TIME, (String) dataMap.get(Constants.LAST_TIME));
-                    dataMap.put(Constants.LAST_DATE, (String) dataMap.get(Constants.LAST_DATE));
-                    dataMap.put(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    mDataMap.put(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
+                    mDataMap.put(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
+                    mDataMap.put(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
+                    mDataMap.put(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
+                    mDataMap.put(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
+                    mDataMap.put(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
+                    mDataMap.put(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
+                    mDataMap.put(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
+                    mDataMap.put(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
+                    mDataMap.put(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
+                    mDataMap.put(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
+                    mDataMap.put(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
+                    mDataMap.put(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
+                    mDataMap.put(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
+                    mDataMap.put(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
+                    mDataMap.put(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
+                    mDataMap.put(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
+                    mDataMap.put(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
+                    mDataMap.put(Constants.LAST_TIME, (String) mDataMap.get(Constants.LAST_TIME));
+                    mDataMap.put(Constants.LAST_DATE, (String) mDataMap.get(Constants.LAST_DATE));
+                    mDataMap.put(Constants.LAST_ACTIVE_SIM, (int) mDataMap.get(Constants.LAST_ACTIVE_SIM));
                     //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -1070,118 +1070,118 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
-                    DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+                    DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    if (prefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                        String timeON = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[20], "23:00");
-                        String timeOFF = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM2[21], "06:00");
-                        isNight2 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
+                    if (mPrefs.getBoolean(Constants.PREF_SIM2[17], false)) {
+                        String timeON = now.toString(fmtDate) + " " + mPrefs.getString(Constants.PREF_SIM2[20], "23:00");
+                        String timeOFF = now.toString(fmtDate) + " " + mPrefs.getString(Constants.PREF_SIM2[21], "06:00");
+                        mIsNight2 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
-                        isNight2 = false;
+                        mIsNight2 = false;
 
-                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || resetRuleChanged) {
-                        resetTime1 = getResetTime(Constants.SIM1);
-                        if (resetTime1 != null)
-                            needsReset1 = true;
-                        resetTime2 = getResetTime(Constants.SIM2);
-                        if (resetTime2 != null)
-                            needsReset2 = true;
-                        resetTime3 = getResetTime(Constants.SIM3);
-                        if (resetTime3 != null)
-                            needsReset3 = true;
-                        resetRuleChanged = false;
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
+                        mResetTime1 = getResetTime(Constants.SIM1);
+                        if (mResetTime1 != null)
+                            mIsResetNeeded1 = true;
+                        mResetTime2 = getResetTime(Constants.SIM2);
+                        if (mResetTime2 != null)
+                            mIsResetNeeded2 = true;
+                        mResetTime3 = getResetTime(Constants.SIM3);
+                        if (mResetTime3 != null)
+                            mIsResetNeeded3 = true;
+                        mIsResetRuleChanged = false;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
-                        dataMap.put(Constants.SIM1RX, 0L);
-                        dataMap.put(Constants.SIM2RX, 0L);
-                        dataMap.put(Constants.SIM3RX, 0L);
-                        dataMap.put(Constants.SIM1TX, 0L);
-                        dataMap.put(Constants.SIM2TX, 0L);
-                        dataMap.put(Constants.SIM3TX, 0L);
-                        dataMap.put(Constants.TOTAL1, 0L);
-                        dataMap.put(Constants.TOTAL2, 0L);
-                        dataMap.put(Constants.TOTAL3, 0L);
-                        dataMap.put(Constants.SIM1RX_N, 0L);
-                        dataMap.put(Constants.SIM2RX_N, 0L);
-                        dataMap.put(Constants.SIM3RX_N, 0L);
-                        dataMap.put(Constants.SIM1TX_N, 0L);
-                        dataMap.put(Constants.SIM2TX_N, 0L);
-                        dataMap.put(Constants.SIM3TX_N, 0L);
-                        dataMap.put(Constants.TOTAL1_N, 0L);
-                        dataMap.put(Constants.TOTAL2_N, 0L);
-                        dataMap.put(Constants.TOTAL3_N, 0L);
-                        dataMap.put(Constants.LAST_RX, 0L);
-                        dataMap.put(Constants.LAST_TX, 0L);
-                        dataMap.put(Constants.LAST_TIME, "");
-                        dataMap.put(Constants.LAST_DATE, "");
-                        dataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
-                    } else if ((DateTimeComparator.getInstance().compare(now, resetTime1) >= 0 && needsReset1)
-                            || (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2)
-                            || (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3)) {
-                        if (DateTimeComparator.getInstance().compare(now, resetTime1) >= 0 && needsReset1) {
-                            dataMap.put(Constants.SIM1RX, 0L);
-                            dataMap.put(Constants.SIM1TX, 0L);
-                            dataMap.put(Constants.TOTAL1, 0L);
-                            dataMap.put(Constants.SIM1RX_N, 0L);
-                            dataMap.put(Constants.SIM1TX_N, 0L);
-                            dataMap.put(Constants.TOTAL1_N, 0L);
-                            if (!isNight2) {
-                                rx = (long) dataMap.get(Constants.SIM2RX);
-                                tx = (long) dataMap.get(Constants.SIM2TX);
-                                tot = (long) dataMap.get(Constants.TOTAL2);
+                        mDataMap.put(Constants.SIM1RX, 0L);
+                        mDataMap.put(Constants.SIM2RX, 0L);
+                        mDataMap.put(Constants.SIM3RX, 0L);
+                        mDataMap.put(Constants.SIM1TX, 0L);
+                        mDataMap.put(Constants.SIM2TX, 0L);
+                        mDataMap.put(Constants.SIM3TX, 0L);
+                        mDataMap.put(Constants.TOTAL1, 0L);
+                        mDataMap.put(Constants.TOTAL2, 0L);
+                        mDataMap.put(Constants.TOTAL3, 0L);
+                        mDataMap.put(Constants.SIM1RX_N, 0L);
+                        mDataMap.put(Constants.SIM2RX_N, 0L);
+                        mDataMap.put(Constants.SIM3RX_N, 0L);
+                        mDataMap.put(Constants.SIM1TX_N, 0L);
+                        mDataMap.put(Constants.SIM2TX_N, 0L);
+                        mDataMap.put(Constants.SIM3TX_N, 0L);
+                        mDataMap.put(Constants.TOTAL1_N, 0L);
+                        mDataMap.put(Constants.TOTAL2_N, 0L);
+                        mDataMap.put(Constants.TOTAL3_N, 0L);
+                        mDataMap.put(Constants.LAST_RX, 0L);
+                        mDataMap.put(Constants.LAST_TX, 0L);
+                        mDataMap.put(Constants.LAST_TIME, "");
+                        mDataMap.put(Constants.LAST_DATE, "");
+                        mDataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
+                    } else if ((DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1)
+                            || (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2)
+                            || (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3)) {
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
+                            mDataMap.put(Constants.SIM1RX, 0L);
+                            mDataMap.put(Constants.SIM1TX, 0L);
+                            mDataMap.put(Constants.TOTAL1, 0L);
+                            mDataMap.put(Constants.SIM1RX_N, 0L);
+                            mDataMap.put(Constants.SIM1TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL1_N, 0L);
+                            if (!mIsNight2) {
+                                rx = (long) mDataMap.get(Constants.SIM2RX);
+                                tx = (long) mDataMap.get(Constants.SIM2TX);
+                                tot = (long) mDataMap.get(Constants.TOTAL2);
                             } else {
-                                rx = (long) dataMap.get(Constants.SIM2RX_N);
-                                tx = (long) dataMap.get(Constants.SIM2TX_N);
-                                tot = (long) dataMap.get(Constants.TOTAL2_N);
+                                rx = (long) mDataMap.get(Constants.SIM2RX_N);
+                                tx = (long) mDataMap.get(Constants.SIM2TX_N);
+                                tot = (long) mDataMap.get(Constants.TOTAL2_N);
                             }
                             mReceived1 = mTransmitted1 = 0;
-                            needsReset1 = false;
-                            prefs.edit().putString(Constants.PREF_SIM1[24], resetTime1.toString(fmtDateTime)).apply();
+                            mIsResetNeeded1 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
                         }
-                        if (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2) {
-                            dataMap.put(Constants.SIM2RX, 0L);
-                            dataMap.put(Constants.SIM2TX, 0L);
-                            dataMap.put(Constants.TOTAL2, 0L);
-                            dataMap.put(Constants.SIM2RX_N, 0L);
-                            dataMap.put(Constants.SIM2TX_N, 0L);
-                            dataMap.put(Constants.TOTAL2_N, 0L);
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
+                            mDataMap.put(Constants.SIM2RX, 0L);
+                            mDataMap.put(Constants.SIM2TX, 0L);
+                            mDataMap.put(Constants.TOTAL2, 0L);
+                            mDataMap.put(Constants.SIM2RX_N, 0L);
+                            mDataMap.put(Constants.SIM2TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL2_N, 0L);
                             rx = tx = mReceived2 = mTransmitted2 = 0;
-                            needsReset2 = false;
-                            prefs.edit().putString(Constants.PREF_SIM2[24], resetTime2.toString(fmtDateTime)).apply();
+                            mIsResetNeeded2 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
                         }
-                        if (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3) {
-                            dataMap.put(Constants.SIM3RX, 0L);
-                            dataMap.put(Constants.SIM3TX, 0L);
-                            dataMap.put(Constants.TOTAL3, 0L);
-                            dataMap.put(Constants.SIM3RX_N, 0L);
-                            dataMap.put(Constants.SIM3TX_N, 0L);
-                            dataMap.put(Constants.TOTAL3_N, 0L);
-                            if (!isNight2) {
-                                rx = (long) dataMap.get(Constants.SIM2RX);
-                                tx = (long) dataMap.get(Constants.SIM2TX);
-                                tot = (long) dataMap.get(Constants.TOTAL2);
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
+                            mDataMap.put(Constants.SIM3RX, 0L);
+                            mDataMap.put(Constants.SIM3TX, 0L);
+                            mDataMap.put(Constants.TOTAL3, 0L);
+                            mDataMap.put(Constants.SIM3RX_N, 0L);
+                            mDataMap.put(Constants.SIM3TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL3_N, 0L);
+                            if (!mIsNight2) {
+                                rx = (long) mDataMap.get(Constants.SIM2RX);
+                                tx = (long) mDataMap.get(Constants.SIM2TX);
+                                tot = (long) mDataMap.get(Constants.TOTAL2);
                             } else {
-                                rx = (long) dataMap.get(Constants.SIM2RX_N);
-                                tx = (long) dataMap.get(Constants.SIM2TX_N);
-                                tot = (long) dataMap.get(Constants.TOTAL2_N);
+                                rx = (long) mDataMap.get(Constants.SIM2RX_N);
+                                tx = (long) mDataMap.get(Constants.SIM2TX_N);
+                                tot = (long) mDataMap.get(Constants.TOTAL2_N);
                             }
                             mReceived3 = mTransmitted3 = 0;
-                            needsReset3 = false;
-                            prefs.edit().putString(Constants.PREF_SIM3[24], resetTime3.toString(fmtDateTime)).apply();
+                            mIsResetNeeded3 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
                         }
                     } else {
-                        if (!isNight2) {
-                            rx = (long) dataMap.get(Constants.SIM2RX);
-                            tx = (long) dataMap.get(Constants.SIM2TX);
-                            tot = (long) dataMap.get(Constants.TOTAL2);
+                        if (!mIsNight2) {
+                            rx = (long) mDataMap.get(Constants.SIM2RX);
+                            tx = (long) mDataMap.get(Constants.SIM2TX);
+                            tot = (long) mDataMap.get(Constants.TOTAL2);
                         } else {
-                            rx = (long) dataMap.get(Constants.SIM2RX_N);
-                            tx = (long) dataMap.get(Constants.SIM2TX_N);
-                            tot = (long) dataMap.get(Constants.TOTAL2_N);
+                            rx = (long) mDataMap.get(Constants.SIM2RX_N);
+                            tx = (long) mDataMap.get(Constants.SIM2TX_N);
+                            tot = (long) mDataMap.get(Constants.TOTAL2_N);
                         }
                     }
 
@@ -1191,20 +1191,20 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     float valuer;
                     double lim = Double.MAX_VALUE;
 
-                    if (isNight2) {
-                        limit = prefs.getString(Constants.PREF_SIM2[18], "");
-                        round = prefs.getString(Constants.PREF_SIM2[22], "0");
-                        if (prefs.getString(Constants.PREF_SIM2[19], "").equals(""))
+                    if (mIsNight2) {
+                        limit = mPrefs.getString(Constants.PREF_SIM2[18], "");
+                        round = mPrefs.getString(Constants.PREF_SIM2[22], "0");
+                        if (mPrefs.getString(Constants.PREF_SIM2[19], "").equals(""))
                             value = 0;
                         else
-                            value = Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], ""));
+                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], ""));
                     } else {
-                        limit = prefs.getString(Constants.PREF_SIM2[1], "");
-                        round = prefs.getString(Constants.PREF_SIM2[4], "0");
-                        if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+                        limit = mPrefs.getString(Constants.PREF_SIM2[1], "");
+                        round = mPrefs.getString(Constants.PREF_SIM2[4], "0");
+                        if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
                             value = 0;
                         else
-                            value = Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
                     }
 
                     if (!limit.equals("")) {
@@ -1220,46 +1220,46 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX2 = TrafficStats.getMobileRxBytes();
                     mStartTX2 = TrafficStats.getMobileTxBytes();
-                    if ((tot <= (long) lim) || continueOverLimit) {
-                        dataMap.put(Constants.LAST_ACTIVE_SIM, activeSIM);
+                    if ((tot <= (long) lim) || mContinueOverLimit) {
+                        mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        simChosen = Constants.DISABLED;
-                        isSIM2OverLimit = false;
-                    } else if (!actionChosen) {
-                        isSIM2OverLimit = true;
-                        if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
-                            alertNotify(activeSIM);
+                        mSimChosen = Constants.DISABLED;
+                        mIsSIM2OverLimit = false;
+                    } else if (!mIsActionChosen) {
+                        mIsSIM2OverLimit = true;
+                        if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
+                            alertNotify(mActiveSIM);
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
-                            startCheck(activeSIM);
+                            startCheck(mActiveSIM);
                         else if (!ChooseAction.isShown()) {
-                            Intent dialogIntent = new Intent(context, ChooseAction.class);
-                            dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
+                            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
+                            dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(dialogIntent);
+                            mContext.startActivity(dialogIntent);
                         }
                     }
 
-                    if (!isSIM2OverLimit) {
+                    if (!mIsSIM2OverLimit) {
 
-                        if (!isNight2) {
-                            dataMap.put(Constants.SIM2RX, rx);
-                            dataMap.put(Constants.SIM2TX, tx);
-                            dataMap.put(Constants.TOTAL2, tot);
+                        if (!mIsNight2) {
+                            mDataMap.put(Constants.SIM2RX, rx);
+                            mDataMap.put(Constants.SIM2TX, tx);
+                            mDataMap.put(Constants.TOTAL2, tot);
                         } else {
-                            dataMap.put(Constants.SIM2RX_N, rx);
-                            dataMap.put(Constants.SIM2TX_N, tx);
-                            dataMap.put(Constants.TOTAL2_N, tot);
+                            mDataMap.put(Constants.SIM2RX_N, rx);
+                            mDataMap.put(Constants.SIM2TX_N, tx);
+                            mDataMap.put(Constants.TOTAL2_N, tot);
                         }
-                        dataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        dataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
+                        mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
+                        mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
                         pushNotification(Constants.SIM2);
                     }
 
-                    if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && isScreenOn(context))
+                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1274,34 +1274,34 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(context, false)[0] == 2 && !isTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mIsTimerCancelled) {
 
                     long speedRX;
                     long speedTX;
 
-                    //avoid NPE by refreshing dataMap
+                    //avoid NPE by refreshing mDataMap
                     //begin
-                    dataMap.put(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                    dataMap.put(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                    dataMap.put(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                    dataMap.put(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                    dataMap.put(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                    dataMap.put(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                    dataMap.put(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                    dataMap.put(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                    dataMap.put(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    dataMap.put(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
-                    dataMap.put(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
-                    dataMap.put(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
-                    dataMap.put(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
-                    dataMap.put(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
-                    dataMap.put(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
-                    dataMap.put(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
-                    dataMap.put(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
-                    dataMap.put(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-                    dataMap.put(Constants.LAST_TIME, (String) dataMap.get(Constants.LAST_TIME));
-                    dataMap.put(Constants.LAST_DATE, (String) dataMap.get(Constants.LAST_DATE));
-                    dataMap.put(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+                    mDataMap.put(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
+                    mDataMap.put(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
+                    mDataMap.put(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
+                    mDataMap.put(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
+                    mDataMap.put(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
+                    mDataMap.put(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
+                    mDataMap.put(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
+                    mDataMap.put(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
+                    mDataMap.put(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
+                    mDataMap.put(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
+                    mDataMap.put(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
+                    mDataMap.put(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
+                    mDataMap.put(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
+                    mDataMap.put(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
+                    mDataMap.put(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
+                    mDataMap.put(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
+                    mDataMap.put(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
+                    mDataMap.put(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
+                    mDataMap.put(Constants.LAST_TIME, (String) mDataMap.get(Constants.LAST_TIME));
+                    mDataMap.put(Constants.LAST_DATE, (String) mDataMap.get(Constants.LAST_DATE));
+                    mDataMap.put(Constants.LAST_ACTIVE_SIM, (int) mDataMap.get(Constants.LAST_ACTIVE_SIM));
                     //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -1315,118 +1315,118 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     long tx = 0;
                     long tot = 0;
 
-                    DateTime dt = fmtDate.parseDateTime((String) dataMap.get(Constants.LAST_DATE));
+                    DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
                     DateTime now = new DateTime();
 
-                    if (prefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                        String timeON = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[20], "23:00");
-                        String timeOFF = now.toString(fmtDate) + " " + prefs.getString(Constants.PREF_SIM3[21], "06:00");
-                        isNight3 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
+                    if (mPrefs.getBoolean(Constants.PREF_SIM3[17], false)) {
+                        String timeON = now.toString(fmtDate) + " " + mPrefs.getString(Constants.PREF_SIM3[20], "23:00");
+                        String timeOFF = now.toString(fmtDate) + " " + mPrefs.getString(Constants.PREF_SIM3[21], "06:00");
+                        mIsNight3 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
-                        isNight3 = false;
+                        mIsNight3 = false;
 
-                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || resetRuleChanged) {
-                        resetTime1 = getResetTime(Constants.SIM1);
-                        if (resetTime1 != null)
-                            needsReset1 = true;
-                        resetTime2 = getResetTime(Constants.SIM2);
-                        if (resetTime2 != null)
-                            needsReset2 = true;
-                        resetTime3 = getResetTime(Constants.SIM3);
-                        if (resetTime3 != null)
-                            needsReset3 = true;
-                        resetRuleChanged = false;
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
+                        mResetTime1 = getResetTime(Constants.SIM1);
+                        if (mResetTime1 != null)
+                            mIsResetNeeded1 = true;
+                        mResetTime2 = getResetTime(Constants.SIM2);
+                        if (mResetTime2 != null)
+                            mIsResetNeeded2 = true;
+                        mResetTime3 = getResetTime(Constants.SIM3);
+                        if (mResetTime3 != null)
+                            mIsResetNeeded3 = true;
+                        mIsResetRuleChanged = false;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
-                        dataMap.put(Constants.SIM1RX, 0L);
-                        dataMap.put(Constants.SIM2RX, 0L);
-                        dataMap.put(Constants.SIM3RX, 0L);
-                        dataMap.put(Constants.SIM1TX, 0L);
-                        dataMap.put(Constants.SIM2TX, 0L);
-                        dataMap.put(Constants.SIM3TX, 0L);
-                        dataMap.put(Constants.TOTAL1, 0L);
-                        dataMap.put(Constants.TOTAL2, 0L);
-                        dataMap.put(Constants.TOTAL3, 0L);
-                        dataMap.put(Constants.SIM1RX_N, 0L);
-                        dataMap.put(Constants.SIM2RX_N, 0L);
-                        dataMap.put(Constants.SIM3RX_N, 0L);
-                        dataMap.put(Constants.SIM1TX_N, 0L);
-                        dataMap.put(Constants.SIM2TX_N, 0L);
-                        dataMap.put(Constants.SIM3TX_N, 0L);
-                        dataMap.put(Constants.TOTAL1_N, 0L);
-                        dataMap.put(Constants.TOTAL2_N, 0L);
-                        dataMap.put(Constants.TOTAL3_N, 0L);
-                        dataMap.put(Constants.LAST_RX, 0L);
-                        dataMap.put(Constants.LAST_TX, 0L);
-                        dataMap.put(Constants.LAST_TIME, "");
-                        dataMap.put(Constants.LAST_DATE, "");
-                        dataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
-                    } else if ((DateTimeComparator.getInstance().compare(now, resetTime1) >= 0 && needsReset1)
-                            || (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2)
-                            || (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3)) {
-                        if (DateTimeComparator.getInstance().compare(now, resetTime1) >= 0 && needsReset1) {
-                            dataMap.put(Constants.SIM1RX, 0L);
-                            dataMap.put(Constants.SIM1TX, 0L);
-                            dataMap.put(Constants.TOTAL1, 0L);
-                            dataMap.put(Constants.SIM1RX_N, 0L);
-                            dataMap.put(Constants.SIM1TX_N, 0L);
-                            dataMap.put(Constants.TOTAL1_N, 0L);
-                            if (!isNight3) {
-                                rx = (long) dataMap.get(Constants.SIM3RX);
-                                tx = (long) dataMap.get(Constants.SIM3TX);
-                                tot = (long) dataMap.get(Constants.TOTAL3);
+                        mDataMap.put(Constants.SIM1RX, 0L);
+                        mDataMap.put(Constants.SIM2RX, 0L);
+                        mDataMap.put(Constants.SIM3RX, 0L);
+                        mDataMap.put(Constants.SIM1TX, 0L);
+                        mDataMap.put(Constants.SIM2TX, 0L);
+                        mDataMap.put(Constants.SIM3TX, 0L);
+                        mDataMap.put(Constants.TOTAL1, 0L);
+                        mDataMap.put(Constants.TOTAL2, 0L);
+                        mDataMap.put(Constants.TOTAL3, 0L);
+                        mDataMap.put(Constants.SIM1RX_N, 0L);
+                        mDataMap.put(Constants.SIM2RX_N, 0L);
+                        mDataMap.put(Constants.SIM3RX_N, 0L);
+                        mDataMap.put(Constants.SIM1TX_N, 0L);
+                        mDataMap.put(Constants.SIM2TX_N, 0L);
+                        mDataMap.put(Constants.SIM3TX_N, 0L);
+                        mDataMap.put(Constants.TOTAL1_N, 0L);
+                        mDataMap.put(Constants.TOTAL2_N, 0L);
+                        mDataMap.put(Constants.TOTAL3_N, 0L);
+                        mDataMap.put(Constants.LAST_RX, 0L);
+                        mDataMap.put(Constants.LAST_TX, 0L);
+                        mDataMap.put(Constants.LAST_TIME, "");
+                        mDataMap.put(Constants.LAST_DATE, "");
+                        mDataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
+                    } else if ((DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1)
+                            || (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2)
+                            || (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3)) {
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
+                            mDataMap.put(Constants.SIM1RX, 0L);
+                            mDataMap.put(Constants.SIM1TX, 0L);
+                            mDataMap.put(Constants.TOTAL1, 0L);
+                            mDataMap.put(Constants.SIM1RX_N, 0L);
+                            mDataMap.put(Constants.SIM1TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL1_N, 0L);
+                            if (!mIsNight3) {
+                                rx = (long) mDataMap.get(Constants.SIM3RX);
+                                tx = (long) mDataMap.get(Constants.SIM3TX);
+                                tot = (long) mDataMap.get(Constants.TOTAL3);
                             } else {
-                                rx = (long) dataMap.get(Constants.SIM3RX_N);
-                                tx = (long) dataMap.get(Constants.SIM3TX_N);
-                                tot = (long) dataMap.get(Constants.TOTAL3_N);
+                                rx = (long) mDataMap.get(Constants.SIM3RX_N);
+                                tx = (long) mDataMap.get(Constants.SIM3TX_N);
+                                tot = (long) mDataMap.get(Constants.TOTAL3_N);
                             }
                             mReceived1 = mTransmitted1 = 0;
-                            needsReset1 = false;
-                            prefs.edit().putString(Constants.PREF_SIM1[24], resetTime1.toString(fmtDateTime)).apply();
+                            mIsResetNeeded1 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
                         }
-                        if (DateTimeComparator.getInstance().compare(now, resetTime2) >= 0 && needsReset2) {
-                            dataMap.put(Constants.SIM2RX, 0L);
-                            dataMap.put(Constants.SIM2TX, 0L);
-                            dataMap.put(Constants.TOTAL2, 0L);
-                            dataMap.put(Constants.SIM2RX_N, 0L);
-                            dataMap.put(Constants.SIM2TX_N, 0L);
-                            dataMap.put(Constants.TOTAL2_N, 0L);
-                            if (!isNight3) {
-                                rx = (long) dataMap.get(Constants.SIM3RX);
-                                tx = (long) dataMap.get(Constants.SIM3TX);
-                                tot = (long) dataMap.get(Constants.TOTAL3);
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
+                            mDataMap.put(Constants.SIM2RX, 0L);
+                            mDataMap.put(Constants.SIM2TX, 0L);
+                            mDataMap.put(Constants.TOTAL2, 0L);
+                            mDataMap.put(Constants.SIM2RX_N, 0L);
+                            mDataMap.put(Constants.SIM2TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL2_N, 0L);
+                            if (!mIsNight3) {
+                                rx = (long) mDataMap.get(Constants.SIM3RX);
+                                tx = (long) mDataMap.get(Constants.SIM3TX);
+                                tot = (long) mDataMap.get(Constants.TOTAL3);
                             } else {
-                                rx = (long) dataMap.get(Constants.SIM3RX_N);
-                                tx = (long) dataMap.get(Constants.SIM3TX_N);
-                                tot = (long) dataMap.get(Constants.TOTAL3_N);
+                                rx = (long) mDataMap.get(Constants.SIM3RX_N);
+                                tx = (long) mDataMap.get(Constants.SIM3TX_N);
+                                tot = (long) mDataMap.get(Constants.TOTAL3_N);
                             }
                             mReceived2 = mTransmitted2 = 0;
-                            needsReset2 = false;
-                            prefs.edit().putString(Constants.PREF_SIM2[24], resetTime2.toString(fmtDateTime)).apply();
+                            mIsResetNeeded2 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
                         }
-                        if (DateTimeComparator.getInstance().compare(now, resetTime3) >= 0 && needsReset3) {
-                            dataMap.put(Constants.SIM3RX, 0L);
-                            dataMap.put(Constants.SIM3TX, 0L);
-                            dataMap.put(Constants.TOTAL3, 0L);
-                            dataMap.put(Constants.SIM3RX_N, 0L);
-                            dataMap.put(Constants.SIM3TX_N, 0L);
-                            dataMap.put(Constants.TOTAL3_N, 0L);
+                        if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
+                            mDataMap.put(Constants.SIM3RX, 0L);
+                            mDataMap.put(Constants.SIM3TX, 0L);
+                            mDataMap.put(Constants.TOTAL3, 0L);
+                            mDataMap.put(Constants.SIM3RX_N, 0L);
+                            mDataMap.put(Constants.SIM3TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL3_N, 0L);
                             rx = tx = mReceived3 = mTransmitted3 = 0;
-                            needsReset3 = false;
-                            prefs.edit().putString(Constants.PREF_SIM3[24], resetTime3.toString(fmtDateTime)).apply();
+                            mIsResetNeeded3 = false;
+                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
                         }
                     } else {
-                        if (!isNight2) {
-                            rx = (long) dataMap.get(Constants.SIM3RX);
-                            tx = (long) dataMap.get(Constants.SIM3TX);
-                            tot = (long) dataMap.get(Constants.TOTAL3);
+                        if (!mIsNight2) {
+                            rx = (long) mDataMap.get(Constants.SIM3RX);
+                            tx = (long) mDataMap.get(Constants.SIM3TX);
+                            tot = (long) mDataMap.get(Constants.TOTAL3);
                         } else {
-                            rx = (long) dataMap.get(Constants.SIM3RX_N);
-                            tx = (long) dataMap.get(Constants.SIM3TX_N);
-                            tot = (long) dataMap.get(Constants.TOTAL3_N);
+                            rx = (long) mDataMap.get(Constants.SIM3RX_N);
+                            tx = (long) mDataMap.get(Constants.SIM3TX_N);
+                            tot = (long) mDataMap.get(Constants.TOTAL3_N);
                         }
                     }
 
@@ -1436,20 +1436,20 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     float valuer;
                     double lim = Double.MAX_VALUE;
 
-                    if (isNight3) {
-                        limit = prefs.getString(Constants.PREF_SIM3[18], "");
-                        round = prefs.getString(Constants.PREF_SIM3[22], "0");
-                        if (prefs.getString(Constants.PREF_SIM3[19], "").equals(""))
+                    if (mIsNight3) {
+                        limit = mPrefs.getString(Constants.PREF_SIM3[18], "");
+                        round = mPrefs.getString(Constants.PREF_SIM3[22], "0");
+                        if (mPrefs.getString(Constants.PREF_SIM3[19], "").equals(""))
                             value = 0;
                         else
-                            value = Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], ""));
+                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], ""));
                     } else {
-                        limit = prefs.getString(Constants.PREF_SIM3[1], "");
-                        round = prefs.getString(Constants.PREF_SIM3[4], "0");
-                        if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+                        limit = mPrefs.getString(Constants.PREF_SIM3[1], "");
+                        round = mPrefs.getString(Constants.PREF_SIM3[4], "0");
+                        if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
                             value = 0;
                         else
-                            value = Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
                     }
 
                     if (!limit.equals("")) {
@@ -1465,46 +1465,46 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX3 = TrafficStats.getMobileRxBytes();
                     mStartTX3 = TrafficStats.getMobileTxBytes();
-                    if ((tot <= (long) lim) || continueOverLimit) {
-                        dataMap.put(Constants.LAST_ACTIVE_SIM, activeSIM);
+                    if ((tot <= (long) lim) || mContinueOverLimit) {
+                        mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        simChosen = Constants.DISABLED;
-                        isSIM3OverLimit = false;
-                    } else if (!actionChosen) {
-                        isSIM3OverLimit = true;
-                        if (prefs.getBoolean(Constants.PREF_OTHER[3], false))
-                            alertNotify(activeSIM);
+                        mSimChosen = Constants.DISABLED;
+                        mIsSIM3OverLimit = false;
+                    } else if (!mIsActionChosen) {
+                        mIsSIM3OverLimit = true;
+                        if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
+                            alertNotify(mActiveSIM);
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
-                            startCheck(activeSIM);
+                            startCheck(mActiveSIM);
                         else if (!ChooseAction.isShown()) {
-                            Intent dialogIntent = new Intent(context, ChooseAction.class);
-                            dialogIntent.putExtra(Constants.SIM_ACTIVE, activeSIM);
+                            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
+                            dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(dialogIntent);
+                            mContext.startActivity(dialogIntent);
                         }
                     }
 
-                    if (!isSIM3OverLimit) {
+                    if (!mIsSIM3OverLimit) {
 
-                        if (!isNight3) {
-                            dataMap.put(Constants.SIM3RX, rx);
-                            dataMap.put(Constants.SIM3TX, tx);
-                            dataMap.put(Constants.TOTAL3, tot);
+                        if (!mIsNight3) {
+                            mDataMap.put(Constants.SIM3RX, rx);
+                            mDataMap.put(Constants.SIM3TX, tx);
+                            mDataMap.put(Constants.TOTAL3, tot);
                         } else {
-                            dataMap.put(Constants.SIM3RX_N, rx);
-                            dataMap.put(Constants.SIM3TX_N, tx);
-                            dataMap.put(Constants.TOTAL3_N, tot);
+                            mDataMap.put(Constants.SIM3RX_N, rx);
+                            mDataMap.put(Constants.SIM3TX_N, tx);
+                            mDataMap.put(Constants.TOTAL3_N, tot);
                         }
-                        dataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        dataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
+                        mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
+                        mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
                         pushNotification(Constants.SIM3);
                     }
 
-                    if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && isScreenOn(context))
+                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
                         sendDataBroadcast(speedRX, speedTX);
                 }
 
@@ -1536,158 +1536,155 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             else
                 choice = 2;
         }
-        dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-        dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+        mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
+        mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
         switch (choice) {
             default:
                 break;
             case 1:
-                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
+                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 break;
             case 2:
-                TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-                continueOverLimit = false;
+                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                mContinueOverLimit = false;
                 break;
         }
     }
 
     private void sendDataBroadcast(long speedRX, long speedTX) {
         Intent intent = new Intent(Constants.BROADCAST_ACTION);
-        intent.putExtra(Constants.WIDGET_IDS, getWidgetIds(context));
+        intent.putExtra(Constants.WIDGET_IDS, getWidgetIds(mContext));
         intent.putExtra(Constants.SPEEDRX, speedRX);
         intent.putExtra(Constants.SPEEDTX, speedTX);
-        intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-        intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-        intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-        intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-        intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-        intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-        intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-        intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-        intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-        intent.putExtra(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
-        intent.putExtra(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
-        intent.putExtra(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
-        intent.putExtra(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
-        intent.putExtra(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
-        intent.putExtra(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
-        intent.putExtra(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
-        intent.putExtra(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
-        intent.putExtra(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-        if (activeSIM == Constants.DISABLED)
-            intent.putExtra(Constants.SIM_ACTIVE, lastActiveSIM);
+        intent.putExtra(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
+        intent.putExtra(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
+        intent.putExtra(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
+        intent.putExtra(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
+        intent.putExtra(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
+        intent.putExtra(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
+        intent.putExtra(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
+        intent.putExtra(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
+        intent.putExtra(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
+        intent.putExtra(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
+        intent.putExtra(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
+        intent.putExtra(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
+        intent.putExtra(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
+        intent.putExtra(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
+        intent.putExtra(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
+        intent.putExtra(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
+        intent.putExtra(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
+        intent.putExtra(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
+        if (mActiveSIM == Constants.DISABLED)
+            intent.putExtra(Constants.SIM_ACTIVE, mLastActiveSIM);
         else
-            intent.putExtra(Constants.SIM_ACTIVE, activeSIM);
-        intent.putExtra(Constants.OPERATOR1, operatorNames[0]);
-        if (simNumber >= 2)
-            intent.putExtra(Constants.OPERATOR2, operatorNames[1]);
-        if (simNumber == 3)
-            intent.putExtra(Constants.OPERATOR3, operatorNames[2]);
-        context.sendBroadcast(intent);
+            intent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
+        intent.putExtra(Constants.OPERATOR1, mOperatorNames[0]);
+        if (mSimQuantity >= 2)
+            intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
+        if (mSimQuantity == 3)
+            intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
+        mContext.sendBroadcast(intent);
     }
 
     private void pushNotification(int sim) {
         String text = "";
-        long tot1 = 0, tot2 = 0, tot3 = 0;
-        if (prefs.getBoolean(Constants.PREF_OTHER[19], false)) {
-            if (simNumber >= 1) {
-                String limit1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
-                String round1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[22], "") : prefs.getString(Constants.PREF_SIM1[4], "0");
-                int value1;
-                if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
-                    value1 = 0;
-                else
-                    value1 = isNight1 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], "")) :
-                            Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
-                float valuer1;
-                double lim1 = Double.MAX_VALUE;
-                if (!limit1.equals("")) {
-                    valuer1 = 1 - Float.valueOf(round1) / 100;
-                    lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
-                }
-                tot1 = isNight1 ? (long) lim1 - (long) dataMap.get(Constants.TOTAL1_N) : (long) lim1 - (long) dataMap.get(Constants.TOTAL1);
+        long tot1, tot2 = 0, tot3 = 0;
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
+            String limit1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
+            String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
+            int value1;
+            if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+                value1 = 0;
+            else
+                value1 = mIsNight1 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
+                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
+            float valuer1;
+            double lim1 = Double.MAX_VALUE;
+            if (!limit1.equals("")) {
+                valuer1 = 1 - Float.valueOf(round1) / 100;
+                lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
             }
-            if (simNumber >= 2) {
-                String limit2 = isNight2 ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
-                String round2 = isNight2 ? prefs.getString(Constants.PREF_SIM2[22], "") : prefs.getString(Constants.PREF_SIM2[4], "0");
+            tot1 = mIsNight1 ? (long) lim1 - (long) mDataMap.get(Constants.TOTAL1_N) : (long) lim1 - (long) mDataMap.get(Constants.TOTAL1);
+            if (mSimQuantity >= 2) {
+                String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
+                String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
                 int value2;
-                if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+                if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
                     value2 = 0;
                 else
-                    value2 = isNight2 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], "")) :
-                            Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+                    value2 = mIsNight2 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
+                            Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
                 float valuer2;
                 double lim2 = Double.MAX_VALUE;
                 if (!limit2.equals("")) {
                     valuer2 = 1 - Float.valueOf(round2) / 100;
                     lim2 = valuer2 * DataFormat.getFormatLong(limit2, value2);
                 }
-                tot2 = isNight2 ? (long) lim2 - (long) dataMap.get(Constants.TOTAL2_N) : (long) lim2 - (long) dataMap.get(Constants.TOTAL2);
+                tot2 = mIsNight2 ? (long) lim2 - (long) mDataMap.get(Constants.TOTAL2_N) : (long) lim2 - (long) mDataMap.get(Constants.TOTAL2);
             }
-            if (simNumber == 3) {
-                String limit3 = isNight3 ? prefs.getString(Constants.PREF_SIM3[18], "") : prefs.getString(Constants.PREF_SIM3[1], "");
-                String round3 = isNight3 ? prefs.getString(Constants.PREF_SIM3[22], "") : prefs.getString(Constants.PREF_SIM3[4], "0");
+            if (mSimQuantity == 3) {
+                String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
+                String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
                 int value3;
-                if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+                if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
                     value3 = 0;
                 else
-                    value3 = isNight3 ? Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], "")) :
-                            Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+                    value3 = mIsNight3 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
+                            Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
                 float valuer3;
                 double lim3 = Double.MAX_VALUE;
                 if (!limit3.equals("")) {
                     valuer3 = 1 - Float.valueOf(round3) / 100;
                     lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
                 }
-                tot3 = isNight3 ? (long) lim3 - (long) dataMap.get(Constants.TOTAL3_N) : (long) lim3 - (long) dataMap.get(Constants.TOTAL3);
+                tot3 = mIsNight3 ? (long) lim3 - (long) mDataMap.get(Constants.TOTAL3_N) : (long) lim3 - (long) mDataMap.get(Constants.TOTAL3);
             }
+        } else {
+            tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
+            tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
+            tot3 = mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3);
         }
-        else {
-            tot1 = isNight1 ? (long) dataMap.get(Constants.TOTAL1_N) : (long) dataMap.get(Constants.TOTAL1);
-            tot2 = isNight2 ? (long) dataMap.get(Constants.TOTAL2_N) : (long) dataMap.get(Constants.TOTAL2);
-            tot3 = isNight3 ? (long) dataMap.get(Constants.TOTAL3_N) : (long) dataMap.get(Constants.TOTAL3);
-        }
-        if (prefs.getBoolean(Constants.PREF_OTHER[16], true)) {
-            text = DataFormat.formatData(context, tot1);
-            if (simNumber >= 2)
-                text += "  ||  " + DataFormat.formatData(context, tot2);
-            if (simNumber == 3)
-                text += "  ||  " + DataFormat.formatData(context, tot3);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[16], true)) {
+            text = DataFormat.formatData(mContext, tot1);
+            if (mSimQuantity >= 2)
+                text += "  ||  " + DataFormat.formatData(mContext, tot2);
+            if (mSimQuantity == 3)
+                text += "  ||  " + DataFormat.formatData(mContext, tot3);
         } else {
             switch (sim) {
                 case Constants.SIM1:
-                    if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(context, tot1);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false))
+                        text = DataFormat.formatData(mContext, tot1);
                     else
-                        text = operatorNames[0] + ": " +
-                                DataFormat.formatData(context, tot1);
+                        text = mOperatorNames[0] + ": " +
+                                DataFormat.formatData(mContext, tot1);
                     break;
                 case Constants.SIM2:
-                    if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(context, tot2);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false))
+                        text = DataFormat.formatData(mContext, tot2);
                     else
-                        text = operatorNames[1] + ": " +
-                                DataFormat.formatData(context, tot2);
+                        text = mOperatorNames[1] + ": " +
+                                DataFormat.formatData(mContext, tot2);
                     break;
                 case Constants.SIM3:
-                    if (prefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(context, tot3);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false))
+                        text = DataFormat.formatData(mContext, tot3);
                     else
-                        text = operatorNames[2] + ": " +
-                                DataFormat.formatData(context, tot3);
+                        text = mOperatorNames[2] + ": " +
+                                DataFormat.formatData(mContext, tot3);
                     break;
             }
         }
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(idSmall)
-                .setLargeIcon(bLarge)
+                .setSmallIcon(mIDSmall)
+                .setLargeIcon(mBitmapLarge)
                 .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText(text);
         nm.notify(Constants.STARTED_ID, builder.build());
@@ -1695,39 +1692,39 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private void startCheck(int alertID) {
         try {
-            MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
+            MobileUtils.toggleMobileDataConnection(false, mContext, Constants.DISABLED);
         } catch (Exception e) {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
 
-        isTimerCancelled = true;
+        mIsTimerCancelled = true;
         mTimer.cancel();
         mTimer.purge();
         boolean choice = false;
 
-        if (((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
-                prefs.getBoolean(Constants.PREF_OTHER[10], true)) {
+        if (((alertID == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
+                (alertID == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
+                (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
+                mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
-                if (!isSIM2OverLimit && alertID == Constants.SIM1 && simNumber >= 2) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
+                if (!mIsSIM2OverLimit && alertID == Constants.SIM1 && mSimQuantity >= 2) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
                     timerStart(Constants.COUNT);
-                } else if (!isSIM3OverLimit && alertID == Constants.SIM1 && simNumber == 3) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
+                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM1 && mSimQuantity == 3) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
                     timerStart(Constants.COUNT);
-                } else if (!isSIM1OverLimit && alertID == Constants.SIM2) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
+                } else if (!mIsSIM1OverLimit && alertID == Constants.SIM2) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
                     timerStart(Constants.COUNT);
-                } else if (!isSIM3OverLimit && alertID == Constants.SIM2 && simNumber == 3) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
+                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM2 && mSimQuantity == 3) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
                     timerStart(Constants.COUNT);
-                } else if (!isSIM1OverLimit && alertID == Constants.SIM3) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
+                } else if (!mIsSIM1OverLimit && alertID == Constants.SIM3) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
                     timerStart(Constants.COUNT);
-                } else if (!isSIM2OverLimit && alertID == Constants.SIM3) {
-                    MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
+                } else if (!mIsSIM2OverLimit && alertID == Constants.SIM3) {
+                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
                     timerStart(Constants.COUNT);
                 } else
                     choice = true;
@@ -1735,28 +1732,28 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
-        } else if (((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
-                !prefs.getBoolean(Constants.PREF_OTHER[10], true))
+        } else if (((alertID == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
+                (alertID == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
+                (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
+                !mPrefs.getBoolean(Constants.PREF_OTHER[10], true))
             choice = true;
-        else if ((alertID == Constants.SIM1 && !prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (alertID == Constants.SIM2 && !prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (alertID == Constants.SIM3 && !prefs.getBoolean(Constants.PREF_SIM3[7], true)) ||
-                (isSIM1OverLimit && isSIM2OverLimit && isSIM3OverLimit && prefs.getBoolean(Constants.PREF_OTHER[10], true))) {
-            Intent dialogIntent = new Intent(context, ChooseAction.class);
+        else if ((alertID == Constants.SIM1 && !mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
+                (alertID == Constants.SIM2 && !mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
+                (alertID == Constants.SIM3 && !mPrefs.getBoolean(Constants.PREF_SIM3[7], true)) ||
+                (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM3OverLimit && mPrefs.getBoolean(Constants.PREF_OTHER[10], true))) {
+            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (!ChooseAction.isShown())
-                context.startActivity(dialogIntent);
-        } else if (isSIM1OverLimit && isSIM2OverLimit && isSIM2OverLimit)
+                mContext.startActivity(dialogIntent);
+        } else if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM2OverLimit)
             choice = true;
         if (choice) {
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_disable);
-            Intent notificationIntent = new Intent(context, MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+            Intent notificationIntent = new Intent(mContext, MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                     .setContentIntent(contentIntent)
                     .setSmallIcon(R.drawable.ic_disable_small)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -1767,7 +1764,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             nm.notify(Constants.STARTED_ID, builder.build());
 
             Intent intent = new Intent(Constants.TIP);
-            context.sendBroadcast(intent);
+            mContext.sendBroadcast(intent);
 
             timerStart(Constants.CHECK);
         }
@@ -1775,33 +1772,33 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private void alertNotify(int alertID) {
         Intent notificationIntent;
-        if ((prefs.getBoolean(Constants.PREF_SIM1[7], true) && isSIM1OverLimit) ||
-                (prefs.getBoolean(Constants.PREF_SIM2[7], true) && isSIM2OverLimit) ||
-                (prefs.getBoolean(Constants.PREF_SIM2[7], true) && isSIM3OverLimit))
-            notificationIntent = new Intent(context, MainActivity.class);
+        if ((mPrefs.getBoolean(Constants.PREF_SIM1[7], true) && mIsSIM1OverLimit) ||
+                (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM2OverLimit) ||
+                (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM3OverLimit))
+            notificationIntent = new Intent(mContext, MainActivity.class);
         else {
             final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
             notificationIntent = new Intent(Intent.ACTION_MAIN);
             notificationIntent.setComponent(cn);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        if (prefs.getBoolean(Constants.PREF_OTHER[3], false) && prefs.getBoolean(Constants.PREF_OTHER[2], false))
+        PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false) && mPrefs.getBoolean(Constants.PREF_OTHER[2], false))
             builder.setDefaults(Notification.DEFAULT_VIBRATE);
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
         String opName;
         if (alertID == Constants.SIM1)
-            opName = operatorNames[0];
+            opName = mOperatorNames[0];
         else if (alertID == Constants.SIM2)
-            opName = operatorNames[1];
+            opName = mOperatorNames[1];
         else
-            opName = operatorNames[2];
+            opName = mOperatorNames[2];
         String txt;
-        if ((alertID == Constants.SIM1 && prefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (alertID == Constants.SIM2 && prefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (alertID == Constants.SIM3 && prefs.getBoolean(Constants.PREF_SIM3[7], true)))
+        if ((alertID == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
+                (alertID == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
+                (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true)))
             txt = getResources().getString(R.string.data_dis);
         else
             txt = getResources().getString(R.string.data_dis_tip);
@@ -1812,13 +1809,13 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSmallIcon(R.drawable.ic_alert_small)
                 .setLargeIcon(bm)
-                .setTicker(context.getString(R.string.app_name))
+                .setTicker(mContext.getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(txt)
                 .setContentText(opName + ": " + getResources().getString(R.string.over_limit))
                 .build();
-        if (prefs.getBoolean(Constants.PREF_OTHER[4], false) && !prefs.getString(Constants.PREF_OTHER[1], "").equals("")) {
-            n.sound = Uri.parse(prefs.getString(Constants.PREF_OTHER[1], ""));
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[4], false) && !mPrefs.getString(Constants.PREF_OTHER[1], "").equals("")) {
+            n.sound = Uri.parse(mPrefs.getString(Constants.PREF_OTHER[1], ""));
             n.flags = Notification.FLAG_ONLY_ALERT_ONCE;
         }
         nm.notify(alertID, n);
@@ -1853,17 +1850,17 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     @Override
     public void onDestroy() {
         super.onDestroy();
-        prefs.edit().putBoolean(Constants.PREF_OTHER[17], continueOverLimit)
-                .putBoolean(Constants.PREF_OTHER[18], actionChosen)
+        mPrefs.edit().putBoolean(Constants.PREF_OTHER[17], mContinueOverLimit)
+                .putBoolean(Constants.PREF_OTHER[18], mIsActionChosen)
                 .apply();
-        Picasso.with(context).cancelRequest(target);
-        isTimerCancelled = true;
+        Picasso.with(mContext).cancelRequest(mTarget);
+        mIsTimerCancelled = true;
         mTimer.cancel();
         mTimer.purge();
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        TrafficDatabase.writeTrafficData(dataMap, mDatabaseHelper);
-        prefs.unregisterOnSharedPreferenceChangeListener(this);
+        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(clear1Receiver);
         unregisterReceiver(clear2Receiver);
         unregisterReceiver(clear3Receiver);
