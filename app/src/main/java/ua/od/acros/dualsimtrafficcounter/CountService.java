@@ -151,12 +151,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         connReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                mTimer.cancel();
+                mTimer.purge();
+                mIsTimerCancelled = true;
                 if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                     mLastActiveSIM = mActiveSIM;
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
-
                     if (mPrefs.getBoolean(Constants.PREF_SIM1[14], true) && mLastActiveSIM == Constants.SIM1) {
                         mDataMap.put(Constants.TOTAL1, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL1),
                                 mPrefs.getString(Constants.PREF_SIM1[15], "1"), mPrefs.getString(Constants.PREF_SIM1[16], "0")));
@@ -1011,7 +1010,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        pushNotification(Constants.SIM1);
+                        if (isScreenOn(mContext))
+                            pushNotification(Constants.SIM1);
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
@@ -1256,7 +1256,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        pushNotification(Constants.SIM2);
+                        if (isScreenOn(mContext))
+                            pushNotification(Constants.SIM2);
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
@@ -1501,7 +1502,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        pushNotification(Constants.SIM3);
+                        if (isScreenOn(mContext))
+                            pushNotification(Constants.SIM3);
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
