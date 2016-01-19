@@ -1590,7 +1590,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         String text = "";
         long tot1 = 0, tot2 = 0, tot3 = 0;
         if (prefs.getBoolean(Constants.PREF_OTHER[19], false)) {
-            if (simNumber == 1) {
+            if (simNumber >= 1) {
                 String limit1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
                 String round1 = isNight1 ? prefs.getString(Constants.PREF_SIM1[22], "") : prefs.getString(Constants.PREF_SIM1[4], "0");
                 int value1;
