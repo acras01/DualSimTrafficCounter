@@ -44,7 +44,7 @@ public class WatchDogService extends Service{
         super.onCreate();
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mContext = WatchDogService.this;
-        mDatabaseHelper = new TrafficDatabase(this, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+        mDatabaseHelper = TrafficDatabase.getInstance(mContext);
         // cancel if already existed
         if (mTimer != null) {
             mTimer.cancel();

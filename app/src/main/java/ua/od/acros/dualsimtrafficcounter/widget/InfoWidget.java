@@ -33,7 +33,7 @@ public class InfoWidget extends AppWidgetProvider {
         super.onUpdate(context, widgetManager, widgetId);
         Bundle bundle = new Bundle();
         if (!TrafficDatabase.isEmpty(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-            ContentValues dataMap = TrafficDatabase.readTrafficData(new TrafficDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+            ContentValues dataMap = TrafficDatabase.readTrafficData(TrafficDatabase.getInstance(context));
             bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
             bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
             bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));

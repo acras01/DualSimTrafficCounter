@@ -21,6 +21,18 @@ public class TrafficDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_TABLE = "data";
     private static SQLiteDatabase mSqLiteDatabase;
+    private static TrafficDatabase mInstance;
+
+    public static TrafficDatabase getInstance(Context context) {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (mInstance == null) {
+            mInstance = new TrafficDatabase(context.getApplicationContext());
+        }
+        return mInstance;
+    }
 
     public TrafficDatabase(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);

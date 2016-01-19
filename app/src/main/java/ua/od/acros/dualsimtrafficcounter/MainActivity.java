@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorName1 = mOperatorName2 = mOperatorName3 = "";
         mContext = MainActivity.this;
-        mDatabaseHelper = new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+        mDatabaseHelper = TrafficDatabase.getInstance(mContext);
         mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);

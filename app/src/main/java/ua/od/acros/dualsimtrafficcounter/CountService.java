@@ -138,7 +138,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
         mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
-        mDatabaseHelper = new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+        mDatabaseHelper = TrafficDatabase.getInstance(mContext);
         mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
         if (mDataMap.get(Constants.LAST_DATE).equals("")) {
             Calendar myCalendar = Calendar.getInstance();

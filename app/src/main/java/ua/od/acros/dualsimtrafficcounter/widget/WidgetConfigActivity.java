@@ -356,7 +356,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
                 Intent intent = new Intent(Constants.BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
                 if (!TrafficDatabase.isEmpty(new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-                    ContentValues dataMap = TrafficDatabase.readTrafficData(new TrafficDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION));
+                    ContentValues dataMap = TrafficDatabase.readTrafficData(TrafficDatabase.getInstance(mContext));
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);
                     intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));

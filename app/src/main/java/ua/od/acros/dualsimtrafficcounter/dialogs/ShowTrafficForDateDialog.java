@@ -164,7 +164,7 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
             if (isCancelled())
                 return null;
             else
-                return TrafficDatabase.getDataForDate(new TrafficDatabase(getActivity(), Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION),
+                return TrafficDatabase.getDataForDate(TrafficDatabase.getInstance(MainActivity.getAppContext()),
                     date, params[3], getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
         }
 
