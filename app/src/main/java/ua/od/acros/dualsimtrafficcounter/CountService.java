@@ -37,10 +37,14 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction;
@@ -74,7 +78,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private boolean mIsSIM1OverLimit = false;
     private boolean mIsSIM2OverLimit = false;
     private boolean mIsSIM3OverLimit = false;
-    private boolean mIsTimerCancelled = false;
     private boolean mContinueOverLimit;
     private boolean mIsResetNeeded3 = false;
     private boolean mIsResetNeeded2 = false;
@@ -93,9 +96,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private DateTime mResetTime2;
     private DateTime mResetTime3;
     private ContentValues mDataMap;
-    private BroadcastReceiver clear1Receiver, clear2Receiver, clear3Receiver, connReceiver, setUsageReceiver, actionReceiver;
+    private BroadcastReceiver clearReceiver, connReceiver, setUsageReceiver, actionReceiver;
     private TrafficDatabase mDatabaseHelper;
-    private Timer mTimer = null;
+    private ScheduledExecutorService mExecutor = null;
+    private ScheduledFuture<?> mResult = null;
     private SharedPreferences mPrefs;
     private Bitmap mBitmapLarge;
     private Target mTarget;
@@ -151,10 +155,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         connReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (mTimer != null) {
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
+                if (mResult != null) {
+                    mResult.cancel(false);
+                    mExecutor.shutdown();
                 }
                 if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                     mLastActiveSIM = mActiveSIM;
@@ -238,7 +241,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 MobileUtils.toggleMobileDataConnection(true, context, simid);
                             mContinueOverLimit = true;
-                            if (mIsTimerCancelled)
+                            if (mResult.isCancelled())
                                 timerStart(Constants.COUNT);
                             break;
                         case Constants.OFF_ACTION:
@@ -262,10 +265,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         setUsageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (mTimer != null) {
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
+                if (mResult != null) {
+                    mResult.cancel(false);
+                    mExecutor.shutdown();
                 }
                 try {
                     TimeUnit.SECONDS.sleep(1);
@@ -335,13 +337,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         };
 
-        clear1Receiver = new BroadcastReceiver() {
+        clearReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (mTimer != null) {
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
+                if (mResult != null) {
+                    mResult.cancel(false);
+                    mExecutor.shutdown();
                 }
                 try {
                     TimeUnit.SECONDS.sleep(1);
@@ -349,70 +350,40 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
-                if (mIsNight1) {
-                    mDataMap.put(Constants.SIM1RX_N, 0L);
-                    mDataMap.put(Constants.SIM1TX_N, 0L);
-                    mDataMap.put(Constants.TOTAL1_N, 0L);
-                } else {
-                    mDataMap.put(Constants.SIM1RX, 0L);
-                    mDataMap.put(Constants.SIM1TX, 0L);
-                    mDataMap.put(Constants.TOTAL1, 0L);
-                }
-                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
-                timerStart(Constants.COUNT);
-            }
-        };
-
-        clear2Receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (mTimer != null) {
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
-                if (mIsNight2) {
-                    mDataMap.put(Constants.SIM2RX_N, 0L);
-                    mDataMap.put(Constants.SIM2TX_N, 0L);
-                    mDataMap.put(Constants.TOTAL2_N, 0L);
-                } else {
-                    mDataMap.put(Constants.SIM2RX, 0L);
-                    mDataMap.put(Constants.SIM2TX, 0L);
-                    mDataMap.put(Constants.TOTAL2, 0L);
-                }
-                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
-                timerStart(Constants.COUNT);
-            }
-        };
-
-        clear3Receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (mTimer != null) {
-                    mTimer.cancel();
-                    mTimer.purge();
-                    mIsTimerCancelled = true;
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
-                if (mIsNight3) {
-                    mDataMap.put(Constants.SIM3RX_N, 0L);
-                    mDataMap.put(Constants.SIM3TX_N, 0L);
-                    mDataMap.put(Constants.TOTAL3_N, 0L);
-                } else {
-                    mDataMap.put(Constants.SIM3RX, 0L);
-                    mDataMap.put(Constants.SIM3TX, 0L);
-                    mDataMap.put(Constants.TOTAL3, 0L);
+                switch (intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) {
+                    case Constants.SIM1:
+                        if (mIsNight1) {
+                            mDataMap.put(Constants.SIM1RX_N, 0L);
+                            mDataMap.put(Constants.SIM1TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL1_N, 0L);
+                        } else {
+                            mDataMap.put(Constants.SIM1RX, 0L);
+                            mDataMap.put(Constants.SIM1TX, 0L);
+                            mDataMap.put(Constants.TOTAL1, 0L);
+                        }
+                        break;
+                    case Constants.SIM2:
+                        if (mIsNight2) {
+                            mDataMap.put(Constants.SIM2RX_N, 0L);
+                            mDataMap.put(Constants.SIM2TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL2_N, 0L);
+                        } else {
+                            mDataMap.put(Constants.SIM2RX, 0L);
+                            mDataMap.put(Constants.SIM2TX, 0L);
+                            mDataMap.put(Constants.TOTAL2, 0L);
+                        }
+                        break;
+                    case Constants.SIM3:
+                        if (mIsNight3) {
+                            mDataMap.put(Constants.SIM3RX_N, 0L);
+                            mDataMap.put(Constants.SIM3TX_N, 0L);
+                            mDataMap.put(Constants.TOTAL3_N, 0L);
+                        } else {
+                            mDataMap.put(Constants.SIM3RX, 0L);
+                            mDataMap.put(Constants.SIM3TX, 0L);
+                            mDataMap.put(Constants.TOTAL3, 0L);
+                        }
+                        break;
                 }
                 TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 timerStart(Constants.COUNT);
@@ -420,24 +391,20 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         };
 
         IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
-        IntentFilter clear1ServiceFilter = new IntentFilter(Constants.CLEAR1);
-        IntentFilter clear2ServiceFilter = new IntentFilter(Constants.CLEAR2);
-        IntentFilter clear3ServiceFilter = new IntentFilter(Constants.CLEAR3);
+        IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR);
         registerReceiver(setUsageReceiver, setUsageFilter);
-        registerReceiver(clear1Receiver, clear1ServiceFilter);
-        registerReceiver(clear2Receiver, clear2ServiceFilter);
-        registerReceiver(clear3Receiver, clear3ServiceFilter);
+        registerReceiver(clearReceiver, clearSimDataFilter);
 
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
 
         // cancel if already existed
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = new Timer();
+        if (mExecutor != null) {
+            mExecutor.shutdown();
+            mExecutor = Executors.newSingleThreadScheduledExecutor();
         } else {
             // recreate new
-            mTimer = new Timer();
+            mExecutor = Executors.newSingleThreadScheduledExecutor();
         }
     }
 
@@ -465,7 +432,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
-                .setSmallIcon(R.drawable.ic_launcher_small)
+                .setSmallIcon(getOperatorLogoID(mLastActiveSIM))
                 .setLargeIcon(mBitmapLarge)
                 .setTicker(getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
@@ -490,19 +457,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         return new boolean[]{mIsNight1, mIsNight2, mIsNight3};
     }
 
-    private void timerStart(int task) {
-        TimerTask tTask = null;
-        mHasActionChosen = false;
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-        mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
-        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
-
+    private int getOperatorLogoID (int sim) {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[25];
-            switch (mActiveSIM) {
+            switch (sim) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;
                     break;
@@ -514,11 +472,24 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     break;
             }
             if (mPrefs.getString(pref[23], "none").equals("auto"))
-                mIDSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
+                return getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, sim), "drawable", mContext.getPackageName());
             else
-                mIDSmall = getResources().getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", mContext.getPackageName());
+                return getResources().getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", mContext.getPackageName());
         } else
-            mIDSmall = R.drawable.ic_launcher_small;
+            return R.drawable.ic_launcher_small;
+    }
+
+    private void timerStart(int task) {
+        TimerTask tTask = null;
+        mHasActionChosen = false;
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
+        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+
+        mIDSmall = getOperatorLogoID(mActiveSIM);
 
         sendDataBroadcast(0L, 0L);
         if (task == Constants.COUNT) {
@@ -541,11 +512,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         } else
             tTask = new CheckTimerTask();
-        if (mIsTimerCancelled)
-            mTimer = new Timer();
-        mIsTimerCancelled = false;
+        if (mResult == null || mResult.isCancelled())
+            mExecutor = Executors.newSingleThreadScheduledExecutor();
         if (tTask != null) {
-            mTimer.scheduleAtFixedRate(tTask, 0, Constants.NOTIFY_INTERVAL);
+            mResult = mExecutor.scheduleAtFixedRate(tTask, 0, Constants.NOTIFY_INTERVAL, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -670,10 +640,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                    if (mTimer != null) {
-                        mTimer.cancel();
-                        mTimer.purge();
-                        mIsTimerCancelled = true;
+                    if (mResult != null) {
+                        mResult.cancel(false);
+                        mExecutor.shutdown();
                     }
                     timerStart(Constants.COUNT);
                 }
@@ -682,10 +651,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                    if (mTimer != null) {
-                        mTimer.cancel();
-                        mTimer.purge();
-                        mIsTimerCancelled = true;
+                    if (mResult != null) {
+                        mResult.cancel(false);
+                        mExecutor.shutdown();
                     }
                     timerStart(Constants.COUNT);
                 }
@@ -694,10 +662,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                    if (mTimer != null) {
-                        mTimer.cancel();
-                        mTimer.purge();
-                        mIsTimerCancelled = true;
+                    if (mResult != null) {
+                        mResult.cancel(false);
+                        mExecutor.shutdown();
                     }
                     timerStart(Constants.COUNT);
                 }
@@ -781,17 +748,37 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             if (now.getDayOfMonth() > delta && diff < daysInMonth)
                 month += 1;
             date = now.getYear() + "-" + month + "-" + delta;
-            return fmtDateTime.parseDateTime(date + " " + mPrefs.getString(pref[9], "00:00"));
+            last = fmtDateTime.parseDateTime(date + " " + mPrefs.getString(pref[9], "00:00"));
         } else {
             if (mPrefs.getString(pref[3], "").equals("2"))
                 mDataMap.put(period, diff);
             if (diff >= delta) {
                 if (mPrefs.getString(pref[3], "").equals("2"))
                     mDataMap.put(period, 0);
-                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + mPrefs.getString(pref[9], "00:00"));
+                last = fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + mPrefs.getString(pref[9], "00:00"));
             } else
-                return null;
+                last = null;
         }
+        if (last != null)
+            date = simid + " " + last.toString(fmtDateTime) + " " + now.toString(fmtDateTime) + "\n";
+        else
+            date = simid + " " + "null" + "\n";
+        File dir = new File(String.valueOf(mContext.getFilesDir()));
+                // create this directory if not already created
+                dir.mkdir();
+                // create the file in which we will write the contents
+                String fileName ="reset_log.txt";
+                File file = new File(dir, fileName);
+                FileOutputStream os;
+                try {
+                    os = new FileOutputStream(file, true);
+                    os.write(date.getBytes());
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
+                }
+        return last;
     }
 
     private class CountTimerTask1 extends TimerTask {
@@ -799,7 +786,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mIsTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mResult.isCancelled()) {
 
                     long speedRX;
                     long speedTX;
@@ -1045,7 +1032,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mIsTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mResult.isCancelled()) {
+
 
                     long speedRX;
                     long speedTX;
@@ -1291,7 +1279,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mIsTimerCancelled) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mResult.isCancelled()) {
+
 
                     long speedRX;
                     long speedTX;
@@ -1716,9 +1705,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             ACRA.getErrorReporter().handleException(e);
         }
 
-        mIsTimerCancelled = true;
-        mTimer.cancel();
-        mTimer.purge();
+        if (mResult != null) {
+            mResult.cancel(false);
+            mExecutor.shutdown();
+        }
         boolean choice = false;
 
         if (((alertID == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
@@ -1872,18 +1862,15 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .putBoolean(Constants.PREF_OTHER[18], mHasActionChosen)
                 .apply();
         Picasso.with(mContext).cancelRequest(mTarget);
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer.purge();
-            mIsTimerCancelled = true;
+        if (mResult != null) {
+            mResult.cancel(false);
+            mExecutor.shutdown();
         }
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        unregisterReceiver(clear1Receiver);
-        unregisterReceiver(clear2Receiver);
-        unregisterReceiver(clear3Receiver);
+        unregisterReceiver(clearReceiver);
         unregisterReceiver(setUsageReceiver);
         unregisterReceiver(actionReceiver);
         unregisterReceiver(connReceiver);

@@ -587,7 +587,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
             case R.id.buttonClear1:
                 if (CheckServiceRunning.isMyServiceRunning(CountService.class, mContext)) {
-                    Intent clear1Intent = new Intent(Constants.CLEAR1);
+                    Intent clear1Intent = new Intent(Constants.CLEAR);
+                    clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                     sendBroadcast(clear1Intent);
                 } else {
                     mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
@@ -615,7 +616,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
             case R.id.buttonClear2:
                 if (CheckServiceRunning.isMyServiceRunning(CountService.class, mContext)) {
-                    Intent clear2Intent = new Intent(Constants.CLEAR2);
+                    Intent clear2Intent = new Intent(Constants.CLEAR);
+                    clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                     sendBroadcast(clear2Intent);
                 } else {
                     mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
@@ -643,8 +645,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
             case R.id.buttonClear3:
                 if (CheckServiceRunning.isMyServiceRunning(CountService.class, mContext)) {
-                    Intent clear2Intent = new Intent(Constants.CLEAR3);
-                    sendBroadcast(clear2Intent);
+                    Intent clear3Intent = new Intent(Constants.CLEAR);
+                    clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
+                    sendBroadcast(clear3Intent);
                 } else {
                     mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[2]) {

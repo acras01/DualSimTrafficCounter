@@ -34,12 +34,9 @@ public class Constants {
     public static final String LAST_RX = "lastrx";
     public static final String LAST_TIME = "time";
     public static final String LAST_DATE = "date";
-    public static final String CLEAR1 = "clear1";
-    public static final String CLEAR2 = "clear2";
-    public static final String CLEAR3 = "clear3";
+    public static final String CLEAR = "clear";
     public static final String SET_USAGE = "usage";
     public static final String ON_OFF = "onoff";
-    public static final String CHOOSE_ACTION = "choose";
     public static final String CHANGE_ACTION = "change";
     public static final String SETTINGS_ACTION = "mobile_data";
     public static final String LIMIT_ACTION = "limit";
