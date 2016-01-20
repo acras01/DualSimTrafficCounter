@@ -139,6 +139,15 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mContinueOverLimit = mPrefs.getBoolean(Constants.PREF_OTHER[17], false);
         mHasActionChosen = mPrefs.getBoolean(Constants.PREF_OTHER[18], false);
+        mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
+        if (mIsResetNeeded1)
+            mResetTime1 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+        mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2[25], false);
+        if (mIsResetNeeded2)
+            mResetTime2 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
+        mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3[25], false);
+        if (mIsResetNeeded3)
+            mResetTime3 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
 
         mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
@@ -460,7 +469,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private int getOperatorLogoID (int sim) {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
-            String[] pref = new String[25];
+            String[] pref = new String[27];
             switch (sim) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;
@@ -543,7 +552,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         if (key.equals(Constants.PREF_OTHER[15]))
             if (sharedPreferences.getBoolean(key, false)) {
-                String[] pref = new String[25];
+                String[] pref = new String[27];
                 switch (mActiveSIM) {
                     case Constants.SIM1:
                         pref = Constants.PREF_SIM1;
@@ -678,7 +687,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private DateTime getResetTime(int simid) {
         DateTime now = new DateTime().withTimeAtStartOfDay();
-        String[] pref = new String[25];
+        String[] pref = new String[27];
         int delta = 0;
         String period = "";
         switch (simid) {
@@ -840,14 +849,26 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
-                        if (mResetTime1 != null)
+                        if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mResetTime2 = getResetTime(Constants.SIM2);
-                        if (mResetTime2 != null)
+                        if (mResetTime2 != null) {
                             mIsResetNeeded2 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mResetTime3 = getResetTime(Constants.SIM3);
-                        if (mResetTime3 != null)
+                        if (mResetTime3 != null) {
                             mIsResetNeeded3 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mIsResetRuleChanged = false;
                     }
 
@@ -888,8 +909,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mDataMap.put(Constants.SIM1TX_N, 0L);
                             mDataMap.put(Constants.TOTAL1_N, 0L);
                             rx = tx = mReceived1 = mTransmitted1 = 0;
-                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
                             mIsResetNeeded1 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
+                                    .apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
@@ -910,6 +934,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM2);
                         }
@@ -931,6 +958,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM3);
                         }
@@ -1090,14 +1120,26 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
-                        if (mResetTime1 != null)
+                        if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mResetTime2 = getResetTime(Constants.SIM2);
-                        if (mResetTime2 != null)
+                        if (mResetTime2 != null) {
                             mIsResetNeeded2 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mResetTime3 = getResetTime(Constants.SIM3);
-                        if (mResetTime3 != null)
+                        if (mResetTime3 != null) {
                             mIsResetNeeded3 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mIsResetRuleChanged = false;
                     }
 
@@ -1148,6 +1190,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM1);
                         }
@@ -1160,6 +1205,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mDataMap.put(Constants.TOTAL2_N, 0L);
                             rx = tx = mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM2);
                         }
@@ -1181,6 +1229,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM3);
                         }
@@ -1340,14 +1391,26 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
-                        if (mResetTime1 != null)
+                        if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mResetTime2 = getResetTime(Constants.SIM2);
-                        if (mResetTime2 != null)
+                        if (mResetTime2 != null) {
                             mIsResetNeeded2 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mResetTime3 = getResetTime(Constants.SIM3);
-                        if (mResetTime3 != null)
+                        if (mResetTime3 != null) {
                             mIsResetNeeded3 = true;
+                            mPrefs.edit()
+                                    .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
+                                    .apply();
+                        }
                         mIsResetRuleChanged = false;
                     }
 
@@ -1398,6 +1461,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM1);
                         }
@@ -1419,6 +1485,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             }
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM2);
                         }
@@ -1431,6 +1500,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mDataMap.put(Constants.TOTAL3_N, 0L);
                             rx = tx = mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                                    .apply();
                             mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM3);
                         }
@@ -1537,7 +1609,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         String opName = "";
         int id;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
-            String[] pref = new String[25];
+            String[] pref = new String[27];
             switch (simid) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;

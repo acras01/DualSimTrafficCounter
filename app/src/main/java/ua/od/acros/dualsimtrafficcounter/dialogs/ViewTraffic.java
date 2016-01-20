@@ -58,7 +58,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
         TOTN.setVisibility(View.GONE);
         night.setVisibility(View.GONE);
 
-        String[] prefsConst = new String[25];
+        String[] prefsConst = new String[27];
         switch (sim) {
             case Constants.SIM1:
                 prefsConst = Constants.PREF_SIM1;
