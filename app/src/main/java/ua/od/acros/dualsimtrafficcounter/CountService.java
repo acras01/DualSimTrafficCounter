@@ -400,6 +400,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
         // cancel if already existed
         if (mExecutor != null) {
+            mResult.cancel(true);
             mExecutor.shutdown();
             mExecutor = Executors.newSingleThreadScheduledExecutor();
         } else {
