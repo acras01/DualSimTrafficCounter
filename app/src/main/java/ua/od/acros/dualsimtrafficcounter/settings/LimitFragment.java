@@ -131,6 +131,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             getPreferenceScreen().findPreference("everyday1").setEnabled(false);
             getPreferenceScreen().findPreference("everyday2").setEnabled(false);
             getPreferenceScreen().findPreference("everyday3").setEnabled(false);
+            everyday1.setEnabled(false);
+            everyday2.setEnabled(false);
+            everyday3.setEnabled(false);
         }
         if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) {
             changeSIM.setEnabled(false);
