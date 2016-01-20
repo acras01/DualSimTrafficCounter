@@ -838,7 +838,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } else
                         mIsNight1 = false;
 
-                    if (now.isAfter(dt) || mIsResetRuleChanged) {
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
                         if (mResetTime1 != null)
                             mIsResetNeeded1 = true;
@@ -1085,7 +1085,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } else
                         mIsNight2 = false;
 
-                    if (now.isAfter(dt) || mIsResetRuleChanged) {
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
                         if (mResetTime1 != null)
                             mIsResetNeeded1 = true;
@@ -1332,7 +1332,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } else
                         mIsNight3 = false;
 
-                    if (now.isAfter(dt) || mIsResetRuleChanged) {
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
                         if (mResetTime1 != null)
                             mIsResetNeeded1 = true;
