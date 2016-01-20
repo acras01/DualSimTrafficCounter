@@ -765,20 +765,20 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         else
             date = simid + " " + "null" + "\n";
         File dir = new File(String.valueOf(mContext.getFilesDir()));
-                // create this directory if not already created
-                dir.mkdir();
-                // create the file in which we will write the contents
-                String fileName ="reset_log.txt";
-                File file = new File(dir, fileName);
-                FileOutputStream os;
-                try {
-                    os = new FileOutputStream(file, true);
-                    os.write(date.getBytes());
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
+        // create this directory if not already created
+        dir.mkdir();
+        // create the file in which we will write the contents
+        String fileName ="reset_log.txt";
+        File file = new File(dir, fileName);
+        FileOutputStream os;
+        try {
+            os = new FileOutputStream(file, true);
+            os.write(date.getBytes());
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
         return last;
     }
 

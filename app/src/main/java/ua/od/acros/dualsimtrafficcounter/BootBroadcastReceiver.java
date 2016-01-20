@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
-public class BootBroadcast extends BroadcastReceiver {
+public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

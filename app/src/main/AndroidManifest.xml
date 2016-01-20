@@ -22,21 +22,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask" >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name="org.acra.CrashReportDialog"
             android:excludeFromRecents="true"
@@ -44,16 +40,13 @@
             android:launchMode="singleInstance"
             android:process=":error_report"
             android:theme="@style/AppTheme.Dialog" />
-
         <activity
             android:name=".settings.SettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/action_settings" >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-
         </activity>
 
         <service
@@ -63,20 +56,16 @@
         </service>
 
         <receiver
-            android:name=".BootBroadcast"
+            android:name=".BootBroadcastReceiver"
             android:enabled="true"
             android:exported="true" >
-
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
         </receiver>
-
         <receiver
             android:name=".widget.InfoWidget"
             android:label="@string/info_widget_simple" >
-
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
@@ -88,7 +77,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/info_widget" />
-
         </receiver>
 
         <activity
@@ -97,15 +85,12 @@
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" >
         </activity>
-
         <activity
             android:name=".widget.WidgetConfigActivity"
             android:label="@string/widget_title" >
-
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
-
         </activity>
 
         <service
@@ -118,11 +103,9 @@
             android:name=".OnOffReceiver"
             android:enabled="true"
             android:exported="false" >
-
             <intent-filter>
                 <action android:name="ua.od.acros.dualsimtrafficcounter.ALARM" />
             </intent-filter>
-
         </receiver>
 
         <activity

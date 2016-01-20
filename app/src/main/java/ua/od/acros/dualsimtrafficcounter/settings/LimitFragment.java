@@ -431,6 +431,8 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         updateSummary();
         AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Calendar clndr = Calendar.getInstance();
+
+        //Scheduled ON/OFF
         if (key.equals(Constants.PREF_SIM1[11]) || key.equals(Constants.PREF_SIM1[12]) || key.equals(Constants.PREF_SIM1[13])) {
             Intent i1Off = new Intent(getActivity(), OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
