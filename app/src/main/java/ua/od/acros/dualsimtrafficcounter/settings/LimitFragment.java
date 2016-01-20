@@ -135,6 +135,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
+            everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));
+            everyday1.setEntryValues(getResources().getStringArray(R.array.onoff_values_LP));
+            everyday2.setEntries(getResources().getStringArray(R.array.onoff_LP));
+            everyday2.setEntryValues(getResources().getStringArray(R.array.onoff_values_LP));
+            everyday3.setEntries(getResources().getStringArray(R.array.onoff_LP));
+            everyday3.setEntryValues(getResources().getStringArray(R.array.onoff_values_LP));
         }
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));

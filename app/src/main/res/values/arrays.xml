@@ -166,4 +166,12 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string-array name="onoff_LP">
+        <item>Only OFF</item>
+        <item>Nothing</item>
+    </string-array>
+    <string-array name="onoff_values_LP">
+        <item>1</item>
+        <item>3</item>
+    </string-array>
 </resources>

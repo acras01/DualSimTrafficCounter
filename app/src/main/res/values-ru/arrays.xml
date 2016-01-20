@@ -83,4 +83,8 @@
         <item>Только вкл.</item>
         <item>Не использ.</item>
     </string-array>
+    <string-array name="onoff_LP">
+        <item>Только откл.</item>
+        <item>Не использ.</item>
+    </string-array>
 </resources>
