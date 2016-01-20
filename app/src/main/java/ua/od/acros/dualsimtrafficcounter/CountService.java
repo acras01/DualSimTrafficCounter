@@ -852,6 +852,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
@@ -859,6 +860,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime2 != null) {
                             mIsResetNeeded2 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
                                     .apply();
                         }
@@ -866,6 +868,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime3 != null) {
                             mIsResetNeeded3 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
                                     .apply();
                         }
@@ -1123,6 +1126,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
@@ -1130,6 +1134,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime2 != null) {
                             mIsResetNeeded2 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
                                     .apply();
                         }
@@ -1137,6 +1142,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime3 != null) {
                             mIsResetNeeded3 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
                                     .apply();
                         }
@@ -1394,6 +1400,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
@@ -1401,6 +1408,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime2 != null) {
                             mIsResetNeeded2 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
                                     .apply();
                         }
@@ -1408,6 +1416,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (mResetTime3 != null) {
                             mIsResetNeeded3 = true;
                             mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
                                     .apply();
                         }
