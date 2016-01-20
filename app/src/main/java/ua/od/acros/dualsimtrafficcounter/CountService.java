@@ -677,7 +677,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     }
 
     private DateTime getResetTime(int simid) {
-        DateTime now = new DateTime();
+        DateTime now = new DateTime().withTimeAtStartOfDay();
         String[] pref = new String[25];
         int delta = 0;
         String period = "";
@@ -698,9 +698,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         DateTime last;
         String date = mPrefs.getString(pref[24], "");
         if (!date.equals(""))
-            last = fmtDateTime.parseDateTime(date);
+            last = fmtDate.parseDateTime(date);
         else
-            last = fmtDateTime.parseDateTime("1970-01-01 00:00");
+            last = fmtDate.parseDateTime("1970-01-01");
         switch (mPrefs.getString(pref[3], "")) {
             case "0":
                 delta = 1;
