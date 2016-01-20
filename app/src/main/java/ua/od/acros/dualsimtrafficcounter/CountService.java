@@ -1553,7 +1553,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     break;
             }
             if (mPrefs.getString(pref[23], "none").equals("auto"))
-                id = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
+                id = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, simid), "drawable", mContext.getPackageName());
             else
                 id = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
         } else
