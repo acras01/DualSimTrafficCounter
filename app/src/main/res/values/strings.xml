@@ -145,4 +145,5 @@
     <string name="remain">Remaining</string>
     <string name="used">Used</string>
     <string name="show_full_text_on_widget">Traffic data on widget</string>
+    <string name="data_reset">: traffic data has been resetted</string>
 </resources>

@@ -142,4 +142,5 @@
     <string name="show_remaining">Вiдображати залишок трафiку в панелi повiдомлень</string>
     <string name="used">Використ.</string>
     <string name="show_full_text_on_widget">Інформація про трафік на віджеті</string>
+    <string name="data_reset">: дані було скинуто</string>
 </resources>

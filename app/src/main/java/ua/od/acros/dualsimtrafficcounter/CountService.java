@@ -543,7 +543,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         if (key.equals(Constants.PREF_OTHER[15]))
             if (sharedPreferences.getBoolean(key, false)) {
-                String[] pref = new String[24];
+                String[] pref = new String[25];
                 switch (mActiveSIM) {
                     case Constants.SIM1:
                         pref = Constants.PREF_SIM1;
@@ -890,6 +890,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             rx = tx = mReceived1 = mTransmitted1 = 0;
                             mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
                             mIsResetNeeded1 = false;
+                            pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
                             mDataMap.put(Constants.SIM2RX, 0L);
@@ -910,6 +911,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
                             mDataMap.put(Constants.SIM3RX, 0L);
@@ -930,6 +932,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM3);
                         }
                     } else {
                         if (!mIsNight1) {
@@ -1146,6 +1149,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
                             mDataMap.put(Constants.SIM2RX, 0L);
@@ -1157,6 +1161,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             rx = tx = mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
                             mDataMap.put(Constants.SIM3RX, 0L);
@@ -1177,6 +1182,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM3);
                         }
                     } else {
                         if (!mIsNight2) {
@@ -1393,6 +1399,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
                             mDataMap.put(Constants.SIM2RX, 0L);
@@ -1413,6 +1420,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
                             mDataMap.put(Constants.SIM3RX, 0L);
@@ -1424,6 +1432,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             rx = tx = mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
                             mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
+                            pushResetNotification(Constants.SIM3);
                         }
                     } else {
                         if (!mIsNight2) {
@@ -1521,6 +1530,48 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 ACRA.getErrorReporter().handleException(e);
             }
         }
+    }
+
+    private void pushResetNotification(int simid) {
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
+        String opName = "";
+        int id;
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
+            String[] pref = new String[25];
+            switch (simid) {
+                case Constants.SIM1:
+                    pref = Constants.PREF_SIM1;
+                    opName = mOperatorNames[0];
+                    break;
+                case Constants.SIM2:
+                    pref = Constants.PREF_SIM2;
+                    opName = mOperatorNames[1];
+                    break;
+                case Constants.SIM3:
+                    pref = Constants.PREF_SIM3;
+                    opName = mOperatorNames[2];
+                    break;
+            }
+            if (mPrefs.getString(pref[23], "none").equals("auto"))
+                id = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
+            else
+                id = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
+        } else
+            id = R.drawable.ic_launcher_small;
+        opName += getResources().getString(R.string.data_reset);
+        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
+                .setContentIntent(contentIntent)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setPriority(Notification.PRIORITY_LOW)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(id)
+                .setLargeIcon(bm)
+                .setContentTitle(getResources().getString(R.string.notification_title))
+                .setContentText(opName);
+        nm.notify(simid + 100, builder.build());
     }
 
     private void writeToDataBase(long diffrx, long difftx, boolean emptyDB, DateTime dt) {
