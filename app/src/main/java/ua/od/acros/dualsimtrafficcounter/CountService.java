@@ -421,8 +421,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mIDSmall = getOperatorLogoID(mLastActiveSIM);
         mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -438,21 +439,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         };
         Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
-                .setContentIntent(contentIntent)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setPriority(mPriority)
-                .setSmallIcon(getOperatorLogoID(mLastActiveSIM))
-                .setLargeIcon(mBitmapLarge)
-                .setTicker(getString(R.string.app_name))
-                .setWhen(System.currentTimeMillis())
-                .setOnlyAlertOnce(true)
-                .setOngoing(true)
-                .setContentTitle(getResources().getString(R.string.notification_title))
-                .setContentText(DataFormat.formatData(mContext, mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1)) + "   ||   "
-                        + DataFormat.formatData(mContext, mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2)) + "   ||   "
-                        + DataFormat.formatData(mContext, mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3)));
-        startForeground(Constants.STARTED_ID, builder.build());
+        startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM).build());
         // schedule task
         timerStart(Constants.COUNT);
 
@@ -498,7 +485,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
-
         mIDSmall = getOperatorLogoID(mActiveSIM);
 
         sendDataBroadcast(0L, 0L);
@@ -707,7 +693,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         DateTime last;
         String date = mPrefs.getString(pref[24], "");
         if (!date.equals(""))
-            last = fmtDate.parseDateTime(date);
+            last = fmtDateTime.parseDateTime(date).withTimeAtStartOfDay();
         else
             last = fmtDate.parseDateTime("1970-01-01");
         switch (mPrefs.getString(pref[3], "")) {
@@ -856,21 +842,25 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
-                        mResetTime2 = getResetTime(Constants.SIM2);
-                        if (mResetTime2 != null) {
-                            mIsResetNeeded2 = true;
-                            mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
-                                    .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
-                                    .apply();
+                        if (mSimQuantity >= 2) {
+                            mResetTime2 = getResetTime(Constants.SIM2);
+                            if (mResetTime2 != null) {
+                                mIsResetNeeded2 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                                        .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
+                                        .apply();
+                            }
                         }
-                        mResetTime3 = getResetTime(Constants.SIM3);
-                        if (mResetTime3 != null) {
-                            mIsResetNeeded3 = true;
-                            mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
-                                    .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
-                                    .apply();
+                        if (mSimQuantity == 3) {
+                            mResetTime3 = getResetTime(Constants.SIM3);
+                            if (mResetTime3 != null) {
+                                mIsResetNeeded3 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                                        .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
+                                        .apply();
+                            }
                         }
                         mIsResetRuleChanged = false;
                     }
@@ -1050,8 +1040,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        if (isScreenOn(mContext))
-                            pushNotification(Constants.SIM1);
+                        if (isScreenOn(mContext)) {
+                            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM1).build());
+                        }
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
@@ -1138,13 +1130,15 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
                                     .apply();
                         }
-                        mResetTime3 = getResetTime(Constants.SIM3);
-                        if (mResetTime3 != null) {
-                            mIsResetNeeded3 = true;
-                            mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
-                                    .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
-                                    .apply();
+                        if (mSimQuantity == 3) {
+                            mResetTime3 = getResetTime(Constants.SIM3);
+                            if (mResetTime3 != null) {
+                                mIsResetNeeded3 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                                        .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
+                                        .apply();
+                            }
                         }
                         mIsResetRuleChanged = false;
                     }
@@ -1324,8 +1318,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        if (isScreenOn(mContext))
-                            pushNotification(Constants.SIM2);
+                        if (isScreenOn(mContext)) {
+                            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM2).build());
+                        };
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
@@ -1420,6 +1416,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
                                     .apply();
                         }
+
                         mIsResetRuleChanged = false;
                     }
 
@@ -1598,8 +1595,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        if (isScreenOn(mContext))
-                            pushNotification(Constants.SIM3);
+                        if (isScreenOn(mContext)) {
+                            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM3).build());
+                        }
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
@@ -1615,22 +1614,22 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
     private void pushResetNotification(int simid) {
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
-        String opName = "";
+        String text = "";
         int id;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[27];
             switch (simid) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;
-                    opName = mOperatorNames[0];
+                    text = mOperatorNames[0];
                     break;
                 case Constants.SIM2:
                     pref = Constants.PREF_SIM2;
-                    opName = mOperatorNames[1];
+                    text = mOperatorNames[1];
                     break;
                 case Constants.SIM3:
                     pref = Constants.PREF_SIM3;
-                    opName = mOperatorNames[2];
+                    text = mOperatorNames[2];
                     break;
             }
             if (mPrefs.getString(pref[23], "none").equals("auto"))
@@ -1639,7 +1638,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 id = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
         } else
             id = R.drawable.ic_launcher_small;
-        opName += getResources().getString(R.string.data_reset);
+        text += getResources().getString(R.string.data_reset);
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1651,7 +1650,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .setSmallIcon(id)
                 .setLargeIcon(bm)
                 .setContentTitle(getResources().getString(R.string.notification_title))
-                .setContentText(opName);
+                .setContentText(text);
         nm.notify(simid + 100, builder.build());
     }
 
@@ -1726,7 +1725,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         mContext.sendBroadcast(intent);
     }
 
-    private void pushNotification(int sim) {
+    private NotificationCompat.Builder buildNotification(int sim) {
         String text = "";
         long tot1, tot2 = 0, tot3 = 0;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
@@ -1817,8 +1816,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
+        return new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
@@ -1827,7 +1825,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .setLargeIcon(mBitmapLarge)
                 .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText(text);
-        nm.notify(Constants.STARTED_ID, builder.build());
     }
 
     private void startCheck(int alertID) {

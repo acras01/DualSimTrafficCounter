@@ -53,11 +53,11 @@ public class Constants {
     public static final String[] PREF_SIM2 = {"stub", "limit2", "value2", "period2", "round2", "auto2", //5
             "name2", "autooff2", "prefer2", "time2", "day2", "everydayonoff2", "timeoff2", "timeon2", //13
             "op_round2", "op_limit2", "op_value2", "usenight2", "limitnight2", //18
-            "valuenight2", "nighton2", "nightoff2", "nightround2", "operator_logo2", "reset2", "needsreset1", "nextreset1"}; //26
+            "valuenight2", "nighton2", "nightoff2", "nightround2", "operator_logo2", "reset2", "needsreset2", "nextreset2"}; //26
     public static final String[] PREF_SIM3 = {"stub", "limit3", "value3", "period3", "round3", "auto3", //5
             "name3", "autooff3", "prefer3", "time3", "day3", "everydayonoff3", "timeoff3", "timeon3", //13
             "op_round3", "op_limit31", "op_value3", "usenight3", "limitnight3", //18
-            "valuenight3", "nighton3", "nightoff3", "nightround3", "operator_logo3", "reset3", "needsreset1", "nextreset1"}; //26
+            "valuenight3", "nighton3", "nightoff3", "nightround3", "operator_logo3", "reset3", "needsreset3", "nextreset3"}; //26
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
