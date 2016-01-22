@@ -85,8 +85,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private static boolean mIsNight1 = false;
     private static boolean mIsNight2 = false;
     private static boolean mIsNight3 = false;
-    private int mSimChosen = Constants.DISABLED;
-    private int mSimQuantity = 0;
+    private int mSIMChosen = Constants.DISABLED;
+    private int mSIMQuantity = 0;
     private int mPriority;
     private static int mActiveSIM = Constants.DISABLED;
     private static int mLastActiveSIM = Constants.DISABLED;
@@ -107,6 +107,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private boolean mIsResetRuleChanged;
     private String[] mOperatorNames = new String[3];
     private static boolean mHasActionChosen;
+    private long[] lim = new long[3];
 
 
     public CountService() {
@@ -148,6 +149,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3[25], false);
         if (mIsResetNeeded3)
             mResetTime3 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+
+        lim = getSIMLimits();
 
         mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
@@ -287,8 +290,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 if (mDataMap == null)
                     mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
                 Bundle limitBundle = intent.getBundleExtra("data");
-                mSimChosen = limitBundle.getInt("sim");
-                switch (mSimChosen) {
+                mSIMChosen = limitBundle.getInt("sim");
+                switch (mSIMChosen) {
                     case Constants.SIM1:
                         mReceived1 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted1 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
@@ -421,7 +424,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        mSIMQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mIDSmall = getOperatorLogoID(mLastActiveSIM);
         mTarget = new Target() {
@@ -479,7 +482,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private void timerStart(int task) {
         TimerTask tTask = null;
         mHasActionChosen = false;
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        mSIMQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
@@ -568,12 +571,62 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
                 key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))
             mIsResetRuleChanged = true;
+        if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[4]) ||
+                key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[4]) ||
+                key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4]))
+            lim = getSIMLimits();
         if (key.equals(Constants.PREF_SIM1[5]))
             mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         if (key.equals(Constants.PREF_SIM2[5]))
             mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         if (key.equals(Constants.PREF_SIM3[5]))
             mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+    }
+
+    private long[] getSIMLimits() {
+        String limit1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
+        String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
+        String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
+        String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
+        String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
+        String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
+        int value1;
+        if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+            value1 = 0;
+        else
+            value1 = mIsNight1 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
+                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
+        int value2;
+        if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+            value2 = 0;
+        else
+            value2 = mIsNight2 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
+                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
+        int value3;
+        if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+            value3 = 0;
+        else
+            value3 = mIsNight3 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
+                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
+        float valuer1;
+        float valuer2;
+        float valuer3;
+        double lim1 = Double.MAX_VALUE;
+        double lim2 = Double.MAX_VALUE;
+        double lim3 = Double.MAX_VALUE;
+        if (!limit1.equals("")) {
+            valuer1 = 1 - Float.valueOf(round1) / 100;
+            lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
+        }
+        if (!limit2.equals("")) {
+            valuer2 = 1 - Float.valueOf(round2) / 100;
+            lim2 = valuer2 * DataFormat.getFormatLong(limit2, value2);
+        }
+        if (!limit3.equals("")) {
+            valuer3 = 1 - Float.valueOf(round3) / 100;
+            lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
+        }
+        return new long[] {(long) lim1, (long) lim2, (long) lim3};
     }
 
     private class CheckTimerTask extends TimerTask {
@@ -585,54 +638,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
             DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
 
-            String limit1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
-            String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
-            String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
-            String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
-            String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
-            String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
-            int value1;
-            if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
-                value1 = 0;
-            else
-                value1 = mIsNight1 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
-                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
-            int value2;
-            if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
-                value2 = 0;
-            else
-                value2 = mIsNight2 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
-                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
-            int value3;
-            if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
-                value3 = 0;
-            else
-                value3 = mIsNight3 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
-                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
-            float valuer1;
-            float valuer2;
-            float valuer3;
-            double lim1 = Double.MAX_VALUE;
-            double lim2 = Double.MAX_VALUE;
-            double lim3 = Double.MAX_VALUE;
-            if (!limit1.equals("")) {
-                valuer1 = 1 - Float.valueOf(round1) / 100;
-                lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
-            }
-            if (!limit2.equals("")) {
-                valuer2 = 1 - Float.valueOf(round2) / 100;
-                lim2 = valuer2 * DataFormat.getFormatLong(limit2, value2);
-            }
-            if (!limit3.equals("")) {
-                valuer3 = 1 - Float.valueOf(round3) / 100;
-                lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
-            }
             long tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
             long tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
             long tot3 = mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3);
             try {
                 if (mIsSIM1OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
-                        || (tot1 <= (long) lim1 && (mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
+                        || (tot1 <= lim[0] && (mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
@@ -643,7 +654,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     timerStart(Constants.COUNT);
                 }
                 if (mIsSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
-                        || (tot2 <= (long) lim2 && (mPrefs.getBoolean(Constants.PREF_SIM2[8], false)
+                        || (tot2 <= lim[1] && (mPrefs.getBoolean(Constants.PREF_SIM2[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
@@ -654,7 +665,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     timerStart(Constants.COUNT);
                 }
                 if (mIsSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
-                        || (tot3 <= (long) lim3 && (mPrefs.getBoolean(Constants.PREF_SIM3[8], false)
+                        || (tot3 <= lim[2] && (mPrefs.getBoolean(Constants.PREF_SIM3[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
@@ -842,7 +853,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
-                        if (mSimQuantity >= 2) {
+                        if (mSIMQuantity >= 2) {
                             mResetTime2 = getResetTime(Constants.SIM2);
                             if (mResetTime2 != null) {
                                 mIsResetNeeded2 = true;
@@ -852,7 +863,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                         .apply();
                             }
                         }
-                        if (mSimQuantity == 3) {
+                        if (mSIMQuantity == 3) {
                             mResetTime3 = getResetTime(Constants.SIM3);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
@@ -969,33 +980,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                     }
 
-
-                    String limit, round;
-                    int value;
-                    float valuer;
-                    double lim = Double.MAX_VALUE;
-
-                    if (mIsNight1) {
-                        limit = mPrefs.getString(Constants.PREF_SIM1[18], "");
-                        round = mPrefs.getString(Constants.PREF_SIM1[22], "0");
-                        if (mPrefs.getString(Constants.PREF_SIM1[19], "").equals(""))
-                            value = 0;
-                        else
-                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], ""));
-                    } else {
-                        limit = mPrefs.getString(Constants.PREF_SIM1[1], "");
-                        round = mPrefs.getString(Constants.PREF_SIM1[4], "0");
-                        if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
-                            value = 0;
-                        else
-                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
-                    }
-
-                    if (!limit.equals("")) {
-                        valuer = 1 - Float.valueOf(round) / 100;
-                        lim = valuer * DataFormat.getFormatLong(limit, value);
-                    }
-
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX1;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX1;
 
@@ -1004,12 +988,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX1 = TrafficStats.getMobileRxBytes();
                     mStartTX1 = TrafficStats.getMobileTxBytes();
-                    if ((tot <= (long) lim) || mContinueOverLimit) {
+                    if ((tot <= lim[0]) || mContinueOverLimit) {
                         mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        mSimChosen = Constants.DISABLED;
+                        mSIMChosen = Constants.DISABLED;
                         mIsSIM1OverLimit = false;
                     } else if (!mHasActionChosen) {
                         mIsSIM1OverLimit = true;
@@ -1130,7 +1114,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
                                     .apply();
                         }
-                        if (mSimQuantity == 3) {
+                        if (mSIMQuantity == 3) {
                             mResetTime3 = getResetTime(Constants.SIM3);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
@@ -1247,33 +1231,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                     }
 
-
-                    String limit, round;
-                    int value;
-                    float valuer;
-                    double lim = Double.MAX_VALUE;
-
-                    if (mIsNight2) {
-                        limit = mPrefs.getString(Constants.PREF_SIM2[18], "");
-                        round = mPrefs.getString(Constants.PREF_SIM2[22], "0");
-                        if (mPrefs.getString(Constants.PREF_SIM2[19], "").equals(""))
-                            value = 0;
-                        else
-                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], ""));
-                    } else {
-                        limit = mPrefs.getString(Constants.PREF_SIM2[1], "");
-                        round = mPrefs.getString(Constants.PREF_SIM2[4], "0");
-                        if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
-                            value = 0;
-                        else
-                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
-                    }
-
-                    if (!limit.equals("")) {
-                        valuer = 1 - Float.valueOf(round) / 100;
-                        lim = valuer * DataFormat.getFormatLong(limit, value);
-                    }
-
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX2;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX2;
 
@@ -1282,12 +1239,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX2 = TrafficStats.getMobileRxBytes();
                     mStartTX2 = TrafficStats.getMobileTxBytes();
-                    if ((tot <= (long) lim) || mContinueOverLimit) {
+                    if ((tot <= lim[1]) || mContinueOverLimit) {
                         mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        mSimChosen = Constants.DISABLED;
+                        mSIMChosen = Constants.DISABLED;
                         mIsSIM2OverLimit = false;
                     } else if (!mHasActionChosen) {
                         mIsSIM2OverLimit = true;
@@ -1524,33 +1481,6 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                     }
 
-
-                    String limit, round;
-                    int value;
-                    float valuer;
-                    double lim = Double.MAX_VALUE;
-
-                    if (mIsNight3) {
-                        limit = mPrefs.getString(Constants.PREF_SIM3[18], "");
-                        round = mPrefs.getString(Constants.PREF_SIM3[22], "0");
-                        if (mPrefs.getString(Constants.PREF_SIM3[19], "").equals(""))
-                            value = 0;
-                        else
-                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], ""));
-                    } else {
-                        limit = mPrefs.getString(Constants.PREF_SIM3[1], "");
-                        round = mPrefs.getString(Constants.PREF_SIM3[4], "0");
-                        if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
-                            value = 0;
-                        else
-                            value = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
-                    }
-
-                    if (!limit.equals("")) {
-                        valuer = 1 - Float.valueOf(round) / 100;
-                        lim = valuer * DataFormat.getFormatLong(limit, value);
-                    }
-
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX3;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX3;
 
@@ -1559,12 +1489,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX3 = TrafficStats.getMobileRxBytes();
                     mStartTX3 = TrafficStats.getMobileTxBytes();
-                    if ((tot <= (long) lim) || mContinueOverLimit) {
+                    if ((tot <= lim[2]) || mContinueOverLimit) {
                         mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        mSimChosen = Constants.DISABLED;
+                        mSIMChosen = Constants.DISABLED;
                         mIsSIM3OverLimit = false;
                     } else if (!mHasActionChosen) {
                         mIsSIM3OverLimit = true;
@@ -1718,9 +1648,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         else
             intent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
         intent.putExtra(Constants.OPERATOR1, mOperatorNames[0]);
-        if (mSimQuantity >= 2)
+        if (mSIMQuantity >= 2)
             intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
-        if (mSimQuantity == 3)
+        if (mSIMQuantity == 3)
             intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
         mContext.sendBroadcast(intent);
     }
@@ -1744,7 +1674,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
             }
             tot1 = mIsNight1 ? (long) lim1 - (long) mDataMap.get(Constants.TOTAL1_N) : (long) lim1 - (long) mDataMap.get(Constants.TOTAL1);
-            if (mSimQuantity >= 2) {
+            if (mSIMQuantity >= 2) {
                 String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
                 String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
                 int value2;
@@ -1761,7 +1691,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 }
                 tot2 = mIsNight2 ? (long) lim2 - (long) mDataMap.get(Constants.TOTAL2_N) : (long) lim2 - (long) mDataMap.get(Constants.TOTAL2);
             }
-            if (mSimQuantity == 3) {
+            if (mSIMQuantity == 3) {
                 String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
                 String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
                 int value3;
@@ -1785,9 +1715,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         if (mPrefs.getBoolean(Constants.PREF_OTHER[16], true)) {
             text = DataFormat.formatData(mContext, tot1);
-            if (mSimQuantity >= 2)
+            if (mSIMQuantity >= 2)
                 text += "  ||  " + DataFormat.formatData(mContext, tot2);
-            if (mSimQuantity == 3)
+            if (mSIMQuantity == 3)
                 text += "  ||  " + DataFormat.formatData(mContext, tot3);
         } else {
             switch (sim) {
@@ -1846,16 +1776,16 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
                 mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
-                if (!mIsSIM2OverLimit && alertID == Constants.SIM1 && mSimQuantity >= 2) {
+                if (!mIsSIM2OverLimit && alertID == Constants.SIM1 && mSIMQuantity >= 2) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
                     timerStart(Constants.COUNT);
-                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM1 && mSimQuantity == 3) {
+                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM1 && mSIMQuantity == 3) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!mIsSIM1OverLimit && alertID == Constants.SIM2) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
                     timerStart(Constants.COUNT);
-                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM2 && mSimQuantity == 3) {
+                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM2 && mSIMQuantity == 3) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!mIsSIM1OverLimit && alertID == Constants.SIM3) {

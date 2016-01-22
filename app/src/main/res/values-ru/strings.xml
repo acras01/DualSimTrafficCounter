@@ -11,7 +11,7 @@
     <string name="gb">" ГБ"</string>
     <string name="kb">" кБ"</string>
     <string name="mb">" МБ"</string>
-    <string name="other_network">Передача данных отключена. Используется другая сеть (Wi-Fi, Bluetooth и т.п)</string>
+    <string name="other_network">Передача данных отключена. Используется другая сеть (Wi-Fi, Bluetooth и т.п.)</string>
     <string name="service_running">Сервис уже запущен!</string>
     <string name="sim1_act">Активна SIM1: %1$s/с || %2$s/с</string>
     <string name="sim2_act">Активна SIM2: %1$s/с || %2$s/с</string>
