@@ -1683,55 +1683,15 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         String text = "";
         long tot1, tot2 = 0, tot3 = 0;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
-            String limit1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
-            String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
-            int value1;
-            if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
-                value1 = 0;
-            else
-                value1 = mIsNight1 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
-                        Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
-            float valuer1;
-            double lim1 = Double.MAX_VALUE;
-            if (!limit1.equals("")) {
-                valuer1 = 1 - Float.valueOf(round1) / 100;
-                lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
+            if (mLimitHasChanged) {
+                lim = getSIMLimits();
+                mLimitHasChanged = false;
             }
-            tot1 = mIsNight1 ? (long) lim1 - (long) mDataMap.get(Constants.TOTAL1_N) : (long) lim1 - (long) mDataMap.get(Constants.TOTAL1);
-            if (mSIMQuantity >= 2) {
-                String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
-                String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
-                int value2;
-                if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
-                    value2 = 0;
-                else
-                    value2 = mIsNight2 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
-                            Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
-                float valuer2;
-                double lim2 = Double.MAX_VALUE;
-                if (!limit2.equals("")) {
-                    valuer2 = 1 - Float.valueOf(round2) / 100;
-                    lim2 = valuer2 * DataFormat.getFormatLong(limit2, value2);
-                }
-                tot2 = mIsNight2 ? (long) lim2 - (long) mDataMap.get(Constants.TOTAL2_N) : (long) lim2 - (long) mDataMap.get(Constants.TOTAL2);
-            }
-            if (mSIMQuantity == 3) {
-                String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
-                String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
-                int value3;
-                if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
-                    value3 = 0;
-                else
-                    value3 = mIsNight3 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
-                            Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
-                float valuer3;
-                double lim3 = Double.MAX_VALUE;
-                if (!limit3.equals("")) {
-                    valuer3 = 1 - Float.valueOf(round3) / 100;
-                    lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
-                }
-                tot3 = mIsNight3 ? (long) lim3 - (long) mDataMap.get(Constants.TOTAL3_N) : (long) lim3 - (long) mDataMap.get(Constants.TOTAL3);
-            }
+            tot1 = mIsNight1 ? lim[0] - (long) mDataMap.get(Constants.TOTAL1_N) : lim[0] - (long) mDataMap.get(Constants.TOTAL1);
+            if (mSIMQuantity >= 2)
+                tot2 = mIsNight2 ? lim[1] - (long) mDataMap.get(Constants.TOTAL2_N) : lim[1] - (long) mDataMap.get(Constants.TOTAL2);
+            if (mSIMQuantity == 3)
+                tot3 = mIsNight3 ? lim[2] - (long) mDataMap.get(Constants.TOTAL3_N) : lim[2] - (long) mDataMap.get(Constants.TOTAL3);
         } else {
             tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
             tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
