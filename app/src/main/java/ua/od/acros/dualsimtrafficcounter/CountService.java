@@ -98,8 +98,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private ContentValues mDataMap;
     private BroadcastReceiver clearReceiver, connReceiver, setUsageReceiver, actionReceiver;
     private TrafficDatabase mDatabaseHelper;
-    private ScheduledExecutorService mExecutor = null;
-    private ScheduledFuture<?> mResult = null;
+    private ScheduledExecutorService mTaskExecutor = null;
+    private ScheduledFuture<?> mTaskResult = null;
     private SharedPreferences mPrefs;
     private Bitmap mBitmapLarge;
     private Target mTarget;
@@ -168,9 +168,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         connReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (mResult != null) {
-                    mResult.cancel(false);
-                    mExecutor.shutdown();
+                if (mTaskResult != null) {
+                    mTaskResult.cancel(false);
+                    mTaskExecutor.shutdown();
                 }
                 if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                     mLastActiveSIM = mActiveSIM;
@@ -254,7 +254,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 MobileUtils.toggleMobileDataConnection(true, context, simid);
                             mContinueOverLimit = true;
-                            if (mResult.isCancelled())
+                            if (mTaskResult.isCancelled())
                                 timerStart(Constants.COUNT);
                             break;
                         case Constants.OFF_ACTION:
@@ -278,9 +278,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         setUsageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (mResult != null) {
-                    mResult.cancel(false);
-                    mExecutor.shutdown();
+                if (mTaskResult != null) {
+                    mTaskResult.cancel(false);
+                    mTaskExecutor.shutdown();
                 }
                 try {
                     TimeUnit.SECONDS.sleep(1);
@@ -353,9 +353,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         clearReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (mResult != null) {
-                    mResult.cancel(false);
-                    mExecutor.shutdown();
+                if (mTaskResult != null) {
+                    mTaskResult.cancel(false);
+                    mTaskExecutor.shutdown();
                 }
                 try {
                     TimeUnit.SECONDS.sleep(1);
@@ -412,13 +412,13 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
 
         // cancel if already existed
-        if (mExecutor != null) {
-            mResult.cancel(true);
-            mExecutor.shutdown();
-            mExecutor = Executors.newSingleThreadScheduledExecutor();
+        if (mTaskExecutor != null) {
+            mTaskResult.cancel(true);
+            mTaskExecutor.shutdown();
+            mTaskExecutor = Executors.newSingleThreadScheduledExecutor();
         } else {
             // recreate new
-            mExecutor = Executors.newSingleThreadScheduledExecutor();
+            mTaskExecutor = Executors.newSingleThreadScheduledExecutor();
         }
     }
 
@@ -512,10 +512,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         } else
             tTask = new CheckTimerTask();
-        if (mResult == null || mResult.isCancelled())
-            mExecutor = Executors.newSingleThreadScheduledExecutor();
+        if (mTaskResult == null || mTaskResult.isCancelled())
+            mTaskExecutor = Executors.newSingleThreadScheduledExecutor();
         if (tTask != null) {
-            mResult = mExecutor.scheduleAtFixedRate(tTask, 0, Constants.NOTIFY_INTERVAL, TimeUnit.MILLISECONDS);
+            mTaskResult = mTaskExecutor.scheduleAtFixedRate(tTask, 0, Constants.NOTIFY_INTERVAL, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -653,9 +653,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                    if (mResult != null) {
-                        mResult.cancel(false);
-                        mExecutor.shutdown();
+                    if (mTaskResult != null) {
+                        mTaskResult.cancel(false);
+                        mTaskExecutor.shutdown();
                     }
                     timerStart(Constants.COUNT);
                 }
@@ -664,9 +664,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                    if (mResult != null) {
-                        mResult.cancel(false);
-                        mExecutor.shutdown();
+                    if (mTaskResult != null) {
+                        mTaskResult.cancel(false);
+                        mTaskExecutor.shutdown();
                     }
                     timerStart(Constants.COUNT);
                 }
@@ -675,9 +675,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                    if (mResult != null) {
-                        mResult.cancel(false);
-                        mExecutor.shutdown();
+                    if (mTaskResult != null) {
+                        mTaskResult.cancel(false);
+                        mTaskExecutor.shutdown();
                     }
                     timerStart(Constants.COUNT);
                 }
@@ -799,7 +799,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mResult.isCancelled()) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mTaskResult.isCancelled()) {
 
                     long speedRX;
                     long speedTX;
@@ -1057,7 +1057,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mResult.isCancelled()) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mTaskResult.isCancelled()) {
 
 
                     long speedRX;
@@ -1314,7 +1314,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mResult.isCancelled()) {
+                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && !mTaskResult.isCancelled()) {
 
 
                     long speedRX;
@@ -1790,9 +1790,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             ACRA.getErrorReporter().handleException(e);
         }
 
-        if (mResult != null) {
-            mResult.cancel(false);
-            mExecutor.shutdown();
+        if (mTaskResult != null) {
+            mTaskResult.cancel(false);
+            mTaskExecutor.shutdown();
         }
         boolean choice = false;
 
@@ -1947,9 +1947,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .putBoolean(Constants.PREF_OTHER[18], mHasActionChosen)
                 .apply();
         Picasso.with(mContext).cancelRequest(mTarget);
-        if (mResult != null) {
-            mResult.cancel(false);
-            mExecutor.shutdown();
+        if (mTaskResult != null) {
+            mTaskResult.cancel(false);
+            mTaskExecutor.shutdown();
         }
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
