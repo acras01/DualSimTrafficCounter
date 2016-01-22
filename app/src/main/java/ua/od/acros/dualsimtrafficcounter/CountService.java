@@ -443,7 +443,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         };
         Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
-        startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM).build());
+        startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
         // schedule task
         timerStart(Constants.COUNT);
 
@@ -1038,7 +1038,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
                         if (isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM1).build());
+                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM1));
                         }
                     }
 
@@ -1295,7 +1295,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
                         if (isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM2).build());
+                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM2));
                         };
                     }
 
@@ -1551,7 +1551,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
                         if (isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM3).build());
+                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM3));
                         }
                     }
 
@@ -1679,7 +1679,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         mContext.sendBroadcast(intent);
     }
 
-    private NotificationCompat.Builder buildNotification(int sim) {
+    private Notification buildNotification(int sim) {
         String text = "";
         long tot1, tot2 = 0, tot3 = 0;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
@@ -1778,7 +1778,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .setSmallIcon(mIDSmall)
                 .setLargeIcon(mBitmapLarge)
                 .setContentTitle(getResources().getString(R.string.notification_title))
-                .setContentText(text);
+                .setContentText(text)
+                .build();
     }
 
     private void startCheck(int alertID) {
