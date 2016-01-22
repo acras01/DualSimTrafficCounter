@@ -104,10 +104,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private Bitmap mBitmapLarge;
     private Target mTarget;
     private int mIDSmall;
-    private boolean mIsResetRuleChanged;
+    private boolean mResetRuleHasChanged;
     private String[] mOperatorNames = new String[3];
     private static boolean mHasActionChosen;
     private long[] lim = new long[3];
+    private boolean mLimitHasChanged = false;
 
 
     public CountService() {
@@ -570,11 +571,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
                 key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))
-            mIsResetRuleChanged = true;
+            mResetRuleHasChanged = true;
         if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[4]) ||
                 key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[4]) ||
                 key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4]))
-            lim = getSIMLimits();
+            mLimitHasChanged = true;
         if (key.equals(Constants.PREF_SIM1[5]))
             mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         if (key.equals(Constants.PREF_SIM2[5]))
@@ -637,6 +638,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             mContext.sendBroadcast(new Intent(Constants.TIP));
 
             DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
+
+            if (mLimitHasChanged) {
+                lim = getSIMLimits();
+                mLimitHasChanged = false;
+            }
 
             long tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
             long tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
@@ -844,7 +850,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } else
                         mIsNight1 = false;
 
-                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
@@ -873,7 +879,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                         .apply();
                             }
                         }
-                        mIsResetRuleChanged = false;
+                        mResetRuleHasChanged = false;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
@@ -988,6 +994,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX1 = TrafficStats.getMobileRxBytes();
                     mStartTX1 = TrafficStats.getMobileTxBytes();
+
+                    if (mLimitHasChanged) {
+                        lim = getSIMLimits();
+                        mLimitHasChanged = false;
+                    }
+
                     if ((tot <= lim[0]) || mContinueOverLimit) {
                         mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
@@ -1097,7 +1109,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } else
                         mIsNight2 = false;
 
-                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
@@ -1124,7 +1136,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                         .apply();
                             }
                         }
-                        mIsResetRuleChanged = false;
+                        mResetRuleHasChanged = false;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
@@ -1239,6 +1251,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX2 = TrafficStats.getMobileRxBytes();
                     mStartTX2 = TrafficStats.getMobileTxBytes();
+
+                    if (mLimitHasChanged) {
+                        lim = getSIMLimits();
+                        mLimitHasChanged = false;
+                    }
+
                     if ((tot <= lim[1]) || mContinueOverLimit) {
                         mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
@@ -1348,7 +1366,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     } else
                         mIsNight3 = false;
 
-                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mIsResetRuleChanged) {
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
                         mResetTime1 = getResetTime(Constants.SIM1);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
@@ -1374,7 +1392,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                                     .apply();
                         }
 
-                        mIsResetRuleChanged = false;
+                        mResetRuleHasChanged = false;
                     }
 
                     boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
@@ -1489,6 +1507,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
                     mStartRX3 = TrafficStats.getMobileRxBytes();
                     mStartTX3 = TrafficStats.getMobileTxBytes();
+
+                    if (mLimitHasChanged) {
+                        lim = getSIMLimits();
+                        mLimitHasChanged = false;
+                    }
+
                     if ((tot <= lim[2]) || mContinueOverLimit) {
                         mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
