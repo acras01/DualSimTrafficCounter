@@ -37,8 +37,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimerTask;
@@ -761,37 +759,17 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             if (now.getDayOfMonth() > delta && diff < daysInMonth)
                 month += 1;
             date = now.getYear() + "-" + month + "-" + delta;
-            last = fmtDateTime.parseDateTime(date + " " + mPrefs.getString(pref[9], "00:00"));
+            return fmtDateTime.parseDateTime(date + " " + mPrefs.getString(pref[9], "00:00"));
         } else {
             if (mPrefs.getString(pref[3], "").equals("2"))
                 mDataMap.put(period, diff);
             if (diff >= delta) {
                 if (mPrefs.getString(pref[3], "").equals("2"))
                     mDataMap.put(period, 0);
-                last = fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + mPrefs.getString(pref[9], "00:00"));
+                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + mPrefs.getString(pref[9], "00:00"));
             } else
-                last = null;
+                return null;
         }
-        if (last != null)
-            date = simid + " " + last.toString(fmtDateTime) + " " + now.toString(fmtDateTime) + "\n";
-        else
-            date = simid + " " + "null" + "\n";
-        File dir = new File(String.valueOf(mContext.getFilesDir()));
-        // create this directory if not already created
-        dir.mkdir();
-        // create the file in which we will write the contents
-        String fileName ="reset_log.txt";
-        File file = new File(dir, fileName);
-        FileOutputStream os;
-        try {
-            os = new FileOutputStream(file, true);
-            os.write(date.getBytes());
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            ACRA.getErrorReporter().handleException(e);
-        }
-        return last;
     }
 
     private class CountTimerTask1 extends TimerTask {
@@ -1592,7 +1570,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 id = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
         } else
             id = R.drawable.ic_launcher_small;
-        text += getResources().getString(R.string.data_reset);
+        text = String.format(getResources().getString(R.string.data_reset), text);
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

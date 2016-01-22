@@ -37,9 +37,9 @@ public class ShowSimDialog extends DialogFragment implements  CompoundButton.OnC
         CheckBox sim1 = (CheckBox) view.findViewById(R.id.sim1);
         CheckBox sim2 = (CheckBox) view.findViewById(R.id.sim2);
         CheckBox sim3 = (CheckBox) view.findViewById(R.id.sim3);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if (simNumber == 1) {
+        if (simQuantity == 1) {
             sim2.setEnabled(false);
             sim2.setChecked(false);
             mEdit.putBoolean(Constants.PREF_WIDGET[19], false).apply();
@@ -47,7 +47,7 @@ public class ShowSimDialog extends DialogFragment implements  CompoundButton.OnC
             sim3.setChecked(false);
             mEdit.putBoolean(Constants.PREF_WIDGET[20], false).apply();
         }
-        if (simNumber == 2) {
+        if (simQuantity == 2) {
             sim3.setEnabled(false);
             sim3.setChecked(false);
             mEdit.putBoolean(Constants.PREF_WIDGET[20], false).apply();

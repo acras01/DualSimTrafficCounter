@@ -279,20 +279,6 @@ public class MobileUtils {
                     e.printStackTrace();
                 }
             }
-            /*try {
-                // to this path add a new directory path
-                File dir = new File(String.valueOf(context.getFilesDir()));
-                // create this directory if not already created
-                dir.mkdir();
-                // create the file in which we will write the contents
-                String fileName ="log.txt";
-                File file = new File(dir, fileName);
-                FileOutputStream os = new FileOutputStream(file);
-                os.write(out.getBytes());
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
         }
         if (sim == Constants.DISABLED) {
             try {
@@ -302,6 +288,7 @@ public class MobileUtils {
                     if (m.getName().equalsIgnoreCase("getSimId")) {
                         m.setAccessible(true);
                         sim = (int) m.invoke(networkInfo);
+                        //out = "getSimId " + sim + "\n";
                         break;
                     }
                 }
@@ -332,6 +319,7 @@ public class MobileUtils {
                         || state == TelephonyManager.DATA_CONNECTING
                         || state == TelephonyManager.DATA_SUSPENDED) {
                     sim = i;
+                    //out = "getDataStateExInt " + sim + "\n";
                     break;
                 }
             }
@@ -359,6 +347,7 @@ public class MobileUtils {
                         || state == TelephonyManager.DATA_CONNECTING
                         || state == TelephonyManager.DATA_SUSPENDED) {
                     sim = i;
+                    //out = "getDataStateExLong " + sim + "\n";
                     break;
                 }
             }
@@ -386,6 +375,7 @@ public class MobileUtils {
                         || state == TelephonyManager.DATA_CONNECTING
                         || state == TelephonyManager.DATA_SUSPENDED) {
                     sim = i;
+                    //out = "getDataState " + sim + "\n";
                     break;
                 }
             }
@@ -393,10 +383,25 @@ public class MobileUtils {
         if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             try {
                 sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
+                //out = "getFromSettingsGlobal " + sim + "\n";
             } catch (Settings.SettingNotFoundException e) {
                 e.printStackTrace();
             }
         }
+        /*try {
+            // to this path add a new directory path
+            File dir = new File(String.valueOf(context.getFilesDir()));
+            // create this directory if not already created
+            dir.mkdir();
+            // create the file in which we will write the contents
+            String fileName = "log.txt";
+            File file = new File(dir, fileName);
+            FileOutputStream os = new FileOutputStream(file);
+            os.write(out.getBytes());
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         return sim;
     }
 
@@ -423,53 +428,11 @@ public class MobileUtils {
                 // Android 5.0 (API 21) only.
                 if (transactionCode != null && transactionCode.length() > 0)
                     cmd = "service call phone " + transactionCode + " i32 " + state;
-            if (RootTools.isAccessGiven() && cmd != null) {
-                        /*final ArrayList<String> out = new ArrayList<>();
-                        File dir = new File(String.valueOf(context.getFilesDir()));
-                        // create this directory if not already created
-                        dir.mkdir();
-                        // create the file in which we will write the contents
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", context.getResources().getConfiguration().locale);
-                        Date now = new Date();
-                        String fileName = formatter.format(now) + "_log.txt";
-                        File file = new File(dir, fileName);
-                        final FileOutputStream os = new FileOutputStream(file);*/
-                Command command = new Command(0, cmd) {
-                    @Override
-                    public void commandOutput(int id, String line) {
-                        super.commandOutput(id, line);
-                        //out.add(String.valueOf(id) + ": " + line + "\n");
-                    }
-
-                    @Override
-                    public void commandTerminated(int id, String reason) {
-                        super.commandTerminated(id, reason);
-                                /*try {
-                                    String s = String.valueOf(id) + ": " + reason;
-                                    os.write(s.getBytes());
-                                    os.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                    }
-
-                    @Override
-                    public void commandCompleted(int id, int exitcode) {
-                        super.commandCompleted(id, exitcode);
-                                /*try {
-                                    for (String s : out) {
-                                        os.write(s.getBytes());
-                                    }
-                                    os.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                    }
-                };
-                RootTools.getShell(true).add(command);
-            } else
+            if (RootTools.isAccessGiven() && cmd != null)
+                RootTools.getShell(true).add(new Command(0, cmd));
+            else
                 Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -837,5 +800,4 @@ public class MobileUtils {
         }
         return "none";
     }
-
 }

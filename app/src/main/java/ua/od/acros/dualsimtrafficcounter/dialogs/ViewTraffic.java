@@ -74,7 +74,7 @@ public class ViewTraffic extends Activity implements View.OnClickListener{
         String opName = MobileUtils.getName(this, prefsConst[5], prefsConst[6], sim);
 
         day.setText(opName);
-        night.setText(opName + getResources().getString(R.string.night));
+        night.setText(String.format(getResources().getString(R.string.night), opName));
 
         if (bundle != null) {
             RX.setText(DataFormat.formatData(this, bundle.getLong("rx")));

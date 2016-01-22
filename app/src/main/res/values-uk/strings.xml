@@ -115,7 +115,7 @@
     <string name="image_load">Зображення завантажено!</string>
     <string name="image_not_load">Зображення не завантажено!</string>
     <string name="use_night_limit">Використовувати нічний тариф</string>
-    <string name="night">" (нічний)"</string>
+    <string name="night">%1$s (нічний)</string>
     <string name="show_daynight_icons">Відображати іконки \"день/ніч\" при використанні нічного тарифу</string>
     <string name="set_date">Натисніть для вибору дати</string>
     <string name="action_show_history">Трафік за обрану дату</string>
@@ -142,5 +142,5 @@
     <string name="show_remaining">Вiдображати залишок трафiку в панелi повiдомлень</string>
     <string name="used">Використ.</string>
     <string name="show_full_text_on_widget">Інформація про трафік на віджеті</string>
-    <string name="data_reset">: дані було скинуто</string>
+    <string name="data_reset">%1$s: дані було скинуто</string>
 </resources>

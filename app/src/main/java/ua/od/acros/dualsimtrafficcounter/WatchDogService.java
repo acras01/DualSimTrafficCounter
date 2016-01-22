@@ -75,10 +75,6 @@ public class WatchDogService extends Service{
     }
 
     private class WatchDogTask extends TimerTask {
-        /**
-         * The task to run should be specified in the implementation of the {@code run()}
-         * method.
-         */
         @Override
         public void run() {
 
@@ -104,25 +100,10 @@ public class WatchDogService extends Service{
             DateTime last = fmt.parseDateTime(lastUpdate);
             DateTime now = new DateTime();
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
-                    (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 && MobileUtils.getMobileDataInfo(mContext, true)[1] > Constants.DISABLED) &&
+                    (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 &&
+                            MobileUtils.getMobileDataInfo(mContext, true)[1] > Constants.DISABLED) &&
                     !mPrefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                 stopService(new Intent(mContext, CountService.class));
-                /*String out = lastUpdate + " | " + now.toString(fmt) + "\n";
-                File dir = new File(String.valueOf(mContext.getFilesDir()));
-                // create this directory if not already created
-                dir.mkdir();
-                // create the file in which we will write the contents
-                String fileName ="watchdog_log.txt";
-                File file = new File(dir, fileName);
-                FileOutputStream os;
-                try {
-                    os = new FileOutputStream(file, true);
-                    os.write(out.getBytes());
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }*/
                 startService(new Intent(mContext, CountService.class));
             }
         }

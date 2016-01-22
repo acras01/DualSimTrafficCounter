@@ -30,19 +30,6 @@ public class OnOffReceiver extends BroadcastReceiver {
             else if (!intent.getBooleanExtra(Constants.ON_OFF, true) && CountService.getActiveSIM() == sim &&
                     MobileUtils.getMobileDataInfo(context, false)[0] == 2)
                 MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
-
-            /*String out = new SimpleDateFormat(Constants.TIME_FORMAT, context.getResources().getConfiguration().locale).format(new Date()) + " " + String.valueOf(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) + " | " +
-                    String.valueOf(intent.getBooleanExtra(Constants.ON_OFF, true)) + "\n";
-            // to this path add a new directory path
-            File dir = new File(String.valueOf(context.getFilesDir()));
-            // create this directory if not already created
-            dir.mkdir();
-            // create the file in which we will write the contents
-            String fileName ="log_alarm.txt";
-            File file = new File(dir, fileName);
-            FileOutputStream os = new FileOutputStream(file, true);
-            os.write(out.getBytes());
-            os.close();*/
         } catch (Exception e) {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);

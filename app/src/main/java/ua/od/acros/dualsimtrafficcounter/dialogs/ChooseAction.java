@@ -31,13 +31,13 @@ public class ChooseAction extends Activity implements View.OnClickListener {
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setContentView(R.layout.action_dialog);
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(this)
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(this)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !RootTools.isAccessGiven()) ||
+        if ((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) ||
                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) ||
                 android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP)
             change.setEnabled(false);
-        if (prefs.getBoolean(Constants.PREF_OTHER[10], true) || simNumber == 1)
+        if (prefs.getBoolean(Constants.PREF_OTHER[10], true) || simQuantity == 1)
             change.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         final Button bOK = (Button)findViewById(R.id.buttonOK);

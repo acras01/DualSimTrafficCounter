@@ -50,14 +50,14 @@ public class SetUsageDialog extends DialogFragment implements CompoundButton.OnC
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         RadioButton sim1 = (RadioButton) view.findViewById(R.id.sim1RB);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if (simNumber == 1) {
+        if (simQuantity == 1) {
             sim1.setChecked(true);
             view.findViewById(R.id.sim2RB).setEnabled(false);
             view.findViewById(R.id.sim3RB).setEnabled(false);
         }
-        if (simNumber == 2)
+        if (simQuantity == 2)
             view.findViewById(R.id.sim3RB).setEnabled(false);
         final CheckBox total = (CheckBox) view.findViewById(R.id.checktotal);
         total.setChecked(false);
