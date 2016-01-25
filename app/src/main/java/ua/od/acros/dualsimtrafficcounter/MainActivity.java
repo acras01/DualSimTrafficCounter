@@ -309,6 +309,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, CountService.class));
+        startService(new Intent(mContext, CallLoggerService.class));
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);

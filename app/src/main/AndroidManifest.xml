@@ -22,6 +22,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="Easy example which makes the status bar clock red and adds a smiley" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="54" />
+
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|screenSize"
@@ -33,6 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="org.acra.CrashReportDialog"
             android:excludeFromRecents="true"
@@ -40,6 +52,7 @@
             android:launchMode="singleInstance"
             android:process=":error_report"
             android:theme="@style/AppTheme.Dialog" />
+
         <activity
             android:name=".settings.SettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -63,6 +76,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name=".widget.InfoWidget"
             android:label="@string/info_widget_simple" >
@@ -85,6 +99,7 @@
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" >
         </activity>
+
         <activity
             android:name=".widget.WidgetConfigActivity"
             android:label="@string/widget_title" >
@@ -113,6 +128,12 @@
             android:label="@string/traffic_data"
             android:theme="@style/AppTheme.Dialog" >
         </activity>
+
+        <service
+            android:name=".CallLoggerService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
 
     </application>
 

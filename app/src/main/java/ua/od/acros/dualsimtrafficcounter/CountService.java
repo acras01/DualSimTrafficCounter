@@ -448,7 +448,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         return START_STICKY;
     }
 
-    protected static Context getAppContext() {
+    public static Context getAppContext() {
         return CountService.mContext;
     }
 

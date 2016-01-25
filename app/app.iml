@@ -91,6 +91,7 @@
     <orderEntry type="module" module-name="acra" exported="" />
     <orderEntry type="module" module-name="picasso" exported="" />
     <orderEntry type="module" module-name="mediatek-compatibility" exported="" />
+    <orderEntry type="module" module-name="XposedBridge" exported="" />
     <orderEntry type="library" exported="" name="acra-unspecified" level="project" />
   </component>
 </module>

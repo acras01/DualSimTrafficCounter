@@ -43,4 +43,5 @@ dependencies {
     compile project(':roottools')
     compile project(':acra')
     compile project(':ambilwarna')
+    provided project(':XposedBridge')
 }
