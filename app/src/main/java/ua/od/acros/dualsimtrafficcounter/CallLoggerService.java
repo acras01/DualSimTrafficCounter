@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
@@ -49,8 +48,7 @@ public class CallLoggerService extends Service {
                 .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText("Hi!")
                 .build();
-        startForeground(Constants.STARTED_ID + 1, n);
-        Toast.makeText(mContext, mContext.toString(), Toast.LENGTH_LONG).show();
+        startForeground(Constants.STARTED_ID + 1000, n);
         return START_STICKY;
     }
     @Override

@@ -90,10 +90,14 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     long durationMillis = System.currentTimeMillis() - start[0];
                     XposedBridge.log(imei[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                    Intent intent = new Intent(Constants.CALLS);
-                    intent.putExtra(Constants.SIM_ACTIVE, imei[0]);
-                    intent.putExtra(Constants.CALL_DURATION, durationMillis);
-                    CallLoggerService.getAppContext().sendBroadcast(intent);
+                    Context context = CallLoggerService.getAppContext();
+                    if (context != null) {
+                        Intent intent  = new Intent(Constants.CALLS);
+                        intent.putExtra(Constants.SIM_ACTIVE, imei);
+                        intent.putExtra(Constants.CALL_DURATION, durationMillis);
+                        context.sendBroadcast(intent);
+                    } else
+                        XposedBridge.log("Context is null");
                 }
             });
             XposedHelpers.findAndHookMethod(mClassInCallPresenter, "getPotentialStateFromCallList", CLASS_CALL_LIST, new XC_MethodHook() {
