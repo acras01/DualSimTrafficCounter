@@ -3,11 +3,14 @@ package ua.od.acros.dualsimtrafficcounter;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
@@ -17,6 +20,7 @@ public class CallLoggerService extends Service {
     private static Context mContext;
     private MyDatabase mDatabaseHelper;
     private long[] mCalls;
+    private BroadcastReceiver callDataReceiver;
 
     public CallLoggerService() {
     }
@@ -33,6 +37,16 @@ public class CallLoggerService extends Service {
         mContext = CallLoggerService.this;
         mDatabaseHelper = MyDatabase.getInstance(mContext);
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+
+        callDataReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Toast.makeText(context, intent.getStringExtra(Constants.SIM_ACTIVE) + ": " +
+                        intent.getLongExtra(Constants.CALL_DURATION, 0L)/1000 + "s", Toast.LENGTH_LONG).show();
+            }
+        };
+        IntentFilter callDataFilter = new IntentFilter(Constants.CALLS);
+        registerReceiver(callDataReceiver, callDataFilter);
     }
 
     @Override
@@ -54,6 +68,7 @@ public class CallLoggerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(callDataReceiver);
     }
 
 
