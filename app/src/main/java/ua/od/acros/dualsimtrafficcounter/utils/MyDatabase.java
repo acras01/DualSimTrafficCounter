@@ -16,41 +16,42 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TrafficDatabase extends SQLiteOpenHelper {
+public class MyDatabase extends SQLiteOpenHelper {
 
 
-    private static final String DATABASE_TABLE = "data";
+    private static final String DATA_TABLE = "data";
+    private static final String CALLS_TABLE = "calls";
     private static SQLiteDatabase mSqLiteDatabase;
-    private static TrafficDatabase mInstance;
+    private static MyDatabase mInstance;
 
-    public static TrafficDatabase getInstance(Context context) {
+    public static MyDatabase getInstance(Context context) {
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
         // See this article for more information: http://bit.ly/6LRzfx
         if (mInstance == null) {
-            mInstance = new TrafficDatabase(context.getApplicationContext());
+            mInstance = new MyDatabase(context.getApplicationContext());
         }
         return mInstance;
     }
 
-    public TrafficDatabase(Context context) {
+    public MyDatabase(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
     }
 
-    public TrafficDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory,
-                           int version) {
+    public MyDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory,
+                      int version) {
         super(context, name, factory, version);
     }
 
-    public TrafficDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory,
-                           int version, DatabaseErrorHandler errorHandler) {
+    public MyDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory,
+                      int version, DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String DATABASE_CREATE_SCRIPT = "create table "
-                + DATABASE_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                + DATA_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                 + " text not null, " + Constants.LAST_ACTIVE_SIM + " integer, "
                 + Constants.LAST_RX + " long, " + Constants.LAST_TX + " long, "
                 + Constants.SIM1RX + " long, " + Constants.SIM1TX + " long, "
@@ -72,162 +73,162 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         String ALTER_TBL;
         if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 1) {
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3RX + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3TX + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL3 + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.PERIOD1 + " integer;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.PERIOD2 + " integer;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.PERIOD3 + " integer;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM1RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM1TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL1_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM2RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM2TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL2_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL3_N + " long;";
             db.execSQL(ALTER_TBL);
         }
 
         if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 2) {
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.PERIOD1 + " integer;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.PERIOD2 + " integer;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.PERIOD3 + " integer;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM1RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM1TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL1_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM2RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM2TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL2_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL3_N + " long;";
             db.execSQL(ALTER_TBL);
         }
 
         if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 3) {
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM1RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM1TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL1_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM2RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM2TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL2_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3RX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3TX_N + " long;";
             db.execSQL(ALTER_TBL);
             ALTER_TBL =
-                    "ALTER TABLE " + DATABASE_TABLE +
+                    "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL3_N + " long;";
             db.execSQL(ALTER_TBL);
         }
     }
 
-    public static ContentValues readTrafficData(TrafficDatabase db) {
+    public static ContentValues readTrafficData(MyDatabase db) {
         ContentValues mMap = new ContentValues();
         mSqLiteDatabase = db.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
+        Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
                 Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
                 Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
                 Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
@@ -292,19 +293,19 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         return mMap;
     }
 
-    public static void writeTrafficData(ContentValues mMap, TrafficDatabase db) {
+    public static void writeTrafficData(ContentValues mMap, MyDatabase db) {
         mSqLiteDatabase = db.getWritableDatabase();
         String filter = Constants.LAST_DATE + "='" + mMap.get(Constants.LAST_DATE) + "'";
-        int id = mSqLiteDatabase.update(DATABASE_TABLE, mMap, filter, null);
+        int id = mSqLiteDatabase.update(DATA_TABLE, mMap, filter, null);
         if (id == 0)
-            mSqLiteDatabase.insert(DATABASE_TABLE, null, mMap);
+            mSqLiteDatabase.insert(DATA_TABLE, null, mMap);
     }
 
 
-    public static boolean isEmpty(TrafficDatabase db) {
+    public static boolean isEmpty(MyDatabase db) {
         boolean result;
         mSqLiteDatabase = db.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(DATABASE_TABLE, new String[] {Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
+        Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
                 Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
                 Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
                 Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
@@ -317,7 +318,7 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         return result;
     }
 
-    public static Bundle getDataForDate(TrafficDatabase db, String date, int sim, SharedPreferences prefs) {
+    public static Bundle getDataForDate(MyDatabase db, String date, int sim, SharedPreferences prefs) {
 
         Map<String, Object> mMap1 = new HashMap<>();
         Map<String, Object> mMap2 = new HashMap<>();
@@ -333,7 +334,7 @@ public class TrafficDatabase extends SQLiteOpenHelper {
 
         String dayBeforeDate = queried.minusDays(1).toString(fmtdate);
 
-        Cursor cursorToDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{
+        Cursor cursorToDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
                 Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
                 Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
                 Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
@@ -359,7 +360,7 @@ public class TrafficDatabase extends SQLiteOpenHelper {
             mMap1.put(Constants.TOTAL2_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2_N)));
             mMap1.put(Constants.TOTAL3_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3_N)));
         }
-        Cursor cursorToDayBeforeDate = mSqLiteDatabase.query(DATABASE_TABLE, new String[]{
+        Cursor cursorToDayBeforeDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
                 Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
                 Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
                 Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
@@ -573,5 +574,9 @@ public class TrafficDatabase extends SQLiteOpenHelper {
         cursorToDate.close();
         cursorToDayBeforeDate.close();
         return out;
+    }
+
+    public static long[] readCallsData(MyDatabase mDatabaseHelper) {
+        return new long[0];
     }
 }

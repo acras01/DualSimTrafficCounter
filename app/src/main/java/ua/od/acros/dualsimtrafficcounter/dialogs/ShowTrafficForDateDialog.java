@@ -29,7 +29,7 @@ import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class ShowTrafficForDateDialog extends DialogFragment implements View.OnClickListener{
 
@@ -164,8 +164,8 @@ public class ShowTrafficForDateDialog extends DialogFragment implements View.OnC
             if (isCancelled())
                 return null;
             else
-                return TrafficDatabase.getDataForDate(TrafficDatabase.getInstance(MainActivity.getAppContext()),
-                    date, params[3], getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
+                return MyDatabase.getDataForDate(MyDatabase.getInstance(MainActivity.getAppContext()),
+                        date, params[3], getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
         }
 
         @Override

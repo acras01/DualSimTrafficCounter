@@ -16,7 +16,10 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        //start CountService
         context.startService(new Intent(context, CountService.class));
+        //start CallLoggerService
+        context.startService(new Intent(context, CallLoggerService.class));
 
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -117,7 +120,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             }
         }
-        //start CountService
+        //start WatchDogService
         if (prefs.getBoolean(Constants.PREF_OTHER[4], true))
             context.startService(new Intent(context, WatchDogService.class));
     }

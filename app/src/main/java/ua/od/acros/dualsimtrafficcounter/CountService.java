@@ -53,7 +53,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 
@@ -95,7 +95,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private DateTime mResetTime3;
     private ContentValues mDataMap;
     private BroadcastReceiver clearReceiver, connReceiver, setUsageReceiver, actionReceiver;
-    private TrafficDatabase mDatabaseHelper;
+    private MyDatabase mDatabaseHelper;
     private ScheduledExecutorService mTaskExecutor = null;
     private ScheduledFuture<?> mTaskResult = null;
     private SharedPreferences mPrefs;
@@ -153,8 +153,8 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
 
         mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
-        mDatabaseHelper = TrafficDatabase.getInstance(mContext);
-        mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+        mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         if (mDataMap.get(Constants.LAST_DATE).equals("")) {
             Calendar myCalendar = Calendar.getInstance();
             SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
@@ -175,19 +175,19 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     if (mPrefs.getBoolean(Constants.PREF_SIM1[14], true) && mLastActiveSIM == Constants.SIM1) {
                         mDataMap.put(Constants.TOTAL1, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL1),
                                 mPrefs.getString(Constants.PREF_SIM1[15], "1"), mPrefs.getString(Constants.PREF_SIM1[16], "0")));
-                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     }
 
                     if (mPrefs.getBoolean(Constants.PREF_SIM2[14], true) && mLastActiveSIM == Constants.SIM2) {
                         mDataMap.put(Constants.TOTAL2, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL2),
                                 mPrefs.getString(Constants.PREF_SIM2[15], "1"), mPrefs.getString(Constants.PREF_SIM2[16], "0")));
-                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     }
 
                     if (mPrefs.getBoolean(Constants.PREF_SIM3[14], true) && mLastActiveSIM == Constants.SIM3) {
                         mDataMap.put(Constants.TOTAL3, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL3),
                                 mPrefs.getString(Constants.PREF_SIM3[15], "1"), mPrefs.getString(Constants.PREF_SIM3[16], "0")));
-                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     }
 
                     try {
@@ -287,7 +287,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     ACRA.getErrorReporter().handleException(e);
                 }
                 if (mDataMap == null)
-                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                    mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                 Bundle limitBundle = intent.getBundleExtra("data");
                 mSIMChosen = limitBundle.getInt("sim");
                 switch (mSIMChosen) {
@@ -303,7 +303,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mDataMap.put(Constants.SIM1TX, mTransmitted1);
                             mDataMap.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
                         }
-                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                         break;
                     case Constants.SIM2:
                         mReceived2 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
@@ -317,7 +317,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mDataMap.put(Constants.SIM2TX, mTransmitted2);
                             mDataMap.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
                         }
-                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                         break;
                     case Constants.SIM3:
                         mReceived3 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
@@ -331,7 +331,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                             mDataMap.put(Constants.SIM3TX, mTransmitted3);
                             mDataMap.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
                         }
-                        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                         break;
                 }
                 Intent notificationIntent = new Intent(context, MainActivity.class);
@@ -396,7 +396,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         }
                         break;
                 }
-                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 timerStart(Constants.COUNT);
             }
         };
@@ -860,7 +860,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mResetRuleHasChanged = false;
                     }
 
-                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
+                    boolean emptyDB = MyDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
                         mDataMap.put(Constants.SIM1RX, 0L);
@@ -1117,7 +1117,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mResetRuleHasChanged = false;
                     }
 
-                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
+                    boolean emptyDB = MyDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
                         mDataMap.put(Constants.SIM1RX, 0L);
@@ -1373,7 +1373,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         mResetRuleHasChanged = false;
                     }
 
-                    boolean emptyDB = TrafficDatabase.isEmpty(mDatabaseHelper);
+                    boolean emptyDB = MyDatabase.isEmpty(mDatabaseHelper);
 
                     if (emptyDB) {
                         mDataMap.put(Constants.SIM1RX, 0L);
@@ -1595,7 +1595,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         long MB = 1024 * 1024;
         if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
                 || emptyDB) {
-            String last = (String) TrafficDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
+            String last = (String) MyDatabase.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
             DateTime dt_temp;
             if (last.equals(""))
                 dt_temp = new org.joda.time.DateTime();
@@ -1613,10 +1613,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             default:
                 break;
             case 1:
-                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 break;
             case 2:
-                TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                 mContinueOverLimit = false;
                 break;
         }
@@ -1891,7 +1891,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         }
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(clearReceiver);
         unregisterReceiver(setUsageReceiver);

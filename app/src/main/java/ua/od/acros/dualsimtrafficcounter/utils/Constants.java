@@ -42,6 +42,7 @@ public class Constants {
     public static final String LIMIT_ACTION = "limit";
     public static final String OFF_ACTION = "off";
     public static final String ACTION = "action";
+    public static final String CALLS = "calls";
     public static final String ALARM_ACTION = "ua.od.acros.dualsimtrafficcounter.ALARM";
     public static final String CONTINUE_ACTION = "continue";
     public static final long NOTIFY_INTERVAL = 1000; // 1 second
@@ -88,4 +89,5 @@ public class Constants {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm";
     public static final String TRAFFIC_FOR_DATE = "traffic";
+    public static final String CALL_DURATION = "duration";
 }

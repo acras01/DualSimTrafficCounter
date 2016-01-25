@@ -36,7 +36,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener, Button.OnClickListener{
@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     private MenuItem mService, mMobileData;
     private static Context mContext;
-    private TrafficDatabase mDatabaseHelper;
+    private MyDatabase mDatabaseHelper;
     private SharedPreferences mPrefs;
     private boolean mNeedsRestart = false;
     private boolean mShowNightTraffic1, mShowNightTraffic2, mShowNightTraffic3;
@@ -70,8 +70,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorName1 = mOperatorName2 = mOperatorName3 = "";
         mContext = MainActivity.this;
-        mDatabaseHelper = TrafficDatabase.getInstance(mContext);
-        mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+        mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         final int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
@@ -309,7 +309,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, CountService.class));
-        startService(new Intent(mContext, CallLoggerService.class));
+        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+            startService(new Intent(mContext, CallLoggerService.class));
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
@@ -503,7 +504,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+        mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         outState.putLong(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
         outState.putLong(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
         outState.putLong(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
@@ -592,7 +593,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                     sendBroadcast(clear1Intent);
                 } else {
-                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                    mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[0]) {
                         mDataMap.put(Constants.SIM1RX_N, 0L);
                         mDataMap.put(Constants.SIM1TX_N, 0L);
@@ -602,7 +603,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         mDataMap.put(Constants.SIM1TX, 0L);
                         mDataMap.put(Constants.TOTAL1, 0L);
                     }
-                    TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                    MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
@@ -621,7 +622,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                     sendBroadcast(clear2Intent);
                 } else {
-                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                    mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[1]) {
                         mDataMap.put(Constants.SIM2RX_N, 0L);
                         mDataMap.put(Constants.SIM2TX_N, 0L);
@@ -631,7 +632,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         mDataMap.put(Constants.SIM2TX, 0L);
                         mDataMap.put(Constants.TOTAL2, 0L);
                     }
-                    TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                    MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
@@ -650,7 +651,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
                     sendBroadcast(clear3Intent);
                 } else {
-                    mDataMap = TrafficDatabase.readTrafficData(mDatabaseHelper);
+                    mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[2]) {
                         mDataMap.put(Constants.SIM3RX_N, 0L);
                         mDataMap.put(Constants.SIM3TX_N, 0L);
@@ -660,7 +661,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         mDataMap.put(Constants.SIM3TX, 0L);
                         mDataMap.put(Constants.TOTAL3, 0L);
                     }
-                    TrafficDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                    MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mDataMap.get(Constants.SIM3RX_N) :
