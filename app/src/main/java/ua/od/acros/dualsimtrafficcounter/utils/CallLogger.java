@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -16,7 +17,6 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import ua.od.acros.dualsimtrafficcounter.CallLoggerService;
 
 public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
@@ -32,11 +32,11 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private static final String CLASS_IN_CALL_PRESENTER = "com.android.incallui.InCallPresenter";
     private static final String ENUM_IN_CALL_STATE = "com.android.incallui.InCallPresenter$InCallState";
     private static final String CLASS_CALL_LIST = "com.android.incallui.CallList";
-    private static final String CLASS_CALL = "com.android.incallui.Call";
 
     private static final int CALL_STATE_ACTIVE = 3;
     private static Object mPreviousCallState;
     private static Class<?> mClassInCallPresenter;
+    private static Context mContext;
 
 
     @Override
@@ -47,9 +47,10 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        XposedBridge.log("Loaded app: " + loadPackageParam.packageName);
         if (!PACKAGE_NAMES.contains(loadPackageParam.packageName))
             return;
+        XposedBridge.log("Loaded app: " + loadPackageParam.packageName);
+        mContext = AndroidAppHelper.currentApplication();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             final Class<?> classCallNotifier = XposedHelpers.findClass(CLASS_CALL_NOTIFIER, loadPackageParam.classLoader);
             final Class<? extends Enum> enumPhoneState = (Class<? extends Enum>) Class.forName(ENUM_PHONE_STATE);
@@ -90,14 +91,11 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     long durationMillis = System.currentTimeMillis() - start[0];
                     XposedBridge.log(imei[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                    Context context = CallLoggerService.getAppContext();
-                    if (context != null) {
-                        Intent intent  = new Intent(Constants.CALLS);
-                        intent.putExtra(Constants.SIM_ACTIVE, imei);
-                        intent.putExtra(Constants.CALL_DURATION, durationMillis);
-                        context.sendBroadcast(intent);
-                    } else
-                        XposedBridge.log("Context is null");
+                    Intent intent  = new Intent(Constants.CALLS);
+                    intent.putExtra(Constants.SIM_ACTIVE, imei);
+                    intent.putExtra(Constants.CALL_DURATION, durationMillis);
+                    mContext.sendBroadcast(intent);
+;
                 }
             });
             XposedHelpers.findAndHookMethod(mClassInCallPresenter, "getPotentialStateFromCallList", CLASS_CALL_LIST, new XC_MethodHook() {
@@ -139,14 +137,10 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     String imei = (String) XposedHelpers.callMethod(phone, "getDeviceId");
                     long durationMillis = (long) XposedHelpers.callMethod(conn, "getDurationMillis");
                     XposedBridge.log(imei + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                    Context context = CallLoggerService.getAppContext();
-                    if (context != null) {
-                        Intent intent  = new Intent(Constants.CALLS);
-                        intent.putExtra(Constants.SIM_ACTIVE, imei);
-                        intent.putExtra(Constants.CALL_DURATION, durationMillis);
-                        context.sendBroadcast(intent);
-                    } else
-                        XposedBridge.log("Context is null");
+                    Intent intent  = new Intent(Constants.CALLS);
+                    intent.putExtra(Constants.SIM_ACTIVE, imei);
+                    intent.putExtra(Constants.CALL_DURATION, durationMillis);
+                    mContext.sendBroadcast(intent);
                 }
             } catch (Throwable t) {
                 XposedBridge.log(t);
