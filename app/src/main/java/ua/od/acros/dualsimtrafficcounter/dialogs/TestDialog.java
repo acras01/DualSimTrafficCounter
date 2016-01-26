@@ -22,8 +22,7 @@ public class TestDialog extends DialogFragment {
 
     private String mSimChecked = "";
     private Button bOK;
-    private boolean mAlternative1 = false;
-    private boolean mAlternative2 = false;
+    private boolean mAlternative = false;
     private SharedPreferences prefs;
     private SharedPreferences.Editor edit;
 
@@ -69,8 +68,7 @@ public class TestDialog extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        edit.putBoolean(Constants.PREF_OTHER[20], mAlternative1);
-                        edit.putBoolean(Constants.PREF_OTHER[24], mAlternative2);
+                        edit.putBoolean(Constants.PREF_OTHER[20], mAlternative);
                         edit.apply();
                         dialog.cancel();
                     }
@@ -99,9 +97,7 @@ public class TestDialog extends DialogFragment {
                                     e1.printStackTrace();
                                 }
                             }
-                            if (mSimChecked.equals("sim1") && sim == 3)
-                                mAlternative2 = true;
-                            mAlternative1 = true;
+                            mAlternative = true;
                             Toast.makeText(getActivity(), mSimChecked + ": " + sim, Toast.LENGTH_SHORT).show();
                         } else
                             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();

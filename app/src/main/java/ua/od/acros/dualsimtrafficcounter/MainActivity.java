@@ -311,8 +311,8 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, CountService.class));
-        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-            startService(new Intent(mContext, CallLoggerService.class));
+        //if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+        //    startService(new Intent(mContext, CallLoggerService.class));
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
@@ -327,7 +327,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 showDialog(TEST);
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         }
-
     }
 
     public static Context getAppContext() {

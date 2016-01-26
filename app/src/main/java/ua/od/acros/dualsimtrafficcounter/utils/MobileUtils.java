@@ -538,8 +538,7 @@ public class MobileUtils {
 
     public static void toggleMobileDataConnection(boolean ON, Context context, int sim) throws Exception {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        boolean mAlternative1 = prefs.getBoolean(Constants.PREF_OTHER[20], false);
-        boolean mAlternative2 = prefs.getBoolean(Constants.PREF_OTHER[24], false);
+        boolean mAlternative = prefs.getBoolean(Constants.PREF_OTHER[20], false);
         if (!ON) {
             final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
@@ -557,12 +556,21 @@ public class MobileUtils {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
-                if (mAlternative1)
-                    if (!mAlternative2)
-                        localIntent.putExtra("simid", (long) mLastActiveSIM + 1);
-                    else
-                        localIntent.putExtra("simid", (long) mLastActiveSIM + 3);
-                else
+                if (mAlternative) {
+                    int sim_ = Constants.DISABLED;
+                    switch (mLastActiveSIM) {
+                        case Constants.SIM1:
+                            sim_ = prefs.getInt(Constants.PREF_OTHER[21], Constants.DISABLED);
+                            break;
+                        case Constants.SIM2:
+                            sim_ = prefs.getInt(Constants.PREF_OTHER[22], Constants.DISABLED);
+                            break;
+                        case Constants.SIM3:
+                            sim_ = prefs.getInt(Constants.PREF_OTHER[23], Constants.DISABLED);
+                            break;
+                    }
+                    localIntent.putExtra("simid", (long) sim_);
+                } else
                     localIntent.putExtra("simid", (long) mLastActiveSIM);
                 context.sendBroadcast(localIntent);
             }
@@ -576,12 +584,21 @@ public class MobileUtils {
                 setMobileNetworkFromLollipop(context, sim);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
-                if (mAlternative1)
-                    if (!mAlternative2)
-                        localIntent.putExtra("simid", (long) sim + 1);
-                    else
-                        localIntent.putExtra("simid", (long) sim + 3);
-                else
+                if (mAlternative) {
+                    int sim_ = Constants.DISABLED;
+                    switch (sim) {
+                        case Constants.SIM1:
+                            sim_ = prefs.getInt(Constants.PREF_OTHER[21], Constants.DISABLED);
+                            break;
+                        case Constants.SIM2:
+                            sim_ = prefs.getInt(Constants.PREF_OTHER[22], Constants.DISABLED);
+                            break;
+                        case Constants.SIM3:
+                            sim_ = prefs.getInt(Constants.PREF_OTHER[23], Constants.DISABLED);
+                            break;
+                    }
+                    localIntent.putExtra("simid", (long) sim_);
+                } else
                     localIntent.putExtra("simid", (long) sim);
                 context.sendBroadcast(localIntent);
             }
