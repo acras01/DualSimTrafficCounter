@@ -161,28 +161,53 @@ public class MobileUtils {
         return name;
     }
 
-    public static int getSIMFromId(boolean what, int id, Context context) {
-        if (what)
-            switch (id) {
-                case 1:
-                    return Constants.SIM1;
-                case 2:
-                    return Constants.SIM2;
-                case 3:
-                    return Constants.SIM3;
-                default:
-                    return Constants.DISABLED;
+    public static ArrayList<String> getSimIMEI(Context context) {
+        ArrayList<String> imei = new ArrayList<>();
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        int simNumber = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            for (int i = 0; i < simNumber; i++) {
+                imei.add(i, mTelephonyManager.getDeviceId(i));
             }
-        else {
-            SubscriptionManager sm = SubscriptionManager.from(context);
-            List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-            for (int i = 0; i < sl.size(); i++) {
-                if (id == sl.get(i).getSubscriptionId()) {
-                    return sl.get(i).getSimSlotIndex();
+        } else {
+            for (int i = 0; i < simNumber; i++) {
+                try {
+                    Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                    Method getId = c.getMethod("getDeviceId", Integer.TYPE);
+                    getId.setAccessible(true);
+                    imei.add(i, (String) getId.invoke(c.getConstructor(Context.class).newInstance(context), i));
+                } catch (Exception e0) {
+                    e0.printStackTrace();
                 }
             }
-            return 0;
+            if (imei.size() == 0) {
+                for (int i = 0; i < simNumber; i++) {
+                    try {
+                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                        Method getId = c.getMethod("getDeviceId", Long.TYPE);
+                        getId.setAccessible(true);
+                        imei.add(i, (String) getId.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
+                    } catch (Exception e0) {
+                        e0.printStackTrace();
+                    }
+                }
+            }
+            if (imei.size() == 0) {
+                for (int i = 0; i < simNumber; i++) {
+                    try {
+                        Class<?> c = Class.forName("android.telephony.TelephonyManager");
+                        Method getId = c.getMethod("getDeviceId", Long.TYPE);
+                        getId.setAccessible(true);
+                        imei.add(i, (String) getId.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
+                    } catch (Exception e0) {
+                        e0.printStackTrace();
+                    }
+                }
+            }
         }
+        return imei;
     }
 
     /*private static boolean getNetworkFromDB(Context context, String code, String apn) {
