@@ -87,17 +87,21 @@ public class TestDialog extends DialogFragment {
                             try {
                                 sim = (int) Settings.System.getLong(getActivity().getContentResolver(), "gprs_connection_sim_setting");
                                 edit.putInt(mSimChecked, sim);
+                                mAlternative = true;
                             } catch (Settings.SettingNotFoundException e0) {
                                 e0.printStackTrace();
                                 try {
                                     sim = (int) Settings.System.getLong(getActivity().getContentResolver(), "gprs_connection_setting");
                                     edit.putInt(mSimChecked, sim);
+                                    mAlternative = true;
                                 } catch (Settings.SettingNotFoundException e1) {
                                     e1.printStackTrace();
                                 }
                             }
-                            mAlternative = true;
-                            Toast.makeText(getActivity(), mSimChecked + ": " + sim, Toast.LENGTH_SHORT).show();
+                            if (mAlternative)
+                                Toast.makeText(getActivity(), mSimChecked + ": " + sim, Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_SHORT).show();
                         } else
                             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }

@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     private Button bLim1, bLim2, bLim3;
 
-    private MenuItem mService, mMobileData;
+    private MenuItem mService, mMobileData, mTest;
     private static Context mContext;
     private MyDatabase mDatabaseHelper;
     private SharedPreferences mPrefs;
@@ -375,6 +375,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mService = menu.getItem(0);
         mMobileData = menu.getItem(1);
+        mTest = menu.getItem(5);
         return true;
     }
 
@@ -387,6 +388,14 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         else {
             mService.setTitle(R.string.action_start);
             mService.setIcon(R.drawable.ic_action_enable);
+        }
+        if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport() &&
+                android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            mTest.setEnabled(true);
+            mTest.setVisible(true);
+        } else {
+            mTest.setEnabled(false);
+            mTest.setVisible(false);
         }
         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) ||
                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
