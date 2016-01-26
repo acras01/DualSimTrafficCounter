@@ -102,6 +102,7 @@ public class TestDialog extends DialogFragment {
                             if (mSimChecked.equals("sim1") && sim == 3)
                                 mAlternative2 = true;
                             mAlternative1 = true;
+                            Toast.makeText(getActivity(), mSimChecked + ": " + sim, Toast.LENGTH_SHORT).show();
                         } else
                             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }
