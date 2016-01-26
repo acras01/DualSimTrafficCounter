@@ -576,7 +576,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         return out;
     }
 
-    public static long[] readCallsData(MyDatabase mDatabaseHelper) {
-        return new long[0];
+    public static ContentValues readCallsData(MyDatabase mDatabaseHelper) {
+        return new ContentValues();
     }
 }

@@ -37,7 +37,6 @@ public class MobileUtils {
 
     private static int mLastActiveSIM;
     private static boolean mAlternative;
-    private static NetworkInfo mActiveNetworkInfo;
 
     public static int isMultiSim(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -160,6 +159,30 @@ public class MobileUtils {
             }
         }
         return name;
+    }
+
+    public static int getSIMFromId(boolean what, int id, Context context) {
+        if (what)
+            switch (id) {
+                case 1:
+                    return Constants.SIM1;
+                case 2:
+                    return Constants.SIM2;
+                case 3:
+                    return Constants.SIM3;
+                default:
+                    return Constants.DISABLED;
+            }
+        else {
+            SubscriptionManager sm = SubscriptionManager.from(context);
+            List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+            for (int i = 0; i < sl.size(); i++) {
+                if (id == sl.get(i).getSubscriptionId()) {
+                    return sl.get(i).getSimSlotIndex();
+                }
+            }
+            return 0;
+        }
     }
 
     /*private static boolean getNetworkFromDB(Context context, String code, String apn) {
@@ -453,7 +476,7 @@ public class MobileUtils {
     public static int[] getMobileDataInfo(Context context, boolean sim) {
         int[] mobileDataEnabled = {0, -1}; // Assume disabled
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        mActiveNetworkInfo = cm.getActiveNetworkInfo();
+        NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
         if (mActiveNetworkInfo != null) {
             String typeName = mActiveNetworkInfo.getTypeName().toLowerCase();
             boolean isConnected = mActiveNetworkInfo.isConnectedOrConnecting();
@@ -506,8 +529,11 @@ public class MobileUtils {
             }
         }
         if (!ON) {
-            if (!mAlternative)
+            if (!mAlternative) {
+                final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
                 mLastActiveSIM = (int) activeSIM(context, mActiveNetworkInfo);
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM);
             } else {

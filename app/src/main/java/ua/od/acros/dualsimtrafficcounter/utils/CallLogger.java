@@ -35,7 +35,6 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     private static final int CALL_STATE_ACTIVE = 3;
     private static Object mPreviousCallState;
-    private static Class<?> mClassInCallPresenter;
     private static Context mContext;
 
 
@@ -82,20 +81,21 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 }
             });
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mClassInCallPresenter = XposedHelpers.findClass(CLASS_IN_CALL_PRESENTER, loadPackageParam.classLoader);
+            Class<?> mClassInCallPresenter = XposedHelpers.findClass(CLASS_IN_CALL_PRESENTER, loadPackageParam.classLoader);
             final Class<? extends Enum> enumInCallState = (Class<? extends Enum>) XposedHelpers.findClass(ENUM_IN_CALL_STATE, loadPackageParam.classLoader);
             final long[] start = {0};
             final String[] imei = {" "};
             XposedBridge.hookAllMethods(mClassInCallPresenter, "onDisconnect", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    long durationMillis = System.currentTimeMillis() - start[0];
-                    XposedBridge.log(imei[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                    Intent intent  = new Intent(Constants.CALLS);
-                    intent.putExtra(Constants.SIM_ACTIVE, imei);
-                    intent.putExtra(Constants.CALL_DURATION, durationMillis);
-                    mContext.sendBroadcast(intent);
-;
+                    if (mPreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING")) {
+                        long durationMillis = System.currentTimeMillis() - start[0];
+                        XposedBridge.log(imei[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
+                        Intent intent = new Intent(Constants.CALLS);
+                        intent.putExtra(Constants.SIM_ACTIVE, imei);
+                        intent.putExtra(Constants.CALL_DURATION, durationMillis);
+                        mContext.sendBroadcast(intent);
+                    }
                 }
             });
             XposedHelpers.findAndHookMethod(mClassInCallPresenter, "getPotentialStateFromCallList", CLASS_CALL_LIST, new XC_MethodHook() {
@@ -131,7 +131,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
             try {
                 refreshPrefs();
                 Object conn = XposedHelpers.getObjectField(param.args[0], "result");
-                if (conn != null) {
+                if (conn != null && !(Boolean) XposedHelpers.callMethod(conn, "isIncoming")) {
                     Object call = XposedHelpers.callMethod(conn, "getCall");
                     Object phone = XposedHelpers.callMethod(call, "getPhone");
                     String imei = (String) XposedHelpers.callMethod(phone, "getDeviceId");

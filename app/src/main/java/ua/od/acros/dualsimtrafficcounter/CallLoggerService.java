@@ -4,23 +4,42 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.provider.CallLog;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.lang.ref.WeakReference;
+
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class CallLoggerService extends Service {
 
     private static Context mContext;
     private MyDatabase mDatabaseHelper;
-    private long[] mCalls;
+    private ContentValues mCalls;
+    private DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
     private BroadcastReceiver callDataReceiver;
+    private MyCallObserver outgoingCallsObserver;
 
     public CallLoggerService() {
     }
@@ -38,11 +57,14 @@ public class CallLoggerService extends Service {
         mDatabaseHelper = MyDatabase.getInstance(mContext);
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
 
+        outgoingCallsObserver = new MyCallObserver(new MyHandler(this));
+        getContentResolver().registerContentObserver(android.provider.CallLog.Calls.CONTENT_URI, true, outgoingCallsObserver);
+
         callDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Toast.makeText(context, intent.getStringExtra(Constants.SIM_ACTIVE) + ": " +
-                        intent.getLongExtra(Constants.CALL_DURATION, 0L)/1000 + "s", Toast.LENGTH_LONG).show();
+                        String.format("%.2f", (double) intent.getLongExtra(Constants.CALL_DURATION, 0L)/1000) + "s", Toast.LENGTH_LONG).show();
             }
         };
         IntentFilter callDataFilter = new IntentFilter(Constants.CALLS);
@@ -65,14 +87,113 @@ public class CallLoggerService extends Service {
         startForeground(Constants.STARTED_ID + 1000, n);
         return START_STICKY;
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(callDataReceiver);
+        getContentResolver().unregisterContentObserver(outgoingCallsObserver);
     }
-
 
     public static Context getAppContext() {
         return CallLoggerService.mContext;
+    }
+
+    class MyCallObserver extends ContentObserver {
+
+        private Handler myHandler;
+
+        public MyCallObserver(Handler h) {
+            super(h);
+            this.myHandler = h;
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            MyTask myTask = new MyTask();
+            myTask.execute();
+        }
+
+        private class MyTask extends AsyncTask<Void, Void, Bundle>{
+            @Override
+            protected Bundle doInBackground(Void... params) {
+                return queryCallHistory();
+            }
+
+            @Override
+            protected void onPostExecute(Bundle result) {
+                super.onPostExecute(result);
+                Message msg = new Message();
+                msg.setData(result);
+                myHandler.sendMessage(msg);
+            }
+        }
+    }
+
+    private Bundle queryCallHistory() {
+        Bundle bundle = new Bundle();
+        //query the call history
+        String id = "";
+        if (MTKUtils.isMtkDevice() && Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+            id = "simid";
+        else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+            id = CallLog.Calls.PHONE_ACCOUNT_ID;
+        Cursor mCallCursor = getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, new String[]{id,
+                        android.provider.CallLog.Calls.TYPE, android.provider.CallLog.Calls.DATE, android.provider.CallLog.Calls.DURATION},
+                null, null,android.provider.CallLog.Calls.DATE + " DESC");
+        if (mCallCursor != null && mCallCursor.getCount() > 0) {
+            //if there is more than 1 call
+            mCallCursor.moveToFirst();
+            try {
+                int callType = mCallCursor.getInt(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.TYPE));
+                if (callType == CallLog.Calls.OUTGOING_TYPE) {
+                    int simid;
+                    if (id.equals("simid"))
+                        simid = mCallCursor.getInt(mCallCursor.getColumnIndex(id));
+                    else
+                        simid = Integer.valueOf(mCallCursor.getString(mCallCursor.getColumnIndex(id)));
+                    long callDate = mCallCursor.getLong(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
+                    DateTime callTime = new DateTime(callDate);
+                    long callDuration = mCallCursor.getLong(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.DURATION));
+                    bundle.putInt(Constants.SIM_ACTIVE, simid);
+                    bundle.putString(Constants.LAST_DATE, callTime.toString(fmtDateTime));
+                    bundle.putLong(Constants.CALL_DURATION, callDuration);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mCallCursor.close();
+        }
+        return bundle;
+    }
+
+    static class MyHandler extends Handler {
+        private final WeakReference<CallLoggerService> mService;
+
+        MyHandler(CallLoggerService service) {
+            mService = new WeakReference<>(service);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            CallLoggerService service = mService.get();
+            if (service != null)
+                service.handleMessage(msg);
+        }
+    }
+
+    private void handleMessage(Message msg) {
+        Bundle bundle = msg.getData();
+        int sim = bundle.getInt(Constants.SIM_ACTIVE);
+        boolean what = false;
+        if (MTKUtils.isMtkDevice() && Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+            what = true;
+        else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+            what = false;
+        sim = MobileUtils.getSIMFromId(what, sim, mContext);
+        mCalls.put(Constants.SIM_ACTIVE, sim);
+        mCalls.put(Constants.LAST_DATE, bundle.getString(Constants.LAST_DATE));
+        mCalls.put(Constants.CALL_DURATION, bundle.getLong(Constants.CALL_DURATION));
     }
 }
