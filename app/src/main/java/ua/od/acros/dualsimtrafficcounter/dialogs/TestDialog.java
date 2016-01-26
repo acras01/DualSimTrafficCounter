@@ -23,7 +23,6 @@ public class TestDialog extends DialogFragment {
     private String mSimChecked = "";
     private Button bOK;
     private boolean mAlternative = false;
-    private SharedPreferences prefs;
     private SharedPreferences.Editor edit;
 
 
@@ -36,7 +35,7 @@ public class TestDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = View.inflate(getActivity(), R.layout.test_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         edit = prefs.edit();
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
