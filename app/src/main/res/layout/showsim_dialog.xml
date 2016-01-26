@@ -19,7 +19,8 @@
         android:layout_marginTop="10dp"
         android:gravity="center_vertical|center_horizontal"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/primary_text_dark" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -33,21 +34,24 @@
             android:layout_height="wrap_content"
             android:text="SIM1"
             android:id="@+id/sim1"
-            android:layout_weight=".33" />
+            android:layout_weight=".33"
+            android:textColor="@android:color/primary_text_dark" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SIM2"
             android:id="@+id/sim2"
-            android:layout_weight=".33" />
+            android:layout_weight=".33"
+            android:textColor="@android:color/primary_text_dark" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SIM3"
             android:id="@+id/sim3"
-            android:layout_weight=".33" />
+            android:layout_weight=".33"
+            android:textColor="@android:color/primary_text_dark" />
     </LinearLayout>
 
 </RelativeLayout>

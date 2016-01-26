@@ -19,8 +19,8 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical|center"
         android:weightSum="1"
-        android:layout_marginLeft="@dimen/widget_margin"
-        android:layout_marginRight="@dimen/widget_margin">
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp">
 
         <RelativeLayout
             android:orientation="horizontal"

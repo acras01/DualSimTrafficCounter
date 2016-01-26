@@ -6,12 +6,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -76,7 +73,6 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                         if (activeCall != null) {
                             if (XposedHelpers.callMethod(activeCall, "getState") == Enum.valueOf(enumCallState, "ACTIVE") &&
                                     !(Boolean) XposedHelpers.callMethod(conn, "isIncoming")) {
-                                startCount(5);
                                 String imei = (String) XposedHelpers.callMethod(fgPhone, "getDeviceId");
                                 XposedBridge.log("Outgoing call answered: " + imei);
                             }
@@ -126,42 +122,6 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     mPreviousCallState = state;
                 }
             });
-        }
-    }
-
-    private void startCount(int count) {
-        int i = 0;
-        while (i < count) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            i++;
-        }
-        try {
-            TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-            Class c = Class.forName(tm.getClass().getName());
-            Method m = c.getDeclaredMethod("getITelephony");
-            m.setAccessible(true);
-            Object telephonyService = m.invoke(tm); // Get the internal ITelephony object
-            c = Class.forName(telephonyService.getClass().getName());// Get its class
-            Method[] cn = c.getDeclaredMethods();
-            for (Method n : cn) {
-                if (n.getName().equalsIgnoreCase("getDefaultDataSubscriptionInfo")) {// Get the "endCall()" method
-                    n.setAccessible(true); // Make it accessible
-                    n.invoke(telephonyService);
-                    break;
-                }
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
     }
 

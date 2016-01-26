@@ -143,4 +143,6 @@
     <string name="used">Використ.</string>
     <string name="show_full_text_on_widget">Інформація про трафік на віджеті</string>
     <string name="data_reset">%1$s: дані було скинуто</string>
+    <string name="action_show_test">Визначення SIM на МТК с Android до 5.0</string>
+    <string name="test_hint">Будь ласка, увімкніть мобільні дані на кожній з SIM по черзі, починаючи з SIM1. Коли мобільні дані на SIM1 увімкнуться, оберіть радіокнопку SIM1 и натисніть ОК. Продовжуйте так з рештою SIM. В кінці натисніть Відміна. Дякую!</string>
 </resources>

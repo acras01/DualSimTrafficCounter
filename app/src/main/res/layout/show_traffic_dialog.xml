@@ -21,7 +21,8 @@
         android:layout_alignEnd="@+id/radioGroup"
         android:gravity="center_vertical|center_horizontal"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/primary_text_dark" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -36,19 +37,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim1RB"
-            android:text="SIM1" />
+            android:text="SIM1"
+            android:textColor="@android:color/primary_text_dark" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim2RB"
-            android:text="SIM2" />
+            android:text="SIM2"
+            android:textColor="@android:color/primary_text_dark" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim3RB"
-            android:text="SIM3" />
+            android:text="SIM3"
+            android:textColor="@android:color/primary_text_dark" />
 
     </RadioGroup>
 

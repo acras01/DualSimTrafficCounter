@@ -29,6 +29,7 @@ import org.acra.ACRA;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetUsageDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowTrafficForDateDialog;
+import ua.od.acros.dualsimtrafficcounter.dialogs.TestDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
@@ -44,6 +45,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String MTK = "mtk";
+    private static final String TEST = "test";
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
 
     private ContentValues mDataMap;
@@ -320,8 +322,12 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !MTKUtils.isMtkDevice())
                 showDialog(MTK);
+            if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport() &&
+                    android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP)
+                showDialog(TEST);
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         }
+
     }
 
     public static Context getAppContext() {
@@ -444,6 +450,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             case R.id.action_show_history:
                 showDialog(Constants.TRAFFIC_FOR_DATE);
                 break;
+            case R.id.action_show_test:
+                showDialog(TEST);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -459,6 +468,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 break;
             case Constants.TRAFFIC_FOR_DATE:
                 dialog = ShowTrafficForDateDialog.newInstance(false);
+                break;
+            case TEST:
+                dialog = TestDialog.newInstance();
                 break;
             case FIRST_RUN:
                 new AlertDialog.Builder(mContext)

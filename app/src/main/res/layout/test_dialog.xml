@@ -53,13 +53,15 @@
             android:text="SIM3"
             android:textColor="@android:color/primary_text_dark" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offRB"
-            android:text="@string/off"
-            android:textColor="@android:color/primary_text_dark" />
-
     </RadioGroup>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/test_hint"
+        android:id="@+id/hint"
+        android:layout_below="@+id/radioGroup"
+        android:textColor="@android:color/primary_text_dark"
+        android:layout_margin="5dp" />
 
 </RelativeLayout>

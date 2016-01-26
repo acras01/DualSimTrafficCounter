@@ -5,7 +5,7 @@
     <dimen name="text_width">150dp</dimen>
     <dimen name="input_width">150dp</dimen>
     <dimen name="spinner_width">25dp</dimen>
-    <dimen name="widget_margin">2dp</dimen>
+    <dimen name="widget_margin">5dp</dimen>
     <dimen name="widget_text_size">5sp</dimen>
     <dimen name="logo_size">40dp</dimen>
     <dimen name="limit_button_width">50dp</dimen>

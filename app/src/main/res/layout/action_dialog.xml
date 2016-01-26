@@ -20,7 +20,8 @@
         android:layout_alignEnd="@+id/radioGroup"
         android:gravity="center_vertical|center_horizontal"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/primary_text_dark" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -35,25 +36,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/actionmobiledata"
-            android:text="@string/go_to_settings" />
+            android:text="@string/go_to_settings"
+            android:textColor="@android:color/primary_text_dark" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/actionsettings"
-            android:text="@string/action_change_limits" />
+            android:text="@string/action_change_limits"
+            android:textColor="@android:color/primary_text_dark" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/actionchange"
-            android:text="@string/action_change" />
+            android:text="@string/action_change"
+            android:textColor="@android:color/primary_text_dark" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/actioncontinue"
-            android:text="@string/action_continue" />
+            android:text="@string/action_continue"
+            android:textColor="@android:color/primary_text_dark" />
 
     </RadioGroup>
 

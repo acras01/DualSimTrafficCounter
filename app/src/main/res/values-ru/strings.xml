@@ -143,4 +143,6 @@
     <string name="used">Использ.</string>
     <string name="show_full_text_on_widget">Информация о трафике на виджете</string>
     <string name="data_reset">%1$s: данные были обнулены</string>
+    <string name="action_show_test">Определение SIM на МТК с Android до 5.0</string>
+    <string name="test_hint">Пожалуйста, включите передачу данных на каждой из SIM по очереди, начиная с SIM1. Когда передача данных на SIM1 включится, выберите радиокнопку SIM1 и нажмите ОК. Продолжайте так с остальными SIM. В конце нажмите Отмена. Спасибо!</string>
 </resources>

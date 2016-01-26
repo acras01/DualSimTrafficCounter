@@ -36,7 +36,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 public class MobileUtils {
 
     private static int mLastActiveSIM;
-    private static boolean mAlternative;
 
     public static int isMultiSim(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -538,27 +537,13 @@ public class MobileUtils {
     }
 
     public static void toggleMobileDataConnection(boolean ON, Context context, int sim) throws Exception {
-        mAlternative = false;
-        if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport()) {
-            try {
-                mLastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_sim_setting");
-                mAlternative = true;
-            } catch (Settings.SettingNotFoundException e0) {
-                e0.printStackTrace();
-                try {
-                    mLastActiveSIM = (int) Settings.System.getLong(context.getContentResolver(), "gprs_connection_setting");
-                    mAlternative = true;
-                } catch (Settings.SettingNotFoundException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        boolean mAlternative1 = prefs.getBoolean(Constants.PREF_OTHER[20], false);
+        boolean mAlternative2 = prefs.getBoolean(Constants.PREF_OTHER[24], false);
         if (!ON) {
-            if (!mAlternative) {
-                final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
-                mLastActiveSIM = (int) activeSIM(context, mActiveNetworkInfo);
-            }
+            final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
+            mLastActiveSIM = (int) activeSIM(context, mActiveNetworkInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM);
             } else {
@@ -572,10 +557,13 @@ public class MobileUtils {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
-                if (mAlternative)
-                    localIntent.putExtra("simid", (long) mLastActiveSIM);
+                if (mAlternative1)
+                    if (!mAlternative2)
+                        localIntent.putExtra("simid", (long) mLastActiveSIM + 1);
+                    else
+                        localIntent.putExtra("simid", (long) mLastActiveSIM + 3);
                 else
-                    localIntent.putExtra("simid", (long) mLastActiveSIM + 1);
+                    localIntent.putExtra("simid", (long) mLastActiveSIM);
                 context.sendBroadcast(localIntent);
             }
             try {
@@ -588,10 +576,13 @@ public class MobileUtils {
                 setMobileNetworkFromLollipop(context, sim);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
-                if (mAlternative && mLastActiveSIM > 2)
-                    localIntent.putExtra("simid", (long) sim + 3);
+                if (mAlternative1)
+                    if (!mAlternative2)
+                        localIntent.putExtra("simid", (long) sim + 1);
+                    else
+                        localIntent.putExtra("simid", (long) sim + 3);
                 else
-                    localIntent.putExtra("simid", (long) sim + 1);
+                    localIntent.putExtra("simid", (long) sim);
                 context.sendBroadcast(localIntent);
             }
         }
