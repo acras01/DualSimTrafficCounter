@@ -131,39 +131,53 @@ public class CallLoggerService extends Service {
         }
     }
 
+    public static int getSimIdColumn(Cursor paramCursor) {
+        String[] arrayOfString = new String[7];
+        arrayOfString[0] = "sim_id";
+        arrayOfString[1] = "simid";
+        arrayOfString[2] = "sub_id";
+        arrayOfString[3] = "simId";
+        arrayOfString[4] = "sim_sn";
+        arrayOfString[5] = "simsn";
+        arrayOfString[6] = "simSn";
+        for (String anArrayOfString : arrayOfString) {
+            int ind = paramCursor.getColumnIndex(anArrayOfString);
+            if (ind >= 0)
+                return ind;
+        }
+        return -1;
+    }
+
     private Bundle queryCallHistory() {
         Bundle bundle = new Bundle();
         //query the call history
-        String id = "";
-        if (MTKUtils.isMtkDevice() && Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
-            id = "simid";
-        else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
-            id = CallLog.Calls.PHONE_ACCOUNT_ID;
-        Cursor mCallCursor = getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, new String[]{id,
-                        android.provider.CallLog.Calls.TYPE, android.provider.CallLog.Calls.DATE, android.provider.CallLog.Calls.DURATION},
+        int id = -1;
+        Cursor mCallCursor = getContentResolver().query(android.provider.CallLog.Calls.CONTENT_URI, null,
                 null, null,android.provider.CallLog.Calls.DATE + " DESC");
-        if (mCallCursor != null && mCallCursor.getCount() > 0) {
-            //if there is more than 1 call
-            mCallCursor.moveToFirst();
-            try {
-                int callType = mCallCursor.getInt(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.TYPE));
-                if (callType == CallLog.Calls.OUTGOING_TYPE) {
-                    int simid;
-                    if (id.equals("simid"))
-                        simid = mCallCursor.getInt(mCallCursor.getColumnIndex(id));
-                    else
-                        simid = Integer.valueOf(mCallCursor.getString(mCallCursor.getColumnIndex(id)));
-                    long callDate = mCallCursor.getLong(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
-                    DateTime callTime = new DateTime(callDate);
-                    long callDuration = mCallCursor.getLong(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.DURATION));
-                    bundle.putInt(Constants.SIM_ACTIVE, simid);
-                    bundle.putString(Constants.LAST_DATE, callTime.toString(fmtDateTime));
-                    bundle.putLong(Constants.CALL_DURATION, callDuration);
+        if (mCallCursor != null) {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+                id = getSimIdColumn(mCallCursor);
+            else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+                id = mCallCursor.getColumnIndex(CallLog.Calls.PHONE_ACCOUNT_ID);
+            if (mCallCursor.getCount() > 0) {
+                //if there is more than 1 call
+                mCallCursor.moveToFirst();
+                try {
+                    int callType = mCallCursor.getInt(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.TYPE));
+                    if (callType == CallLog.Calls.OUTGOING_TYPE) {
+                        int simid = Integer.valueOf(mCallCursor.getString(id));
+                        long callDate = mCallCursor.getLong(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
+                        DateTime callTime = new DateTime(callDate);
+                        long callDuration = mCallCursor.getLong(mCallCursor.getColumnIndex(android.provider.CallLog.Calls.DURATION));
+                        bundle.putInt(Constants.SIM_ACTIVE, simid);
+                        bundle.putString(Constants.LAST_DATE, callTime.toString(fmtDateTime));
+                        bundle.putLong(Constants.CALL_DURATION, callDuration);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                mCallCursor.close();
             }
-            mCallCursor.close();
         }
         return bundle;
     }
