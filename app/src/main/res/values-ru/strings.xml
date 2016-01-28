@@ -2,7 +2,7 @@
 <resources>
     <string name="action_disable">Отключить передачу данных</string>
     <string name="action_enable">Включить передачу данных</string>
-    <string name="action_set_usage">Установить кол-во израсход. трафика</string>
+    <string name="action_set_usage">Установка кол-ва израсход. трафика</string>
     <string name="action_settings">Настройки</string>
     <string name="action_start">Запуск сервиса</string>
     <string name="action_stop">Остановка сервиса</string>
@@ -145,4 +145,8 @@
     <string name="data_reset">%1$s: данные были обнулены</string>
     <string name="action_show_test">Определение SIM на МТК с Android до 5.0</string>
     <string name="test_hint">Пожалуйста, включите передачу данных на каждой из SIM по очереди, начиная с SIM1. Когда передача данных на SIM1 включится, выберите радиокнопку SIM1 и нажмите ОК. Продолжайте так с остальными SIM. В конце нажмите Отмена. Спасибо!</string>
+    <string name="calculate">Подсчитать</string>
+    <string name="others">Другое</string>
+    <string name="traffic">Передача данных</string>
+    <string name="test">Тест</string>
 </resources>

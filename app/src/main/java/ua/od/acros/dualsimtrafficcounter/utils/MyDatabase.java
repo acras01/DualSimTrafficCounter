@@ -350,6 +350,9 @@ public class MyDatabase extends SQLiteOpenHelper {
             mMap1.put(Constants.TOTAL1, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL1)));
             mMap1.put(Constants.TOTAL2, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2)));
             mMap1.put(Constants.TOTAL3, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3)));
+            mMap1.put(Constants.PERIOD1, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD1)));
+            mMap1.put(Constants.PERIOD2, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD2)));
+            mMap1.put(Constants.PERIOD3, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD3)));
             mMap1.put(Constants.SIM1RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX_N)));
             mMap1.put(Constants.SIM2RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX_N)));
             mMap1.put(Constants.SIM3RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3RX_N)));
@@ -376,6 +379,9 @@ public class MyDatabase extends SQLiteOpenHelper {
             mMap2.put(Constants.TOTAL1, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL1)));
             mMap2.put(Constants.TOTAL2, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL2)));
             mMap2.put(Constants.TOTAL3, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL3)));
+            mMap2.put(Constants.PERIOD1, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD1)));
+            mMap2.put(Constants.PERIOD2, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD2)));
+            mMap2.put(Constants.PERIOD3, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD3)));
             mMap2.put(Constants.SIM1RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX_N)));
             mMap2.put(Constants.SIM2RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX_N)));
             mMap2.put(Constants.SIM3RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3RX_N)));
@@ -424,27 +430,27 @@ public class MyDatabase extends SQLiteOpenHelper {
                         }
                         break;
                     case "2":
-                        if ((int) mMap1.get(Constants.PERIOD1) == 1) {
-                        if (mMap1.size() > 0) {
-                            out.putLong("rx", (long) mMap1.get(Constants.SIM1RX));
-                            out.putLong("tx", (long) mMap1.get(Constants.SIM1TX));
-                            out.putLong("tot", (long) mMap1.get(Constants.TOTAL1));
-                            out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N));
-                            out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N));
-                            out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N));
-                        } else
-                            return null;
-                    } else {
-                        if (mMap1.size() > 0 && mMap2.size() > 0) {
-                            out.putLong("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
-                            out.putLong("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
-                            out.putLong("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
-                            out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
-                            out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
-                            out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
-                        } else
-                            return null;
-                    }
+                        if ((int) mMap1.get(Constants.PERIOD1) == 0) {
+                            if (mMap1.size() > 0) {
+                                out.putLong("rx", (long) mMap1.get(Constants.SIM1RX));
+                                out.putLong("tx", (long) mMap1.get(Constants.SIM1TX));
+                                out.putLong("tot", (long) mMap1.get(Constants.TOTAL1));
+                                out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N));
+                                out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N));
+                                out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N));
+                            } else
+                                return null;
+                        } else {
+                            if (mMap1.size() > 0 && mMap2.size() > 0) {
+                                out.putLong("rx", (long) mMap1.get(Constants.SIM1RX) - (long) mMap2.get(Constants.SIM1RX));
+                                out.putLong("tx", (long) mMap1.get(Constants.SIM1TX) - (long) mMap2.get(Constants.SIM1TX));
+                                out.putLong("tot", (long) mMap1.get(Constants.TOTAL1) - (long) mMap2.get(Constants.TOTAL1));
+                                out.putLong("rx_n", (long) mMap1.get(Constants.SIM1RX_N) - (long) mMap2.get(Constants.SIM1RX_N));
+                                out.putLong("tx_n", (long) mMap1.get(Constants.SIM1TX_N) - (long) mMap2.get(Constants.SIM1TX_N));
+                                out.putLong("tot_n", (long) mMap1.get(Constants.TOTAL1_N) - (long) mMap2.get(Constants.TOTAL1_N));
+                            } else
+                                return null;
+                        }
                         break;
                 }
                 break;

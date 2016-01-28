@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -30,22 +31,34 @@ public class OnOffDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        String[] mOperatorNames = new String[3];
+        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+
         View view = View.inflate(getActivity(), R.layout.onoff_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
+        sim1rb.setText(mOperatorNames[0]);
+        RadioButton sim2rb = (RadioButton) view.findViewById(R.id.sim2RB);
+        sim2rb.setText(mOperatorNames[1]);
+        RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
+        sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP) {
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             if (simQuantity == 1) {
-                view.findViewById(R.id.sim2RB).setEnabled(false);
-                view.findViewById(R.id.sim3RB).setEnabled(false);
+                sim2rb.setEnabled(false);
+                sim3rb.setEnabled(false);
             }
             if (simQuantity == 2)
-                view.findViewById(R.id.sim3RB).setEnabled(false);
+                sim3rb.setEnabled(false);
         } else {
-            view.findViewById(R.id.sim1RB).setEnabled(false);
-            view.findViewById(R.id.sim2RB).setEnabled(false);
-            view.findViewById(R.id.sim3RB).setEnabled(false);
+            sim1rb.setEnabled(false);
+            sim2rb.setEnabled(false);
+            sim3rb.setEnabled(false);
         }
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

@@ -3,7 +3,7 @@
     <string name="action_disable">Вимкнути мобільні дані</string>
     <string name="action_enable">Увімкнути мобільні дані</string>
     <string name="action_set_limit">Встановити ліміт трафіку</string>
-    <string name="action_set_usage">Встановити обсяг витраченого трафіку</string>
+    <string name="action_set_usage">Встановлення обсягу витраченого трафіку</string>
     <string name="action_settings">Налаштування</string>
     <string name="action_start">Запуск сервісу</string>
     <string name="action_stop">Зупинка сервісу</string>
@@ -145,4 +145,8 @@
     <string name="data_reset">%1$s: дані було скинуто</string>
     <string name="action_show_test">Визначення SIM на МТК с Android до 5.0</string>
     <string name="test_hint">Будь ласка, увімкніть мобільні дані на кожній з SIM по черзі, починаючи з SIM1. Коли мобільні дані на SIM1 увімкнуться, оберіть радіокнопку SIM1 и натисніть ОК. Продовжуйте так з рештою SIM. В кінці натисніть Відміна. Дякую!</string>
+    <string name="calculate">Підрахувати</string>
+    <string name="others">Інше</string>
+    <string name="traffic">Мобільні дані</string>
+    <string name="test">Тест</string>
 </resources>

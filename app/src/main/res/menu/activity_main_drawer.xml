@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:title="@string/traffic">
+            <menu>
+                <item android:id="@+id/nav_traffic" android:title="@string/notification_title" />
+                <item android:id="@+id/nav_test" android:title="@string/action_show_test" />
+                <item android:id="@+id/nav_traf_for_date" android:title="@string/action_show_history" />
+                <item android:id="@+id/nav_set_usage" android:title="@string/action_set_usage" />
+            </menu>
+        </item>
+    </group>
+
+    <item android:title="@string/others">
+        <menu>
+            <item android:id="@+id/nav_settings" android:title="@string/action_settings" />
+        </menu>
+    </item>
+
+</menu>

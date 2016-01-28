@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.text.InputFilter;
-import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
-import ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference;
 
 
 public class OtherFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -64,7 +63,5 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
-        if (key.equals(Constants.PREF_OTHER[7]))
-            Toast.makeText(getActivity(), R.string.restart, Toast.LENGTH_LONG).show();
     }
 }

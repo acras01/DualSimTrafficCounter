@@ -2,4 +2,7 @@
 <resources>
     <color name="widget_text">#ffffffff</color>
     <color name="background">#00ffffff</color>
+    <color name="colorPrimary">#ff00796b</color>
+    <color name="colorPrimaryDark">#ffffffff</color>
+    <color name="colorAccent">#ffb2dfdb</color>
 </resources>
