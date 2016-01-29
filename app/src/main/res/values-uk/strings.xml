@@ -149,4 +149,5 @@
     <string name="others">Інше</string>
     <string name="traffic">Мобільні дані</string>
     <string name="test">Тест</string>
+    <string name="app_version">Версія 1.3.5</string>
 </resources>

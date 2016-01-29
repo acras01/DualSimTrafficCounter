@@ -96,88 +96,89 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         dataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                try {
-                    boolean[] isNight = CountService.getIsNight();
-                    if (!mShowNightTraffic1)
-                        TOT1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
-                                intent.getLongExtra(Constants.TOTAL1, 0L)));
-                    if (!mShowNightTraffic2)
-                        TOT2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
-                                intent.getLongExtra(Constants.TOTAL2, 0L)));
-                    if (!mShowNightTraffic3)
-                        TOT3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
-                                intent.getLongExtra(Constants.TOTAL3, 0L)));
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                        if (!mShowNightTraffic1) {
-                            if (RX1 != null)
-                                RX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
-                                        intent.getLongExtra(Constants.SIM1RX, 0L)));
-                            if (TX1 != null)
-                                TX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1TX_N, 0L) :
-                                        intent.getLongExtra(Constants.SIM1TX, 0L)));
-                        }
-                        if (!mShowNightTraffic2) {
-                            if (RX2 != null)
-                                RX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
-                                        intent.getLongExtra(Constants.SIM2RX, 0L)));
-                            if (TX2 != null)
-                                TX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2TX_N, 0L) :
-                                        intent.getLongExtra(Constants.SIM2TX, 0L)));
-                        }
-                        if (!mShowNightTraffic3) {
-                            if (RX3 != null)
-                                RX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
-                                        intent.getLongExtra(Constants.SIM3RX, 0L)));
-                            if (TX3 != null)
-                                TX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3TX_N, 0L) :
-                                        intent.getLongExtra(Constants.SIM3TX, 0L)));
-                        }
-                    }
-                    if (!mShowNightTraffic1) {
-                        if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
-                            SIM1.setText(isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
-                        else {
-                            mOperatorName1 = intent.getStringExtra(Constants.OPERATOR1);
-                            SIM1.setText(isNight[0] ? mOperatorName1 + getResources().getString(R.string.night) : mOperatorName1);
-                        }
-                    }
-                    if (simQuantity < 2) {
-                        SIM2.setText(getResources().getString(R.string.single_sim));
-                        SIM3.setText(getResources().getString(R.string.single_sim));
-                    } else {
-                        if (!mShowNightTraffic2) {
-                            if (simQuantity >= 2) {
-                                if (!intent.hasExtra(Constants.OPERATOR2) || intent.getStringExtra(Constants.OPERATOR2).equals(""))
-                                    SIM2.setText(isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
-                                else {
-                                    mOperatorName2 = intent.getStringExtra(Constants.OPERATOR2);
-                                    SIM2.setText(isNight[1] ? mOperatorName2 + getResources().getString(R.string.night) : mOperatorName2);
-                                }
+                if (isVisible()) {
+                    try {
+                        boolean[] isNight = CountService.getIsNight();
+                        if (!mShowNightTraffic1)
+                            TOT1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
+                                    intent.getLongExtra(Constants.TOTAL1, 0L)));
+                        if (!mShowNightTraffic2)
+                            TOT2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
+                                    intent.getLongExtra(Constants.TOTAL2, 0L)));
+                        if (!mShowNightTraffic3)
+                            TOT3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
+                                    intent.getLongExtra(Constants.TOTAL3, 0L)));
+                        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                            if (!mShowNightTraffic1) {
+                                if (RX1 != null)
+                                    RX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
+                                            intent.getLongExtra(Constants.SIM1RX, 0L)));
+                                if (TX1 != null)
+                                    TX1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.SIM1TX_N, 0L) :
+                                            intent.getLongExtra(Constants.SIM1TX, 0L)));
                             }
-                        }
-                        if (simQuantity == 3) {
+                            if (!mShowNightTraffic2) {
+                                if (RX2 != null)
+                                    RX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
+                                            intent.getLongExtra(Constants.SIM2RX, 0L)));
+                                if (TX2 != null)
+                                    TX2.setText(DataFormat.formatData(context, isNight[1] ? intent.getLongExtra(Constants.SIM2TX_N, 0L) :
+                                            intent.getLongExtra(Constants.SIM2TX, 0L)));
+                            }
                             if (!mShowNightTraffic3) {
-                                if (!intent.hasExtra(Constants.OPERATOR3) || intent.getStringExtra(Constants.OPERATOR3).equals(""))
-                                    SIM3.setText(isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
-                                else {
-                                    mOperatorName3 = intent.getStringExtra(Constants.OPERATOR3);
-                                    SIM3.setText(isNight[2] ? mOperatorName3 + getResources().getString(R.string.night) : mOperatorName3);
+                                if (RX3 != null)
+                                    RX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
+                                            intent.getLongExtra(Constants.SIM3RX, 0L)));
+                                if (TX3 != null)
+                                    TX3.setText(DataFormat.formatData(context, isNight[2] ? intent.getLongExtra(Constants.SIM3TX_N, 0L) :
+                                            intent.getLongExtra(Constants.SIM3TX, 0L)));
+                            }
+                        }
+                        if (!mShowNightTraffic1) {
+                            if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
+                                SIM1.setText(isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
+                            else {
+                                mOperatorName1 = intent.getStringExtra(Constants.OPERATOR1);
+                                SIM1.setText(isNight[0] ? mOperatorName1 + getResources().getString(R.string.night) : mOperatorName1);
+                            }
+                        }
+                        if (simQuantity < 2) {
+                            SIM2.setText(getResources().getString(R.string.single_sim));
+                            SIM3.setText(getResources().getString(R.string.single_sim));
+                        } else {
+                            if (!mShowNightTraffic2) {
+                                if (simQuantity >= 2) {
+                                    if (!intent.hasExtra(Constants.OPERATOR2) || intent.getStringExtra(Constants.OPERATOR2).equals(""))
+                                        SIM2.setText(isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
+                                    else {
+                                        mOperatorName2 = intent.getStringExtra(Constants.OPERATOR2);
+                                        SIM2.setText(isNight[1] ? mOperatorName2 + getResources().getString(R.string.night) : mOperatorName2);
+                                    }
+                                }
+                            }
+                            if (simQuantity == 3) {
+                                if (!mShowNightTraffic3) {
+                                    if (!intent.hasExtra(Constants.OPERATOR3) || intent.getStringExtra(Constants.OPERATOR3).equals(""))
+                                        SIM3.setText(isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
+                                    else {
+                                        mOperatorName3 = intent.getStringExtra(Constants.OPERATOR3);
+                                        SIM3.setText(isNight[2] ? mOperatorName3 + getResources().getString(R.string.night) : mOperatorName3);
+                                    }
                                 }
                             }
                         }
+                        if (!intent.getBooleanExtra(Constants.TIP, false))
+                            TIP.setText(getResources().getString(R.string.tip));
+                        else
+                            TIP.setText(getResources().getString(R.string.count_stopped_tip));
+                        String rxSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDRX, 0L));
+                        String txSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDTX, 0L));
+                        setLabelText(intent.getIntExtra(Constants.SIM_ACTIVE, 0), txSpeed, rxSpeed);
+                        invalidateOptionsMenu(getActivity());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ACRA.getErrorReporter().handleException(e);
                     }
-                    if (!intent.getBooleanExtra(Constants.TIP, false))
-                        TIP.setText(getResources().getString(R.string.tip));
-                    else
-                        TIP.setText(getResources().getString(R.string.count_stopped_tip));
-                    String rxSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDRX, 0L));
-                    String txSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDTX, 0L));
-                    setLabelText(intent.getIntExtra(Constants.SIM_ACTIVE, 0), txSpeed, rxSpeed);
-                    invalidateOptionsMenu(getActivity());
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
                 }
             }
         };
@@ -186,12 +187,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         tipReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                try {
-                    TIP.setText(getResources().getString(R.string.count_stopped_tip));
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
+                if (isVisible()) {
+                    try {
+                        TIP.setText(getResources().getString(R.string.count_stopped_tip));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ACRA.getErrorReporter().handleException(e);
+                    }
                 }
             }
         };

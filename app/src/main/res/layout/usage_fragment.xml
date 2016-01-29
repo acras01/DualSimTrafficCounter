@@ -117,14 +117,16 @@
         android:entries="@array/measure"
         android:minWidth="@dimen/spinner_width"
         android:layout_toRightOf="@+id/rxamount"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@android:string/ok"
         android:id="@+id/buttonOK"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        style="?android:attr/buttonBarButtonStyle" />
 
 </RelativeLayout>

@@ -32,119 +32,128 @@
         android:layout_marginLeft="10dp"
         android:checked="false" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2"
         android:layout_below="@+id/checktotal">
 
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioGroup"
-            android:layout_below="@+id/choosesim"
-            android:layout_alignRight="@+id/spinnertx"
-            android:layout_alignEnd="@+id/spinnertx"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_margin="10dp">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/sim1RB"
-                android:text="SIM1" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/sim2RB"
-                android:text="SIM2" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/sim3RB"
-                android:text="SIM3" />
-
-        </RadioGroup>
-
-        <TableLayout
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/checktotal">
 
-            <TableRow
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioGroup"
+                android:layout_below="@+id/choosesim"
+                android:layout_alignRight="@+id/spinnertx"
+                android:layout_alignEnd="@+id/spinnertx"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sim1RB"
+                    android:text="SIM1" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sim2RB"
+                    android:text="SIM2" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sim3RB"
+                    android:text="SIM3" />
+
+            </RadioGroup>
+
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:id="@+id/txamount"
-                    android:hint="@string/transmitted"
-                    android:maxWidth="@dimen/input_width"
-                    android:inputType="numberDecimal"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_below="@+id/radioGroup"
-                    android:width="@dimen/input_width" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnertx"
-                    android:spinnerMode="dropdown"
-                    android:layout_toRightOf="@+id/txamount"
-                    android:layout_alignBottom="@+id/txamount"
-                    android:entries="@array/measure"
-                    android:minWidth="@dimen/spinner_width"
-                    android:layout_marginBottom="10dp" />
-            </TableRow>
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:id="@+id/txamount"
+                        android:hint="@string/transmitted"
+                        android:maxWidth="@dimen/input_width"
+                        android:inputType="numberDecimal"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_below="@+id/radioGroup"
+                        android:width="@dimen/input_width" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinnertx"
+                        android:spinnerMode="dropdown"
+                        android:layout_toRightOf="@+id/txamount"
+                        android:layout_alignBottom="@+id/txamount"
+                        android:entries="@array/measure"
+                        android:minWidth="@dimen/spinner_width"
+                        android:layout_marginBottom="10dp" />
+                </TableRow>
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:id="@+id/rxamount"
-                    android:hint="@string/received"
-                    android:maxWidth="@dimen/input_width"
-                    android:inputType="numberDecimal"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_below="@+id/txamount"
-                    android:width="@dimen/input_width"
-                    android:layout_marginTop="10dp" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnerrx"
-                    android:focusable="true"
-                    android:spinnerMode="dropdown"
-                    android:layout_alignBottom="@+id/rxamount"
-                    android:entries="@array/measure"
-                    android:minWidth="@dimen/spinner_width"
-                    android:layout_toRightOf="@+id/rxamount"
-                    android:layout_marginBottom="10dp" />
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:id="@+id/rxamount"
+                        android:hint="@string/received"
+                        android:maxWidth="@dimen/input_width"
+                        android:inputType="numberDecimal"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_below="@+id/txamount"
+                        android:width="@dimen/input_width"
+                        android:layout_marginTop="10dp" />
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinnerrx"
+                        android:focusable="true"
+                        android:spinnerMode="dropdown"
+                        android:layout_alignBottom="@+id/rxamount"
+                        android:entries="@array/measure"
+                        android:minWidth="@dimen/spinner_width"
+                        android:layout_toRightOf="@+id/rxamount"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@android:string/ok"
         android:id="@+id/buttonOK"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        style="?android:attr/buttonBarButtonStyle" />
 
 </RelativeLayout>

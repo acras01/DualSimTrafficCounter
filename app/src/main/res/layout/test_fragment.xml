@@ -72,21 +72,24 @@
         android:layout_height="wrap_content"
         android:weightSum="1"
         android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        style="?android:buttonBarStyle">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/test"
             android:id="@+id/test"
-            android:layout_weight=".5" />
+            android:layout_weight=".5"
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/ok"
             android:id="@+id/buttonOK"
-            android:layout_weight=".5" />
+            android:layout_weight=".5"
+            style="?android:attr/buttonBarButtonStyle" />
     </LinearLayout>
 
 </RelativeLayout>
