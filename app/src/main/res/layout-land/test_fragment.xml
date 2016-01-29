@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:weightSum="1">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView5"
+        android:layout_weight=".9">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_sim"
+                android:id="@+id/choosesim"
+                android:layout_alignParentTop="true"
+                android:minLines="2"
+                android:maxLines="4"
+                android:maxWidth="@dimen/text_width"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignEnd="@+id/radioGroup"
+                android:gravity="center_vertical"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/primary_text_dark" />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioGroup"
+                android:layout_below="@+id/choosesim"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sim1RB"
+                    android:text="SIM1"
+                    android:textColor="@android:color/primary_text_dark" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sim2RB"
+                    android:text="SIM2"
+                    android:textColor="@android:color/primary_text_dark" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sim3RB"
+                    android:text="SIM3"
+                    android:textColor="@android:color/primary_text_dark" />
+
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/test_hint"
+                android:id="@+id/hint"
+                android:textColor="@android:color/primary_text_dark"
+                android:layout_margin="5dp"
+                android:layout_toRightOf="@+id/radioGroup"
+                android:layout_alignTop="@+id/radioGroup" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true"
+        style="?android:buttonBarStyle"
+        android:layout_weight=".1">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/test"
+            android:id="@+id/test"
+            android:layout_weight=".5"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/ok"
+            android:id="@+id/buttonOK"
+            android:layout_weight=".5"
+            style="?android:attr/buttonBarButtonStyle" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -19,7 +19,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_alignEnd="@+id/radioGroup"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="center_vertical"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="10dp"
         android:textColor="@android:color/primary_text_dark" />
