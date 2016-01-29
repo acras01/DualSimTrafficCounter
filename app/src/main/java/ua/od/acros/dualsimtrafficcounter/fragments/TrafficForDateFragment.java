@@ -36,9 +36,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class TrafficForDateFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
 
-    private int mYear;
-    private int mMonth;
-    private int mDay;
+    private int mYear, mMonth, mDay;
     private int mSimChecked = Constants.NULL;
     private int mSimQuantity;
     private Button bSetDate, bOK;
@@ -47,14 +45,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
 
     private OnFragmentInteractionListener mListener;
 
-    private TextView RX;
-    private TextView TX;
-    private TextView RXN;
-    private TextView TXN;
-    private TextView TOT;
-    private TextView TOTN;
-    private TextView day;
-    private TextView night;
+    private TextView RX, TX, RXN, TXN, TOT, TOTN, day, night;
     private String[] mOperatorNames = new String[3];
 
     // TODO: Rename and change types and number of parameters
@@ -124,8 +115,46 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         TOTN.setVisibility(View.GONE);
         night.setVisibility(View.GONE);
 
+        if (savedInstanceState != null) {
+            switch (savedInstanceState.getInt("sim")) {
+                case Constants.SIM1:
+                    sim1rb.setChecked(true);
+                    break;
+                case Constants.SIM2:
+                    sim2rb.setChecked(true);
+                    break;
+                case Constants.SIM3:
+                    sim3rb.setChecked(true);
+                    break;
+            }
+            day.setText(savedInstanceState.getString("day"));
+            night.setText(savedInstanceState.getString("night"));
+            RX.setText(savedInstanceState.getString("rx"));
+            RXN.setText(savedInstanceState.getString("rxn"));
+            TX.setText(savedInstanceState.getString("tx"));
+            TXN.setText(savedInstanceState.getString("txn"));
+            TOT.setText(savedInstanceState.getString("tot"));
+            TOTN.setText(savedInstanceState.getString("totn"));
+            bSetDate.setText(savedInstanceState.getString("set"));
+        }
+
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("sim", mSimChecked);
+        outState.putString("day", day.getText().toString());
+        outState.putString("night", night.getText().toString());
+        outState.putString("rx", RX.getText().toString());
+        outState.putString("tx", TX.getText().toString());
+        outState.putString("tot", TOT.getText().toString());
+        outState.putString("rxn", RXN.getText().toString());
+        outState.putString("txn", TXN.getText().toString());
+        outState.putString("totn", TOTN.getText().toString());
+        outState.putString("set", bSetDate.getText().toString());
     }
 
     @Override
@@ -169,9 +198,6 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                 break;
             case R.id.sim3RB:
                 mSimChecked = Constants.SIM3;
-                break;
-            case R.id.offRB:
-                mSimChecked = Constants.DISABLED;
                 break;
         }
     }
