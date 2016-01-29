@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,9 +39,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TrafficForDateFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener,
         SetUsageFragment.OnFragmentInteractionListener{
 
-    private static final String TRAFFIC_TAG = "traffic";
     private static Context mContext;
     private SharedPreferences mPrefs;
+    private static final String TRAFFIC_TAG = "traffic";
+    private static final String XPOSED = "de.robv.android.xposed.installer";
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String MTK = "mtk";
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mContext.startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mContext.startService(new Intent(mContext, CountService.class));
-        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+        if (isPackageExisted(XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
             startService(new Intent(mContext, CallLoggerService.class));
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
@@ -129,6 +131,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(TRAFFIC_TAG)
                         .commit();
         }
+    }
+
+    public boolean isPackageExisted(String targetPackage){
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return true;
     }
 
     public static Context getAppContext() {
