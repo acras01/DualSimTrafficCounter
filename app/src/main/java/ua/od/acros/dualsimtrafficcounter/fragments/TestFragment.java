@@ -83,7 +83,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     @Override
     public void onResume(){
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
+        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);
         toolBar.setSubtitle(R.string.action_show_test);
     }
 
@@ -139,7 +139,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onTestFragmentInteraction(Uri uri);
+        void onTestFragmentInteraction(Uri uri);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

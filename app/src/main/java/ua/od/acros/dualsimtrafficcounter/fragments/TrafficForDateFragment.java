@@ -131,7 +131,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     @Override
     public void onResume(){
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
+        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);
         toolBar.setSubtitle(R.string.action_show_history);
     }
 
@@ -178,7 +178,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onTrafficForDateFragmentInteraction(Uri uri);
+        void onTrafficForDateFragmentInteraction(Uri uri);
     }
 
     class GetTask extends AsyncTask<Integer, Void, Bundle> {

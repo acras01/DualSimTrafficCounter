@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.stericson.RootTools.RootTools;
 
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Prepare Navigation View Menu
         MenuItem mTestItem = navigationView.getMenu().findItem(R.id.nav_test);
         if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport() &&
                 android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -76,6 +81,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mTestItem.setEnabled(false);
         }
 
+        //set Version in Navigation View Header
+        View headerLayout = navigationView.getHeaderView(0);
+        TextView versionView = (TextView) headerLayout.findViewById(R.id.versioninfo);
+        String version = "";
+        try {
+            version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            version = getResources().getString(R.string.not_available);
+        }
+        versionView.setText(String.format(getResources().getString(R.string.app_version), version));
+
         mTraffic = new TrafficFragment();
         mTrafficForDate = new TrafficForDateFragment();
         mTest = new TestFragment();
@@ -85,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mContext.startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mContext.startService(new Intent(mContext, CountService.class));
-        //if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-        //    startService(new Intent(mContext, CallLoggerService.class));
+        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+            startService(new Intent(mContext, CallLoggerService.class));
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);

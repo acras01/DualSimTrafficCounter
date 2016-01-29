@@ -688,7 +688,7 @@ public class MobileUtils {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.getBoolean(key1, true)) {
             ArrayList<String> opNames = getOperatorNames(context);
-            return (opNames.size() > sim && opNames.get(sim) != null) ? opNames.get(sim) : context.getResources().getString(R.string.single_sim);
+            return (opNames.size() > sim && opNames.get(sim) != null) ? opNames.get(sim) : context.getResources().getString(R.string.not_available);
         } else
             return prefs.getString(key2, "");
     }

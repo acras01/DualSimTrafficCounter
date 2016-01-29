@@ -143,8 +143,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                         if (simQuantity < 2) {
-                            SIM2.setText(getResources().getString(R.string.single_sim));
-                            SIM3.setText(getResources().getString(R.string.single_sim));
+                            SIM2.setText(getResources().getString(R.string.not_available));
+                            SIM3.setText(getResources().getString(R.string.not_available));
                         } else {
                             if (!mShowNightTraffic2) {
                                 if (simQuantity >= 2) {

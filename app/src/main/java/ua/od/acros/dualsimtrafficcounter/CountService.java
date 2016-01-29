@@ -1274,7 +1274,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                         if (isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                             nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM2));
-                        };
+                        }
                     }
 
                     if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
@@ -1572,12 +1572,12 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             id = R.drawable.ic_launcher_small;
         text = String.format(getResources().getString(R.string.data_reset), text);
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setPriority(Notification.PRIORITY_LOW)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(id)
                 .setLargeIcon(bm)
@@ -1707,7 +1707,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             }
         }
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -1813,7 +1813,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
             notificationIntent.setComponent(cn);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false) && mPrefs.getBoolean(Constants.PREF_OTHER[2], false))

@@ -1,8 +1,0 @@
-<resources>
-
-    <style name="AppTheme" parent="@android:style/Theme.Material">
-    </style>
-    <style name="AppTheme.Dialog" parent="@android:style/Theme.Material.Dialog">
-    </style>
-
-</resources>

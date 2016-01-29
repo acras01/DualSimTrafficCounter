@@ -95,7 +95,7 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
     @Override
     public void onResume(){
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
+        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);
         toolBar.setSubtitle(R.string.action_set_usage);
     }
 
@@ -166,7 +166,7 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onSetUsageFragmentInteraction(Uri uri);
+        void onSetUsageFragmentInteraction(Uri uri);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
