@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Prepare Navigation View Menu
         MenuItem mTestItem = navigationView.getMenu().findItem(R.id.nav_test);
-        if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport() &&
+        if (MTKUtils.isMtkDevice() &&
                 android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
             mTestItem.setVisible(true);
             mTestItem.setEnabled(true);
@@ -85,10 +85,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mTestItem.setEnabled(false);
         }
 
+        MenuItem mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
+        /*if (isPackageExisted(XPOSED)) {
+            mCallsItem.setVisible(true);
+            mCallsItem.setEnabled(true);
+        } else {*/
+            mCallsItem.setVisible(false);
+            mCallsItem.setEnabled(false);
+        //}
+
         //set Version in Navigation View Header
         View headerLayout = navigationView.getHeaderView(0);
         TextView versionView = (TextView) headerLayout.findViewById(R.id.versioninfo);
-        String version = "";
+        String version;
         try {
             version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
@@ -107,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mContext.startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mContext.startService(new Intent(mContext, CountService.class));
-        if (isPackageExisted(XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-            startService(new Intent(mContext, CallLoggerService.class));
+        /*if (isPackageExisted(XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+            startService(new Intent(mContext, CallLoggerService.class));*/
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
@@ -118,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !MTKUtils.isMtkDevice())
                 showDialog(MTK);
-            if (MTKUtils.isMtkDevice() && MTKUtils.hasGeminiSupport() &&
+            if (MTKUtils.isMtkDevice() &&
                     android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP)
                 if (savedInstanceState == null)
                     getSupportFragmentManager()
