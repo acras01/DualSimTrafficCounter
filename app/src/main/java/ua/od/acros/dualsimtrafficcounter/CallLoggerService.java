@@ -47,11 +47,22 @@ public class CallLoggerService extends Service {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Toast.makeText(context, "SIM" + intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED) + ": " +
-                        String.format("%.2f", (double) intent.getLongExtra(Constants.CALL_DURATION, 0L)/1000) + "s", Toast.LENGTH_LONG).show();
+                        formatCallDuration(intent.getLongExtra(Constants.CALL_DURATION, 0L)), Toast.LENGTH_LONG).show();
             }
         };
         IntentFilter callDataFilter = new IntentFilter(Constants.CALLS);
         registerReceiver(callDataReceiver, callDataFilter);
+    }
+
+    private String formatCallDuration(long millis) {
+        long seconds = (long) Math.ceil(millis / 1000);
+        if (seconds < 60) {
+            return String.format(getResources().getString(R.string.seconds), seconds);
+        } else {
+            long minutes = seconds / 60;
+            seconds -= minutes * 60;
+            return String.format(getResources().getString(R.string.minutes_seconds), minutes, seconds);
+        }
     }
 
     @Override
@@ -78,7 +89,7 @@ public class CallLoggerService extends Service {
         unregisterReceiver(callDataReceiver);
     }
 
-    public static Context getAppContext() {
+    public static Context getCallLoggerContext() {
         return CallLoggerService.mContext;
     }
 }

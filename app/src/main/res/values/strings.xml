@@ -155,4 +155,6 @@
     <string name="calculate">Calculate</string>
     <string name="test">Test</string>
     <string name="app_version">Version %1$s</string>
+    <string name="seconds">%1$ss</string>
+    <string name="minutes_seconds">%1$sm %2$ss</string>
 </resources>

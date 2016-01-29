@@ -150,4 +150,6 @@
     <string name="traffic">Мобільні дані</string>
     <string name="test">Тест</string>
     <string name="app_version">Версія %1$s</string>
+    <string name="seconds">%1$sс</string>
+    <string name="minutes_seconds">%1$sхв. %2$sс</string>
 </resources>

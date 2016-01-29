@@ -150,4 +150,6 @@
     <string name="traffic">Передача данных</string>
     <string name="test">Тест</string>
     <string name="app_version">Версия %1$s</string>
+    <string name="seconds">%1$sс</string>
+    <string name="minutes_seconds">%1$sмин. %2$sс</string>
 </resources>
