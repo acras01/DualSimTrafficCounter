@@ -64,7 +64,8 @@ public class CallLoggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification n =  new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
