@@ -17,6 +17,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class CallLoggerService extends Service {
@@ -46,23 +47,18 @@ public class CallLoggerService extends Service {
         callDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Toast.makeText(context, "SIM" + intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED) + ": " +
-                        formatCallDuration(intent.getLongExtra(Constants.CALL_DURATION, 0L)), Toast.LENGTH_LONG).show();
+                int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+                long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
+                Toast.makeText(context, "SIM" + sim + ": " +
+                        DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
+                Intent callsIntent = new Intent(Constants.CALLS);
+                callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
+                callsIntent.putExtra(Constants.CALL_DURATION, duration);
+                sendBroadcast(callsIntent);
             }
         };
-        IntentFilter callDataFilter = new IntentFilter(Constants.CALLS);
+        IntentFilter callDataFilter = new IntentFilter(Constants.OUTGOING_CALL);
         registerReceiver(callDataReceiver, callDataFilter);
-    }
-
-    private String formatCallDuration(long millis) {
-        long seconds = (long) Math.ceil(millis / 1000);
-        if (seconds < 60) {
-            return String.format(getResources().getString(R.string.seconds), seconds);
-        } else {
-            long minutes = seconds / 60;
-            seconds -= minutes * 60;
-            return String.format(getResources().getString(R.string.minutes_seconds), minutes, seconds);
-        }
     }
 
     @Override

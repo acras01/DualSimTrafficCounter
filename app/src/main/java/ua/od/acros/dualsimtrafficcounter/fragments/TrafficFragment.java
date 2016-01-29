@@ -57,20 +57,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private MyDatabase mDatabaseHelper;
     private SharedPreferences mPrefs;
     private boolean mShowNightTraffic1, mShowNightTraffic2, mShowNightTraffic3;
-    private String mOperatorName1, mOperatorName2, mOperatorName3;
+    private String[] mOperatorNames = new String[3];
     private boolean[] mIsNight;
     private int simQuantity;
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TrafficFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static TrafficFragment newInstance(String param1, String param2) {
         return new TrafficFragment();
     }
@@ -85,7 +76,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         setHasOptionsMenu(true);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
-        mOperatorName1 = mOperatorName2 = mOperatorName3 = "";
+        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
         mDatabaseHelper = MyDatabase.getInstance(getActivity());
         mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -138,8 +131,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                             if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
                                 SIM1.setText(isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
                             else {
-                                mOperatorName1 = intent.getStringExtra(Constants.OPERATOR1);
-                                SIM1.setText(isNight[0] ? mOperatorName1 + getResources().getString(R.string.night) : mOperatorName1);
+                                mOperatorNames[0] = intent.getStringExtra(Constants.OPERATOR1);
+                                SIM1.setText(isNight[0] ? mOperatorNames[0] + getResources().getString(R.string.night) : mOperatorNames[0]);
                             }
                         }
                         if (simQuantity < 2) {
@@ -151,8 +144,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                                     if (!intent.hasExtra(Constants.OPERATOR2) || intent.getStringExtra(Constants.OPERATOR2).equals(""))
                                         SIM2.setText(isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
                                     else {
-                                        mOperatorName2 = intent.getStringExtra(Constants.OPERATOR2);
-                                        SIM2.setText(isNight[1] ? mOperatorName2 + getResources().getString(R.string.night) : mOperatorName2);
+                                        mOperatorNames[1] = intent.getStringExtra(Constants.OPERATOR2);
+                                        SIM2.setText(isNight[1] ? mOperatorNames[1] + getResources().getString(R.string.night) : mOperatorNames[1]);
                                     }
                                 }
                             }
@@ -161,8 +154,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                                     if (!intent.hasExtra(Constants.OPERATOR3) || intent.getStringExtra(Constants.OPERATOR3).equals(""))
                                         SIM3.setText(isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
                                     else {
-                                        mOperatorName3 = intent.getStringExtra(Constants.OPERATOR3);
-                                        SIM3.setText(isNight[2] ? mOperatorName3 + getResources().getString(R.string.night) : mOperatorName3);
+                                        mOperatorNames[2] = intent.getStringExtra(Constants.OPERATOR3);
+                                        SIM3.setText(isNight[2] ? mOperatorNames[2] + getResources().getString(R.string.night) : mOperatorNames[2]);
                                     }
                                 }
                             }
@@ -438,6 +431,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 (long) mDataMap.get(Constants.TOTAL3)));
 
         setLabelText((int) mDataMap.get(Constants.LAST_ACTIVE_SIM), "0", "0");
+        
+        SIM1.setText(mOperatorNames[0]);
+        SIM2.setText(mOperatorNames[1]);
+        SIM3.setText(mOperatorNames[2]);
+        
 
         // Inflate the layout for this fragment
         return view;
@@ -618,10 +616,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (mPrefs.getBoolean(Constants.PREF_SIM1[17], false)) {
                     mShowNightTraffic1 = !mShowNightTraffic1;
                     if (mShowNightTraffic1) {
-                        if (mOperatorName1.equals(""))
+                        if (mOperatorNames[0].equals(""))
                             SIM1.setText(!isNight[0] ? "SIM1" + getResources().getString(R.string.night) : "SIM1");
                         else
-                            SIM1.setText(!isNight[0] ? mOperatorName1 + getResources().getString(R.string.night) : mOperatorName1);
+                            SIM1.setText(!isNight[0] ? mOperatorNames[0] + getResources().getString(R.string.night) : mOperatorNames[0]);
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                             if (RX1 != null)
                                 RX1.setText(DataFormat.formatData(getActivity(), !isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
@@ -639,10 +637,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (mPrefs.getBoolean(Constants.PREF_SIM2[17], false)) {
                     mShowNightTraffic2 = !mShowNightTraffic2;
                     if (mShowNightTraffic2) {
-                        if (mOperatorName2.equals(""))
+                        if (mOperatorNames[1].equals(""))
                             SIM2.setText(!isNight[1] ? "SIM2" + getResources().getString(R.string.night) : "SIM2");
                         else
-                            SIM2.setText(!isNight[1] ? mOperatorName2 + getResources().getString(R.string.night) : mOperatorName2);
+                            SIM2.setText(!isNight[1] ? mOperatorNames[1] + getResources().getString(R.string.night) : mOperatorNames[1]);
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                             if (RX2 != null)
                                 RX2.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
@@ -661,10 +659,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     mShowNightTraffic3 = !mShowNightTraffic3;
                     if (mShowNightTraffic3) {
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-                            if (mOperatorName3.equals(""))
+                            if (mOperatorNames[2].equals(""))
                                 SIM3.setText(!isNight[2] ? "SIM3" + getResources().getString(R.string.night) : "SIM3");
                             else
-                                SIM3.setText(!isNight[2] ? mOperatorName3 + getResources().getString(R.string.night) : mOperatorName3);
+                                SIM3.setText(!isNight[2] ? mOperatorNames[2] + getResources().getString(R.string.night) : mOperatorNames[2]);
                             if (RX3 != null)
                                 RX3.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.SIM3RX_N) :
                                         (long) mDataMap.get(Constants.SIM3RX)));

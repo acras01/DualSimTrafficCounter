@@ -51,4 +51,16 @@ public class DataFormat {
         }
         return (long) (Math.ceil(data / div) * div);
     }
+
+    public static String formatCallDuration(Context context, long millis) {
+        long seconds = (long) Math.ceil(millis / 1000);
+        if (seconds < 60) {
+            return String.format(context.getResources().getString(R.string.seconds), seconds);
+        } else {
+            long minutes = seconds / 60;
+            seconds -= minutes * 60;
+            return String.format(context.getResources().getString(R.string.minutes_seconds), minutes, seconds);
+        }
+    }
+
 }

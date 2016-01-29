@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.stericson.RootTools.RootTools;
 
+import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.SetUsageFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TestFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficForDateFragment;
@@ -37,16 +38,17 @@ import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
         TrafficForDateFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener,
-        SetUsageFragment.OnFragmentInteractionListener{
+        SetUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener{
 
     private static Context mContext;
     private SharedPreferences mPrefs;
     private static final String TRAFFIC_TAG = "traffic";
+    private static final String CALLS_TAG = "calls";
     private static final String XPOSED = "de.robv.android.xposed.installer";
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String MTK = "mtk";
-    private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSet;
+    private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSet, mCalls;
     private boolean mNeedsRestart = false;
 
 
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mTrafficForDate = new TrafficForDateFragment();
         mTest = new TestFragment();
         mSet = new SetUsageFragment();
+        mCalls = new CallsFragment();
 
         if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             mContext.startService(new Intent(mContext, WatchDogService.class));
@@ -247,6 +250,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tag = TRAFFIC_TAG;
                 newFragment = mTraffic;
                 break;
+            case R.id.nav_calls:
+                tag = CALLS_TAG;
+                newFragment = mCalls;
+                break;
             case R.id.nav_traf_for_date:
                 newFragment = mTrafficForDate;
                 break;
@@ -263,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (newFragment != null) {
             Fragment frg = getSupportFragmentManager().findFragmentByTag(tag);
-            if (!tag.equals(TRAFFIC_TAG) || frg != null)
+            if (tag.equals("") || frg != null)
                 fm.beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.content_frame, newFragment)
@@ -298,5 +305,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onSetUsageFragmentInteraction(Uri uri) {
         // Do different stuff
+    }
+
+    @Override
+    public void onCallsFragmentInteraction(Uri uri) {
+
     }
 }

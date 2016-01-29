@@ -42,6 +42,7 @@ public class Constants {
     public static final String LIMIT_ACTION = "limit";
     public static final String OFF_ACTION = "off";
     public static final String ACTION = "action";
+    public static final String OUTGOING_CALL = "outgoing_call";
     public static final String CALLS = "calls";
     public static final String ALARM_ACTION = "ua.od.acros.dualsimtrafficcounter.ALARM";
     public static final String CONTINUE_ACTION = "continue";

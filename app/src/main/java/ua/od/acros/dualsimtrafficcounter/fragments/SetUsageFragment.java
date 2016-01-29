@@ -33,7 +33,6 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
     private String[] mOperatorNames = new String[3];
     private CheckBox total;
     private OnFragmentInteractionListener mListener;
-    private Spinner txSpinner;
 
 
     public static SetUsageFragment newInstance() {
@@ -59,7 +58,7 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
         txInput = (EditText) view.findViewById(R.id.txamount);
         rxInput = (EditText) view.findViewById(R.id.rxamount);
-        txSpinner = (Spinner) view.findViewById(R.id.spinnertx);
+        Spinner txSpinner = (Spinner) view.findViewById(R.id.spinnertx);
         rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);

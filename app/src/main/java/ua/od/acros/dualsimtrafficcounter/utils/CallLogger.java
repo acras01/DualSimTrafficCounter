@@ -104,7 +104,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                 mPrePreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING")) {
                             long durationMillis = System.currentTimeMillis() - start[0];
                             XposedBridge.log(imei[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                            Intent intent = new Intent(Constants.CALLS);
+                            Intent intent = new Intent(Constants.OUTGOING_CALL);
                             intent.putExtra(Constants.SIM_ACTIVE, imei);
                             intent.putExtra(Constants.CALL_DURATION, durationMillis);
                             mContext.sendBroadcast(intent);
@@ -164,7 +164,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     }
                     long durationMillis = (long) XposedHelpers.callMethod(conn, "getDurationMillis");
                     XposedBridge.log(imei + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                    Intent intent = new Intent(Constants.CALLS);
+                    Intent intent = new Intent(Constants.OUTGOING_CALL);
                     intent.putExtra(Constants.SIM_ACTIVE, sim);
                     intent.putExtra(Constants.CALL_DURATION, durationMillis);
                     mContext.sendBroadcast(intent);
