@@ -21,7 +21,8 @@
         android:layout_alignEnd="@+id/radioGroup"
         android:gravity="center_vertical"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/primary_text_dark" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -116,7 +117,7 @@
         android:layout_alignBottom="@+id/rxamount"
         android:entries="@array/measure"
         android:minWidth="@dimen/spinner_width"
-        android:layout_toRightOf="@+id/rxamount"
+        android:layout_toRightOf="@+id/txamount"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp" />
 
