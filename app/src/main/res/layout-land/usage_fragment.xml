@@ -5,12 +5,24 @@
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize">
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/only_total"
+        android:id="@+id/checktotal"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:checked="false"
+        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
+        android:textColor="@android:color/primary_text_dark" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/choose_sim"
         android:id="@+id/choosesim"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:minLines="2"
         android:maxLines="4"
         android:maxWidth="@dimen/text_width"
@@ -18,25 +30,18 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="center_vertical"
         android:layout_alignParentEnd="false"
-        android:layout_marginRight="10dp" />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/only_total"
-        android:id="@+id/checktotal"
-        android:layout_below="@+id/choosesim"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:checked="false" />
+        android:layout_marginRight="10dp"
+        android:layout_alignLeft="@+id/scrollView2"
+        android:layout_below="@+id/checktotal"
+        android:textColor="@android:color/primary_text_dark" />
 
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView2"
-        android:layout_below="@+id/checktotal">
+        android:layout_below="@+id/choosesim">
 
         <LinearLayout
             android:orientation="horizontal"
