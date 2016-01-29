@@ -1,155 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize">
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/only_total"
-        android:id="@+id/checktotal"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:checked="false"
-        android:layout_centerVertical="true"
-        android:layout_alignParentTop="true"
-        android:textColor="@android:color/primary_text_dark" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/choose_sim"
-        android:id="@+id/choosesim"
-        android:layout_alignParentTop="false"
-        android:minLines="2"
-        android:maxLines="4"
-        android:maxWidth="@dimen/text_width"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:layout_alignParentEnd="false"
-        android:layout_marginRight="10dp"
-        android:layout_alignLeft="@+id/scrollView2"
-        android:layout_below="@+id/checktotal"
-        android:textColor="@android:color/primary_text_dark" />
+    android:layout_marginTop="?attr/actionBarSize"
+    android:weightSum="1">
 
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView2"
-        android:layout_below="@+id/choosesim">
+        android:id="@+id/scrollView4"
+        android:layout_weight=".9">
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/checktotal">
+            android:layout_height="match_parent">
 
-            <RadioGroup
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioGroup"
-                android:layout_below="@+id/choosesim"
-                android:layout_alignRight="@+id/spinnertx"
-                android:layout_alignEnd="@+id/spinnertx"
+                android:text="@string/only_total"
+                android:id="@+id/checktotal"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:checked="false"
+                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:textColor="@android:color/primary_text_dark" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_sim"
+                android:id="@+id/choosesim"
+                android:layout_alignParentTop="false"
+                android:minLines="2"
+                android:maxLines="4"
+                android:maxWidth="@dimen/text_width"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_margin="10dp">
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:layout_alignParentEnd="false"
+                android:layout_marginRight="10dp"
+                android:layout_alignLeft="@+id/checktotal"
+                android:layout_below="@+id/checktotal"
+                android:textColor="@android:color/primary_text_dark" />
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sim1RB"
-                    android:text="SIM1" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sim2RB"
-                    android:text="SIM2" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sim3RB"
-                    android:text="SIM3" />
-
-            </RadioGroup>
-
-            <TableLayout
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_below="@+id/choosesim"
+                android:id="@+id/ll">
 
-                <TableRow
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioGroup2"
+                    android:layout_below="@+id/choosesim"
+                    android:layout_alignRight="@+id/spinner"
+                    android:layout_alignEnd="@+id/spinner"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_margin="10dp">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton"
+                        android:text="SIM1" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton2"
+                        android:text="SIM2" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton3"
+                        android:text="SIM3" />
+
+                </RadioGroup>
+
+                <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <EditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:id="@+id/txamount"
-                        android:hint="@string/transmitted"
-                        android:maxWidth="@dimen/input_width"
-                        android:inputType="numberDecimal"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_below="@+id/radioGroup"
-                        android:width="@dimen/input_width" />
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spinnertx"
-                        android:spinnerMode="dropdown"
-                        android:layout_toRightOf="@+id/txamount"
-                        android:layout_alignBottom="@+id/txamount"
-                        android:entries="@array/measure"
-                        android:minWidth="@dimen/spinner_width"
-                        android:layout_marginBottom="10dp" />
-                </TableRow>
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:id="@+id/editText"
+                            android:hint="@string/transmitted"
+                            android:maxWidth="@dimen/input_width"
+                            android:inputType="numberDecimal"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_below="@+id/radioGroup2"
+                            android:width="@dimen/input_width" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinner"
+                            android:spinnerMode="dropdown"
+                            android:layout_toRightOf="@+id/editText"
+                            android:layout_alignBottom="@+id/editText"
+                            android:entries="@array/measure"
+                            android:minWidth="@dimen/spinner_width"
+                            android:layout_marginBottom="10dp" />
+                    </TableRow>
 
-                    <EditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:id="@+id/rxamount"
-                        android:hint="@string/received"
-                        android:maxWidth="@dimen/input_width"
-                        android:inputType="numberDecimal"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_below="@+id/txamount"
-                        android:width="@dimen/input_width"
-                        android:layout_marginTop="10dp" />
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spinnerrx"
-                        android:focusable="true"
-                        android:spinnerMode="dropdown"
-                        android:layout_alignBottom="@+id/rxamount"
-                        android:entries="@array/measure"
-                        android:minWidth="@dimen/spinner_width"
-                        android:layout_toRightOf="@+id/rxamount"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp" />
-                </TableRow>
-            </TableLayout>
-        </LinearLayout>
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:id="@+id/editText2"
+                            android:hint="@string/received"
+                            android:maxWidth="@dimen/input_width"
+                            android:inputType="numberDecimal"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_below="@+id/editText"
+                            android:width="@dimen/input_width"
+                            android:layout_marginTop="10dp" />
+
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinner2"
+                            android:focusable="true"
+                            android:spinnerMode="dropdown"
+                            android:layout_alignBottom="@+id/editText2"
+                            android:entries="@array/measure"
+                            android:minWidth="@dimen/spinner_width"
+                            android:layout_toRightOf="@+id/editText2"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp" />
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
     <Button
@@ -159,6 +167,7 @@
         android:id="@+id/buttonOK"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        style="?android:attr/buttonBarButtonStyle" />
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_weight=".1" />
 
-</RelativeLayout>
+</LinearLayout>

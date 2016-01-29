@@ -1,242 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginTop="?attr/actionBarSize"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
-    <TextView
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/choose_sim"
-        android:id="@+id/choosesim"
-        android:layout_alignParentTop="true"
-        android:minLines="2"
-        android:maxLines="4"
-        android:maxWidth="@dimen/text_width"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp"
-        android:textColor="@android:color/primary_text_dark"
-        android:layout_alignLeft="@+id/ll" />
+        android:id="@+id/scrollView3"
+        android:layout_weight=".9">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/choosesim"
-        android:weightSum="1"
-        android:id="@+id/ll">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioGroup"
-            android:layout_margin="10dp"
-            android:layout_weight=".4">
-
-            <RadioButton
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/sim1RB"
-                android:text="SIM1"
-                android:textColor="@android:color/primary_text_dark" />
+                android:text="@string/choose_sim"
+                android:id="@+id/choosesim"
+                android:layout_alignParentTop="true"
+                android:minLines="2"
+                android:maxLines="4"
+                android:maxWidth="@dimen/text_width"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:textColor="@android:color/primary_text_dark"
+                android:layout_alignLeft="@+id/ll" />
 
-            <RadioButton
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/choosesim"
+                android:weightSum="1"
+                android:id="@+id/ll">
+
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioGroup"
+                    android:layout_margin="10dp"
+                    android:layout_weight=".4">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sim1RB"
+                        android:text="SIM1"
+                        android:textColor="@android:color/primary_text_dark" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sim2RB"
+                        android:text="SIM2"
+                        android:textColor="@android:color/primary_text_dark" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sim3RB"
+                        android:text="SIM3"
+                        android:textColor="@android:color/primary_text_dark" />
+
+                </RadioGroup>
+
+                <TableLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tableLayout2"
+                    android:layout_below="@+id/setdate"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight=".6"
+                    android:layout_marginLeft="16dp">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:id="@+id/day"
+                            android:layout_column="2"
+                            android:gravity="center_vertical|center"
+                            android:width="100dp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:id="@+id/night"
+                            android:layout_column="3"
+                            android:gravity="center_vertical|center"
+                            android:width="100dp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tableRow"
+                        android:layout_marginTop="10dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@android:color/primary_text_dark"
+                            android:text="@string/transmitted"
+                            android:id="@+id/txText"
+                            android:width="80dp"
+                            android:layout_column="1"
+                            android:gravity="left|center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="0"
+                            android:id="@+id/tx"
+                            android:gravity="center_vertical|center"
+                            android:layout_column="2"
+                            android:width="100dp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="0"
+                            android:id="@+id/txnight"
+                            android:gravity="center_vertical|center"
+                            android:layout_column="3"
+                            android:width="100dp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tableRow2"
+                        android:layout_marginTop="10dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@android:color/primary_text_dark"
+                            android:text="@string/received"
+                            android:id="@+id/rxText"
+                            android:layout_column="1"
+                            android:width="80dp"
+                            android:gravity="left|center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="0"
+                            android:id="@+id/rx"
+                            android:layout_column="2"
+                            android:gravity="center_vertical|center"
+                            android:width="100dp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="0"
+                            android:id="@+id/rxnight"
+                            android:width="100dp"
+                            android:layout_column="3"
+                            android:gravity="center_vertical|center"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tableRow3"
+                        android:layout_marginTop="10dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total"
+                            android:id="@+id/totText"
+                            android:layout_column="1"
+                            android:gravity="left|center_vertical"
+                            android:width="80dp"
+                            android:textSize="14sp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:id="@+id/total"
+                            android:layout_column="2"
+                            android:gravity="center_vertical|center"
+                            android:width="100dp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:id="@+id/totalnight"
+                            android:layout_column="3"
+                            android:gravity="center_vertical|center"
+                            android:width="100dp"
+                            android:textColor="@android:color/primary_text_dark" />
+
+                    </TableRow>
+
+                </TableLayout>
+            </LinearLayout>
+
+            <ProgressBar
+                style="@android:style/Widget.DeviceDefault.ProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/sim2RB"
-                android:text="SIM2"
-                android:textColor="@android:color/primary_text_dark" />
+                android:id="@+id/progressBar"
+                android:layout_centerInParent="true" />
 
-            <RadioButton
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/sim3RB"
-                android:text="SIM3"
-                android:textColor="@android:color/primary_text_dark" />
-
-        </RadioGroup>
-
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tableLayout2"
-            android:layout_below="@+id/setdate"
-            android:layout_centerHorizontal="true"
-            android:layout_weight=".6"
-            android:layout_marginLeft="16dp">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="-"
-                    android:id="@+id/day"
-                    android:layout_column="2"
-                    android:gravity="center_vertical|center"
-                    android:width="100dp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="-"
-                    android:id="@+id/night"
-                    android:layout_column="3"
-                    android:gravity="center_vertical|center"
-                    android:width="100dp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/tableRow"
-                android:layout_marginTop="10dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/primary_text_dark"
-                    android:text="@string/transmitted"
-                    android:id="@+id/txText"
-                    android:width="80dp"
-                    android:layout_column="1"
-                    android:gravity="left|center_vertical" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="0"
-                    android:id="@+id/tx"
-                    android:gravity="center_vertical|center"
-                    android:layout_column="2"
-                    android:width="100dp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="0"
-                    android:id="@+id/txnight"
-                    android:gravity="center_vertical|center"
-                    android:layout_column="3"
-                    android:width="100dp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/tableRow2"
-                android:layout_marginTop="10dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/primary_text_dark"
-                    android:text="@string/received"
-                    android:id="@+id/rxText"
-                    android:layout_column="1"
-                    android:width="80dp"
-                    android:gravity="left|center_vertical" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="0"
-                    android:id="@+id/rx"
-                    android:layout_column="2"
-                    android:gravity="center_vertical|center"
-                    android:width="100dp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="0"
-                    android:id="@+id/rxnight"
-                    android:width="100dp"
-                    android:layout_column="3"
-                    android:gravity="center_vertical|center"
-                    android:textColor="@android:color/primary_text_dark" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/tableRow3"
-                android:layout_marginTop="10dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/total"
-                    android:id="@+id/totText"
-                    android:layout_column="1"
-                    android:gravity="left|center_vertical"
-                    android:width="80dp"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:id="@+id/total"
-                    android:layout_column="2"
-                    android:gravity="center_vertical|center"
-                    android:width="100dp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:id="@+id/totalnight"
-                    android:layout_column="3"
-                    android:gravity="center_vertical|center"
-                    android:width="100dp"
-                    android:textColor="@android:color/primary_text_dark" />
-
-            </TableRow>
-
-        </TableLayout>
-    </LinearLayout>
-
-    <ProgressBar
-        style="@android:style/Widget.DeviceDefault.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_centerInParent="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/set_date"
-        android:id="@+id/setdate"
-        android:layout_centerHorizontal="true"
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_below="@+id/ll" />
+                android:text="@string/set_date"
+                android:id="@+id/setdate"
+                android:layout_centerHorizontal="true"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_below="@+id/ll" />
+        </RelativeLayout>
+    </ScrollView>
 
     <Button
         android:layout_width="match_parent"
@@ -245,6 +259,8 @@
         android:id="@+id/buttonOK"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom"
+        android:layout_weight=".1" />
 
-</RelativeLayout>
+</LinearLayout>
