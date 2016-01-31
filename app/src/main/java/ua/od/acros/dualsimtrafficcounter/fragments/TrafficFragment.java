@@ -243,6 +243,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onPrepareOptionsMenu (Menu menu) {
+        /*MenuInflater inflater = new MenuInflater(getActivity().getApplicationContext());
+        menu.clear();
+        onCreateOptionsMenu(menu, inflater);*/
+
         if (CheckServiceRunning.isMyServiceRunning(CountService.class, getActivity())) {
             mService.setTitle(R.string.action_stop);
             mService.setIcon(R.drawable.ic_action_disable);
