@@ -3,8 +3,6 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
@@ -88,7 +86,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 final Class<? extends Enum> enumInCallState = (Class<? extends Enum>) XposedHelpers.findClass(ENUM_IN_CALL_STATE,
                         loadPackageParam.classLoader);
                 final long[] start = {0};
-                final String[] imei = {" "};
+                final int[] simid = {0};
 
                 XposedBridge.hookAllMethods(mClassInCallPresenter, "setUp", new XC_MethodHook() {
                     @Override
@@ -106,9 +104,9 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                         if (mPreviousCallState == Enum.valueOf(enumInCallState, "INCALL") &&
                                 mPrePreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING")) {
                             long durationMillis = System.currentTimeMillis() - start[0];
-                            XposedBridge.log(imei[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
+                            XposedBridge.log(simid[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
                             Intent intent = new Intent(Constants.OUTGOING_CALL);
-                            intent.putExtra(Constants.SIM_ACTIVE, imei);
+                            intent.putExtra(Constants.SIM_ACTIVE, simid[0]);
                             intent.putExtra(Constants.CALL_DURATION, durationMillis);
                             mContext.sendBroadcast(intent);
                         }
@@ -134,8 +132,8 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                         final boolean activeOutgoing = (callState == CALL_STATE_ACTIVE &&
                                                 mPreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING"));
                                         if (activeOutgoing) {
-                                            imei[0] = "";
-                                            XposedBridge.log("Outgoing call answered: " + imei[0]);
+                                            simid[0] = MobileUtils.getSimId(mContext);
+                                            XposedBridge.log("Outgoing call answered: " + simid[0]);
                                         }
                                     }
                                 }

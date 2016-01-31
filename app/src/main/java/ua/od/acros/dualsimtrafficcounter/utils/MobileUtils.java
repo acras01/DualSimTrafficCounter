@@ -100,6 +100,45 @@ public class MobileUtils {
         }
     }
 
+    public static int getSimId(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        for (int i = 0; i < simQuantity; i++) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
+                try {
+                Class<?> c = Class.forName("android.telephony.TelephonyManager");
+                Method[] cm = c.getDeclaredMethods();
+                for (Method m : cm) {
+                    if (m.getName().equalsIgnoreCase("getCallState")) {
+                        m.setAccessible(true);
+                        int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
+                        if (state == TelephonyManager.CALL_STATE_OFFHOOK)
+                            return i;
+                    }
+                }
+                } catch (Exception e0) {
+                    e0.printStackTrace();
+                }
+            else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+                try {
+                    Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                    Method[] cm = c.getDeclaredMethods();
+                    for (Method m : cm) {
+                        if (m.getName().equalsIgnoreCase("getCallState")) {
+                            m.setAccessible(true);
+                            int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
+                            if (state == TelephonyManager.CALL_STATE_OFFHOOK)
+                                return i;
+                        }
+                    }
+                } catch (Exception e0) {
+                    e0.printStackTrace();
+                }
+        }
+        return Constants.DISABLED;
+    }
+
     public static ArrayList<String> getOperatorNames(Context context) {
         ArrayList<String> name = new ArrayList<>();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {

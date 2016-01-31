@@ -91,7 +91,7 @@ public class CallLoggerService extends Service {
         unregisterReceiver(callDataReceiver);
     }
 
-    public static Context getCallLoggerContext() {
+    public static Context getCallLoggerServiceContext() {
         return CallLoggerService.mContext;
     }
 }
