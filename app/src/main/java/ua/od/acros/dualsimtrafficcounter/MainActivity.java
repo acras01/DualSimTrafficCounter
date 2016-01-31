@@ -31,9 +31,11 @@ import ua.od.acros.dualsimtrafficcounter.fragments.TestFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficForDateFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.utils.CallLogger;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
@@ -42,15 +44,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static Context mContext;
     private SharedPreferences mPrefs;
+    private static final String XPOSED = "de.robv.android.xposed.installer";
     private static final String TRAFFIC_TAG = "traffic";
     private static final String CALLS_TAG = "calls";
-    private static final String XPOSED = "de.robv.android.xposed.installer";
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String MTK = "mtk";
     private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSet, mCalls;
     private boolean mNeedsRestart = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +87,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         MenuItem mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
-        /*if (isPackageExisted(XPOSED)) {
+        if (XposedUtils.isPackageExisted(mContext, XPOSED)) {
             mCallsItem.setVisible(true);
             mCallsItem.setEnabled(true);
-        } else {*/
+        } else {
             mCallsItem.setVisible(false);
             mCallsItem.setEnabled(false);
-        //}
+        }
 
         //set Version in Navigation View Header
         View headerLayout = navigationView.getHeaderView(0);
@@ -116,8 +117,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mContext.startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mContext.startService(new Intent(mContext, CountService.class));
-        /*if (isPackageExisted(XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-            startService(new Intent(mContext, CallLoggerService.class));*/
+        if (XposedUtils.isPackageExisted(mContext, XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+            startService(new Intent(mContext, CallLoggerService.class));
+
+        String action = getIntent().getAction();
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
@@ -135,6 +138,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .add(R.id.content_frame, mTest)
                             .commit();
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
+        } else if (action != null && !action.equals("") && !action.equals(Intent.ACTION_MAIN)) {
+            switch (action) {
+                case TRAFFIC_TAG:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.content_frame, mTraffic)
+                            .addToBackStack(action)
+                            .commit();
+                break;
+                case CALLS_TAG:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.content_frame, mCalls)
+                            .addToBackStack(action)
+                            .commit();
+                break;
+            }
         } else {
             if (savedInstanceState == null)
                 getSupportFragmentManager()
@@ -143,15 +163,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(TRAFFIC_TAG)
                         .commit();
         }
-    }
-
-    public boolean isPackageExisted(String targetPackage){
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-        return true;
     }
 
     public static Context getAppContext() {

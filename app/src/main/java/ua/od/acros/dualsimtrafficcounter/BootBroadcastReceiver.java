@@ -7,19 +7,26 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
 import java.util.Calendar;
 
+import ua.od.acros.dualsimtrafficcounter.utils.CallLogger;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
+
+    private static final String XPOSED = "de.robv.android.xposed.installer";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         //start CountService
         context.startService(new Intent(context, CountService.class));
         //start CallLoggerService
-        //context.startService(new Intent(context, CallLoggerService.class));
+        if (XposedUtils.isPackageExisted(context, XPOSED))
+            context.startService(new Intent(context, CallLoggerService.class));
 
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 

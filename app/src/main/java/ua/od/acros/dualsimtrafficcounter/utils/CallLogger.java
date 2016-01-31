@@ -3,6 +3,8 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
@@ -37,7 +39,6 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private static Object mPrePreviousCallState;
     private static Context mContext;
 
-
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
         mXPrefs = new XSharedPreferences(Constants.APP_PREFERENCES);
@@ -49,8 +50,9 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
         if (!PACKAGE_NAMES.contains(loadPackageParam.packageName))
             return;
         XposedBridge.log("Loaded app: " + loadPackageParam.packageName);
-        mContext = AndroidAppHelper.currentApplication();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            mContext = AndroidAppHelper.currentApplication();
             final Class<?> classCallNotifier = XposedHelpers.findClass(CLASS_CALL_NOTIFIER, loadPackageParam.classLoader);
             final Class<? extends Enum> enumPhoneState = (Class<? extends Enum>) Class.forName(ENUM_PHONE_STATE);
             final Class<? extends Enum> enumCallState = (Class<? extends Enum>) Class.forName(ENUM_CALL_STATE);
@@ -91,6 +93,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 XposedBridge.hookAllMethods(mClassInCallPresenter, "setUp", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        mContext = (Context) param.args[0];
                         mPrePreviousCallState = null;
                         mPreviousCallState = null;
 
@@ -127,12 +130,11 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                 if (state == Enum.valueOf(enumInCallState, "INCALL")) {
                                     Object activeCall = XposedHelpers.callMethod(param.args[0], "getActiveCall");
                                     if (activeCall != null) {
-                                        final Object phone = XposedHelpers.callMethod(activeCall, "getPhone");
                                         final int callState = (Integer) XposedHelpers.callMethod(activeCall, "getState");
                                         final boolean activeOutgoing = (callState == CALL_STATE_ACTIVE &&
                                                 mPreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING"));
                                         if (activeOutgoing) {
-                                            imei[0] = (String) XposedHelpers.callMethod(phone, "getDeviceId");
+                                            imei[0] = "";
                                             XposedBridge.log("Outgoing call answered: " + imei[0]);
                                         }
                                     }

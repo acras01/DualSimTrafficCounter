@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -46,6 +47,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction;
+import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -1572,8 +1574,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         } else
             id = R.drawable.ic_launcher_small;
         text = String.format(getResources().getString(R.string.data_reset), text);
-        Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.setAction("traffic");
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
@@ -1708,8 +1711,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     break;
             }
         }
-        Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.setAction("traffic");
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
@@ -1810,8 +1814,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if ((mPrefs.getBoolean(Constants.PREF_SIM1[7], true) && mIsSIM1OverLimit) ||
                 (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM2OverLimit) ||
                 (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM3OverLimit)) {
-            notificationIntent = new Intent(mContext, MainActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            notificationIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+            notificationIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
+            notificationIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+            notificationIntent.putExtra(Constants.SIM_ACTIVE, alertID);
         } else {
             final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
             notificationIntent = new Intent(Intent.ACTION_MAIN);

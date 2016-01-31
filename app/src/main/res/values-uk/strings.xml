@@ -152,4 +152,7 @@
     <string name="app_version">Версія %1$s</string>
     <string name="seconds">%1$sс</string>
     <string name="minutes_seconds">%1$sхв. %2$sс</string>
+    <string name="calls">Вихiднi дзвiнки</string>
+    <string name="calls_fragment">Статистика вихiдних дзвiнкiв</string>
+    <string name="outgoing_duration">Тривалiсть вихiдних дзвiнкiв</string>
 </resources>

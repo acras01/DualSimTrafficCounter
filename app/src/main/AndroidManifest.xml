@@ -105,6 +105,7 @@
 
         <activity
             android:name=".widget.WidgetConfigActivity"
+            android:theme="@style/AppTheme.AppBarOverlay"
             android:label="@string/widget_title" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

@@ -4,18 +4,22 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
+import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
+import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
@@ -63,8 +67,9 @@ public class CallLoggerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.setAction("calls");
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);   // To open only one activity on launch.
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification n =  new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)

@@ -152,4 +152,7 @@
     <string name="app_version">Версия %1$s</string>
     <string name="seconds">%1$sс</string>
     <string name="minutes_seconds">%1$sмин. %2$sс</string>
+    <string name="calls_fragment">Статистика исходящих вызовов</string>
+    <string name="calls">Исходящие вызовы</string>
+    <string name="outgoing_duration">Длительность исходящих вызовов</string>
 </resources>
