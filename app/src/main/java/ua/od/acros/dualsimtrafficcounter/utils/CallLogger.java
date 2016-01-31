@@ -133,6 +133,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                                 mPreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING"));
                                         if (activeOutgoing) {
                                             simid[0] = MobileUtils.getSimId(mContext);
+                                            start[0] = System.currentTimeMillis();
                                             XposedBridge.log("Outgoing call answered: " + simid[0]);
                                         }
                                     }
