@@ -78,7 +78,7 @@ public class CallLoggerService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_launcher_small)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle(getResources().getString(R.string.notification_title))
+                .setContentTitle(getResources().getString(R.string.calls_fragment))
                 .setContentText("Hi!")
                 .build();
         startForeground(Constants.STARTED_ID + 1000, n);
