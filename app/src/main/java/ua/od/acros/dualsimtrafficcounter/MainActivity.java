@@ -141,14 +141,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case TRAFFIC_TAG:
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .add(R.id.content_frame, mTraffic)
+                            .replace(R.id.content_frame, mTraffic)
                             .addToBackStack(action)
                             .commit();
                 break;
                 case CALLS_TAG:
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .add(R.id.content_frame, mCalls)
+                            .replace(R.id.content_frame, mCalls)
                             .addToBackStack(action)
                             .commit();
                 break;
