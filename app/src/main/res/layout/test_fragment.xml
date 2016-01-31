@@ -73,7 +73,9 @@
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="true"
         style="?android:buttonBarStyle"
-        android:divider="@drawable/divider">
+        android:divider="?android:attr/dividerVertical"
+        android:dividerPadding="5dp"
+        android:showDividers="middle">
 
         <Button
             android:layout_width="wrap_content"

@@ -87,7 +87,9 @@
         android:weightSum="1"
         style="?android:buttonBarStyle"
         android:layout_weight=".1"
-        android:divider="@drawable/divider">
+        android:divider="?android:attr/dividerVertical"
+        android:dividerPadding="5dp"
+        android:showDividers="middle">
 
         <Button
             android:layout_width="wrap_content"
