@@ -50,7 +50,7 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_text_size, container);
+        View view = inflater.inflate(R.layout.text_size_fragment, container);
         mEditText = (EditText) view.findViewById(R.id.txtSize);
         mEditText.setText(mSize);
         getDialog().setTitle(R.string.text_size);
@@ -64,7 +64,8 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (EditorInfo.IME_ACTION_DONE == actionId) {
+        if (actionId == EditorInfo.IME_ACTION_DONE || (event.getAction() == KeyEvent.ACTION_DOWN &&
+                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
             // Return input text to activity
             WidgetConfigActivity activity = (WidgetConfigActivity) getActivity();
             activity.onFinishEditDialog(mEditText.getText().toString(), mDialog);
