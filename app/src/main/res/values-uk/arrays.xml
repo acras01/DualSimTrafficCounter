@@ -87,4 +87,8 @@
         <item>Тільки вимкн.</item>
         <item>Не використ.</item>
     </string-array>
+    <string-array name="measure_calls">
+        <item>1 секунда</item>
+        <item>1 хвилина</item>
+    </string-array>
 </resources>

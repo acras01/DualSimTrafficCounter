@@ -1,7 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 public class Constants {
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     public static final String SIM1RX = "sim1rx";
     public static final String SIM2RX = "sim2rx";
     public static final String SIM3RX = "sim3rx";
@@ -64,13 +64,20 @@ public class Constants {
             "watchdog", "count_stopped", "watchdog_stopped", //6
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
             "status_icon", "auto_sim", "user_sim", "operator_logo", "info_status", //16
-            "continue_overlimit", "action_chosen", "data_remain", "alt", "sim1", "sim2", "sim3"}; //23
+            "continue_overlimit", "action_chosen", "data_remain", "alt", "sim1", "sim2", //22
+            "sim3", "calls_stopped"}; //24
     public static final String[] PREF_WIDGET = {"stub", "names", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
             "showsim1","showsim2", "showsim3", "showdiv", "active", "day_night"}; //23
+    public static final String[] PREF_SIM1_CALLS = {"stub", "limit1", "period1", "round1", //3
+            "time1", "day1", "op_round1", "op_value1"}; //7
+    public static final String[] PREF_SIM2_CALLS = {"stub", "limit1", "period1", "round1", //3
+            "time1", "day1", "op_round2", "op_value2"}; //7
+    public static final String[] PREF_SIM3_CALLS = {"stub", "limit1", "period1", "round1", //3
+            "time1", "day1", "op_round3", "op_value3"}; //7
     public static final int STARTED_ID = 101;
     public static final int SIM1 = 0;
     public static final int SIM2 = 1;
@@ -89,6 +96,11 @@ public class Constants {
     public static final String PERIOD1 = "period1";
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm";
-    public static final String TRAFFIC_FOR_DATE = "traffic";
     public static final String CALL_DURATION = "duration";
+    public static final String CALLS1 = "calls1";
+    public static final String CALLS2 = "calls2";
+    public static final String CALLS3 = "calls3";
+    public static final String CALLS1_EX = "calls1_ex";
+    public static final String CALLS2_EX = "calls2_ex";
+    public static final String CALLS3_EX = "calls3_ex";
 }

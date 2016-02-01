@@ -66,6 +66,13 @@ public class MyDatabase extends SQLiteOpenHelper {
                 + Constants.TOTAL2_N + " long, " + Constants.SIM3RX_N + " long,"
                 + Constants.SIM3TX_N + " long, " + Constants.TOTAL3_N + " long);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
+        DATABASE_CREATE_SCRIPT = "create table "
+                + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                + " text not null, " +  Constants.CALLS1 + " long, "
+                + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
+                + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
+                + Constants.CALLS3_EX + " long);";
+        db.execSQL(DATABASE_CREATE_SCRIPT);
     }
 
     @Override
@@ -221,6 +228,15 @@ public class MyDatabase extends SQLiteOpenHelper {
             ALTER_TBL =
                     "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.TOTAL3_N + " long;";
+            db.execSQL(ALTER_TBL);
+        }
+        if (oldVersion < Constants.DATABASE_VERSION) {
+            ALTER_TBL = "create table "
+                    + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                    + " text not null, " + Constants.CALLS1 + " long, "
+                    + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
+                    + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
+                    + Constants.CALLS3_EX + " long);";
             db.execSQL(ALTER_TBL);
         }
     }
@@ -583,6 +599,39 @@ public class MyDatabase extends SQLiteOpenHelper {
     }
 
     public static ContentValues readCallsData(MyDatabase mDatabaseHelper) {
-        return new ContentValues();
+        ContentValues mMap = new ContentValues();
+        mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
+        Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.CALLS1,
+                Constants.CALLS1_EX, Constants.CALLS2, Constants.CALLS2_EX, Constants.CALLS3, Constants.CALLS3_EX},
+                null, null, null, null, null);
+        if (cursor.moveToLast()) {
+            mMap.put(Constants.CALLS1, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1)));
+            mMap.put(Constants.CALLS1_EX, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1_EX)));
+            mMap.put(Constants.CALLS2, cursor.getLong(cursor.getColumnIndex(Constants.CALLS2)));
+            mMap.put(Constants.CALLS2_EX, cursor.getLong(cursor.getColumnIndex(Constants.CALLS2_EX)));
+            mMap.put(Constants.CALLS3, cursor.getLong(cursor.getColumnIndex(Constants.CALLS3)));
+            mMap.put(Constants.CALLS3_EX, cursor.getLong(cursor.getColumnIndex(Constants.CALLS3_EX)));
+            mMap.put(Constants.LAST_TIME, cursor.getString(cursor.getColumnIndex(Constants.LAST_TIME)));
+            mMap.put(Constants.LAST_DATE, cursor.getString(cursor.getColumnIndex(Constants.LAST_DATE)));
+        } else {
+            mMap.put(Constants.CALLS1, 0L);
+            mMap.put(Constants.CALLS1_EX, 0L);
+            mMap.put(Constants.CALLS2, 0L);
+            mMap.put(Constants.CALLS2_EX, 0L);
+            mMap.put(Constants.CALLS3, 0L);
+            mMap.put(Constants.CALLS3_EX, 0L);
+            mMap.put(Constants.LAST_TIME, "");
+            mMap.put(Constants.LAST_DATE, "");
+        }
+        cursor.close();
+        return mMap;
+    }
+
+    public static void writeCallsData(ContentValues mCalls, MyDatabase mDatabaseHelper) {
+        mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+        String filter = Constants.LAST_DATE + "='" + mCalls.get(Constants.LAST_DATE) + "'";
+        int id = mSqLiteDatabase.update(CALLS_TABLE, mCalls, filter, null);
+        if (id == 0)
+            mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
     }
 }

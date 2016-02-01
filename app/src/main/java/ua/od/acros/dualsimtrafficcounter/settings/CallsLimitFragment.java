@@ -29,7 +29,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
-public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class CallsLimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private EditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
             round1, round2, round3, round1N, round2N, round3N,

@@ -161,4 +161,6 @@
     <string name="tip_calls">A</string>
     <string name="calls">Outgoing Calls</string>
     <string name="calls_fragment">Calls stats</string>
+    <string name="time_before_limit">Time in seconds before reaching limit</string>
+    <string name="tariffication">Tariffication interval</string>
 </resources>

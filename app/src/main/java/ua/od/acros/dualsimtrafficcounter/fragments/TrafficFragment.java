@@ -73,7 +73,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setHasOptionsMenu(true);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);

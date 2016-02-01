@@ -76,7 +76,7 @@
                         android:id="@+id/totalText"
                         android:layout_column="1"
                         android:gravity="left|center_vertical"
-                        android:width="80dp"
+                        android:width="100dp"
                         android:textSize="14sp"
                         android:textColor="@android:color/primary_text_dark" />
 

@@ -155,4 +155,6 @@
     <string name="calls_fragment">Статистика исходящих вызовов</string>
     <string name="calls">Исходящие вызовы</string>
     <string name="outgoing_duration">Длительность исходящих вызовов</string>
+    <string name="time_before_limit">Время в секундах до достижения предела</string>
+    <string name="tariffication">Интервал тарификации</string>
 </resources>

@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -27,7 +29,7 @@ public class CallLoggerService extends Service {
     private MyDatabase mDatabaseHelper;
     private ContentValues mCalls;
     private DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
-    private BroadcastReceiver callDataReceiver;
+    private BroadcastReceiver callDataReceiver, setUsageReceiver, clearReceiver;
     private String[] mOperatorNames = new String[3];
 
     public CallLoggerService() {
@@ -64,14 +66,77 @@ public class CallLoggerService extends Service {
         };
         IntentFilter callDataFilter = new IntentFilter(Constants.OUTGOING_CALL);
         registerReceiver(callDataReceiver, callDataFilter);
+
+        setUsageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (mCalls == null)
+                    mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+                Bundle limitBundle = intent.getBundleExtra("data");
+                switch (limitBundle.getInt("sim")) {
+                    case Constants.SIM1:
+                        long mTotal1 = DataFormat.getFormatLong(limitBundle.getString("tot1"), limitBundle.getInt("tot1"));
+                        mCalls.put(Constants.CALLS1, mTotal1);
+                        mCalls.put(Constants.CALLS1_EX, mTotal1);
+                        MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                        break;
+                    case Constants.SIM2:
+                        long mTotal2 = DataFormat.getFormatLong(limitBundle.getString("tot2"), limitBundle.getInt("tot2"));
+                        mCalls.put(Constants.CALLS2, mTotal2);
+                        mCalls.put(Constants.CALLS2_EX, mTotal2);
+                        MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                        break;
+                    case Constants.SIM3:
+                        long mTotal3 = DataFormat.getFormatLong(limitBundle.getString("tot3"), limitBundle.getInt("tot3"));
+                        mCalls.put(Constants.CALLS3, mTotal3);
+                        mCalls.put(Constants.CALLS3_EX, mTotal3);
+                        MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                        break;
+                }
+                Intent notificationIntent = new Intent(context, MainActivity.class);
+                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
+                        .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                        .setPriority(NotificationCompat.PRIORITY_MIN)
+                        .setContentText(DataFormat.formatData(context, (long) mCalls.get(Constants.CALLS1)) + "   ||   "
+                                + DataFormat.formatData(context, (long) mCalls.get(Constants.CALLS2)) + "   ||   "
+                                + DataFormat.formatData(context, (long) mCalls.get(Constants.CALLS3)));
+                nm.notify(Constants.STARTED_ID + 1000, builder.build());
+            }
+        };
+
+        clearReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) {
+                    case Constants.SIM1:
+                        mCalls.put(Constants.CALLS1, 0L);
+                        mCalls.put(Constants.CALLS1_EX, 0L);
+                        break;
+                    case Constants.SIM2:
+                        mCalls.put(Constants.CALLS2, 0L);
+                        mCalls.put(Constants.CALLS2_EX, 0L);
+                        break;
+                    case Constants.SIM3:
+                        mCalls.put(Constants.CALLS3, 0L);
+                        mCalls.put(Constants.CALLS3_EX, 0L);
+                        break;
+                }
+                MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+            }
+        };
+
+        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
+        IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR);
+        registerReceiver(setUsageReceiver, setUsageFilter);
+        registerReceiver(clearReceiver, clearSimDataFilter);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        notificationIntent.setAction("calls");
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);   // To open only one activity on launch.
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
         Notification n =  new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
@@ -79,7 +144,7 @@ public class CallLoggerService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_launcher_small)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle(getResources().getString(R.string.calls_fragment))
+                .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText("Hi!")
                 .build();
         startForeground(Constants.STARTED_ID + 1000, n);
@@ -90,9 +155,11 @@ public class CallLoggerService extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(callDataReceiver);
+        unregisterReceiver(clearReceiver);
+        unregisterReceiver(setUsageReceiver);
     }
 
-    public static Context getCallLoggerServiceContext() {
+    public static Context getCallLoggerContext() {
         return CallLoggerService.mContext;
     }
 }
