@@ -72,12 +72,12 @@ public class Constants {
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
             "showsim1","showsim2", "showsim3", "showdiv", "active", "day_night"}; //23
-    public static final String[] PREF_SIM1_CALLS = {"stub", "limit1", "period1", "round1", //3
-            "time1", "day1", "op_round1", "op_value1"}; //7
-    public static final String[] PREF_SIM2_CALLS = {"stub", "limit1", "period1", "round1", //3
-            "time1", "day1", "op_round2", "op_value2"}; //7
-    public static final String[] PREF_SIM3_CALLS = {"stub", "limit1", "period1", "round1", //3
-            "time1", "day1", "op_round3", "op_value3"}; //7
+    public static final String[] PREF_SIM1_CALLS = {"stub", "calls_limit1", "calls_period1", "calls_round1", //3
+            "calls_time1", "calls_day1", "calls_op_round1", "calls_op_value1"}; //7
+    public static final String[] PREF_SIM2_CALLS = {"stub", "calls_limit2", "calls_period2", "calls_round2", //3
+            "calls_time2", "calls_day2", "calls_op_round2", "calls_op_value2"}; //7
+    public static final String[] PREF_SIM3_CALLS = {"stub", "limit1", "period1", "calls_round2", //3
+            "calls_time3", "calls_day3", "calls_op_round3", "calls_op_value3"}; //7
     public static final int STARTED_ID = 101;
     public static final int SIM1 = 0;
     public static final int SIM2 = 1;

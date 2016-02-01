@@ -240,9 +240,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
                     TOT3.setText(DataFormat.formatCallDuration(getActivity(), 0L));
                 }
                 break;
-            case R.id.limit1:
-            case R.id.limit2:
-            case R.id.limit3:
+            case R.id.limit1_calls:
+            case R.id.limit2_calls:
+            case R.id.limit3_calls:
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, CallsLimitFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
