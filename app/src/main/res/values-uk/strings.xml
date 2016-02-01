@@ -159,4 +159,5 @@
     <string name="tariffication">Інтервал тарифікації</string>
     <string name="calls_limit_title">Обмеження вихідних дзвінків</string>
     <string name="calls_limit_summary">Налаштування обмеження вихідних дзвінків</string>
+    <string name="minutes">%1$sхв.</string>
 </resources>

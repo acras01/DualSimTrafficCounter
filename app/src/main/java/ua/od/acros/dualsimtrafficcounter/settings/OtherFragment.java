@@ -40,7 +40,7 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
 
     private void updateSummary() {
         if (timer != null && timer.isEnabled())
-            timer.setSummary(timer.getText() + getResources().getString(R.string.minute));
+            timer.setSummary(String.format(getResources().getString(R.string.minutes), timer.getText()));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
 

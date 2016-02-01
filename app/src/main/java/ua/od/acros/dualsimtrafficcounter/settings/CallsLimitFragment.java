@@ -106,11 +106,11 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
 
     private void updateSummary() {
         if (limit1 != null)
-            limit1.setSummary(limit1.getText());
+            limit1.setSummary(String.format(getResources().getString(R.string.minutes), limit1.getText()));
         if (limit2 != null)
-            limit2.setSummary(limit2.getText());
+            limit2.setSummary(String.format(getResources().getString(R.string.minutes), limit2.getText()));
         if (limit3 != null)
-            limit3.setSummary(limit3.getText());
+            limit3.setSummary(String.format(getResources().getString(R.string.minutes), limit3.getText()));
 
         if (period1 != null) {
             period1.setSummary(period1.getEntry());

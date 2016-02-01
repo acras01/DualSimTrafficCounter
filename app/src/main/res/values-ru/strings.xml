@@ -159,4 +159,5 @@
     <string name="tariffication">Интервал тарификации</string>
     <string name="calls_limit_title">Ограничение исходящих вызовов</string>
     <string name="calls_limit_summary">Настройка ограничения исходящих вызовов</string>
+    <string name="minutes">%1$sмин</string>
 </resources>
