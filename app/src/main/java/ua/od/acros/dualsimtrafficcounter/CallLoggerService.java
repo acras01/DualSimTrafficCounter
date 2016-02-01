@@ -32,9 +32,11 @@ public class CallLoggerService extends Service {
     private ContentValues mCalls;
     private DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
     private DateTimeFormatter fmtTime = DateTimeFormat.forPattern(Constants.TIME_FORMAT + ":ss");
-    private BroadcastReceiver callDataReceiver, setUsageReceiver, clearReceiver;
+    private BroadcastReceiver callDataReceiver, setUsageReceiver, clearReceiver, callDurationReceiver;
     private String[] mOperatorNames = new String[3];
     private SharedPreferences mPrefs;
+    private int mSimQuantity;
+    private boolean mCallEnded = false;
 
     public CallLoggerService() {
     }
@@ -55,15 +57,17 @@ public class CallLoggerService extends Service {
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
-
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         callDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                mCallEnded = true;
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
                 Toast.makeText(context, mOperatorNames[sim] + ": " +
                         DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
-                int minute = 60 * 1000;
+                final int minute = 60 * 1000;
                 DateTime now = new DateTime();
                 mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
                 mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
@@ -87,6 +91,9 @@ public class CallLoggerService extends Service {
                         mCalls.put(Constants.CALLS3, duration);
                         break;
                 }
+                MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                nm.notify(Constants.STARTED_ID + 1000, buildNotification());
                 Intent callsIntent = new Intent(Constants.CALLS);
                 callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
                 callsIntent.putExtra(Constants.CALL_DURATION, duration);
@@ -122,18 +129,12 @@ public class CallLoggerService extends Service {
                         MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                         break;
                 }
-                Intent notificationIntent = new Intent(context, MainActivity.class);
-                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
-                        .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                        .setPriority(NotificationCompat.PRIORITY_MIN)
-                        .setContentText(DataFormat.formatData(context, (long) mCalls.get(Constants.CALLS1)) + "   ||   "
-                                + DataFormat.formatData(context, (long) mCalls.get(Constants.CALLS2)) + "   ||   "
-                                + DataFormat.formatData(context, (long) mCalls.get(Constants.CALLS3)));
-                nm.notify(Constants.STARTED_ID + 1000, builder.build());
+                nm.notify(Constants.STARTED_ID + 1000, buildNotification());
             }
         };
+        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
+        registerReceiver(setUsageReceiver, setUsageFilter);
 
         clearReceiver = new BroadcastReceiver() {
             @Override
@@ -155,31 +156,68 @@ public class CallLoggerService extends Service {
                 MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
             }
         };
-
-        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
         IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR);
-        registerReceiver(setUsageReceiver, setUsageFilter);
         registerReceiver(clearReceiver, clearSimDataFilter);
+
+        callDurationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+                long currentDuration;
+                int interval;
+                long limit;
+                final int minute = 60 * 1000;
+                final int second = 1000;
+                switch (intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) {
+                    case Constants.SIM1:
+                        currentDuration = (long) mCalls.get(Constants.CALLS1);
+                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0")) * second;
+                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * minute;
+                        break;
+                    case Constants.SIM2:
+                        currentDuration = (long) mCalls.get(Constants.CALLS2);
+                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0")) * second;
+                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * minute;
+                        break;
+                    case Constants.SIM3:
+                        currentDuration = (long) mCalls.get(Constants.CALLS3);
+                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0")) * second;
+                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * minute;
+                        break;
+                }
+            }
+        };
+        IntentFilter callDurationFilter = new IntentFilter(Constants.OUTGOING_CALL_COUNT);
+        registerReceiver(callDurationReceiver, callDurationFilter);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        startForeground(Constants.STARTED_ID + 1000, buildNotification());
+        return START_STICKY;
+    }
+
+    private Notification buildNotification() {
+        String text = DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1));
+        if (mSimQuantity >= 2)
+            text += "  ||  " +DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2));
+        if (mSimQuantity == 3)
+            text += "  ||  " +DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3));
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         notificationIntent.setAction("calls");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification n =  new NotificationCompat.Builder(mContext)
+        return new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_launcher_small)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle(getResources().getString(R.string.notification_title))
-                .setContentText("Hi!")
+                .setContentTitle(getResources().getString(R.string.calls_fragment))
+                .setContentText(text)
                 .build();
-        startForeground(Constants.STARTED_ID + 1000, n);
-        return START_STICKY;
+
     }
 
     @Override
@@ -188,6 +226,7 @@ public class CallLoggerService extends Service {
         unregisterReceiver(callDataReceiver);
         unregisterReceiver(clearReceiver);
         unregisterReceiver(setUsageReceiver);
+        unregisterReceiver(callDurationReceiver);
     }
 
     public static Context getCallLoggerContext() {

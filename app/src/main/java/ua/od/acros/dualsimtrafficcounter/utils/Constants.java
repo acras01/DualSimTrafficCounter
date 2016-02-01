@@ -103,4 +103,5 @@ public class Constants {
     public static final String CALLS1_EX = "calls1_ex";
     public static final String CALLS2_EX = "calls2_ex";
     public static final String CALLS3_EX = "calls3_ex";
+    public static final String OUTGOING_CALL_COUNT = "count_call_duration";
 }

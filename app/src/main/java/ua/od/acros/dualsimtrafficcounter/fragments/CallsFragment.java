@@ -47,7 +47,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
     private MyDatabase mDatabaseHelper;
     private SharedPreferences mPrefs;
     private String[] mOperatorNames = new String[3];
-    private int simQuantity;
+    private int mSimQuantity;
 
     private OnFragmentInteractionListener mListener;
     private BroadcastReceiver callDataReceiver;
@@ -71,7 +71,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
         mDatabaseHelper = MyDatabase.getInstance(getActivity());
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         callDataReceiver = new BroadcastReceiver() {
             @Override
@@ -128,7 +128,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
             view.findViewById(R.id.sim2row).setVisibility(View.GONE);
             view.findViewById(R.id.sim3row).setVisibility(View.GONE);
         }
-        if (simQuantity >= 2)
+        if (mSimQuantity >= 2)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 SIM2.setVisibility(View.VISIBLE);
                 TOT2.setVisibility(View.VISIBLE);
@@ -136,7 +136,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
                 bLim2.setVisibility(View.VISIBLE);
             } else
                 view.findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
-        if (simQuantity == 3)
+        if (mSimQuantity == 3)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 SIM3.setVisibility(View.VISIBLE);
                 TOT3.setVisibility(View.VISIBLE);
@@ -210,8 +210,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
                     mCalls.put(Constants.CALLS1, 0L);
                     mCalls.put(Constants.CALLS1_EX, 0L);
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
-                    TOT1.setText(DataFormat.formatCallDuration(getActivity(), 0L));
                 }
+                TOT1.setText(DataFormat.formatCallDuration(getActivity(), 0L));
                 break;
             case R.id.buttonClear2:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
@@ -223,8 +223,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
                     mCalls.put(Constants.CALLS2, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
-                    TOT2.setText(DataFormat.formatCallDuration(getActivity(), 0L));
                 }
+                TOT2.setText(DataFormat.formatCallDuration(getActivity(), 0L));
                 break;
             case R.id.buttonClear3:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
@@ -236,8 +236,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
                     mCalls.put(Constants.CALLS3, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
-                    TOT3.setText(DataFormat.formatCallDuration(getActivity(), 0L));
                 }
+                TOT3.setText(DataFormat.formatCallDuration(getActivity(), 0L));
                 break;
             case R.id.limit1_calls:
             case R.id.limit2_calls:

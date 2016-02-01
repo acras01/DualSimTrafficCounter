@@ -74,7 +74,16 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                             if (XposedHelpers.callMethod(activeCall, "getState") == Enum.valueOf(enumCallState, "ACTIVE") &&
                                     !(Boolean) XposedHelpers.callMethod(conn, "isIncoming")) {
                                 String imei = (String) XposedHelpers.callMethod(fgPhone, "getDeviceId");
+                                ArrayList<String> id = MobileUtils.getSimIMEI(mContext);
+                                int sim = Constants.DISABLED;
+                                for (int i = 0; i < id.size(); i++) {
+                                    if (imei.equals(id.get(i)))
+                                        sim = i;
+                                }
                                 XposedBridge.log("Outgoing call answered: " + imei);
+                                Intent intent = new Intent(Constants.OUTGOING_CALL_COUNT);
+                                intent.putExtra(Constants.SIM_ACTIVE, sim);
+                                mContext.sendBroadcast(intent);
                             }
                         }
                     }
