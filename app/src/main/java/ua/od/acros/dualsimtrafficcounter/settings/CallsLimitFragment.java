@@ -21,8 +21,7 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
 
     private EditTextPreference limit1, limit2, limit3,
             round1, round2, round3,
-            day1, day2, day3,
-            opRound1, opRound2, opRound3;
+            day1, day2, day3;
     private ListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
@@ -54,12 +53,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         day1 = (EditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[5]);
         day2 = (EditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[5]);
         day3 = (EditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[5]);
-        opRound1 = (EditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[6]);
-        opRound2 = (EditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
-        opRound3 = (EditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
-        opValue1 = (ListPreference) findPreference(Constants.PREF_SIM1_CALLS[7]);
-        opValue2 = (ListPreference) findPreference(Constants.PREF_SIM2_CALLS[7]);
-        opValue3 = (ListPreference) findPreference(Constants.PREF_SIM3_CALLS[7]);
+        opValue1 = (ListPreference) findPreference(Constants.PREF_SIM1_CALLS[6]);
+        opValue2 = (ListPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
+        opValue3 = (ListPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
@@ -159,25 +155,19 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         if (day3 != null && day3.isEnabled())
             day3.setSummary(day3.getText());
         if (round1 != null)
-            round1.setSummary(round1.getText() + getResources().getString(R.string.seconds));
+            round1.setSummary(String.format(getResources().getString(R.string.seconds), round1.getText()));
         if (round2 != null)
-            round2.setSummary(round2.getText() + getResources().getString(R.string.seconds));
+            round2.setSummary(String.format(getResources().getString(R.string.seconds), round2.getText()));
         if (round3 != null)
-            round3.setSummary(round3.getText() + getResources().getString(R.string.seconds));
+            round3.setSummary(String.format(getResources().getString(R.string.seconds), round3.getText()));
 
         if (time1 != null)
-            time1.setSummary(mPrefs.getString(Constants.PREF_SIM1_CALLS[9], "00:00"));
+            time1.setSummary(mPrefs.getString(Constants.PREF_SIM1_CALLS[4], "00:00"));
         if (time2 != null)
-            time2.setSummary(mPrefs.getString(Constants.PREF_SIM2_CALLS[9], "00:00"));
+            time2.setSummary(mPrefs.getString(Constants.PREF_SIM2_CALLS[4], "00:00"));
         if (time3 != null)
-            time3.setSummary(mPrefs.getString(Constants.PREF_SIM3_CALLS[9], "00:00"));
+            time3.setSummary(mPrefs.getString(Constants.PREF_SIM3_CALLS[4], "00:00"));
 
-        if (opRound1 != null)
-            opRound1.setSummary(opRound1.getText());
-        if (opRound2 != null)
-            opRound2.setSummary(opRound2.getText());
-        if (opRound3 != null)
-            opRound3.setSummary(opRound3.getText());
         if (opValue1 != null)
             opValue1.setSummary(opValue1.getEntry());
         if (opValue2 != null)

@@ -157,4 +157,6 @@
     <string name="outgoing_duration">Тривалiсть вихiдних дзвiнкiв</string>
     <string name="time_before_limit">Час в секундах перед досягненням ліміту</string>
     <string name="tariffication">Інтервал тарифікації</string>
+    <string name="calls_limit_title">Обмеження вихідних дзвінків</string>
+    <string name="calls_limit_summary">Налаштування обмеження вихідних дзвінків</string>
 </resources>

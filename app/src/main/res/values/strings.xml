@@ -163,4 +163,6 @@
     <string name="calls_fragment">Calls stats</string>
     <string name="time_before_limit">Time in seconds before reaching limit</string>
     <string name="tariffication">Tariffication interval</string>
+    <string name="calls_limit_summary">Outgoing calls limits settings</string>
+    <string name="calls_limit_title">Calls limits</string>
 </resources>

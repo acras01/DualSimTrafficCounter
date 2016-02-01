@@ -14,6 +14,14 @@
                 android:title="@string/limit"
                 android:summary="" />
 
+            <ListPreference
+                android:defaultValue="0"
+                android:entries="@array/measure_calls"
+                android:entryValues="@array/measure_calss_values"
+                android:key="calls_op_value1"
+                android:summary=""
+                android:title="@string/tariffication" />
+
             <EditTextPreference
                 android:key="calls_round1"
                 android:inputType="numberDecimal"
@@ -42,29 +50,6 @@
 
         </PreferenceCategory>
 
-        <PreferenceCategory
-            android:title="@string/operator_round" >
-
-            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-                android:key="calls_op_round1"
-                android:title="@string/tariffication"
-                android:defaultValue="false"
-                android:singleLine="false"
-                android:summaryOn="@string/on"
-                android:summaryOff="@string/off" />
-
-            <ListPreference
-                android:defaultValue="0"
-                android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calss_values"
-                android:key="calls_op_value1"
-                android:dependency="calls_op_round1"
-                android:summary=""
-                android:title="@string/measure_value" />
-
-        </PreferenceCategory>
-
-
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -79,6 +64,14 @@
                 android:inputType="numberDecimal"
                 android:title="@string/limit"
                 android:summary="" />
+
+            <ListPreference
+                android:defaultValue="0"
+                android:entries="@array/measure_calls"
+                android:entryValues="@array/measure_calss_values"
+                android:key="calls_op_value2"
+                android:summary=""
+                android:title="@string/tariffication" />
 
             <EditTextPreference
                 android:key="calls_round2"
@@ -108,28 +101,6 @@
 
         </PreferenceCategory>
 
-        <PreferenceCategory
-            android:title="@string/operator_round" >
-
-            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-                android:key="calls_op_round2"
-                android:title="@string/tariffication"
-                android:defaultValue="false"
-                android:singleLine="false"
-                android:summaryOn="@string/on"
-                android:summaryOff="@string/off" />
-
-            <ListPreference
-                android:defaultValue="0"
-                android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calss_values"
-                android:key="calls_op_value2"
-                android:dependency="calls_op_round2"
-                android:summary=""
-                android:title="@string/measure_value" />
-
-        </PreferenceCategory>
-
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -144,6 +115,14 @@
                 android:inputType="numberDecimal"
                 android:title="@string/limit"
                 android:summary="" />
+
+            <ListPreference
+                android:defaultValue="0"
+                android:entries="@array/measure_calls"
+                android:entryValues="@array/measure_calss_values"
+                android:key="calls_op_value3"
+                android:summary=""
+                android:title="@string/tariffication" />
 
             <EditTextPreference
                 android:key="calls_round3"
@@ -170,28 +149,6 @@
                 android:defaultValue="1"
                 android:title="@string/day"
                 android:summary="" />
-
-        </PreferenceCategory>
-
-        <PreferenceCategory
-            android:title="@string/operator_round" >
-
-            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-                android:key="calls_op_round3"
-                android:title="@string/round_traffic"
-                android:defaultValue="false"
-                android:singleLine="false"
-                android:summaryOn="@string/on"
-                android:summaryOff="@string/off" />
-
-            <ListPreference
-                android:defaultValue="0"
-                android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calss_values"
-                android:key="calls_op_value3"
-                android:dependency="calls_op_round3"
-                android:summary=""
-                android:title="@string/measure_value" />
 
         </PreferenceCategory>
 

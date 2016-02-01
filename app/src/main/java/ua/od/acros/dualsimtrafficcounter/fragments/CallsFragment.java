@@ -69,7 +69,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
         mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
         mDatabaseHelper = MyDatabase.getInstance(getActivity());
-        mCalls = MyDatabase.readTrafficData(mDatabaseHelper);
+        mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -108,9 +108,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
         SIM3 = (TextView) view.findViewById(R.id.sim3_name);
         TIP = (TextView) view.findViewById(R.id.tip);
 
-        bLim1 = (Button) view.findViewById(R.id.limit1);
-        bLim2 = (Button) view.findViewById(R.id.limit2);
-        bLim3 = (Button) view.findViewById(R.id.limit3);
+        bLim1 = (Button) view.findViewById(R.id.limit1_calls);
+        bLim2 = (Button) view.findViewById(R.id.limit2_calls);
+        bLim3 = (Button) view.findViewById(R.id.limit3_calls);
 
         view.findViewById(R.id.buttonClear1).setOnClickListener(this);
         view.findViewById(R.id.buttonClear2).setOnClickListener(this);
