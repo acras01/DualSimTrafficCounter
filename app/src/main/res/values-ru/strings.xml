@@ -160,4 +160,5 @@
     <string name="calls_limit_title">Ограничение исходящих вызовов</string>
     <string name="calls_limit_summary">Настройка ограничения исходящих вызовов</string>
     <string name="minutes">%1$sмин</string>
+    <string name="tip_calls">Отображаемая длительность вызовов не является точной, а округлена в соответствии с интервалом тарификации</string>
 </resources>

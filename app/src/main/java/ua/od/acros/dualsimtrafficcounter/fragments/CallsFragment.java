@@ -73,7 +73,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
         mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-
         callDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -291,7 +290,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
                 else {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
                     getActivity().startService(new Intent(getActivity(), CallLoggerService.class));
-                    TIP.setText(getResources().getString(R.string.tip));
+                    TIP.setText(getResources().getString(R.string.tip_calls));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
                 }

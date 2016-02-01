@@ -158,7 +158,7 @@
     <string name="seconds">%1$ss</string>
     <string name="minutes_seconds">%1$sm %2$ss</string>
     <string name="outgoing_duration">Duration of outgoing calls</string>
-    <string name="tip_calls">A</string>
+    <string name="tip_calls">Shown duration of calls is not exact but rounded in accordance with interval of tariffication</string>
     <string name="calls">Outgoing Calls</string>
     <string name="calls_fragment">Calls stats</string>
     <string name="time_before_limit">Time in seconds before reaching limit</string>

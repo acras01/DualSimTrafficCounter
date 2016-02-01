@@ -9,12 +9,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -28,9 +30,11 @@ public class CallLoggerService extends Service {
     private static Context mContext;
     private MyDatabase mDatabaseHelper;
     private ContentValues mCalls;
-    private DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
+    private DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+    private DateTimeFormatter fmtTime = DateTimeFormat.forPattern(Constants.TIME_FORMAT + ":ss");
     private BroadcastReceiver callDataReceiver, setUsageReceiver, clearReceiver;
     private String[] mOperatorNames = new String[3];
+    private SharedPreferences mPrefs;
 
     public CallLoggerService() {
     }
@@ -46,6 +50,7 @@ public class CallLoggerService extends Service {
         super.onCreate();
         mContext = CallLoggerService.this;
         mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
@@ -58,6 +63,30 @@ public class CallLoggerService extends Service {
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
                 Toast.makeText(context, mOperatorNames[sim] + ": " +
                         DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
+                int minute = 60 * 1000;
+                DateTime now = new DateTime();
+                mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
+                mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+                switch (sim) {
+                    case Constants.SIM1:
+                        mCalls.put(Constants.CALLS1_EX, duration);
+                        if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
+                            duration = (long) Math.ceil((double) duration / minute) * minute;
+                        mCalls.put(Constants.CALLS1, duration);
+                        break;
+                    case Constants.SIM2:
+                        mCalls.put(Constants.CALLS2_EX, duration);
+                        if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
+                            duration = (long) Math.ceil((double) duration / minute) * minute;
+                        mCalls.put(Constants.CALLS2, duration);
+                        break;
+                    case Constants.SIM3:
+                        mCalls.put(Constants.CALLS3_EX, duration);
+                        if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
+                            duration = (long) Math.ceil((double) duration / minute) * minute;
+                        mCalls.put(Constants.CALLS3, duration);
+                        break;
+                }
                 Intent callsIntent = new Intent(Constants.CALLS);
                 callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
                 callsIntent.putExtra(Constants.CALL_DURATION, duration);
@@ -135,8 +164,10 @@ public class CallLoggerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.setAction("calls");
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification n =  new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
