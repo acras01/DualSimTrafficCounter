@@ -46,13 +46,9 @@ import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
 public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
-
     private ContentValues mDataMap;
-
     private BroadcastReceiver dataReceiver, tipReceiver, onoffReceiver;
-
     private Button bLim1, bLim2, bLim3;
-
     private MenuItem mService, mMobileData;
     private MyDatabase mDatabaseHelper;
     private SharedPreferences mPrefs;

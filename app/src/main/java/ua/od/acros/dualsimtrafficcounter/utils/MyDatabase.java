@@ -230,13 +230,27 @@ public class MyDatabase extends SQLiteOpenHelper {
                             " ADD COLUMN " + Constants.TOTAL3_N + " long;";
             db.execSQL(ALTER_TBL);
         }
-        if (oldVersion < Constants.DATABASE_VERSION) {
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 4) {
             ALTER_TBL = "create table "
                     + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                     + " text not null, " + Constants.CALLS1 + " long, "
                     + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
                     + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
                     + Constants.CALLS3_EX + " long);";
+            db.execSQL(ALTER_TBL);
+        }
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 5) {
+            ALTER_TBL =
+                    "ALTER TABLE " + CALLS_TABLE +
+                            " ADD COLUMN " + Constants.PERIOD1 + " integer;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + CALLS_TABLE +
+                            " ADD COLUMN " + Constants.PERIOD2 + " integer;";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL =
+                    "ALTER TABLE " + CALLS_TABLE +
+                            " ADD COLUMN " + Constants.PERIOD3 + " integer;";
             db.execSQL(ALTER_TBL);
         }
     }
@@ -602,8 +616,8 @@ public class MyDatabase extends SQLiteOpenHelper {
         ContentValues mMap = new ContentValues();
         mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
         Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.CALLS1,
-                Constants.CALLS1_EX, Constants.CALLS2, Constants.CALLS2_EX, Constants.CALLS3, Constants.CALLS3_EX},
-                null, null, null, null, null);
+                Constants.CALLS1_EX, Constants.CALLS2, Constants.CALLS2_EX, Constants.CALLS3, Constants.CALLS3_EX,
+                Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3}, null, null, null, null, null);
         if (cursor.moveToLast()) {
             mMap.put(Constants.CALLS1, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1)));
             mMap.put(Constants.CALLS1_EX, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1_EX)));
@@ -613,6 +627,9 @@ public class MyDatabase extends SQLiteOpenHelper {
             mMap.put(Constants.CALLS3_EX, cursor.getLong(cursor.getColumnIndex(Constants.CALLS3_EX)));
             mMap.put(Constants.LAST_TIME, cursor.getString(cursor.getColumnIndex(Constants.LAST_TIME)));
             mMap.put(Constants.LAST_DATE, cursor.getString(cursor.getColumnIndex(Constants.LAST_DATE)));
+            mMap.put(Constants.PERIOD1, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD1)));
+            mMap.put(Constants.PERIOD2, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD2)));
+            mMap.put(Constants.PERIOD3, cursor.getInt(cursor.getColumnIndex(Constants.PERIOD3)));
         } else {
             mMap.put(Constants.CALLS1, 0L);
             mMap.put(Constants.CALLS1_EX, 0L);
@@ -622,6 +639,9 @@ public class MyDatabase extends SQLiteOpenHelper {
             mMap.put(Constants.CALLS3_EX, 0L);
             mMap.put(Constants.LAST_TIME, "");
             mMap.put(Constants.LAST_DATE, "");
+            mMap.put(Constants.PERIOD1, 0);
+            mMap.put(Constants.PERIOD2, 0);
+            mMap.put(Constants.PERIOD3, 0);
         }
         cursor.close();
         return mMap;

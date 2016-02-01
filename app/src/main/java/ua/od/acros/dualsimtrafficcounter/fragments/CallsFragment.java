@@ -40,16 +40,14 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
  * Use the {@link CallsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CallsFragment extends Fragment implements View.OnClickListener {
+public class CallsFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private TextView TOT1, TOT2, TOT3, SIM1, SIM2, SIM3, TIP;
+    private TextView SIM1, SIM2, SIM3, TOT1, TOT2, TOT3, TIP;
     private ContentValues mCalls;
     private Button bLim1, bLim2, bLim3;
     private MyDatabase mDatabaseHelper;
     private SharedPreferences mPrefs;
-    private String[] mOperatorNames = new String[3];
     private int mSimQuantity;
-
     private OnFragmentInteractionListener mListener;
     private BroadcastReceiver callDataReceiver;
     private MenuItem mService;
@@ -66,9 +64,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
         mDatabaseHelper = MyDatabase.getInstance(getActivity());
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -178,9 +173,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
         else
             TOT3.setTextColor(Color.WHITE);
 
-        SIM1.setText(mOperatorNames[0]);
-        SIM2.setText(mOperatorNames[1]);
-        SIM3.setText(mOperatorNames[2]);
+        SIM1.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+        SIM2.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+        SIM3.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
 
         setButtonLimitText();
 
@@ -331,9 +326,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
 
     private void setButtonLimitText() {
 
-        String limit1 = String.format(getString(R.string.minute), mPrefs.getString(Constants.PREF_SIM1_CALLS[1], ""));
-        String limit2 = String.format(getString(R.string.minute), mPrefs.getString(Constants.PREF_SIM2_CALLS[1], ""));
-        String limit3 = String.format(getString(R.string.minute), mPrefs.getString(Constants.PREF_SIM3_CALLS[1], ""));
+        String limit1 = String.format(getString(R.string.minutes), mPrefs.getString(Constants.PREF_SIM1_CALLS[1], ""));
+        String limit2 = String.format(getString(R.string.minutes), mPrefs.getString(Constants.PREF_SIM2_CALLS[1], ""));
+        String limit3 = String.format(getString(R.string.minutes), mPrefs.getString(Constants.PREF_SIM3_CALLS[1], ""));
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.period);
@@ -365,5 +360,15 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
         bLim1.setText(limit1);
         bLim2.setText(limit2);
         bLim3.setText(limit3);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Constants.PREF_SIM1[5]) || key.equals(Constants.PREF_SIM1[6]))
+            SIM1.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+        if (key.equals(Constants.PREF_SIM2[5]) || key.equals(Constants.PREF_SIM2[6]))
+            SIM2.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+        if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
+            SIM3.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
     }
 }
