@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -47,7 +46,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction;
-import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -1722,7 +1720,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(mIDSmall)
                 .setLargeIcon(mBitmapLarge)
-                .setContentTitle(getResources().getString(R.string.notification_title))
+                .setContentTitle(getString(R.string.notification_title))
                 .setContentText(text)
                 .build();
     }
@@ -1799,7 +1797,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                     .setPriority(mPriority)
                     .setLargeIcon(bm)
                     .setWhen(System.currentTimeMillis())
-                    .setContentTitle(getResources().getString(R.string.service_stopped_title));
+                    .setContentTitle(getString(R.string.service_stopped_title));
             nm.notify(Constants.STARTED_ID, builder.build());
 
             Intent intent = new Intent(Constants.TIP);
@@ -1841,9 +1839,9 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         if ((alertID == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
                 (alertID == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
                 (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true)))
-            txt = getResources().getString(R.string.data_dis);
+            txt = getString(R.string.data_dis);
         else
-            txt = getResources().getString(R.string.data_dis_tip);
+            txt = getString(R.string.data_dis_tip);
 
         Notification n = builder
                 .setContentIntent(pIntent)
@@ -1851,10 +1849,10 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSmallIcon(R.drawable.ic_alert_small)
                 .setLargeIcon(bm)
-                .setTicker(mContext.getString(R.string.app_name))
+                .setTicker(getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(txt)
-                .setContentText(opName + ": " + getResources().getString(R.string.over_limit))
+                .setContentText(opName + ": " + getString(R.string.over_limit))
                 .build();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[4], false) && !mPrefs.getString(Constants.PREF_OTHER[1], "").equals("")) {
             n.sound = Uri.parse(mPrefs.getString(Constants.PREF_OTHER[1], ""));

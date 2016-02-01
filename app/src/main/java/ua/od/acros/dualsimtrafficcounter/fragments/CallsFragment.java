@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -81,12 +82,24 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
                 switch (sim) {
                     case Constants.SIM1:
                         TOT1.setText(DataFormat.formatCallDuration(getActivity(), duration));
+                        if (duration >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE)
+                            TOT1.setTextColor(Color.RED);
+                        else
+                            TOT1.setTextColor(Color.WHITE);
                         break;
                     case Constants.SIM2:
                         TOT2.setText(DataFormat.formatCallDuration(getActivity(), duration));
+                        if (duration >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE)
+                            TOT2.setTextColor(Color.RED);
+                        else
+                            TOT2.setTextColor(Color.WHITE);
                         break;
                     case Constants.SIM3:
                         TOT3.setText(DataFormat.formatCallDuration(getActivity(), duration));
+                        if (duration >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE)
+                            TOT3.setTextColor(Color.RED);
+                        else
+                            TOT3.setTextColor(Color.WHITE);
                         break;
                 }
             }
@@ -150,8 +163,20 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
         bLim3.setOnClickListener(this);
 
         TOT1.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS1)));
+        if ((long) mCalls.get(Constants.CALLS1) >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE)
+            TOT1.setTextColor(Color.RED);
+        else
+            TOT1.setTextColor(Color.WHITE);
         TOT2.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS2)));
+        if ((long) mCalls.get(Constants.CALLS2) >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE)
+            TOT2.setTextColor(Color.RED);
+        else
+            TOT2.setTextColor(Color.WHITE);
         TOT3.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS3)));
+        if ((long) mCalls.get(Constants.CALLS3) >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE)
+            TOT3.setTextColor(Color.RED);
+        else
+            TOT3.setTextColor(Color.WHITE);
 
         SIM1.setText(mOperatorNames[0]);
         SIM2.setText(mOperatorNames[1]);
@@ -306,63 +331,36 @@ public class CallsFragment extends Fragment implements View.OnClickListener {
 
     private void setButtonLimitText() {
 
-        String limit1 = "";//mIsNight[0] ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
-        String limit2 = "";//mIsNight[1] ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
-        String limit3 = "";//mIsNight[2] ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
-
-        /*int value1;
-        if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
-            value1 = 0;
-        else
-            value1 = mIsNight[0] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
-        int value2;
-        if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
-            value2 = 0;
-        else
-            value2 = mIsNight[1] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
-        int value3;
-        if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
-            value3 = 0;
-        else
-            value3 = mIsNight[2] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
-
-        double lim1 = !limit1.equals("") ? DataFormat.getFormatLong(limit1, value1) : Double.MAX_VALUE;
-        double lim2 = !limit2.equals("") ? DataFormat.getFormatLong(limit2, value2) : Double.MAX_VALUE;
-        double lim3 = !limit3.equals("") ? DataFormat.getFormatLong(limit3, value3) : Double.MAX_VALUE;
-
-        limit1 = !limit1.equals("") ? DataFormat.formatData(getActivity(), (long) lim1) : getResources().getString(R.string.not_set);
-        limit2 = !limit2.equals("") ? DataFormat.formatData(getActivity(), (long) lim2) : getResources().getString(R.string.not_set);
-        limit3 = !limit3.equals("") ? DataFormat.formatData(getActivity(), (long) lim3) : getResources().getString(R.string.not_set);
+        String limit1 = String.format(getString(R.string.minute), mPrefs.getString(Constants.PREF_SIM1_CALLS[1], ""));
+        String limit2 = String.format(getString(R.string.minute), mPrefs.getString(Constants.PREF_SIM2_CALLS[1], ""));
+        String limit3 = String.format(getString(R.string.minute), mPrefs.getString(Constants.PREF_SIM3_CALLS[1], ""));
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.period);
 
         for (int i = 0; i < list.length; i++) {
-            if (!limit1.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1[3], "0"))) {
+            if (!limit1.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1_CALLS[2], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1[10], "1") + getResources().getString(R.string.days);
+                    limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1_CALLS[5], "1") + getString(R.string.days);
                 else
                     limit1 += "/" + list[i];
 
             }
-            if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2[3], "0"))) {
+            if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2_CALLS[2], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2[10], "1") + getResources().getString(R.string.days);
+                    limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2_CALLS[5], "1") + getString(R.string.days);
                 else
                     limit2 += "/" + list[i];
 
             }
-            if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3[3], "0"))) {
+            if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3_CALLS[2], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3[10], "1") + getResources().getString(R.string.days);
+                    limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3_CALLS[5], "1") + getString(R.string.days);
                 else
                     limit3 += "/" + list[i];
 
             }
-        }*/
+        }
 
         bLim1.setText(limit1);
         bLim2.setText(limit2);

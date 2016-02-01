@@ -12,7 +12,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -36,7 +38,8 @@ public class CallLoggerService extends Service {
     private String[] mOperatorNames = new String[3];
     private SharedPreferences mPrefs;
     private int mSimQuantity;
-    private boolean mCallEnded = false;
+    private CountDownTimer mCountTimer;
+    private Vibrator mVibrator;
 
     public CallLoggerService() {
     }
@@ -51,6 +54,7 @@ public class CallLoggerService extends Service {
     public void onCreate() {
         super.onCreate();
         mContext = CallLoggerService.this;
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDatabaseHelper = MyDatabase.getInstance(mContext);
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
@@ -62,7 +66,8 @@ public class CallLoggerService extends Service {
         callDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mCallEnded = true;
+                mCountTimer.cancel();
+                mVibrator.cancel();
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
                 Toast.makeText(context, mOperatorNames[sim] + ": " +
@@ -73,22 +78,22 @@ public class CallLoggerService extends Service {
                 mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
                 switch (sim) {
                     case Constants.SIM1:
-                        mCalls.put(Constants.CALLS1_EX, duration);
+                        mCalls.put(Constants.CALLS1_EX, duration + (long) mCalls.get(Constants.CALLS1_EX));
                         if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
                             duration = (long) Math.ceil((double) duration / minute) * minute;
-                        mCalls.put(Constants.CALLS1, duration);
+                        mCalls.put(Constants.CALLS1, duration + (long) mCalls.get(Constants.CALLS1));
                         break;
                     case Constants.SIM2:
-                        mCalls.put(Constants.CALLS2_EX, duration);
+                        mCalls.put(Constants.CALLS2_EX, duration + (long) mCalls.get(Constants.CALLS2_EX));
                         if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
                             duration = (long) Math.ceil((double) duration / minute) * minute;
-                        mCalls.put(Constants.CALLS2, duration);
+                        mCalls.put(Constants.CALLS2, duration + (long) mCalls.get(Constants.CALLS2));
                         break;
                     case Constants.SIM3:
-                        mCalls.put(Constants.CALLS3_EX, duration);
+                        mCalls.put(Constants.CALLS3_EX, duration + (long) mCalls.get(Constants.CALLS3_EX));
                         if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
                             duration = (long) Math.ceil((double) duration / minute) * minute;
-                        mCalls.put(Constants.CALLS3, duration);
+                        mCalls.put(Constants.CALLS3, duration + (long) mCalls.get(Constants.CALLS3));
                         break;
                 }
                 MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
@@ -161,34 +166,52 @@ public class CallLoggerService extends Service {
 
         callDurationReceiver = new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(final Context context, Intent intent) {
                 mCalls = MyDatabase.readCallsData(mDatabaseHelper);
-                long currentDuration;
-                int interval;
-                long limit;
-                final int minute = 60 * 1000;
-                final int second = 1000;
+                long currentDuration = 0;
+                int interval = 0;
+                long limit = 0;
                 switch (intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) {
                     case Constants.SIM1:
                         currentDuration = (long) mCalls.get(Constants.CALLS1);
-                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0")) * second;
-                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * minute;
+                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0")) *  Constants.SECOND;
+                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
                         break;
                     case Constants.SIM2:
                         currentDuration = (long) mCalls.get(Constants.CALLS2);
-                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0")) * second;
-                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * minute;
+                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0")) * Constants.SECOND;
+                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
                         break;
                     case Constants.SIM3:
                         currentDuration = (long) mCalls.get(Constants.CALLS3);
-                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0")) * second;
-                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * minute;
+                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0")) *  Constants.SECOND;
+                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
                         break;
                 }
+                long timeToVibrate;
+                if (limit - currentDuration <= interval)
+                    timeToVibrate = 0;
+                else
+                    timeToVibrate = limit - currentDuration - interval;
+                mCountTimer = new CountDownTimer(timeToVibrate,  Constants.SECOND) {
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    public void onFinish() {
+                        if (mVibrator.hasVibrator())
+                            vibrate(mVibrator,  Constants.SECOND,  Constants.SECOND / 2);
+                    }
+                }.start();
             }
         };
         IntentFilter callDurationFilter = new IntentFilter(Constants.OUTGOING_CALL_COUNT);
         registerReceiver(callDurationReceiver, callDurationFilter);
+    }
+
+    private static void vibrate(Vibrator v, int v1, int p1) {
+        long[] pattern = new long[] {0, v1, p1};
+        v.vibrate(pattern, 0);
     }
 
     @Override
@@ -200,9 +223,9 @@ public class CallLoggerService extends Service {
     private Notification buildNotification() {
         String text = DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1));
         if (mSimQuantity >= 2)
-            text += "  ||  " +DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2));
+            text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2));
         if (mSimQuantity == 3)
-            text += "  ||  " +DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3));
+            text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3));
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         notificationIntent.setAction("calls");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -214,7 +237,7 @@ public class CallLoggerService extends Service {
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_launcher_small)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle(getResources().getString(R.string.calls_fragment))
+                .setContentTitle(getString(R.string.calls_fragment))
                 .setContentText(text)
                 .build();
 

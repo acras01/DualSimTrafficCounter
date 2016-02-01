@@ -144,6 +144,9 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                             simid[0] = MobileUtils.getSimId(mContext);
                                             start[0] = System.currentTimeMillis();
                                             XposedBridge.log("Outgoing call answered: " + simid[0]);
+                                            Intent intent = new Intent(Constants.OUTGOING_CALL_COUNT);
+                                            intent.putExtra(Constants.SIM_ACTIVE, simid[0]);
+                                            mContext.sendBroadcast(intent);
                                         }
                                     }
                                 }

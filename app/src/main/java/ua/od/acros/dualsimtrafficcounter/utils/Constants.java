@@ -86,6 +86,8 @@ public class Constants {
     public static final int NULL = -2;
     public static final int COUNT = 1001;
     public static final int CHECK = 1002;
+    public static final int MINUTE = 60 * 1000;
+    public static final int SECOND = 1000;
     public static final String TEXT_SIZE = "15";
     public static final String ICON_SIZE = "30";
     public static final String SPEEDRX = "rx_speed";
