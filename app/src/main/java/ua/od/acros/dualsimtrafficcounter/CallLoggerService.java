@@ -125,7 +125,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     // create this directory if not already created
                     dir.mkdir();
                     // create the file in which we will write the contents
-                    String fileName = "sim_log.txt";
+                    String fileName = "call_log.txt";
                     File file = new File(dir, fileName);
                     FileOutputStream os = new FileOutputStream(file);
                     os.write(out.getBytes());
