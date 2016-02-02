@@ -24,6 +24,10 @@ import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -114,6 +118,21 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
                 callsIntent.putExtra(Constants.CALL_DURATION, duration);
                 sendBroadcast(callsIntent);
+                String out = "Call Ends\n";
+                try {
+                    // to this path add a new directory path
+                    File dir = new File(String.valueOf(context.getFilesDir()));
+                    // create this directory if not already created
+                    dir.mkdir();
+                    // create the file in which we will write the contents
+                    String fileName = "sim_log.txt";
+                    File file = new File(dir, fileName);
+                    FileOutputStream os = new FileOutputStream(file);
+                    os.write(out.getBytes());
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         };
         IntentFilter callDataFilter = new IntentFilter(Constants.OUTGOING_CALL);
@@ -182,6 +201,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         callDurationReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(final Context context, Intent intent) {
+                final String[] out = {"Call Starts\n"};
                 mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                 long currentDuration = 0;
                 int interval = 0;
@@ -278,16 +298,32 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     timeToVibrate = 0;
                 else
                     timeToVibrate = limit - currentDuration - interval;
+                out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
                 mCountTimer = new android.os.CountDownTimer(timeToVibrate,  Constants.SECOND) {
                     public void onTick(long millisUntilFinished) {
-
+                        out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
                     }
 
                     public void onFinish() {
                         if (mVibrator.hasVibrator())
                             vibrate(mVibrator,  Constants.SECOND,  Constants.SECOND / 2);
+                        out[0] += "Limit reached\n";
                     }
                 }.start();
+                try {
+                    // to this path add a new directory path
+                    File dir = new File(String.valueOf(context.getFilesDir()));
+                    // create this directory if not already created
+                    dir.mkdir();
+                    // create the file in which we will write the contents
+                    String fileName = "sim_log.txt";
+                    File file = new File(dir, fileName);
+                    FileOutputStream os = new FileOutputStream(file);
+                    os.write(out[0].getBytes());
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         };
         IntentFilter callDurationFilter = new IntentFilter(Constants.OUTGOING_CALL_COUNT);
