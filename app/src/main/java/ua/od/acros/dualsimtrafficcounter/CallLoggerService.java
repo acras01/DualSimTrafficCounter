@@ -127,7 +127,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     // create the file in which we will write the contents
                     String fileName = "call_log.txt";
                     File file = new File(dir, fileName);
-                    FileOutputStream os = new FileOutputStream(file);
+                    FileOutputStream os = new FileOutputStream(file, true);
                     os.write(out.getBytes());
                     os.close();
                 } catch (IOException e) {
@@ -323,7 +323,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     // create the file in which we will write the contents
                     String fileName = "call_log.txt";
                     File file = new File(dir, fileName);
-                    FileOutputStream os = new FileOutputStream(file);
+                    FileOutputStream os = new FileOutputStream(file, true);
                     os.write(out[0].getBytes());
                     os.close();
                 } catch (IOException e) {
