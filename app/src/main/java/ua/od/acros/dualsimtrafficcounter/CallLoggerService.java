@@ -24,7 +24,6 @@ import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import de.robv.android.xposed.XposedBridge;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -77,7 +76,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         callDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mCountTimer.cancel();
+                if (mCountTimer != null)
+                    mCountTimer.cancel();
                 mVibrator.cancel();
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
@@ -278,10 +278,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     timeToVibrate = 0;
                 else
                     timeToVibrate = limit - currentDuration - interval;
-                XposedBridge.log(String.valueOf(timeToVibrate / Constants.SECOND));
                 mCountTimer = new android.os.CountDownTimer(timeToVibrate,  Constants.SECOND) {
                     public void onTick(long millisUntilFinished) {
-                        XposedBridge.log(String.valueOf(millisUntilFinished / Constants.SECOND));
+
                     }
 
                     public void onFinish() {

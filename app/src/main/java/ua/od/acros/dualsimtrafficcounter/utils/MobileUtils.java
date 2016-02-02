@@ -21,7 +21,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -385,7 +387,7 @@ public class MobileUtils {
 
     private static long activeSIM(Context context, NetworkInfo networkInfo){
 
-        //String out = null;
+        String out = " ";
 
         long sim = Constants.DISABLED;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -397,7 +399,7 @@ public class MobileUtils {
                         m.setAccessible(true);
                         SubscriptionInfo si = (SubscriptionInfo) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context));
                         sim = si.getSimSlotIndex();
-                        //out = "getDefaultDataSubscriptionInfo " + sim + "\n";
+                        out = "getDefaultDataSubscriptionInfo " + sim;
                         break;
                     }
                 }
@@ -413,7 +415,7 @@ public class MobileUtils {
                         if (m.getName().equalsIgnoreCase("getDefaultDataSubId")) {
                             m.setAccessible(true);
                             sim = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context)) - 1;
-                            //out = "getDefaultDataSubId " + sim + "\n";
+                            out = "getDefaultDataSubId " + sim;
                             break;
                         }
                     }
@@ -427,7 +429,7 @@ public class MobileUtils {
                 for (int i = 0; i < sl.size(); i++) {
                     if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), networkInfo.getExtraInfo())) {
                         sim = sl.get(i).getSimSlotIndex();
-                        //out = "getNetworkFromApnsFile " + sim + "\n";
+                        out = "getNetworkFromApnsFile " + sim;
                         break;
                     }
                 }
@@ -435,7 +437,7 @@ public class MobileUtils {
             if (sim == Constants.DISABLED) {
                 try {
                     sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
-                    //out = "getFromSettingsGlobal " + sim + "\n";
+                    out = "getFromSettingsGlobal " + sim;
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -451,7 +453,7 @@ public class MobileUtils {
                     if (m.getName().equalsIgnoreCase("getSimId")) {
                         m.setAccessible(true);
                         sim = (int) m.invoke(networkInfo);
-                        //out = "getSimId " + sim + "\n";
+                        out = "getSimId " + sim;
                         break;
                     }
                 }
@@ -478,7 +480,7 @@ public class MobileUtils {
                             || state == TelephonyManager.DATA_CONNECTING
                             || state == TelephonyManager.DATA_SUSPENDED) {
                         sim = i;
-                        //out = "getDataStateExInt " + sim + "\n";
+                        out = "getDataStateExInt " + sim;
                         break;
                     }
                 }
@@ -506,7 +508,7 @@ public class MobileUtils {
                             || state == TelephonyManager.DATA_CONNECTING
                             || state == TelephonyManager.DATA_SUSPENDED) {
                         sim = i;
-                        //out = "getDataStateExLong " + sim + "\n";
+                        out = "getDataStateExLong " + sim;
                         break;
                     }
                 }
@@ -534,7 +536,7 @@ public class MobileUtils {
                             || state == TelephonyManager.DATA_CONNECTING
                             || state == TelephonyManager.DATA_SUSPENDED) {
                         sim = i;
-                        //out = "getDataState " + sim + "\n";
+                        out = "getDataState " + sim;
                         break;
                     }
                 }
@@ -542,13 +544,13 @@ public class MobileUtils {
             if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
                 try {
                     sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
-                    //out = "getFromSettingsGlobal " + sim + "\n";
+                    out = "getFromSettingsGlobal " + sim;
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
                 }
             }
         }
-        /*try {
+        try {
             // to this path add a new directory path
             File dir = new File(String.valueOf(context.getFilesDir()));
             // create this directory if not already created
@@ -561,7 +563,7 @@ public class MobileUtils {
             os.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
         return sim;
     }
 
