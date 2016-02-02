@@ -157,18 +157,31 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim2.setOnClickListener(this);
         bLim3.setOnClickListener(this);
 
+        String limit1 = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
+        String limit2 = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
+        String limit3 = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
+        long lim1 = Long.MAX_VALUE;
+        long lim2 = Long.MAX_VALUE;
+        long lim3 = Long.MAX_VALUE;
+        if (!limit1.equals(""))
+            lim1 = Long.valueOf(limit1) * Constants.MINUTE;
+        if (!limit2.equals(""))
+            lim2 = Long.valueOf(limit2) * Constants.MINUTE;
+        if (!limit3.equals(""))
+            lim3 = Long.valueOf(limit3) * Constants.MINUTE;
+
         TOT1.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS1)));
-        if ((long) mCalls.get(Constants.CALLS1) >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE)
+        if ((long) mCalls.get(Constants.CALLS1) >= lim1)
             TOT1.setTextColor(Color.RED);
         else
             TOT1.setTextColor(Color.WHITE);
         TOT2.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS2)));
-        if ((long) mCalls.get(Constants.CALLS2) >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE)
+        if ((long) mCalls.get(Constants.CALLS2) >= lim2)
             TOT2.setTextColor(Color.RED);
         else
             TOT2.setTextColor(Color.WHITE);
         TOT3.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS3)));
-        if ((long) mCalls.get(Constants.CALLS3) >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE)
+        if ((long) mCalls.get(Constants.CALLS3) >= lim3)
             TOT3.setTextColor(Color.RED);
         else
             TOT3.setTextColor(Color.WHITE);
