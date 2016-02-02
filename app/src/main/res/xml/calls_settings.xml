@@ -17,12 +17,12 @@
             <ListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calss_values"
+                android:entryValues="@array/measure_calls_values"
                 android:key="calls_op_value1"
                 android:summary=""
                 android:title="@string/tariffication" />
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_round1"
                 android:inputType="numberDecimal"
                 android:defaultValue="0"
@@ -68,12 +68,12 @@
             <ListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calss_values"
+                android:entryValues="@array/measure_calls_values"
                 android:key="calls_op_value2"
                 android:summary=""
                 android:title="@string/tariffication" />
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_round2"
                 android:inputType="numberDecimal"
                 android:defaultValue="0"
@@ -119,16 +119,16 @@
             <ListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calss_values"
+                android:entryValues="@array/measure_calls_values"
                 android:key="calls_op_value3"
                 android:summary=""
                 android:title="@string/tariffication" />
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_round3"
                 android:inputType="numberDecimal"
                 android:defaultValue="0"
-                android:title="@string/round"
+                android:title="@string/time_before_limit"
                 android:summary="" />
 
             <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference

@@ -169,7 +169,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 nm.notify(Constants.STARTED_ID + 1000, buildNotification());
             }
         };
-        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
+        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE_CALLS);
         registerReceiver(setUsageReceiver, setUsageFilter);
 
         clearReceiver = new BroadcastReceiver() {
@@ -195,7 +195,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
             }
         };
-        IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR);
+        IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR_CALLS);
         registerReceiver(clearReceiver, clearSimDataFilter);
 
         callDurationReceiver = new BroadcastReceiver() {

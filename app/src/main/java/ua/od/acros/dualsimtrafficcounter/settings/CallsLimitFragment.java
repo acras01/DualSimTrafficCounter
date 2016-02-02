@@ -13,6 +13,7 @@ import android.text.InputFilter;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -20,8 +21,8 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class CallsLimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private EditTextPreference limit1, limit2, limit3,
-            round1, round2, round3,
             day1, day2, day3;
+    private TwoLineEditTextPreference round1, round2, round3;
     private ListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
@@ -44,9 +45,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         period1 = (ListPreference) findPreference(Constants.PREF_SIM1_CALLS[2]);
         period2 = (ListPreference) findPreference(Constants.PREF_SIM2_CALLS[2]);
         period3 = (ListPreference) findPreference(Constants.PREF_SIM3_CALLS[2]);
-        round1 = (EditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[3]);
-        round2 = (EditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[3]);
-        round3 = (EditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[3]);
+        round1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[3]);
+        round2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[3]);
+        round3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[3]);
         time1 = (TimePreference) findPreference(Constants.PREF_SIM1_CALLS[4]);
         time2 = (TimePreference) findPreference(Constants.PREF_SIM2_CALLS[4]);
         time3 = (TimePreference) findPreference(Constants.PREF_SIM3_CALLS[4]);
