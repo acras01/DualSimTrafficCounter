@@ -1688,16 +1688,28 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         } else {
             switch (sim) {
                 case Constants.SIM1:
-                    text = mOperatorNames[0] + ": " +
-                                DataFormat.formatData(mContext, tot1);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
+                        text = String.format(getString(R.string.traffic_rest), mOperatorNames[0],
+                                DataFormat.formatData(mContext, tot1));
+                    else
+                        text = mOperatorNames[0] + ": " +
+                            DataFormat.formatData(mContext, tot1);
                     break;
                 case Constants.SIM2:
-                    text = mOperatorNames[1] + ": " +
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
+                        text = String.format(getString(R.string.traffic_rest), mOperatorNames[1],
+                                DataFormat.formatData(mContext, tot2));
+                    else
+                        text = mOperatorNames[1] + ": " +
                                 DataFormat.formatData(mContext, tot2);
                     break;
                 case Constants.SIM3:
-                    text = mOperatorNames[2] + ": " +
-                                DataFormat.formatData(mContext, tot3);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
+                        text = String.format(getString(R.string.traffic_rest), mOperatorNames[2],
+                                DataFormat.formatData(mContext, tot3));
+                    else
+                        text = mOperatorNames[2] + ": " +
+                            DataFormat.formatData(mContext, tot3);
                     break;
             }
         }

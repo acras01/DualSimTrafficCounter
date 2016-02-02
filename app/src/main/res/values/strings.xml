@@ -166,4 +166,5 @@
     <string name="calls_limit_summary">Outgoing calls limits settings</string>
     <string name="calls_limit_title">Calls limits</string>
     <string name="minutes">%1$sm</string>
+    <string name="traffic_rest">%1$s (left) - %2$s</string>
 </resources>

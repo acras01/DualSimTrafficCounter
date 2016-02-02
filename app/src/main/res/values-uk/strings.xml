@@ -161,4 +161,5 @@
     <string name="calls_limit_summary">Налаштування обмеження вихідних дзвінків</string>
     <string name="minutes">%1$sхв.</string>
     <string name="tip_calls">Вказана тривалість дзвінків не є точною, а є округленою згідно з інтревалом тарифікації</string>
+    <string name="traffic_rest">%1$s (залишок) - %2$s</string>
 </resources>
