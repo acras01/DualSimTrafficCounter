@@ -203,9 +203,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             public void onReceive(final Context context, Intent intent) {
                 final String[] out = {"Call Starts\n"};
                 mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+                String lim, inter;
                 long currentDuration = 0;
-                int interval = 0;
-                long limit = 0;
+                int interval = 10;
+                long limit = Long.MAX_VALUE;
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 DateTime now = new DateTime();
                 DateTime dt;
@@ -260,8 +261,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             mPrefs.edit().putString(Constants.PREF_SIM1_CALLS[9], mResetTime1.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS1);
-                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0")) *  Constants.SECOND;
-                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
+                        lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
+                        inter = mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0");
+                        if (!inter.equals(""))
+                            interval = Integer.valueOf(inter) *  Constants.SECOND;
+                        if (!lim.equals(""))
+                            limit = Long.valueOf(lim) * Constants.MINUTE;
                         break;
                     case Constants.SIM2:
                         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
@@ -277,8 +282,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             mPrefs.edit().putString(Constants.PREF_SIM2_CALLS[9], mResetTime2.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS2);
-                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0")) * Constants.SECOND;
-                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
+                        lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
+                        inter = mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0");
+                        if (!inter.equals(""))
+                            interval = Integer.valueOf(inter) *  Constants.SECOND;
+                        if (!lim.equals(""))
+                            limit = Long.valueOf(lim) * Constants.MINUTE;
                         break;
                     case Constants.SIM3:
                         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
@@ -294,8 +303,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             mPrefs.edit().putString(Constants.PREF_SIM3_CALLS[9], mResetTime3.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS3);
-                        interval = Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0")) *  Constants.SECOND;
-                        limit = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
+                        lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
+                        inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
+                        if (!inter.equals(""))
+                            interval = Integer.valueOf(inter) *  Constants.SECOND;
+                        if (!lim.equals(""))
+                            limit = Long.valueOf(lim) * Constants.MINUTE;
                         break;
                 }
                 long timeToVibrate;
