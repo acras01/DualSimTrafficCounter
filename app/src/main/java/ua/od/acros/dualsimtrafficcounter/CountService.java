@@ -54,6 +54,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyNotification;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 
@@ -1687,42 +1688,33 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
         } else {
             switch (sim) {
                 case Constants.SIM1:
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(mContext, tot1);
-                    else
-                        text = mOperatorNames[0] + ": " +
+                    text = mOperatorNames[0] + ": " +
                                 DataFormat.formatData(mContext, tot1);
                     break;
                 case Constants.SIM2:
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(mContext, tot2);
-                    else
-                        text = mOperatorNames[1] + ": " +
+                    text = mOperatorNames[1] + ": " +
                                 DataFormat.formatData(mContext, tot2);
                     break;
                 case Constants.SIM3:
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false))
-                        text = DataFormat.formatData(mContext, tot3);
-                    else
-                        text = mOperatorNames[2] + ": " +
+                    text = mOperatorNames[2] + ": " +
                                 DataFormat.formatData(mContext, tot3);
                     break;
             }
         }
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        notificationIntent.setAction("traffic");
+        //notificationIntent.setAction("traffic");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(mPriority)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(mIDSmall)
+                .setOngoing(true)
                 .setLargeIcon(mBitmapLarge)
-                .setContentTitle(getString(R.string.notification_title))
-                .setContentText(text)
-                .build();
+                .setContentTitle(getString(R.string.app_name));
+        return MyNotification.build(builder, mContext, text, "");
     }
 
     private void startCheck(int alertID) {

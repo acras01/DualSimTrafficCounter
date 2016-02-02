@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -32,6 +31,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyNotification;
 
 public class CallLoggerService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -207,8 +207,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 int interval = 0;
                 long limit = 0;
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-                DateTime dt = fmtDate.parseDateTime((String) mCalls.get(Constants.LAST_DATE));
                 DateTime now = new DateTime();
+                DateTime dt;
+                String lastDate = (String) mCalls.get(Constants.LAST_DATE);
+                if (lastDate.equals(""))
+                    dt = now;
+                else
+                    dt = fmtDate.parseDateTime(lastDate);
                 if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
                     mResetTime1 = getResetTime(Constants.SIM1);
                     if (mResetTime1 != null) {
@@ -431,7 +436,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(Constants.STARTED_ID + 1000, buildNotification());
+        startForeground(Constants.STARTED_ID, buildNotification());
         return START_STICKY;
     }
 
@@ -442,20 +447,15 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mSimQuantity == 3)
             text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3));
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        notificationIntent.setAction("calls");
+        //notificationIntent.setAction("calls");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                 .setContentIntent(contentIntent)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_launcher_small)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle(getString(R.string.calls_fragment))
-                .setContentText(text)
-                .build();
-
+                .setOngoing(true);
+        return MyNotification.build(builder, mContext, "", text);
     }
 
     @Override
