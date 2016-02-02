@@ -71,7 +71,8 @@ public class MyDatabase extends SQLiteOpenHelper {
                 + " text not null, " +  Constants.CALLS1 + " long, "
                 + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
                 + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
-                + Constants.CALLS3_EX + " long);";
+                + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
+                + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
     }
 
@@ -233,24 +234,22 @@ public class MyDatabase extends SQLiteOpenHelper {
         if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 4) {
             ALTER_TBL = "create table "
                     + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
-                    + " text not null, " + Constants.CALLS1 + " long, "
+                    + " text not null, " +  Constants.CALLS1 + " long, "
                     + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
                     + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
-                    + Constants.CALLS3_EX + " long);";
+                    + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
+                    + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
             db.execSQL(ALTER_TBL);
         }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 5) {
-            ALTER_TBL =
-                    "ALTER TABLE " + CALLS_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD1 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + CALLS_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD2 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + CALLS_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD3 + " integer;";
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 6) {
+            db.execSQL("DROP TABLE IF EXISTS " + CALLS_TABLE);
+            ALTER_TBL = "create table "
+                    + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                    + " text not null, " +  Constants.CALLS1 + " long, "
+                    + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
+                    + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
+                    + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
+                    + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
             db.execSQL(ALTER_TBL);
         }
     }
