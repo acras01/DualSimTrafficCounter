@@ -614,21 +614,24 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         float valuer1;
         float valuer2;
         float valuer3;
-        double lim1 = Double.MAX_VALUE;
-        double lim2 = Double.MAX_VALUE;
-        double lim3 = Double.MAX_VALUE;
+        double lim1;
+        double lim2;
+        double lim3;
         if (!limit1.equals("")) {
             valuer1 = 1 - Float.valueOf(round1) / 100;
             lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
-        }
+        } else
+            lim1 = Long.MAX_VALUE;
         if (!limit2.equals("")) {
             valuer2 = 1 - Float.valueOf(round2) / 100;
             lim2 = valuer2 * DataFormat.getFormatLong(limit2, value2);
-        }
+        } else
+            lim2 = Long.MAX_VALUE;
         if (!limit3.equals("")) {
             valuer3 = 1 - Float.valueOf(round3) / 100;
             lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
-        }
+        } else
+            lim3 = Long.MAX_VALUE;
         return new long[] {(long) lim1, (long) lim2, (long) lim3};
     }
 
@@ -1682,33 +1685,54 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             tot3 = mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3);
         }
         if (mPrefs.getBoolean(Constants.PREF_OTHER[16], true)) {
-            text = DataFormat.formatData(mContext, tot1);
+            if (mLimits[0] != Long.MAX_VALUE)
+                text = DataFormat.formatData(mContext, tot1);
+            else
+                text = getString(R.string.not_set);
             if (mSimQuantity >= 2)
-                text += "  ||  " + DataFormat.formatData(mContext, tot2);
+                if (mLimits[1] != Long.MAX_VALUE)
+                    text += "  ||  " + DataFormat.formatData(mContext, tot2);
+                else
+                    text += "  ||  " + getString(R.string.not_set);
             if (mSimQuantity == 3)
-                text += "  ||  " + DataFormat.formatData(mContext, tot3);
+                if (mLimits[2] != Long.MAX_VALUE)
+                    text += "  ||  " + DataFormat.formatData(mContext, tot3);
+                else
+                    text += "  ||  " + getString(R.string.not_set);
         } else {
             switch (sim) {
                 case Constants.SIM1:
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
-                        text = String.format(getString(R.string.traffic_rest), mOperatorNames[0],
-                                DataFormat.formatData(mContext, tot1));
+                        if (mLimits[0] != Long.MAX_VALUE)
+                            text = String.format(getString(R.string.traffic_rest), mOperatorNames[0],
+                                    DataFormat.formatData(mContext, tot1));
+                        else
+                            text = String.format(getString(R.string.traffic_rest), mOperatorNames[0],
+                                    getString(R.string.not_set));
                     else
                         text = mOperatorNames[0] + ": " +
                             DataFormat.formatData(mContext, tot1);
                     break;
                 case Constants.SIM2:
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
-                        text = String.format(getString(R.string.traffic_rest), mOperatorNames[1],
-                                DataFormat.formatData(mContext, tot2));
+                        if (mLimits[1] != Long.MAX_VALUE)
+                            text = String.format(getString(R.string.traffic_rest), mOperatorNames[1],
+                                    DataFormat.formatData(mContext, tot2));
+                        else
+                            text = String.format(getString(R.string.traffic_rest), mOperatorNames[1],
+                                    getString(R.string.not_set));
                     else
                         text = mOperatorNames[1] + ": " +
                                 DataFormat.formatData(mContext, tot2);
                     break;
                 case Constants.SIM3:
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
-                        text = String.format(getString(R.string.traffic_rest), mOperatorNames[2],
-                                DataFormat.formatData(mContext, tot3));
+                        if (mLimits[2] != Long.MAX_VALUE)
+                            text = String.format(getString(R.string.traffic_rest), mOperatorNames[2],
+                                    DataFormat.formatData(mContext, tot3));
+                        else
+                            text = String.format(getString(R.string.traffic_rest), mOperatorNames[2],
+                                    getString(R.string.not_set));
                     else
                         text = mOperatorNames[2] + ": " +
                             DataFormat.formatData(mContext, tot3);
