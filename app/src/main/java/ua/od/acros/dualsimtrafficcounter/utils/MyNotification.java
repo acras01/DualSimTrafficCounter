@@ -49,7 +49,7 @@ public class MyNotification extends Notification {
         b.setLargeIcon(bm);
         if (id != 0)
             b.setSmallIcon(id);
-        if (priority > NotificationCompat.PRIORITY_MIN)
+        if (priority >= NotificationCompat.PRIORITY_MIN)
             b.setPriority(priority);
         return new NotificationCompat.BigTextStyle(b).bigText(bigText).build();
     }
