@@ -88,7 +88,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private static boolean mIsNight2 = false;
     private static boolean mIsNight3 = false;
     private int mSIMChosen = Constants.DISABLED;
-    private int mSIMQuantity = 0;
+    private int mSimQuantity = 0;
     private int mPriority;
     private static int mActiveSIM = Constants.DISABLED;
     private static int mLastActiveSIM = Constants.DISABLED;
@@ -432,7 +432,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        mSIMQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mIDSmall = getOperatorLogoID(mLastActiveSIM);
         mTarget = new Target() {
@@ -490,7 +490,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private void timerStart(int task) {
         TimerTask tTask = null;
         mHasActionChosen = false;
-        mSIMQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
         mIDSmall = getOperatorLogoID(mActiveSIM);
@@ -843,7 +843,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
-                        if (mSIMQuantity >= 2) {
+                        if (mSimQuantity >= 2) {
                             mResetTime2 = getResetTime(Constants.SIM2);
                             if (mResetTime2 != null) {
                                 mIsResetNeeded2 = true;
@@ -853,7 +853,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                         .apply();
                             }
                         }
-                        if (mSIMQuantity == 3) {
+                        if (mSimQuantity == 3) {
                             mResetTime3 = getResetTime(Constants.SIM3);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
@@ -1110,7 +1110,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                     .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
                                     .apply();
                         }
-                        if (mSIMQuantity == 3) {
+                        if (mSimQuantity == 3) {
                             mResetTime3 = getResetTime(Constants.SIM3);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
@@ -1658,9 +1658,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         else
             intent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
         intent.putExtra(Constants.OPERATOR1, mOperatorNames[0]);
-        if (mSIMQuantity >= 2)
+        if (mSimQuantity >= 2)
             intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
-        if (mSIMQuantity == 3)
+        if (mSimQuantity == 3)
             intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
         mContext.sendBroadcast(intent);
     }
@@ -1674,9 +1674,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mLimitHasChanged = false;
             }
             tot1 = mIsNight1 ? mLimits[0] - (long) mDataMap.get(Constants.TOTAL1_N) : mLimits[0] - (long) mDataMap.get(Constants.TOTAL1);
-            if (mSIMQuantity >= 2)
+            if (mSimQuantity >= 2)
                 tot2 = mIsNight2 ? mLimits[1] - (long) mDataMap.get(Constants.TOTAL2_N) : mLimits[1] - (long) mDataMap.get(Constants.TOTAL2);
-            if (mSIMQuantity == 3)
+            if (mSimQuantity == 3)
                 tot3 = mIsNight3 ? mLimits[2] - (long) mDataMap.get(Constants.TOTAL3_N) : mLimits[2] - (long) mDataMap.get(Constants.TOTAL3);
         } else {
             tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
@@ -1685,9 +1685,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         if (mPrefs.getBoolean(Constants.PREF_OTHER[16], true)) {
             text = DataFormat.formatData(mContext, tot1);
-            if (mSIMQuantity >= 2)
+            if (mSimQuantity >= 2)
                 text += "  ||  " + DataFormat.formatData(mContext, tot2);
-            if (mSIMQuantity == 3)
+            if (mSimQuantity == 3)
                 text += "  ||  " + DataFormat.formatData(mContext, tot3);
         } else {
             switch (sim) {
@@ -1752,16 +1752,16 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
                 mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
-                if (!mIsSIM2OverLimit && alertID == Constants.SIM1 && mSIMQuantity >= 2) {
+                if (!mIsSIM2OverLimit && alertID == Constants.SIM1 && mSimQuantity >= 2) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
                     timerStart(Constants.COUNT);
-                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM1 && mSIMQuantity == 3) {
+                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM1 && mSimQuantity == 3) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!mIsSIM1OverLimit && alertID == Constants.SIM2) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
                     timerStart(Constants.COUNT);
-                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM2 && mSIMQuantity == 3) {
+                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM2 && mSimQuantity == 3) {
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
                     timerStart(Constants.COUNT);
                 } else if (!mIsSIM1OverLimit && alertID == Constants.SIM3) {

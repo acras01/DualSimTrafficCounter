@@ -364,15 +364,15 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         String period = "";
         switch (sim) {
             case Constants.SIM1:
-                pref = Constants.PREF_SIM1;
+                pref = Constants.PREF_SIM1_CALLS;
                 period = Constants.PERIOD1;
                 break;
             case Constants.SIM2:
-                pref = Constants.PREF_SIM2;
+                pref = Constants.PREF_SIM2_CALLS;
                 period = Constants.PERIOD2;
                 break;
             case Constants.SIM3:
-                pref = Constants.PREF_SIM3;
+                pref = Constants.PREF_SIM3_CALLS;
                 period = Constants.PERIOD3;
                 break;
         }
