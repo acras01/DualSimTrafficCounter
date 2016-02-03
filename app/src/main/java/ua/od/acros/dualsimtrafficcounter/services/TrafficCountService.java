@@ -527,11 +527,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Constants.PREF_OTHER[12])) {
+        if (key.equals(Constants.PREF_OTHER[12]))
             mPriority = sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
-            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.cancel(Constants.STARTED_ID);
-        }
+
         if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && mActiveSIM == Constants.SIM1 && mContinueOverLimit) {
             mContinueOverLimit = false;
             mHasActionChosen = false;
