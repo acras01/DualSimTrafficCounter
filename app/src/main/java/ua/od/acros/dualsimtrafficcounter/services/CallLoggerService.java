@@ -228,8 +228,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     if (mResetTime1 != null) {
                         mIsResetNeeded1 = true;
                         mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM1_CALLS[10], mIsResetNeeded1)
-                                .putString(Constants.PREF_SIM1_CALLS[9], mResetTime1.toString(fmtDateTime))
+                                .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
+                                .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
                                 .apply();
                     }
                     if (mSimQuantity >= 2) {
@@ -237,8 +237,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                         if (mResetTime2 != null) {
                             mIsResetNeeded2 = true;
                             mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM2_CALLS[10], mIsResetNeeded2)
-                                    .putString(Constants.PREF_SIM2_CALLS[9], mResetTime2.toString(fmtDateTime))
+                                    .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
+                                    .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
                                     .apply();
                         }
                     }
@@ -247,8 +247,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                         if (mResetTime3 != null) {
                             mIsResetNeeded3 = true;
                             mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM3_CALLS[10], mIsResetNeeded3)
-                                    .putString(Constants.PREF_SIM3_CALLS[9], mResetTime3.toString(fmtDateTime))
+                                    .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
+                                    .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
                                     .apply();
                         }
                     }
@@ -264,9 +264,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                             mIsResetNeeded1 = false;
                             mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM1_CALLS[10], mIsResetNeeded1)
+                                    .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM1_CALLS[9], mResetTime1.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS1);
                         lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
@@ -285,9 +285,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                             mIsResetNeeded2 = false;
                             mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM2_CALLS[10], mIsResetNeeded2)
+                                    .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM2_CALLS[9], mResetTime2.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS2);
                         lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
@@ -306,9 +306,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                             mIsResetNeeded3 = false;
                             mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM3_CALLS[10], mIsResetNeeded3)
+                                    .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM3_CALLS[9], mResetTime3.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS3);
                         lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
