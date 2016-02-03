@@ -18,7 +18,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
-public class ChooseAction extends Activity implements View.OnClickListener {
+public class ChooseActionDialog extends Activity implements View.OnClickListener {
 
     private String mAction = "";
     private int mSimID;

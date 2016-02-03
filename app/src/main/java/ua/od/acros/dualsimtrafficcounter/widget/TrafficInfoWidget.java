@@ -19,14 +19,15 @@ import org.acra.ACRA;
 
 import java.io.File;
 
+import ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
-public class InfoWidget extends AppWidgetProvider {
+public class TrafficInfoWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {

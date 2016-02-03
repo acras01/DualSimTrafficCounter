@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter.settings;
+package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
 import android.preference.PreferenceActivity;

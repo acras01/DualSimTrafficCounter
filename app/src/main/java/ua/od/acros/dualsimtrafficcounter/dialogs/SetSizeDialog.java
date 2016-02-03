@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity;
 
 public class SetSizeDialog extends DialogFragment implements TextView.OnEditorActionListener {
 

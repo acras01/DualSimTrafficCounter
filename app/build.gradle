@@ -15,8 +15,8 @@ android {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 14
         targetSdkVersion 16
-        versionCode 38
-        versionName '1.3.8'
+        versionCode 39
+        versionName '1.3.9'
         signingConfig signingConfigs.acras
     }
     buildTypes {

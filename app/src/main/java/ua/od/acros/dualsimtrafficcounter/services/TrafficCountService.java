@@ -45,12 +45,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction;
+import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseActionDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
-import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
@@ -58,7 +59,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import ua.od.acros.dualsimtrafficcounter.utils.MyNotification;
-import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
+import ua.od.acros.dualsimtrafficcounter.widget.TrafficInfoWidget;
 
 
 public class TrafficCountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -357,6 +358,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         };
 
+        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
+        registerReceiver(setUsageReceiver, setUsageFilter);
+
         clearReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -410,9 +414,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         };
 
-        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
         IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR);
-        registerReceiver(setUsageReceiver, setUsageFilter);
         registerReceiver(clearReceiver, clearSimDataFilter);
 
         mActiveSIM = Constants.DISABLED;
@@ -998,8 +1000,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(mActiveSIM);
-                        else if (!ChooseAction.isShown()) {
-                            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
+                        else if (!ChooseActionDialog.isShown()) {
+                            Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                             dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             mContext.startActivity(dialogIntent);
@@ -1255,8 +1257,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(mActiveSIM);
-                        else if (!ChooseAction.isShown()) {
-                            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
+                        else if (!ChooseActionDialog.isShown()) {
+                            Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                             dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             mContext.startActivity(dialogIntent);
@@ -1511,8 +1513,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(mActiveSIM);
-                        else if (!ChooseAction.isShown()) {
-                            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
+                        else if (!ChooseActionDialog.isShown()) {
+                            Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                             dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             mContext.startActivity(dialogIntent);
@@ -1785,10 +1787,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 (alertID == Constants.SIM2 && !mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
                 (alertID == Constants.SIM3 && !mPrefs.getBoolean(Constants.PREF_SIM3[7], true)) ||
                 (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM3OverLimit && mPrefs.getBoolean(Constants.PREF_OTHER[10], true))) {
-            Intent dialogIntent = new Intent(mContext, ChooseAction.class);
+            Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (!ChooseAction.isShown())
+            if (!ChooseActionDialog.isShown())
                 mContext.startActivity(dialogIntent);
         } else if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM2OverLimit)
             choice = true;
@@ -1872,7 +1874,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     }
 
     private static int[] getWidgetIds(Context context) {
-        int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, InfoWidget.class));
+        int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, TrafficInfoWidget.class));
         if (ids.length == 0) {
             File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
             String[] children = dir.list();
@@ -1906,8 +1908,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTaskResult.cancel(false);
             mTaskExecutor.shutdown();
         }
-        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(Constants.STARTED_ID);
+        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.cancel(Constants.STARTED_ID);
+        }
         MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(clearReceiver);

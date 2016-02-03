@@ -10,12 +10,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
@@ -27,7 +32,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -55,6 +62,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private DateTime mResetTime1;
     private DateTime mResetTime2;
     private DateTime mResetTime3;
+    private Target mTarget;
+    private Bitmap mBitmapLarge;
 
     public CallLoggerService() {
     }
@@ -450,6 +459,21 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mBitmapLarge = bitmap;
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable drawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable drawable) {
+            }
+        };
+        Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
         startForeground(Constants.STARTED_ID, buildNotification());
         return START_STICKY;
     }
@@ -468,7 +492,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 .setContentIntent(contentIntent)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setWhen(System.currentTimeMillis())
-                .setOngoing(true);
+                .setSmallIcon(R.drawable.ic_launcher_small)
+                .setOngoing(true)
+                .setLargeIcon(mBitmapLarge);
         return MyNotification.build(builder, mContext, "", text);
     }
 
@@ -479,13 +505,16 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         unregisterReceiver(clearReceiver);
         unregisterReceiver(setUsageReceiver);
         unregisterReceiver(callDurationReceiver);
-        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(Constants.STARTED_ID + 1000);
+        if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.cancel(Constants.STARTED_ID);
+        }
+        Picasso.with(mContext).cancelRequest(mTarget);
         MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    public static Context getCallLoggerContext() {
+    public static Context getCallLoggerServiceContext() {
         return CallLoggerService.mContext;
     }
 }

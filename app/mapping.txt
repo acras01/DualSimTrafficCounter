@@ -25463,7 +25463,7 @@ ua.od.acros.dualsimtrafficcounter.services.CountService$CountTimerTask3 -> aot:
     1294:1294:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     1301:1566:void run() -> run
     1294:1294:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService,ua.od.acros.dualsimtrafficcounter.services.CountService$1) -> <init>
-ua.od.acros.dualsimtrafficcounter.MainActivity -> ua.od.acros.dualsimtrafficcounter.MainActivity:
+ua.od.acros.dualsimtrafficcounter.activities.MainActivity -> ua.od.acros.dualsimtrafficcounter.activities.MainActivity:
     android.widget.TextView SIM -> a
     android.widget.TextView TOT1 -> b
     android.widget.TextView TOT2 -> c
@@ -25514,51 +25514,51 @@ ua.od.acros.dualsimtrafficcounter.MainActivity -> ua.od.acros.dualsimtrafficcoun
     538:549:void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String) -> onSharedPreferenceChanged
     553:712:void onClick(android.view.View) -> onClick
     716:777:void setButtonLimitText() -> b
-    42:42:boolean access$000(ua.od.acros.dualsimtrafficcounter.MainActivity) -> a
-    42:42:android.widget.TextView access$100(ua.od.acros.dualsimtrafficcounter.MainActivity) -> b
-    42:42:boolean access$200(ua.od.acros.dualsimtrafficcounter.MainActivity) -> c
-    42:42:android.widget.TextView access$300(ua.od.acros.dualsimtrafficcounter.MainActivity) -> d
-    42:42:boolean access$400(ua.od.acros.dualsimtrafficcounter.MainActivity) -> e
-    42:42:android.widget.TextView access$500(ua.od.acros.dualsimtrafficcounter.MainActivity) -> f
-    42:42:android.content.SharedPreferences access$600(ua.od.acros.dualsimtrafficcounter.MainActivity) -> g
-    42:42:android.widget.TextView access$700(ua.od.acros.dualsimtrafficcounter.MainActivity) -> h
-    42:42:android.widget.TextView access$800(ua.od.acros.dualsimtrafficcounter.MainActivity) -> i
-    42:42:android.widget.TextView access$900(ua.od.acros.dualsimtrafficcounter.MainActivity) -> j
-    42:42:android.widget.TextView access$1000(ua.od.acros.dualsimtrafficcounter.MainActivity) -> k
-    42:42:android.widget.TextView access$1100(ua.od.acros.dualsimtrafficcounter.MainActivity) -> l
-    42:42:android.widget.TextView access$1200(ua.od.acros.dualsimtrafficcounter.MainActivity) -> m
-    42:42:android.widget.TextView access$1300(ua.od.acros.dualsimtrafficcounter.MainActivity) -> n
-    42:42:java.lang.String access$1402(ua.od.acros.dualsimtrafficcounter.MainActivity,java.lang.String) -> a
-    42:42:java.lang.String access$1400(ua.od.acros.dualsimtrafficcounter.MainActivity) -> o
-    42:42:android.widget.TextView access$1500(ua.od.acros.dualsimtrafficcounter.MainActivity) -> p
-    42:42:android.widget.TextView access$1600(ua.od.acros.dualsimtrafficcounter.MainActivity) -> q
-    42:42:java.lang.String access$1702(ua.od.acros.dualsimtrafficcounter.MainActivity,java.lang.String) -> b
-    42:42:java.lang.String access$1700(ua.od.acros.dualsimtrafficcounter.MainActivity) -> r
-    42:42:java.lang.String access$1802(ua.od.acros.dualsimtrafficcounter.MainActivity,java.lang.String) -> c
-    42:42:java.lang.String access$1800(ua.od.acros.dualsimtrafficcounter.MainActivity) -> s
-    42:42:android.widget.TextView access$1900(ua.od.acros.dualsimtrafficcounter.MainActivity) -> t
-    42:42:void access$2000(ua.od.acros.dualsimtrafficcounter.MainActivity,int,java.lang.String,java.lang.String) -> a
+    42:42:boolean access$000(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> a
+    42:42:android.widget.TextView access$100(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> b
+    42:42:boolean access$200(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> c
+    42:42:android.widget.TextView access$300(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> d
+    42:42:boolean access$400(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> e
+    42:42:android.widget.TextView access$500(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> f
+    42:42:android.content.SharedPreferences access$600(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> g
+    42:42:android.widget.TextView access$700(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> h
+    42:42:android.widget.TextView access$800(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> i
+    42:42:android.widget.TextView access$900(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> j
+    42:42:android.widget.TextView access$1000(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> k
+    42:42:android.widget.TextView access$1100(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> l
+    42:42:android.widget.TextView access$1200(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> m
+    42:42:android.widget.TextView access$1300(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> n
+    42:42:java.lang.String access$1402(ua.od.acros.dualsimtrafficcounter.activities.MainActivity,java.lang.String) -> a
+    42:42:java.lang.String access$1400(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> o
+    42:42:android.widget.TextView access$1500(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> p
+    42:42:android.widget.TextView access$1600(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> q
+    42:42:java.lang.String access$1702(ua.od.acros.dualsimtrafficcounter.activities.MainActivity,java.lang.String) -> b
+    42:42:java.lang.String access$1700(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> r
+    42:42:java.lang.String access$1802(ua.od.acros.dualsimtrafficcounter.activities.MainActivity,java.lang.String) -> c
+    42:42:java.lang.String access$1800(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> s
+    42:42:android.widget.TextView access$1900(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> t
+    42:42:void access$2000(ua.od.acros.dualsimtrafficcounter.activities.MainActivity,int,java.lang.String,java.lang.String) -> a
     42:42:android.content.Context access$2100() -> a
-ua.od.acros.dualsimtrafficcounter.MainActivity$1 -> aou:
+ua.od.acros.dualsimtrafficcounter.activities.MainActivity$1 -> aou:
     int val$simNumber -> a
-    ua.od.acros.dualsimtrafficcounter.MainActivity this$0 -> b
-    137:137:void <init>(ua.od.acros.dualsimtrafficcounter.MainActivity,int) -> <init>
+    ua.od.acros.dualsimtrafficcounter.activities.MainActivity this$0 -> b
+    137:137:void <init>(ua.od.acros.dualsimtrafficcounter.activities.MainActivity,int) -> <init>
     139:216:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.MainActivity$2 -> aov:
-    ua.od.acros.dualsimtrafficcounter.MainActivity this$0 -> a
-    221:221:void <init>(ua.od.acros.dualsimtrafficcounter.MainActivity) -> <init>
+ua.od.acros.dualsimtrafficcounter.activities.MainActivity$2 -> aov:
+    ua.od.acros.dualsimtrafficcounter.activities.MainActivity this$0 -> a
+    221:221:void <init>(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> <init>
     223:224:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.MainActivity$3 -> aow:
-    ua.od.acros.dualsimtrafficcounter.MainActivity this$0 -> a
-    229:229:void <init>(ua.od.acros.dualsimtrafficcounter.MainActivity) -> <init>
+ua.od.acros.dualsimtrafficcounter.activities.MainActivity$3 -> aow:
+    ua.od.acros.dualsimtrafficcounter.activities.MainActivity this$0 -> a
+    229:229:void <init>(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> <init>
     232:243:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.MainActivity$4 -> aox:
-    ua.od.acros.dualsimtrafficcounter.MainActivity this$0 -> a
-    313:313:void <init>(ua.od.acros.dualsimtrafficcounter.MainActivity) -> <init>
+ua.od.acros.dualsimtrafficcounter.activities.MainActivity$4 -> aox:
+    ua.od.acros.dualsimtrafficcounter.activities.MainActivity this$0 -> a
+    313:313:void <init>(ua.od.acros.dualsimtrafficcounter.activities.MainActivity) -> <init>
     316:328:void onClick(android.content.DialogInterface,int) -> onClick
-ua.od.acros.dualsimtrafficcounter.MainActivity$4$1 -> aoy:
-    ua.od.acros.dualsimtrafficcounter.MainActivity$4 this$1 -> a
-    321:321:void <init>(ua.od.acros.dualsimtrafficcounter.MainActivity$4) -> <init>
+ua.od.acros.dualsimtrafficcounter.activities.MainActivity$4$1 -> aoy:
+    ua.od.acros.dualsimtrafficcounter.activities.MainActivity$4 this$1 -> a
+    321:321:void <init>(ua.od.acros.dualsimtrafficcounter.activities.MainActivity$4) -> <init>
     323:324:void onClick(android.content.DialogInterface,int) -> onClick
 ua.od.acros.dualsimtrafficcounter.MyApplication -> ua.od.acros.dualsimtrafficcounter.MyApplication:
     boolean activityVisible -> a
@@ -27537,7 +27537,7 @@ ua.od.acros.dualsimtrafficcounter.settings.OtherFragment -> ua.od.acros.dualsimt
     52:55:void onResume() -> onResume
     59:62:void onPause() -> onPause
     66:69:void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String) -> onSharedPreferenceChanged
-ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity -> ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity:
+ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity -> ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity:
     java.util.List headers -> a
     android.content.Context context -> b
     13:13:void <init>() -> <init>
@@ -27726,7 +27726,7 @@ ua.od.acros.dualsimtrafficcounter.widget.InfoWidget -> ua.od.acros.dualsimtraffi
     95:532:void updateWidget(android.content.Context,android.appwidget.AppWidgetManager,int[],android.os.Bundle) -> updateWidget
     535:553:void deleteWidgetPreferences(android.content.Context,int[]) -> a
     557:559:void onDisabled(android.content.Context) -> onDisabled
-ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity -> ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity:
+ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity -> ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity:
     int widgetID -> a
     android.content.Intent resultValue -> b
     android.widget.ImageView tiv -> c
@@ -27786,23 +27786,23 @@ ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity -> ua.od.acros.dua
     708:759:void onClick(android.view.View) -> onClick
     763:777:void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String) -> onSharedPreferenceChanged
     781:783:void onDestroy() -> onDestroy
-    44:44:android.content.Context access$000(ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity) -> a
-    44:44:android.content.SharedPreferences$Editor access$100(ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity) -> b
-    44:44:android.widget.ImageView access$200(ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity) -> c
-    44:44:android.widget.ImageView access$300(ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity) -> d
-ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity$1 -> apt:
-    ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity this$0 -> a
-    74:74:void <init>(ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity) -> <init>
+    44:44:android.content.Context access$000(ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity) -> a
+    44:44:android.content.SharedPreferences$Editor access$100(ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity) -> b
+    44:44:android.widget.ImageView access$200(ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity) -> c
+    44:44:android.widget.ImageView access$300(ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity) -> d
+ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity$1 -> apt:
+    ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity this$0 -> a
+    74:74:void <init>(ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity) -> <init>
     77:78:void onSuccess() -> onSuccess
     82:83:void onError() -> onError
-ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity$2 -> apu:
-    ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity this$0 -> a
-    711:711:void <init>(ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity) -> <init>
+ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity$2 -> apu:
+    ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity this$0 -> a
+    711:711:void <init>(ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity) -> <init>
     714:716:void onOk(yuku.ambilwarna.AmbilWarnaDialog,int) -> onOk
     720:720:void onCancel(yuku.ambilwarna.AmbilWarnaDialog) -> onCancel
-ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity$3 -> apv:
-    ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity this$0 -> a
-    724:724:void <init>(ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity) -> <init>
+ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity$3 -> apv:
+    ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity this$0 -> a
+    724:724:void <init>(ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity) -> <init>
     727:729:void onOk(yuku.ambilwarna.AmbilWarnaDialog,int) -> onOk
     733:733:void onCancel(yuku.ambilwarna.AmbilWarnaDialog) -> onCancel
 yuku.ambilwarna.AmbilWarnaDialog -> yuku.ambilwarna.AmbilWarnaDialog:

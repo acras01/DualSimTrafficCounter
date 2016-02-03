@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter.widget;
+package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.app.Activity;
 import android.app.DialogFragment;

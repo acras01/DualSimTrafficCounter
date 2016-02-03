@@ -26,7 +26,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;

@@ -1637,5 +1637,5 @@ ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter:
 ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase:
     private static final java.lang.String DATABASE_TABLE
     private static final java.lang.String DATABASE_CREATE_SCRIPT
-ua.od.acros.dualsimtrafficcounter.widget.WidgetConfigActivity:
+ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity:
     private static final int SELECT_PHOTO

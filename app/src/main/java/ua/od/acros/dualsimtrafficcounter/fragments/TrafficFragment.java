@@ -32,14 +32,14 @@ import ua.od.acros.dualsimtrafficcounter.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
-import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
-import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
+import ua.od.acros.dualsimtrafficcounter.widget.TrafficInfoWidget;
 
 import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
 
@@ -207,9 +207,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         IntentFilter onoffFilter = new IntentFilter(Constants.ON_OFF);
         getActivity().registerReceiver(onoffReceiver, onoffFilter);
 
-        Intent intent = new Intent(getActivity(), InfoWidget.class);
+        Intent intent = new Intent(getActivity(), TrafficInfoWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int ids[] = AppWidgetManager.getInstance(getActivity()).getAppWidgetIds(new ComponentName(getActivity(), InfoWidget.class));
+        int ids[] = AppWidgetManager.getInstance(getActivity()).getAppWidgetIds(new ComponentName(getActivity(), TrafficInfoWidget.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         getActivity().sendBroadcast(intent);
     }
