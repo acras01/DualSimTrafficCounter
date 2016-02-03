@@ -265,8 +265,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             mIsResetNeeded1 = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
+                                    .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS1);
                         lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
@@ -286,8 +286,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             mIsResetNeeded2 = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
+                                    .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS2);
                         lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
@@ -307,8 +307,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             mIsResetNeeded3 = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
+                                    .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime)).apply();
                         }
                         currentDuration = (long) mCalls.get(Constants.CALLS3);
                         lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
