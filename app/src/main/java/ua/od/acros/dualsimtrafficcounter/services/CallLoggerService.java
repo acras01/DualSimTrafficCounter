@@ -2,7 +2,6 @@ package ua.od.acros.dualsimtrafficcounter.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -32,7 +31,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -484,18 +482,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2));
         if (mSimQuantity == 3)
             text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3));
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        //notificationIntent.setAction("calls");
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
-                .setContentIntent(contentIntent)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_launcher_small)
-                .setOngoing(true)
-                .setLargeIcon(mBitmapLarge);
-        return MyNotification.build(builder, mContext, "", text);
+        return MyNotification.getNotification(mContext, "", text, mBitmapLarge, 0, NotificationCompat.PRIORITY_MIN - 1);
     }
 
     @Override

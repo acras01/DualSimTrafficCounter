@@ -1719,20 +1719,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
             }
         }
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        //notificationIntent.setAction("traffic");
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
-                .setContentIntent(contentIntent)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setPriority(mPriority)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(mIDSmall)
-                .setOngoing(true)
-                .setLargeIcon(mBitmapLarge)
-                .setContentTitle(getString(R.string.app_name));
-        return MyNotification.build(builder, mContext, text, "");
+        return MyNotification.getNotification(mContext, text, "", mBitmapLarge, mIDSmall, mPriority);
     }
 
     private void startCheck(int alertID) {
