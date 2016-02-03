@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import ua.od.acros.dualsimtrafficcounter.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;

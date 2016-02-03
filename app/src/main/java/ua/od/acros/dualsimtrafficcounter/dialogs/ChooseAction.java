@@ -12,7 +12,7 @@ import android.widget.RadioGroup;
 
 import com.stericson.RootTools.RootTools;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
@@ -80,7 +80,7 @@ public class ChooseAction extends Activity implements View.OnClickListener {
                 intent.putExtra(Constants.ACTION, Constants.OFF_ACTION);
                 break;
         }
-        CountService.setIsActionChosen(true);
+        TrafficCountService.setIsActionChosen(true);
         sendBroadcast(intent);
         finish();
     }

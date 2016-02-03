@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter;
+package ua.od.acros.dualsimtrafficcounter.services;
 
 import android.app.Service;
 import android.content.ContentValues;
@@ -103,8 +103,8 @@ public class WatchDogService extends Service{
                     (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2 &&
                             MobileUtils.getMobileDataInfo(mContext, true)[1] > Constants.DISABLED) &&
                     !mPrefs.getBoolean(Constants.PREF_OTHER[5], false)) {
-                stopService(new Intent(mContext, CountService.class));
-                startService(new Intent(mContext, CountService.class));
+                stopService(new Intent(mContext, TrafficCountService.class));
+                startService(new Intent(mContext, TrafficCountService.class));
             }
         }
     }

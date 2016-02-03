@@ -28,7 +28,7 @@ import org.acra.ACRA;
 
 import java.io.File;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
@@ -74,8 +74,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext))
-            mContext.startService(new Intent(mContext, CountService.class));
+        if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
+            mContext.startService(new Intent(mContext, TrafficCountService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);
 

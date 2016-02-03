@@ -67,13 +67,13 @@
         </activity>
 
         <service
-            android:name=".CountService"
+            android:name=".services.TrafficCountService"
             android:enabled="true"
             android:exported="false" >
         </service>
 
         <receiver
-            android:name=".BootBroadcastReceiver"
+            android:name=".receivers.BootBroadcastReceiver"
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
@@ -114,13 +114,13 @@
         </activity>
 
         <service
-            android:name=".WatchDogService"
+            android:name=".services.WatchDogService"
             android:enabled="true"
             android:exported="false" >
         </service>
 
         <receiver
-            android:name=".OnOffReceiver"
+            android:name=".receivers.OnOffReceiver"
             android:enabled="true"
             android:exported="false" >
             <intent-filter>
@@ -129,7 +129,7 @@
         </receiver>
 
         <service
-            android:name=".CallLoggerService"
+            android:name=".services.CallLoggerService"
             android:enabled="true"
             android:exported="false" >
         </service>

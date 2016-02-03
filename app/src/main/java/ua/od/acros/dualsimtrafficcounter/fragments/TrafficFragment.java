@@ -27,7 +27,7 @@ import com.stericson.RootTools.RootTools;
 
 import org.acra.ACRA;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
@@ -80,13 +80,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        mIsNight =  CountService.getIsNight();
+        mIsNight =  TrafficCountService.getIsNight();
 
         dataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 if (isVisible()) {
                     try {
-                        boolean[] isNight = CountService.getIsNight();
+                        boolean[] isNight = TrafficCountService.getIsNight();
                         if (!mShowNightTraffic1)
                             TOT1.setText(DataFormat.formatData(context, isNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
                                     intent.getLongExtra(Constants.TOTAL1, 0L)));
@@ -242,7 +242,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
-        if (CheckServiceRunning.isMyServiceRunning(CountService.class, getActivity())) {
+        if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
             mService.setTitle(R.string.action_stop);
             mService.setIcon(R.drawable.ic_action_disable);
         }
@@ -283,14 +283,14 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             case R.id.action_service_start_stop:
                 if (item.getTitle().toString().equals(getString(R.string.action_stop))) {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
-                    getActivity().stopService(new Intent(getActivity(), CountService.class));
+                    getActivity().stopService(new Intent(getActivity(), TrafficCountService.class));
                     TIP.setText(getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
                 }
                 else {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
-                    getActivity().startService(new Intent(getActivity(), CountService.class));
+                    getActivity().startService(new Intent(getActivity(), TrafficCountService.class));
                     TIP.setText(getString(R.string.tip));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
@@ -515,7 +515,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        boolean[] isNight =  CountService.getIsNight();
+        boolean[] isNight =  TrafficCountService.getIsNight();
         switch (v.getId()) {
             case R.id.settings:
                 final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
@@ -525,7 +525,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 startActivity(settIntent);
                 break;
             case R.id.buttonClear1:
-                if (CheckServiceRunning.isMyServiceRunning(CountService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
                     Intent clear1Intent = new Intent(Constants.CLEAR);
                     clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                     getActivity().sendBroadcast(clear1Intent);
@@ -554,7 +554,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.buttonClear2:
-                if (CheckServiceRunning.isMyServiceRunning(CountService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
                     Intent clear2Intent = new Intent(Constants.CLEAR);
                     clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                     getActivity().sendBroadcast(clear2Intent);
@@ -583,7 +583,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.buttonClear3:
-                if (CheckServiceRunning.isMyServiceRunning(CountService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
                     Intent clear3Intent = new Intent(Constants.CLEAR);
                     clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
                     getActivity().sendBroadcast(clear3Intent);

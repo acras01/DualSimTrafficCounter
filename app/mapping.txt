@@ -25277,7 +25277,7 @@ ua.od.acros.dualsimtrafficcounter.BuildConfig -> ua.od.acros.dualsimtrafficcount
     int VERSION_CODE -> VERSION_CODE
     java.lang.String VERSION_NAME -> VERSION_NAME
     6:6:void <init>() -> <init>
-ua.od.acros.dualsimtrafficcounter.CountService -> ua.od.acros.dualsimtrafficcounter.CountService:
+ua.od.acros.dualsimtrafficcounter.services.CountService -> ua.od.acros.dualsimtrafficcounter.services.CountService:
     long mLastUpdateTime -> a
     long mStartRX1 -> b
     long mStartTX1 -> c
@@ -25345,124 +25345,124 @@ ua.od.acros.dualsimtrafficcounter.CountService -> ua.od.acros.dualsimtrafficcoun
     1809:1813:boolean isScreenOn(android.content.Context) -> b
     52:52:int access$002(int) -> a
     52:52:int access$100() -> a
-    52:52:java.util.Timer access$200(ua.od.acros.dualsimtrafficcounter.CountService) -> a
-    52:52:boolean access$302(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> a
-    52:52:android.content.SharedPreferences access$400(ua.od.acros.dualsimtrafficcounter.CountService) -> b
+    52:52:java.util.Timer access$200(ua.od.acros.dualsimtrafficcounter.services.CountService) -> a
+    52:52:boolean access$302(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> a
+    52:52:android.content.SharedPreferences access$400(ua.od.acros.dualsimtrafficcounter.services.CountService) -> b
     52:52:int access$000() -> b
-    52:52:android.content.ContentValues access$500(ua.od.acros.dualsimtrafficcounter.CountService) -> c
-    52:52:ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase access$600(ua.od.acros.dualsimtrafficcounter.CountService) -> d
-    52:52:void access$700(ua.od.acros.dualsimtrafficcounter.CountService,int) -> a
-    52:52:boolean access$800(ua.od.acros.dualsimtrafficcounter.CountService) -> e
-    52:52:boolean access$900(ua.od.acros.dualsimtrafficcounter.CountService) -> f
-    52:52:boolean access$1000(ua.od.acros.dualsimtrafficcounter.CountService) -> g
-    52:52:boolean access$1102(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> b
-    52:52:android.content.ContentValues access$502(ua.od.acros.dualsimtrafficcounter.CountService,android.content.ContentValues) -> a
-    52:52:int access$1202(ua.od.acros.dualsimtrafficcounter.CountService,int) -> b
-    52:52:int access$1200(ua.od.acros.dualsimtrafficcounter.CountService) -> h
-    52:52:long access$1302(ua.od.acros.dualsimtrafficcounter.CountService,long) -> a
-    52:52:long access$1402(ua.od.acros.dualsimtrafficcounter.CountService,long) -> b
+    52:52:android.content.ContentValues access$500(ua.od.acros.dualsimtrafficcounter.services.CountService) -> c
+    52:52:ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase access$600(ua.od.acros.dualsimtrafficcounter.services.CountService) -> d
+    52:52:void access$700(ua.od.acros.dualsimtrafficcounter.services.CountService,int) -> a
+    52:52:boolean access$800(ua.od.acros.dualsimtrafficcounter.services.CountService) -> e
+    52:52:boolean access$900(ua.od.acros.dualsimtrafficcounter.services.CountService) -> f
+    52:52:boolean access$1000(ua.od.acros.dualsimtrafficcounter.services.CountService) -> g
+    52:52:boolean access$1102(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> b
+    52:52:android.content.ContentValues access$502(ua.od.acros.dualsimtrafficcounter.services.CountService,android.content.ContentValues) -> a
+    52:52:int access$1202(ua.od.acros.dualsimtrafficcounter.services.CountService,int) -> b
+    52:52:int access$1200(ua.od.acros.dualsimtrafficcounter.services.CountService) -> h
+    52:52:long access$1302(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> a
+    52:52:long access$1402(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> b
     52:52:boolean access$1500() -> c
-    52:52:long access$1300(ua.od.acros.dualsimtrafficcounter.CountService) -> i
-    52:52:long access$1400(ua.od.acros.dualsimtrafficcounter.CountService) -> j
-    52:52:long access$1602(ua.od.acros.dualsimtrafficcounter.CountService,long) -> c
-    52:52:long access$1702(ua.od.acros.dualsimtrafficcounter.CountService,long) -> d
+    52:52:long access$1300(ua.od.acros.dualsimtrafficcounter.services.CountService) -> i
+    52:52:long access$1400(ua.od.acros.dualsimtrafficcounter.services.CountService) -> j
+    52:52:long access$1602(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> c
+    52:52:long access$1702(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> d
     52:52:boolean access$1800() -> d
-    52:52:long access$1600(ua.od.acros.dualsimtrafficcounter.CountService) -> k
-    52:52:long access$1700(ua.od.acros.dualsimtrafficcounter.CountService) -> l
-    52:52:long access$1902(ua.od.acros.dualsimtrafficcounter.CountService,long) -> e
-    52:52:long access$2002(ua.od.acros.dualsimtrafficcounter.CountService,long) -> f
+    52:52:long access$1600(ua.od.acros.dualsimtrafficcounter.services.CountService) -> k
+    52:52:long access$1700(ua.od.acros.dualsimtrafficcounter.services.CountService) -> l
+    52:52:long access$1902(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> e
+    52:52:long access$2002(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> f
     52:52:boolean access$2100() -> e
-    52:52:long access$1900(ua.od.acros.dualsimtrafficcounter.CountService) -> m
-    52:52:long access$2000(ua.od.acros.dualsimtrafficcounter.CountService) -> n
-    52:52:android.app.Notification access$2202(ua.od.acros.dualsimtrafficcounter.CountService,android.app.Notification) -> a
-    52:52:int access$2300(ua.od.acros.dualsimtrafficcounter.CountService) -> o
-    52:52:android.app.PendingIntent access$2400(ua.od.acros.dualsimtrafficcounter.CountService) -> p
-    52:52:android.support.v4.app.NotificationCompat$Builder access$2500(ua.od.acros.dualsimtrafficcounter.CountService) -> q
-    52:52:android.app.Notification access$2200(ua.od.acros.dualsimtrafficcounter.CountService) -> r
-    52:52:android.app.NotificationManager access$2600(ua.od.acros.dualsimtrafficcounter.CountService) -> s
+    52:52:long access$1900(ua.od.acros.dualsimtrafficcounter.services.CountService) -> m
+    52:52:long access$2000(ua.od.acros.dualsimtrafficcounter.services.CountService) -> n
+    52:52:android.app.Notification access$2202(ua.od.acros.dualsimtrafficcounter.services.CountService,android.app.Notification) -> a
+    52:52:int access$2300(ua.od.acros.dualsimtrafficcounter.services.CountService) -> o
+    52:52:android.app.PendingIntent access$2400(ua.od.acros.dualsimtrafficcounter.services.CountService) -> p
+    52:52:android.support.v4.app.NotificationCompat$Builder access$2500(ua.od.acros.dualsimtrafficcounter.services.CountService) -> q
+    52:52:android.app.Notification access$2200(ua.od.acros.dualsimtrafficcounter.services.CountService) -> r
+    52:52:android.app.NotificationManager access$2600(ua.od.acros.dualsimtrafficcounter.services.CountService) -> s
     52:52:android.content.Context access$3100() -> f
-    52:52:boolean access$300(ua.od.acros.dualsimtrafficcounter.CountService) -> t
-    52:52:long access$3200(ua.od.acros.dualsimtrafficcounter.CountService) -> u
-    52:52:long access$3202(ua.od.acros.dualsimtrafficcounter.CountService,long) -> g
+    52:52:boolean access$300(ua.od.acros.dualsimtrafficcounter.services.CountService) -> t
+    52:52:long access$3200(ua.od.acros.dualsimtrafficcounter.services.CountService) -> u
+    52:52:long access$3202(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> g
     52:52:boolean access$1502(boolean) -> a
-    52:52:void access$3300(ua.od.acros.dualsimtrafficcounter.CountService) -> v
-    52:52:org.joda.time.DateTime access$3400(ua.od.acros.dualsimtrafficcounter.CountService) -> w
-    52:52:boolean access$3500(ua.od.acros.dualsimtrafficcounter.CountService) -> x
-    52:52:org.joda.time.DateTime access$3600(ua.od.acros.dualsimtrafficcounter.CountService) -> y
-    52:52:boolean access$3700(ua.od.acros.dualsimtrafficcounter.CountService) -> z
-    52:52:org.joda.time.DateTime access$3800(ua.od.acros.dualsimtrafficcounter.CountService) -> A
-    52:52:boolean access$3900(ua.od.acros.dualsimtrafficcounter.CountService) -> B
-    52:52:boolean access$3502(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> c
-    52:52:boolean access$3702(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> d
-    52:52:boolean access$3902(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> e
-    52:52:long access$4000(ua.od.acros.dualsimtrafficcounter.CountService) -> C
-    52:52:long access$4100(ua.od.acros.dualsimtrafficcounter.CountService) -> D
-    52:52:long access$4002(ua.od.acros.dualsimtrafficcounter.CountService,long) -> h
-    52:52:long access$4102(ua.od.acros.dualsimtrafficcounter.CountService,long) -> i
-    52:52:boolean access$1100(ua.od.acros.dualsimtrafficcounter.CountService) -> E
-    52:52:boolean access$1002(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> f
-    52:52:void access$4200(ua.od.acros.dualsimtrafficcounter.CountService,int) -> c
-    52:52:int access$4300(ua.od.acros.dualsimtrafficcounter.CountService) -> F
+    52:52:void access$3300(ua.od.acros.dualsimtrafficcounter.services.CountService) -> v
+    52:52:org.joda.time.DateTime access$3400(ua.od.acros.dualsimtrafficcounter.services.CountService) -> w
+    52:52:boolean access$3500(ua.od.acros.dualsimtrafficcounter.services.CountService) -> x
+    52:52:org.joda.time.DateTime access$3600(ua.od.acros.dualsimtrafficcounter.services.CountService) -> y
+    52:52:boolean access$3700(ua.od.acros.dualsimtrafficcounter.services.CountService) -> z
+    52:52:org.joda.time.DateTime access$3800(ua.od.acros.dualsimtrafficcounter.services.CountService) -> A
+    52:52:boolean access$3900(ua.od.acros.dualsimtrafficcounter.services.CountService) -> B
+    52:52:boolean access$3502(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> c
+    52:52:boolean access$3702(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> d
+    52:52:boolean access$3902(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> e
+    52:52:long access$4000(ua.od.acros.dualsimtrafficcounter.services.CountService) -> C
+    52:52:long access$4100(ua.od.acros.dualsimtrafficcounter.services.CountService) -> D
+    52:52:long access$4002(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> h
+    52:52:long access$4102(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> i
+    52:52:boolean access$1100(ua.od.acros.dualsimtrafficcounter.services.CountService) -> E
+    52:52:boolean access$1002(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> f
+    52:52:void access$4200(ua.od.acros.dualsimtrafficcounter.services.CountService,int) -> c
+    52:52:int access$4300(ua.od.acros.dualsimtrafficcounter.services.CountService) -> F
     52:52:int[] access$4400() -> g
     52:52:boolean access$4500(android.content.Context) -> a
-    52:52:void access$4600(ua.od.acros.dualsimtrafficcounter.CountService,long,long) -> a
+    52:52:void access$4600(ua.od.acros.dualsimtrafficcounter.services.CountService,long,long) -> a
     52:52:boolean access$1802(boolean) -> b
-    52:52:long access$4700(ua.od.acros.dualsimtrafficcounter.CountService) -> G
-    52:52:long access$4800(ua.od.acros.dualsimtrafficcounter.CountService) -> H
-    52:52:long access$4702(ua.od.acros.dualsimtrafficcounter.CountService,long) -> j
-    52:52:long access$4802(ua.od.acros.dualsimtrafficcounter.CountService,long) -> k
-    52:52:boolean access$802(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> g
+    52:52:long access$4700(ua.od.acros.dualsimtrafficcounter.services.CountService) -> G
+    52:52:long access$4800(ua.od.acros.dualsimtrafficcounter.services.CountService) -> H
+    52:52:long access$4702(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> j
+    52:52:long access$4802(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> k
+    52:52:boolean access$802(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> g
     52:52:boolean access$2102(boolean) -> c
-    52:52:long access$4900(ua.od.acros.dualsimtrafficcounter.CountService) -> I
-    52:52:long access$5000(ua.od.acros.dualsimtrafficcounter.CountService) -> J
-    52:52:long access$4902(ua.od.acros.dualsimtrafficcounter.CountService,long) -> l
-    52:52:long access$5002(ua.od.acros.dualsimtrafficcounter.CountService,long) -> m
-    52:52:boolean access$902(ua.od.acros.dualsimtrafficcounter.CountService,boolean) -> h
+    52:52:long access$4900(ua.od.acros.dualsimtrafficcounter.services.CountService) -> I
+    52:52:long access$5000(ua.od.acros.dualsimtrafficcounter.services.CountService) -> J
+    52:52:long access$4902(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> l
+    52:52:long access$5002(ua.od.acros.dualsimtrafficcounter.services.CountService,long) -> m
+    52:52:boolean access$902(ua.od.acros.dualsimtrafficcounter.services.CountService,boolean) -> h
     75:82:void <clinit>() -> <clinit>
-ua.od.acros.dualsimtrafficcounter.CountService$1 -> aok:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    138:138:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$1 -> aok:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    138:138:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     141:174:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.CountService$2 -> aol:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    201:201:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$2 -> aol:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    201:201:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     204:258:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.CountService$3 -> aom:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    264:264:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$3 -> aom:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    264:264:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     267:333:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.CountService$4 -> aon:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    336:336:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$4 -> aon:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    336:336:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     339:359:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.CountService$5 -> aoo:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    362:362:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$5 -> aoo:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    362:362:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     365:385:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.CountService$6 -> aop:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    388:388:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$6 -> aop:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    388:388:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     391:411:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-ua.od.acros.dualsimtrafficcounter.CountService$CheckTimerTask -> aoq:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    521:521:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$CheckTimerTask -> aoq:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    521:521:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     526:611:void run() -> run
-    521:521:void <init>(ua.od.acros.dualsimtrafficcounter.CountService,ua.od.acros.dualsimtrafficcounter.CountService$1) -> <init>
-ua.od.acros.dualsimtrafficcounter.CountService$CountTimerTask1 -> aor:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    740:740:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+    521:521:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService,ua.od.acros.dualsimtrafficcounter.services.CountService$1) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$CountTimerTask1 -> aor:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    740:740:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     745:1013:void run() -> run
-    740:740:void <init>(ua.od.acros.dualsimtrafficcounter.CountService,ua.od.acros.dualsimtrafficcounter.CountService$1) -> <init>
-ua.od.acros.dualsimtrafficcounter.CountService$CountTimerTask2 -> aos:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    1016:1016:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+    740:740:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService,ua.od.acros.dualsimtrafficcounter.services.CountService$1) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$CountTimerTask2 -> aos:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    1016:1016:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     1021:1291:void run() -> run
-    1016:1016:void <init>(ua.od.acros.dualsimtrafficcounter.CountService,ua.od.acros.dualsimtrafficcounter.CountService$1) -> <init>
-ua.od.acros.dualsimtrafficcounter.CountService$CountTimerTask3 -> aot:
-    ua.od.acros.dualsimtrafficcounter.CountService this$0 -> a
-    1294:1294:void <init>(ua.od.acros.dualsimtrafficcounter.CountService) -> <init>
+    1016:1016:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService,ua.od.acros.dualsimtrafficcounter.services.CountService$1) -> <init>
+ua.od.acros.dualsimtrafficcounter.services.CountService$CountTimerTask3 -> aot:
+    ua.od.acros.dualsimtrafficcounter.services.CountService this$0 -> a
+    1294:1294:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService) -> <init>
     1301:1566:void run() -> run
-    1294:1294:void <init>(ua.od.acros.dualsimtrafficcounter.CountService,ua.od.acros.dualsimtrafficcounter.CountService$1) -> <init>
+    1294:1294:void <init>(ua.od.acros.dualsimtrafficcounter.services.CountService,ua.od.acros.dualsimtrafficcounter.services.CountService$1) -> <init>
 ua.od.acros.dualsimtrafficcounter.MainActivity -> ua.od.acros.dualsimtrafficcounter.MainActivity:
     android.widget.TextView SIM -> a
     android.widget.TextView TOT1 -> b
@@ -25567,7 +25567,7 @@ ua.od.acros.dualsimtrafficcounter.MyApplication -> ua.od.acros.dualsimtrafficcou
     28:28:boolean isActivityVisible() -> isActivityVisible
     32:33:void activityResumed() -> activityResumed
     36:37:void activityPaused() -> activityPaused
-ua.od.acros.dualsimtrafficcounter.OnOffReceiver -> ua.od.acros.dualsimtrafficcounter.OnOffReceiver:
+ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver -> ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver:
     15:16:void <init>() -> <init>
     21:50:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 ua.od.acros.dualsimtrafficcounter.R -> ua.od.acros.dualsimtrafficcounter.R:
@@ -27236,7 +27236,7 @@ ua.od.acros.dualsimtrafficcounter.R$xml -> ua.od.acros.dualsimtrafficcounter.R$x
     int operator_names -> operator_names
     int other_settings -> other_settings
     2480:2480:void <init>() -> <init>
-ua.od.acros.dualsimtrafficcounter.WatchDogService -> ua.od.acros.dualsimtrafficcounter.WatchDogService:
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService -> ua.od.acros.dualsimtrafficcounter.services.WatchDogService:
     android.content.SharedPreferences prefs -> a
     android.content.Context context -> b
     ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase mDatabaseHelper -> c
@@ -27247,17 +27247,17 @@ ua.od.acros.dualsimtrafficcounter.WatchDogService -> ua.od.acros.dualsimtrafficc
     44:57:void onCreate() -> onCreate
     62:66:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
     71:75:void onDestroy() -> onDestroy
-    25:25:boolean access$100(ua.od.acros.dualsimtrafficcounter.WatchDogService) -> a
-    25:25:android.content.SharedPreferences access$200(ua.od.acros.dualsimtrafficcounter.WatchDogService) -> b
-    25:25:boolean access$102(ua.od.acros.dualsimtrafficcounter.WatchDogService,boolean) -> a
-    25:25:ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase access$300(ua.od.acros.dualsimtrafficcounter.WatchDogService) -> c
-    25:25:android.content.Context access$400(ua.od.acros.dualsimtrafficcounter.WatchDogService) -> d
-ua.od.acros.dualsimtrafficcounter.WatchDogService$1 -> aoz:
-ua.od.acros.dualsimtrafficcounter.WatchDogService$WatchDogTask -> apa:
-    ua.od.acros.dualsimtrafficcounter.WatchDogService this$0 -> a
-    77:77:void <init>(ua.od.acros.dualsimtrafficcounter.WatchDogService) -> <init>
+    25:25:boolean access$100(ua.od.acros.dualsimtrafficcounter.services.WatchDogService) -> a
+    25:25:android.content.SharedPreferences access$200(ua.od.acros.dualsimtrafficcounter.services.WatchDogService) -> b
+    25:25:boolean access$102(ua.od.acros.dualsimtrafficcounter.services.WatchDogService,boolean) -> a
+    25:25:ua.od.acros.dualsimtrafficcounter.utils.TrafficDatabase access$300(ua.od.acros.dualsimtrafficcounter.services.WatchDogService) -> c
+    25:25:android.content.Context access$400(ua.od.acros.dualsimtrafficcounter.services.WatchDogService) -> d
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService$1 -> aoz:
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService$WatchDogTask -> apa:
+    ua.od.acros.dualsimtrafficcounter.services.WatchDogService this$0 -> a
+    77:77:void <init>(ua.od.acros.dualsimtrafficcounter.services.WatchDogService) -> <init>
     85:128:void run() -> run
-    77:77:void <init>(ua.od.acros.dualsimtrafficcounter.WatchDogService,ua.od.acros.dualsimtrafficcounter.WatchDogService$1) -> <init>
+    77:77:void <init>(ua.od.acros.dualsimtrafficcounter.services.WatchDogService,ua.od.acros.dualsimtrafficcounter.services.WatchDogService$1) -> <init>
 ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction -> ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction:
     java.lang.String action -> a
     int simid -> b

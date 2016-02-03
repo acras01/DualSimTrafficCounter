@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter;
+package ua.od.acros.dualsimtrafficcounter.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;

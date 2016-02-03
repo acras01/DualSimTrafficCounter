@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter;
+package ua.od.acros.dualsimtrafficcounter.receivers;
 
 
 import android.app.AlarmManager;
@@ -7,12 +7,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 
 import java.util.Calendar;
 
-import ua.od.acros.dualsimtrafficcounter.utils.CallLogger;
+import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
@@ -23,7 +23,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //start CountService
-        context.startService(new Intent(context, CountService.class));
+        context.startService(new Intent(context, TrafficCountService.class));
         //start CallLoggerService
         if (XposedUtils.isPackageExisted(context, XPOSED))
             context.startService(new Intent(context, CallLoggerService.class));

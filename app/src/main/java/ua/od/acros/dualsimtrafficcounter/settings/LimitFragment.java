@@ -19,7 +19,7 @@ import com.stericson.RootTools.RootTools;
 
 import java.util.Calendar;
 
-import ua.od.acros.dualsimtrafficcounter.OnOffReceiver;
+import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;

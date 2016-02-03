@@ -11882,17 +11882,17 @@ ua.od.acros.dualsimtrafficcounter.BuildConfig: java.lang.String FLAVOR
 ua.od.acros.dualsimtrafficcounter.BuildConfig: int VERSION_CODE
 ua.od.acros.dualsimtrafficcounter.BuildConfig: java.lang.String VERSION_NAME
 ua.od.acros.dualsimtrafficcounter.BuildConfig: BuildConfig()
-ua.od.acros.dualsimtrafficcounter.CountService
-ua.od.acros.dualsimtrafficcounter.CountService: CountService()
-ua.od.acros.dualsimtrafficcounter.CountService: android.os.IBinder onBind(android.content.Intent)
-ua.od.acros.dualsimtrafficcounter.CountService: int getLastActiveSIM()
-ua.od.acros.dualsimtrafficcounter.CountService: int getActiveSIM()
-ua.od.acros.dualsimtrafficcounter.CountService: void onCreate()
-ua.od.acros.dualsimtrafficcounter.CountService: int onStartCommand(android.content.Intent,int,int)
-ua.od.acros.dualsimtrafficcounter.CountService: android.content.Context getAppContext()
-ua.od.acros.dualsimtrafficcounter.CountService: boolean[] getIsNight()
-ua.od.acros.dualsimtrafficcounter.CountService: void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String)
-ua.od.acros.dualsimtrafficcounter.CountService: void onDestroy()
+ua.od.acros.dualsimtrafficcounter.services.CountService
+ua.od.acros.dualsimtrafficcounter.services.CountService: CountService()
+ua.od.acros.dualsimtrafficcounter.services.CountService: android.os.IBinder onBind(android.content.Intent)
+ua.od.acros.dualsimtrafficcounter.services.CountService: int getLastActiveSIM()
+ua.od.acros.dualsimtrafficcounter.services.CountService: int getActiveSIM()
+ua.od.acros.dualsimtrafficcounter.services.CountService: void onCreate()
+ua.od.acros.dualsimtrafficcounter.services.CountService: int onStartCommand(android.content.Intent,int,int)
+ua.od.acros.dualsimtrafficcounter.services.CountService: android.content.Context getAppContext()
+ua.od.acros.dualsimtrafficcounter.services.CountService: boolean[] getIsNight()
+ua.od.acros.dualsimtrafficcounter.services.CountService: void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String)
+ua.od.acros.dualsimtrafficcounter.services.CountService: void onDestroy()
 ua.od.acros.dualsimtrafficcounter.MainActivity
 ua.od.acros.dualsimtrafficcounter.MainActivity: MainActivity()
 ua.od.acros.dualsimtrafficcounter.MainActivity: void onCreate(android.os.Bundle)
@@ -11914,9 +11914,9 @@ ua.od.acros.dualsimtrafficcounter.MyApplication: void onCreate()
 ua.od.acros.dualsimtrafficcounter.MyApplication: boolean isActivityVisible()
 ua.od.acros.dualsimtrafficcounter.MyApplication: void activityResumed()
 ua.od.acros.dualsimtrafficcounter.MyApplication: void activityPaused()
-ua.od.acros.dualsimtrafficcounter.OnOffReceiver
-ua.od.acros.dualsimtrafficcounter.OnOffReceiver: OnOffReceiver()
-ua.od.acros.dualsimtrafficcounter.OnOffReceiver: void onReceive(android.content.Context,android.content.Intent)
+ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver
+ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver: OnOffReceiver()
+ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver: void onReceive(android.content.Context,android.content.Intent)
 ua.od.acros.dualsimtrafficcounter.R
 ua.od.acros.dualsimtrafficcounter.R: R()
 ua.od.acros.dualsimtrafficcounter.R$anim
@@ -13582,12 +13582,12 @@ ua.od.acros.dualsimtrafficcounter.R$xml: int notification
 ua.od.acros.dualsimtrafficcounter.R$xml: int operator_names
 ua.od.acros.dualsimtrafficcounter.R$xml: int other_settings
 ua.od.acros.dualsimtrafficcounter.R$xml: R$xml()
-ua.od.acros.dualsimtrafficcounter.WatchDogService
-ua.od.acros.dualsimtrafficcounter.WatchDogService: WatchDogService()
-ua.od.acros.dualsimtrafficcounter.WatchDogService: android.os.IBinder onBind(android.content.Intent)
-ua.od.acros.dualsimtrafficcounter.WatchDogService: void onCreate()
-ua.od.acros.dualsimtrafficcounter.WatchDogService: int onStartCommand(android.content.Intent,int,int)
-ua.od.acros.dualsimtrafficcounter.WatchDogService: void onDestroy()
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService: WatchDogService()
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService: android.os.IBinder onBind(android.content.Intent)
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService: void onCreate()
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService: int onStartCommand(android.content.Intent,int,int)
+ua.od.acros.dualsimtrafficcounter.services.WatchDogService: void onDestroy()
 ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction
 ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction: ChooseAction()
 ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction: void onCreate(android.os.Bundle)

@@ -29,6 +29,9 @@ import ua.od.acros.dualsimtrafficcounter.fragments.SetUsageFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TestFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficForDateFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
+import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -113,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             mContext.startService(new Intent(mContext, WatchDogService.class));
-        if (!CheckServiceRunning.isMyServiceRunning(CountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
-            mContext.startService(new Intent(mContext, CountService.class));
+        if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
+            mContext.startService(new Intent(mContext, TrafficCountService.class));
         if (XposedUtils.isPackageExisted(mContext, XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
             startService(new Intent(mContext, CallLoggerService.class));
 

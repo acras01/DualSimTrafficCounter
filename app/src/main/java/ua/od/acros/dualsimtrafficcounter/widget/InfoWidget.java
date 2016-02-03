@@ -19,7 +19,7 @@ import org.acra.ACRA;
 
 import java.io.File;
 
-import ua.od.acros.dualsimtrafficcounter.CountService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -163,7 +163,7 @@ public class InfoWidget extends AppWidgetProvider {
             String sizestrs = prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.info_widget_layout);
-            boolean[] isNight =  CountService.getIsNight();
+            boolean[] isNight =  TrafficCountService.getIsNight();
 
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))

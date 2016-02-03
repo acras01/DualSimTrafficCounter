@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter;
+package ua.od.acros.dualsimtrafficcounter.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -45,6 +45,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.MyApplication;
+import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseAction;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsActivity;
@@ -58,7 +61,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyNotification;
 import ua.od.acros.dualsimtrafficcounter.widget.InfoWidget;
 
 
-public class CountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class TrafficCountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static Context mContext;
     private long mLastUpdateTime;
@@ -110,11 +113,11 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     private boolean mLimitHasChanged = false;
 
 
-    public CountService() {
+    public TrafficCountService() {
     }
 
     public static void setIsActionChosen(boolean mIsActionChosen) {
-        CountService.mHasActionChosen = mIsActionChosen;
+        TrafficCountService.mHasActionChosen = mIsActionChosen;
     }
 
     @Override
@@ -134,7 +137,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     public void onCreate() {
         super.onCreate();
 
-        mContext = CountService.this;
+        mContext = TrafficCountService.this;
 
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -455,7 +458,7 @@ public class CountService extends Service implements SharedPreferences.OnSharedP
     }
 
     public static Context getCountServiceContext() {
-        return CountService.mContext;
+        return TrafficCountService.mContext;
     }
 
     public static boolean[] getIsNight() {
