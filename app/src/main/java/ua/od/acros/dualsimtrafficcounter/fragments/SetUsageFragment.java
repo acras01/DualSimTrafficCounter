@@ -149,6 +149,7 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
             Intent intent = new Intent(Constants.SET_USAGE);
             intent.putExtra("data", bundle);
             getActivity().sendBroadcast(intent);
+            getActivity().onBackPressed();
         } else
             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
     }

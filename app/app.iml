@@ -62,6 +62,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/DualSimTrafficCounter/acra/unspecified/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/design/23.1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars" />
@@ -95,5 +96,6 @@
     <orderEntry type="module" module-name="picasso" exported="" />
     <orderEntry type="module" module-name="mediatek-compatibility" exported="" />
     <orderEntry type="module" module-name="XposedBridge" exported="" />
+    <orderEntry type="library" exported="" name="acra-unspecified" level="project" />
   </component>
 </module>
