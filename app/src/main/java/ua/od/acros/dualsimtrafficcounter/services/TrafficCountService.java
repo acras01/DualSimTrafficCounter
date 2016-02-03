@@ -45,8 +45,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import ua.od.acros.dualsimtrafficcounter.activities.MainActivity;
-import ua.od.acros.dualsimtrafficcounter.MyApplication;
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseActionDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;

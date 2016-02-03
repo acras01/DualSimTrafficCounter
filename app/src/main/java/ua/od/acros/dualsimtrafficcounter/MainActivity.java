@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter.activities;
+package ua.od.acros.dualsimtrafficcounter;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.stericson.RootTools.RootTools;
 
-import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.SetUsageFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TestFragment;

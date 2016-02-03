@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter;
+package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.app.Application;
 
@@ -6,6 +6,8 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+
+import ua.od.acros.dualsimtrafficcounter.R;
 
 @ReportsCrashes(mailTo = "acras1@gmail.com",
         customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,

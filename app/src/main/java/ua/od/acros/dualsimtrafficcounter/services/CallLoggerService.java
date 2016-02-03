@@ -32,7 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import ua.od.acros.dualsimtrafficcounter.activities.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;

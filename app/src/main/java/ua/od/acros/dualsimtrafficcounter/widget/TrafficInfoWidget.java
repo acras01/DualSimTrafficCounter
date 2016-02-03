@@ -21,7 +21,7 @@ import java.io.File;
 
 import ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
-import ua.od.acros.dualsimtrafficcounter.activities.MainActivity;
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;

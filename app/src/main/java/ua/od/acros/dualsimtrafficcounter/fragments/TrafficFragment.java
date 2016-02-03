@@ -28,7 +28,7 @@ import com.stericson.RootTools.RootTools;
 import org.acra.ACRA;
 
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
-import ua.od.acros.dualsimtrafficcounter.MyApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
