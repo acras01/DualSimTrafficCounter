@@ -614,25 +614,22 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         float valuer1;
         float valuer2;
         float valuer3;
-        double lim1;
-        double lim2;
-        double lim3;
+        long lim1 = Long.MAX_VALUE;
+        long lim2 = Long.MAX_VALUE;
+        long lim3 = Long.MAX_VALUE;
         if (!limit1.equals("")) {
             valuer1 = 1 - Float.valueOf(round1) / 100;
-            lim1 = valuer1 * DataFormat.getFormatLong(limit1, value1);
-        } else
-            lim1 = Long.MAX_VALUE;
+            lim1 = (long) (valuer1 * DataFormat.getFormatLong(limit1, value1));
+        }
         if (!limit2.equals("")) {
             valuer2 = 1 - Float.valueOf(round2) / 100;
-            lim2 = valuer2 * DataFormat.getFormatLong(limit2, value2);
-        } else
-            lim2 = Long.MAX_VALUE;
+            lim2 = (long) (valuer2 * DataFormat.getFormatLong(limit2, value2));
+        }
         if (!limit3.equals("")) {
             valuer3 = 1 - Float.valueOf(round3) / 100;
-            lim3 = valuer3 * DataFormat.getFormatLong(limit3, value3);
-        } else
-            lim3 = Long.MAX_VALUE;
-        return new long[] {(long) lim1, (long) lim2, (long) lim3};
+            lim3 = (long) (valuer3 * DataFormat.getFormatLong(limit3, value3));
+        }
+        return new long[] {lim1, lim2, lim3};
     }
 
     private class CheckTimerTask extends TimerTask {
