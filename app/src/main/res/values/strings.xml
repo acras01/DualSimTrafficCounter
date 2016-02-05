@@ -173,5 +173,5 @@
     <string name="body">Here are methods from TelephonyManager</string>
     <string name="choose_client">Choose your email client</string>
     <string name="why_email">If app on your device isn\'t working correctly, you can send me email with some usefull information about your device. For example, ROM version and CPU name</string>
-    <string name="use_call_logger">Enable Call Logger Service</string>
+    <string name="use_call_logger">Enable outgoing calls logger service</string>
 </resources>

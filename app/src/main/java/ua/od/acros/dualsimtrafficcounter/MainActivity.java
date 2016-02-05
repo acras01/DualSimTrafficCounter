@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String MTK = "mtk";
     private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSet, mCalls;
     private boolean mNeedsRestart = false;
+    private MenuItem mCallsItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Prepare Navigation View Menu
         MenuItem mTestItem = navigationView.getMenu().findItem(R.id.nav_test);
         if (MTKUtils.isMtkDevice() &&
-                android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mTestItem.setVisible(true);
             mTestItem.setEnabled(true);
         } else {
@@ -91,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mTestItem.setEnabled(false);
         }
 
-        MenuItem mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
-        if (XposedUtils.isPackageExisted(mContext, XPOSED) && !mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
+        mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
+        if (XposedUtils.isPackageExisted(mContext, XPOSED) && mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
             mCallsItem.setVisible(true);
             mCallsItem.setEnabled(true);
         } else {
@@ -125,21 +127,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
         if (XposedUtils.isPackageExisted(mContext, XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) &&
-                !mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
+                mPrefs.getBoolean(Constants.PREF_OTHER[25], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
         String action = getIntent().getAction();
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP &&
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
                     !RootTools.isAccessGiven())
                 showDialog(ANDROID_5_0);
-            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP_MR1 &&
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !MTKUtils.isMtkDevice())
                 showDialog(MTK);
             if (MTKUtils.isMtkDevice() &&
-                    android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP)
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
                 if (savedInstanceState == null)
                     getSupportFragmentManager()
                             .beginTransaction()
@@ -269,6 +271,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if (currentFragment instanceof CallsFragment)
+                onBackPressed();
+        }
         if (mNeedsRestart && mTraffic.isVisible())
             getSupportFragmentManager()
                     .beginTransaction()
@@ -290,6 +297,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (key.equals(Constants.PREF_OTHER[7]))
             mNeedsRestart = true;
+        if (key.equals(Constants.PREF_OTHER[25])) {
+            if (sharedPreferences.getBoolean(key, true)) {
+                mCallsItem.setVisible(true);
+                mCallsItem.setEnabled(true);
+            } else {
+                mCallsItem.setVisible(false);
+                mCallsItem.setEnabled(false);
+            }
+        }
     }
 
     @Override
