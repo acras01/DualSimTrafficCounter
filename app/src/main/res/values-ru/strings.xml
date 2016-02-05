@@ -38,7 +38,6 @@
     <string name="use_vibration">Вибрация</string>
     <string name="use_vibration_summary">Включите вибрацию при уведомлении</string>
     <string name="limit_summary">Предел трафика для каждой SIM-карты</string>
-    <string name="limit_title">Пределы</string>
     <string name="period_value">Период измерения</string>
     <string name="measure_value">Единица измерения</string>
     <string name="limit">Значение</string>
@@ -123,7 +122,7 @@
     <string name="date_incorrect_or_data_missing">Введена неверная дата или данные отсутствуют</string>
     <string name="choose_date">Другая дата</string>
     <string name="everyday_onoff">Ежедневное переключение</string>
-    <string name="limit_settings">Настройки предела</string>
+    <string name="limit_settings">Пределы</string>
     <string name="night_tafiff">Ночной тариф</string>
     <string name="operator_round">Округление трафика </string>
     <string name="days">дн.</string>
@@ -169,4 +168,7 @@
     <string name="send_email">Отправка сообщения разработчику</string>
     <string name="why_email">Если программа на Вашем устройстве не работает, Вы можете отправить разработчику некоторую полезную информацию про него. Например, версию ROM и CPU</string>
     <string name="use_call_logger">Включить сервис контроля исходящих вызовов</string>
+    <string name="view_white_list">Просмотр и редактирование белого списка</string>
+    <string name="white_list">Белый список</string>
+    <string name="limit_title">Ограничение передачи данных</string>
 </resources>

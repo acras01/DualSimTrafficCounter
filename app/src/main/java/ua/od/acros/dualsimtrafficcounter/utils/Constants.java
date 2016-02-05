@@ -1,7 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 public class Constants {
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 8;
     public static final String SIM1RX = "sim1rx";
     public static final String SIM2RX = "sim2rx";
     public static final String SIM3RX = "sim3rx";
@@ -90,6 +90,8 @@ public class Constants {
     public static final int SECOND = 1000;
     public static final String TEXT_SIZE = "15";
     public static final String ICON_SIZE = "30";
+    public static final String NUMBER = "number";
+    public static final String CHECKED = "checked";
     public static final String SPEEDRX = "rx_speed";
     public static final String SPEEDTX = "tx_speed";
     public static final String WIDGET_IDS = "widget_ids";

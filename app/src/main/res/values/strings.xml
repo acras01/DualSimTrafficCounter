@@ -37,8 +37,8 @@
     <string name="set_ringtone_summary">Set your notification sound</string>
     <string name="use_vibration">Vibration</string>
     <string name="use_vibration_summary">Set if you need vibration</string>
-    <string name="limit_summary" >Set limit for each SIM</string>
-    <string name="limit_title" >Limits</string>
+    <string name="limit_summary" >Set traffic limit for each SIM</string>
+    <string name="limit_title" > Traffic limit settings</string>
     <string name="measure_value">Measure value</string>
     <string name="period_value">Period of measurement</string>
     <string name="limit">Value</string>
@@ -128,7 +128,6 @@
     <string name="operator_round">Round traffic</string>
     <string name="night_tafiff">Night limit</string>
     <string name="everyday_onoff">Everyday ON/OFF</string>
-    <string name="limit_settings">Limit settings</string>
     <string name="days">d.</string>
     <string name="view_result">View result</string>
     <string name="show_logo_in_statusbar">Show operator logo instead of app icon in status bar</string>
@@ -176,5 +175,6 @@
     <string name="use_call_logger">Enable outgoing calls logger service</string>
     <string name="white_list">White list</string>
     <string name="view_white_list">View and edit white list</string>
-    <string name="title_activity_white_list">WhiteListActivity</string>
+    <string name="title_activity_white_list" translatable="false">WhiteListActivity</string>
+    <string name="limit_settings">Limits</string>
 </resources>

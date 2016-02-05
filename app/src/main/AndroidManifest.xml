@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".utils.MyApplication"
@@ -133,7 +134,8 @@
 
         <activity
             android:name=".activities.WhiteListActivity"
-            android:label="@string/title_activity_white_list" >
+            android:label="@string/title_activity_white_list"
+            android:theme="@style/AppTheme.AppBarOverlay" >
         </activity>
     </application>
 

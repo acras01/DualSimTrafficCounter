@@ -21,6 +21,9 @@ public class MyDatabase extends SQLiteOpenHelper {
 
     private static final String DATA_TABLE = "data";
     private static final String CALLS_TABLE = "calls";
+    private static final String WHITE_LIST_1 = "list1";
+    private static final String WHITE_LIST_2 = "list2";
+    private static final String WHITE_LIST_3 = "list3";
     private static SQLiteDatabase mSqLiteDatabase;
     private static MyDatabase mInstance;
 
@@ -73,6 +76,15 @@ public class MyDatabase extends SQLiteOpenHelper {
                 + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
                 + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
                 + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
+        db.execSQL(DATABASE_CREATE_SCRIPT);
+        DATABASE_CREATE_SCRIPT = "create table "
+                + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+        db.execSQL(DATABASE_CREATE_SCRIPT);
+        DATABASE_CREATE_SCRIPT = "create table "
+                + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+        db.execSQL(DATABASE_CREATE_SCRIPT);
+        DATABASE_CREATE_SCRIPT = "create table "
+                + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
     }
 
@@ -250,6 +262,17 @@ public class MyDatabase extends SQLiteOpenHelper {
                     + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
                     + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
                     + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
+            db.execSQL(ALTER_TBL);
+        }
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 7) {
+            ALTER_TBL = "create table "
+                    + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL = "create table "
+                    + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL = "create table "
+                    + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
             db.execSQL(ALTER_TBL);
         }
     }

@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
 
@@ -38,7 +39,8 @@ public class MyNotification extends Notification {
         if (calls.equals(""))
             calls = mCalls;
         String bigText;
-        if (XposedUtils.isPackageExisted(context, XPOSED))
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (XposedUtils.isPackageExisted(context, XPOSED) && prefs.getBoolean(Constants.PREF_OTHER[25], true))
             bigText = context.getString(R.string.traffic)  + "\n" + traffic + "\n" +
                     context.getString(R.string.calls) + "\n" + calls + "\n";
         else

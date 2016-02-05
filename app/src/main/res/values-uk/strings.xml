@@ -14,7 +14,6 @@
     <string name="gb">" ГБ"</string>
     <string name="kb">" кБ"</string>
     <string name="limit">Значення</string>
-    <string name="limit_title">Ліміти</string>
     <string name="mb">" МБ"</string>
     <string name="limit_summary">Ліміт трафіку для кожної SIM-карти</string>
     <string name="measure_value">Одиниця виміру</string>
@@ -123,7 +122,7 @@
     <string name="date_incorrect_or_data_missing">Введено невірну дату або дані відсутні</string>
     <string name="choose_date">Інша дата</string>
     <string name="everyday_onoff">Щоденне перемикання</string>
-    <string name="limit_settings">Налаштування ліміту</string>
+    <string name="limit_settings">Ліміти</string>
     <string name="night_tafiff">Нічний тариф</string>
     <string name="operator_round">Округлення трафіку</string>
     <string name="days">дн.</string>
@@ -169,4 +168,7 @@
     <string name="send_email">Відправка повідомлення розробнику</string>
     <string name="why_email">Якщо программа не працює на Вашому пристрої, Ви можете відправити розробнику деяку інформацію про нього. Наприклад, версію ROM та CPU</string>
     <string name="use_call_logger">Увімкнути сервіс контролю вихідних дзвінків</string>
+    <string name="white_list">Білий список</string>
+    <string name="view_white_list">Перегляд та редагування білого списку</string>
+    <string name="limit_title">Обмеження мобільного трафіку</string>
 </resources>
