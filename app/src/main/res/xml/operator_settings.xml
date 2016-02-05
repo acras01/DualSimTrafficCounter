@@ -98,14 +98,14 @@
             android:entryValues="@array/logo_values"
             android:defaultValue="none"/>
 
-        <Preference
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
             android:title="@string/ask_for_logo"
             android:summary="@string/ask_for_logo_sum">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="mailto:acras1@gmail.com?subject=Add logo of my operator">
             </intent>
-        </Preference>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
     </PreferenceScreen>
 

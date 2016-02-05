@@ -50,6 +50,17 @@
 
         </PreferenceCategory>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="calls_sim1_white"
+            android:title="@string/white_list"
+            android:summary="@string/view_white_list">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter.activities"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.WhiteListActivity"
+                android:data="sim1">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -100,6 +111,17 @@
                 android:summary="" />
 
         </PreferenceCategory>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="calls_sim2_white"
+            android:title="@string/white_list"
+            android:summary="@string/view_white_list">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter.activities"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.WhiteListActivity"
+                android:data="sim2">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
     </PreferenceScreen>
 
@@ -152,6 +174,17 @@
 
         </PreferenceCategory>
 
-    </PreferenceScreen>
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="calls_sim3_white"
+            android:title="@string/white_list"
+            android:summary="@string/view_white_list">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter.activities"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.WhiteListActivity"
+                android:data="sim3">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
+    </PreferenceScreen>
+    
 </PreferenceScreen>

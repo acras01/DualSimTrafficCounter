@@ -1,12 +1,12 @@
 package ua.od.acros.dualsimtrafficcounter.preferences;
 
 import android.content.Context;
-import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-public class TwoLinePreference extends EditTextPreference {
+public class TwoLinePreference extends Preference {
 
     public TwoLinePreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);

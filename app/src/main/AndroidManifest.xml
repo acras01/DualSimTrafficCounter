@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
@@ -25,7 +25,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
@@ -39,17 +38,16 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="screenSize|keyboardHidden"
-            android:windowSoftInputMode="adjustPan"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="org.acra.CrashReportDialog"
             android:excludeFromRecents="true"
@@ -57,7 +55,6 @@
             android:launchMode="singleInstance"
             android:process=":error_report"
             android:theme="@style/AppTheme.Dialog" />
-
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize"
@@ -82,7 +79,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".widget.TrafficInfoWidget"
             android:label="@string/info_widget_simple" >
@@ -105,11 +101,10 @@
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" >
         </activity>
-
         <activity
             android:name=".activities.WidgetConfigActivity"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            android:label="@string/widget_title" >
+            android:label="@string/widget_title"
+            android:theme="@style/AppTheme.AppBarOverlay" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -136,6 +131,10 @@
             android:exported="false" >
         </service>
 
+        <activity
+            android:name=".activities.WhiteListActivity"
+            android:label="@string/title_activity_white_list" >
+        </activity>
     </application>
 
 </manifest>

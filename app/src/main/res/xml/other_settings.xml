@@ -15,7 +15,7 @@
         android:summaryOn="@string/on"
         android:summaryOff="@string/off"/>
 
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
         android:key="watchdog_timer"
         android:inputType="number"
         android:defaultValue="1"
@@ -59,7 +59,7 @@
         android:defaultValue="true"
         android:disableDependentsState="true"/>
 
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
         android:key="user_sim"
         android:inputType="number"
         android:defaultValue="1"

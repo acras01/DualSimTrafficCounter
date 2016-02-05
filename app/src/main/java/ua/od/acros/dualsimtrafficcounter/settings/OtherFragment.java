@@ -10,7 +10,7 @@ import android.text.InputFilter;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
-import ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -20,7 +20,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 public class OtherFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
-    private TwoLinePreference timer, simQuantity;
+    private TwoLineEditTextPreference timer, simQuantity;
     private TwoLineCheckPreference callLogger;
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -35,9 +35,9 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         if (actionbar != null)
             actionbar.setTitle(R.string.other_title);
 
-        timer = (TwoLinePreference) findPreference(Constants.PREF_OTHER[8]);
+        timer = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[8]);
         timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
-        simQuantity = (TwoLinePreference) findPreference(Constants.PREF_OTHER[14]);
+        simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
         updateSummary();
