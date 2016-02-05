@@ -40,7 +40,6 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         simQuantity = (TwoLinePreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
-
         updateSummary();
     }
 

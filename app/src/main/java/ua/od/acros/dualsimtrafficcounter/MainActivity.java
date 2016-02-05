@@ -274,7 +274,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             if (currentFragment instanceof CallsFragment)
-                onBackPressed();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .remove(currentFragment)
+                        .commit();
         }
         if (mNeedsRestart && mTraffic.isVisible())
             getSupportFragmentManager()
