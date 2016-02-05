@@ -344,7 +344,6 @@ public class MyDatabase extends SQLiteOpenHelper {
             mMap.put(Constants.TOTAL3_N, 0L);
         }
         cursor.close();
-        mSqLiteDatabase.close();
         return mMap;
     }
 
@@ -722,17 +721,17 @@ public class MyDatabase extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
     }
 
-    public static void writeWhiteList(String sim, List<String> list, MyDatabase mDatabaseHelper) {
+    public static void writeWhiteList(int sim, List<String> list, MyDatabase mDatabaseHelper) {
         mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
-            case "SIM1":
+            case Constants.SIM1:
                 table = WHITE_LIST_1;
                 break;
-            case "SIM2":
+            case Constants.SIM2:
                 table = WHITE_LIST_2;
                 break;
-            case "SIM3":
+            case Constants.SIM3:
                 table = WHITE_LIST_3;
                 break;
         }
@@ -744,18 +743,18 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static List<String> readWhiteList(String sim, MyDatabase mDatabaseHelper) {
+    public static List<String> readWhiteList(int sim, MyDatabase mDatabaseHelper) {
         List<String> list = new ArrayList<>();
         mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
         String table = "";
         switch (sim) {
-            case "SIM1":
+            case Constants.SIM1:
                 table = WHITE_LIST_1;
                 break;
-            case "SIM2":
+            case Constants.SIM2:
                 table = WHITE_LIST_2;
                 break;
-            case "SIM3":
+            case Constants.SIM3:
                 table = WHITE_LIST_3;
                 break;
         }

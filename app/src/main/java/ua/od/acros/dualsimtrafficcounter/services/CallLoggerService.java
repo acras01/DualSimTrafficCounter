@@ -34,6 +34,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
@@ -368,27 +369,33 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
-                    String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-                    Dialog dialog = new AlertDialog.Builder(context)
-                            .setTitle(R.string.attention)
-                            .setMessage(R.string.is_out_of_home_network)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mIsOutgoing = true;
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mIsOutgoing = false;
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create();
-                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                    dialog.show();
+                    final String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+                    final int sim = MobileUtils.getSimId(context);
+                    final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
+                    if (!list.contains(number)) {
+                        Dialog dialog = new AlertDialog.Builder(context)
+                                .setTitle(R.string.attention)
+                                .setMessage(R.string.is_out_of_home_network)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mIsOutgoing = true;
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mIsOutgoing = false;
+                                        list.add(number);
+                                        MyDatabase.writeWhiteList(sim, list, mDatabaseHelper);
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .create();
+                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                        dialog.show();
+                    }
                 }
             }
         };
