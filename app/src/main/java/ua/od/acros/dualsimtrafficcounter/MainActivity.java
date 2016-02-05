@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         MenuItem mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
-        if (XposedUtils.isPackageExisted(mContext, XPOSED)) {
+        if (XposedUtils.isPackageExisted(mContext, XPOSED) && !mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
             mCallsItem.setVisible(true);
             mCallsItem.setEnabled(true);
         } else {
@@ -124,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
-        if (XposedUtils.isPackageExisted(mContext, XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+        if (XposedUtils.isPackageExisted(mContext, XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) &&
+                !mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
             startService(new Intent(mContext, CallLoggerService.class));
 
         String action = getIntent().getAction();

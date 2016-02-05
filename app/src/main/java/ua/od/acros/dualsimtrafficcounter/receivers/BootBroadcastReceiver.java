@@ -22,13 +22,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         //start CountService
         context.startService(new Intent(context, TrafficCountService.class));
         //start CallLoggerService
-        if (XposedUtils.isPackageExisted(context, XPOSED))
+        if (XposedUtils.isPackageExisted(context, XPOSED) && !prefs.getBoolean(Constants.PREF_OTHER[25], false))
             context.startService(new Intent(context, CallLoggerService.class));
-
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
         //Scheduled ON/OFF
         if (!prefs.getString(Constants.PREF_SIM1[11], "0").equals("3") || !prefs.getString(Constants.PREF_SIM2[11], "0").equals("3")

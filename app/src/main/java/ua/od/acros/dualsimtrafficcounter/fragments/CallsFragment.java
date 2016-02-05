@@ -51,6 +51,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private OnFragmentInteractionListener mListener;
     private BroadcastReceiver callDataReceiver;
     private MenuItem mService;
+    private boolean mIsRunning = false;
 
     public static CallsFragment newInstance(String param1, String param2) {
         return new CallsFragment();
@@ -64,6 +65,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity());
         mDatabaseHelper = MyDatabase.getInstance(getActivity());
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -296,7 +298,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
-        if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
+        if (mIsRunning) {
             mService.setTitle(R.string.action_stop);
             mService.setIcon(R.drawable.ic_action_disable);
         }
@@ -313,7 +315,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_service_start_stop:
-                if (item.getTitle().toString().equals(getResources().getString(R.string.action_stop))) {
+                if (mIsRunning) {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], true).apply();
                     getActivity().stopService(new Intent(getActivity(), CallLoggerService.class));
                     TIP.setText(getResources().getString(R.string.service_disabled));

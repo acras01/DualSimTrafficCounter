@@ -27,17 +27,17 @@ import com.stericson.RootTools.RootTools;
 
 import org.acra.ACRA;
 
-import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
-import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
-import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import ua.od.acros.dualsimtrafficcounter.widget.TrafficInfoWidget;
 
@@ -55,8 +55,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private boolean mShowNightTraffic1, mShowNightTraffic2, mShowNightTraffic3;
     private String[] mOperatorNames = new String[3];
     private boolean[] mIsNight;
-    private int simQuantity;
+    private int mSimQuantity;
     private OnFragmentInteractionListener mListener;
+    private boolean mIsRunning = false;
 
     public static TrafficFragment newInstance(String param1, String param2) {
         return new TrafficFragment();
@@ -70,6 +71,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity());
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
@@ -77,7 +79,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         mDatabaseHelper = MyDatabase.getInstance(getActivity());
         mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         mIsNight =  TrafficCountService.getIsNight();
@@ -130,12 +132,12 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                                 SIM1.setText(isNight[0] ? mOperatorNames[0] + getString(R.string.night) : mOperatorNames[0]);
                             }
                         }
-                        if (simQuantity < 2) {
+                        if (mSimQuantity < 2) {
                             SIM2.setText(getString(R.string.not_available));
                             SIM3.setText(getString(R.string.not_available));
                         } else {
                             if (!mShowNightTraffic2) {
-                                if (simQuantity >= 2) {
+                                if (mSimQuantity >= 2) {
                                     if (!intent.hasExtra(Constants.OPERATOR2) || intent.getStringExtra(Constants.OPERATOR2).equals(""))
                                         SIM2.setText(isNight[1] ? "SIM2" + getString(R.string.night) : "SIM2");
                                     else {
@@ -144,7 +146,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                                     }
                                 }
                             }
-                            if (simQuantity == 3) {
+                            if (mSimQuantity == 3) {
                                 if (!mShowNightTraffic3) {
                                     if (!intent.hasExtra(Constants.OPERATOR3) || intent.getStringExtra(Constants.OPERATOR3).equals(""))
                                         SIM3.setText(isNight[2] ? "SIM3" + getString(R.string.night) : "SIM3");
@@ -242,7 +244,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
-        if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
+        if (mIsRunning) {
             mService.setTitle(R.string.action_stop);
             mService.setIcon(R.drawable.ic_action_disable);
         }
@@ -281,7 +283,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_service_start_stop:
-                if (item.getTitle().toString().equals(getString(R.string.action_stop))) {
+                if (mIsRunning) {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
                     getActivity().stopService(new Intent(getActivity(), TrafficCountService.class));
                     TIP.setText(getString(R.string.service_disabled));
@@ -370,7 +372,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             view.findViewById(R.id.sim2row).setVisibility(View.GONE);
             view.findViewById(R.id.sim3row).setVisibility(View.GONE);
         }
-        if (simQuantity >= 2)
+        if (mSimQuantity >= 2)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (TX2 != null)
@@ -384,7 +386,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 bLim2.setVisibility(View.VISIBLE);
             } else
                 view.findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
-        if (simQuantity == 3)
+        if (mSimQuantity == 3)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                     if (TX3 != null)

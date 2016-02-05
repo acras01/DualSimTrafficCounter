@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -8,7 +9,10 @@ import android.preference.PreferenceManager;
 import android.text.InputFilter;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference;
+import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 
@@ -17,6 +21,7 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
 
 
     private TwoLinePreference timer, simQuantity;
+    private TwoLineCheckPreference callLogger;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -34,6 +39,7 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
         simQuantity = (TwoLinePreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
+        callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
 
         updateSummary();
     }
@@ -43,7 +49,10 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
             timer.setSummary(String.format(getResources().getString(R.string.minutes), timer.getText()));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
-
+        if (callLogger != null)
+            getPreferenceScreen().getSharedPreferences().edit()
+                    .putBoolean(Constants.PREF_OTHER[24], callLogger.isChecked())
+                    .apply();
     }
 
     @Override
@@ -62,6 +71,16 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Constants.PREF_OTHER[25])) {
+            if (!sharedPreferences.getBoolean(key, false)) {
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity()))
+                    getActivity().stopService(new Intent(getActivity(), CallLoggerService.class));
+            } else
+                getActivity().startService(new Intent(getActivity(), CallLoggerService.class));
+            sharedPreferences.edit()
+                    .putBoolean(Constants.PREF_OTHER[24], sharedPreferences.getBoolean(key, false))
+                    .apply();
+        }
         updateSummary();
     }
 }

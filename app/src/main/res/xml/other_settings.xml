@@ -8,6 +8,13 @@
         android:summaryOn="@string/on"
         android:summaryOff="@string/off"/>
 
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="calllogger"
+        android:title="@string/use_call_logger"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off"
+        android:defaultValue="true"/>
+
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
         android:key="watchdog_timer"
         android:inputType="number"
