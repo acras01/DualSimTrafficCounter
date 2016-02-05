@@ -110,6 +110,5 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
             ACRA.getErrorReporter().handleException(e);
         }
         return super.onOptionsItemSelected(item);
-
     }
 }
