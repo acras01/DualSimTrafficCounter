@@ -57,7 +57,7 @@
             <intent
                 android:targetPackage="ua.od.acros.dualsimtrafficcounter"
                 android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.WhiteListActivity"
-                android:data="sim1">
+                android:data="SIM1">
             </intent>
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
@@ -119,7 +119,7 @@
             <intent
                 android:targetPackage="ua.od.acros.dualsimtrafficcounter"
                 android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.WhiteListActivity"
-                android:data="sim2">
+                android:data="SIM2">
             </intent>
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
@@ -181,7 +181,7 @@
             <intent
                 android:targetPackage="ua.od.acros.dualsimtrafficcounter"
                 android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.WhiteListActivity"
-                android:data="sim3">
+                android:data="SIM3">
             </intent>
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 

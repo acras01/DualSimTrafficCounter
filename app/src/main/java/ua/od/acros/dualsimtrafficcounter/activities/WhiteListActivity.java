@@ -6,17 +6,21 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.acra.ACRA;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.MyArrayAdapter;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class WhiteListActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
@@ -24,6 +28,8 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
     private MyArrayAdapter mArrayAdapter;
     private List<String> mNames, mNumbers, mList;
     private Context mContext = this;
+    private String mKey;
+    private MyDatabase mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +38,11 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
 
         listView = (ListView) findViewById(R.id.listView);
 
-        switch (getIntent().getDataString()) {
-            case "sim1":
-                mList = new ArrayList<>();
-                setTitle("SIM1");
-                break;
-            case "sim2":
-                mList = new ArrayList<>();
-                setTitle("SIM2");
-                break;
-            case "sim3":
-                mList = new ArrayList<>();
-                setTitle("SIM3");
-                break;
-        }
+        mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mKey = getIntent().getDataString();
+        mList = MyDatabase.readWhiteList(mKey, mDatabaseHelper);
+        setTitle(mKey);
+
         mNumbers = new ArrayList<>();
         mNames = new ArrayList<>();
         loadContactsFromDB(mContext);
@@ -93,6 +90,26 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.widget_config_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        try {
+            if (item.getItemId() == R.id.save) {
+                MyDatabase.writeWhiteList(mKey, mList, mDatabaseHelper);
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
+        return super.onOptionsItemSelected(item);
 
     }
 }

@@ -13,7 +13,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyDatabase extends SQLiteOpenHelper {
@@ -78,13 +80,13 @@ public class MyDatabase extends SQLiteOpenHelper {
                 + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
         DATABASE_CREATE_SCRIPT = "create table "
-                + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+                + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
         DATABASE_CREATE_SCRIPT = "create table "
-                + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+                + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
         DATABASE_CREATE_SCRIPT = "create table "
-                + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+                + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
     }
 
@@ -266,13 +268,13 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
         if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 7) {
             ALTER_TBL = "create table "
-                    + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+                    + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null);";
             db.execSQL(ALTER_TBL);
             ALTER_TBL = "create table "
-                    + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+                    + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null);";
             db.execSQL(ALTER_TBL);
             ALTER_TBL = "create table "
-                    + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null, " + Constants.CHECKED + " integer);";
+                    + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null);";
             db.execSQL(ALTER_TBL);
         }
     }
@@ -342,6 +344,7 @@ public class MyDatabase extends SQLiteOpenHelper {
             mMap.put(Constants.TOTAL3_N, 0L);
         }
         cursor.close();
+        mSqLiteDatabase.close();
         return mMap;
     }
 
@@ -363,7 +366,7 @@ public class MyDatabase extends SQLiteOpenHelper {
                 Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
                 Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
                 Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, null, null, null, null, null);
-        result =  cursor != null && cursor.getCount() == 0;
+        result = cursor != null && cursor.getCount() == 0;
         if (cursor != null) {
             cursor.close();
         }
@@ -717,5 +720,54 @@ public class MyDatabase extends SQLiteOpenHelper {
         int id = mSqLiteDatabase.update(CALLS_TABLE, mCalls, filter, null);
         if (id == 0)
             mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
+    }
+
+    public static void writeWhiteList(String sim, List<String> list, MyDatabase mDatabaseHelper) {
+        mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+        String table = "";
+        switch (sim) {
+            case "SIM1":
+                table = WHITE_LIST_1;
+                break;
+            case "SIM2":
+                table = WHITE_LIST_2;
+                break;
+            case "SIM3":
+                table = WHITE_LIST_3;
+                break;
+        }
+        mSqLiteDatabase.execSQL("DELETE FROM " + table);
+        for (String s : list) {
+            ContentValues cv = new ContentValues();
+            cv.put(Constants.NUMBER, s);
+            mSqLiteDatabase.insert(table, null, cv);
+        }
+    }
+
+    public static List<String> readWhiteList(String sim, MyDatabase mDatabaseHelper) {
+        List<String> list = new ArrayList<>();
+        mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
+        String table = "";
+        switch (sim) {
+            case "SIM1":
+                table = WHITE_LIST_1;
+                break;
+            case "SIM2":
+                table = WHITE_LIST_2;
+                break;
+            case "SIM3":
+                table = WHITE_LIST_3;
+                break;
+        }
+        Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }
+        return list;
     }
 }
