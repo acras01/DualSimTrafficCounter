@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import com.stericson.RootTools.RootTools;
 
+import java.io.File;
+
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.SetUsageFragment;
@@ -36,6 +38,7 @@ import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String CALLS_TAG = "calls";
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
+    private static final String EMAIL = "email";
     private static final String MTK = "mtk";
     private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSet, mCalls;
     private boolean mNeedsRestart = false;
@@ -113,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mTest = new TestFragment();
         mSet = new SetUsageFragment();
         mCalls = new CallsFragment();
+
+        MobileUtils.getTelephonyManagerMethods(mContext);
 
         if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             startService(new Intent(mContext, WatchDogService.class));
@@ -223,6 +229,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         })
                         .show();
                 break;
+            case EMAIL:
+                new AlertDialog.Builder(mContext)
+                        .setTitle(R.string.send_email)
+                        .setMessage(R.string.why_email)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                                emailIntent.setType("text/plain");
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
+                                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.body));
+                                File dir = new File(String.valueOf(mContext.getFilesDir()));
+                                String fileName = "telephony.txt";
+                                File file = new File(dir, fileName);
+                                if (file.exists() && file.canRead()) {
+                                    Uri uri = Uri.fromFile(file);
+                                    emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                                }
+                                startActivity(Intent.createChooser(emailIntent, getString(R.string.choose_client)));
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+                break;
         }
     }
 
@@ -287,6 +317,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_settings:
                 Intent intent = new Intent(mContext, SettingsActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.nav_email:
+                showDialog(EMAIL);
                 break;
         }
         if (newFragment != null) {

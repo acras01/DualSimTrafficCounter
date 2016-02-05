@@ -235,7 +235,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         switch (v.getId()) {
             case R.id.buttonClear1:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
-                    Intent clear1Intent = new Intent(Constants.CLEAR);
+                    Intent clear1Intent = new Intent(Constants.CLEAR_CALLS);
                     clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                     getActivity().sendBroadcast(clear1Intent);
                 } else {
@@ -248,7 +248,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 break;
             case R.id.buttonClear2:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
-                    Intent clear2Intent = new Intent(Constants.CLEAR);
+                    Intent clear2Intent = new Intent(Constants.CLEAR_CALLS);
                     clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                     getActivity().sendBroadcast(clear2Intent);
                 } else {
@@ -261,7 +261,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 break;
             case R.id.buttonClear3:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
-                    Intent clear3Intent = new Intent(Constants.CLEAR);
+                    Intent clear3Intent = new Intent(Constants.CLEAR_CALLS);
                     clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
                     getActivity().sendBroadcast(clear3Intent);
                 } else {

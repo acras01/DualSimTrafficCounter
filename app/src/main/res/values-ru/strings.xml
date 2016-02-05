@@ -162,4 +162,10 @@
     <string name="minutes">%1$sмин</string>
     <string name="tip_calls">Отображаемая длительность вызовов не является точной, а округлена в соответствии с интервалом тарификации</string>
     <string name="traffic_rest">%1$s (остаток) - %2$s</string>
+    <string name="body">Во вложении методы класса TelephonyManager</string>
+    <string name="choose_client">Выберите клиента для отправки сообщения</string>
+    <string name="is_out_of_home_network">Абонент, которому Вы звоните, обслуживается другим оператором?</string>
+    <string name="no">Нет</string>
+    <string name="send_email">Отправка сообщения разработчику</string>
+    <string name="why_email">если программа на Вашем устройстве не работает, Вы можете отправить разработчику некоторую полезную информацию про него</string>
 </resources>

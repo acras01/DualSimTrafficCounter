@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".utils.MyApplication"
@@ -29,7 +31,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Easy example which makes the status bar clock red and adds a smiley" />
+            android:value="Allows to control duration of outgoing calls when you calling out of home network" />
         <meta-data
             android:name="xposedminversion"
             android:value="54" />
