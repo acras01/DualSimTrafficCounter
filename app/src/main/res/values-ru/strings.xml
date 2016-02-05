@@ -93,7 +93,7 @@
     <string name="show_speed">Показывать скорость соединения</string>
     <string name="other_title">Другие настройки</string>
     <string name="restart">Для вступления изменений в силу надо перезагрузить программу</string>
-    <string name="use_watchdog">Использовать сервис контроля</string>
+    <string name="use_watchdog">Включить сервис контроля</string>
     <string name="other_summary">Включение сервиса контроля и другое</string>
     <string name="watchdog_timer">Интервал проверки (не менее 1 мин)</string>
     <string name="minute">" мин"</string>

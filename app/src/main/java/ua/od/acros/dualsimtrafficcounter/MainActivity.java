@@ -277,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager()
                         .beginTransaction()
                         .remove(currentFragment)
+                        .replace(R.id.content_frame, mTraffic)
                         .commit();
         }
         if (mNeedsRestart && mTraffic.isVisible())

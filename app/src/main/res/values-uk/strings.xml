@@ -93,7 +93,7 @@
     <string name="show_speed">Відображати швидкість з\'єднання</string>
     <string name="other_title">Інші налаштування</string>
     <string name="restart">Ви повинні перезавантажити додаток для того, щоб задіяти нові налаштування</string>
-    <string name="use_watchdog">Використовувати сервіс контролю</string>
+    <string name="use_watchdog">Увімкнути сервіс контролю</string>
     <string name="other_summary">Увімкнення сервісу контролю та інше</string>
     <string name="watchdog_timer">Інтервал перевірки (не менше 1 хв.)</string>
     <string name="minute">" хв."</string>

@@ -95,7 +95,7 @@
     <string name="speed">%1$s/s</string>
     <string name="show_speed">Show connection speed</string>
     <string name="other_title">Other settings</string>
-    <string name="use_watchdog">Use watchdog service</string>
+    <string name="use_watchdog">Enable watchdog service</string>
     <string name="restart">You should restart app to apply changes</string>
     <string name="other_summary">Enable watchdog service and etc.</string>
     <string name="watchdog_timer">Watchdog polling interval (not less then 1m)</string>
