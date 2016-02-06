@@ -388,7 +388,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                         break;
                                     case TelephonyManager.CALL_STATE_OFFHOOK:
                                         final int sim = MobileUtils.getSimId(ctx);
-                                        if (sim != mLastSim && number.equals(mLastNumber))
+                                        if (number.equals(mLastNumber) && sim != mLastSim)
                                             break;
                                         else {
                                             String out = sim + " " + number + "\n";
