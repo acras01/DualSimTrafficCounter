@@ -385,6 +385,21 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                     break;
                                 case TelephonyManager.CALL_STATE_OFFHOOK:
                                     final int sim = MobileUtils.getSimId(ctx);
+                                    String out = sim + " " + number + "\n";
+                                    try {
+                                        // to this path add a new directory path
+                                        File dir = new File(String.valueOf(ctx.getFilesDir()));
+                                        // create this directory if not already created
+                                        dir.mkdir();
+                                        // create the file in which we will write the contents
+                                        String fileName = "call_log.txt";
+                                        File file = new File(dir, fileName);
+                                        FileOutputStream os = new FileOutputStream(file, true);
+                                        os.write(out.getBytes());
+                                        os.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
                                     if (!list.contains(number) && !mIsDialogShown) {
                                         mIsDialogShown = true;
