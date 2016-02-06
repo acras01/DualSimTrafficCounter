@@ -70,6 +70,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private Target mTarget;
     private Bitmap mBitmapLarge;
     private boolean mIsOutgoing = false;
+    private boolean mIsDialogShown = false;
 
     public CallLoggerService() {
     }
@@ -97,6 +98,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (mIsOutgoing) {
+                    mIsDialogShown = false;
                     mIsOutgoing = false;
                     if (mCountTimer != null)
                         mCountTimer.cancel();
@@ -384,7 +386,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 case TelephonyManager.CALL_STATE_OFFHOOK:
                                     final int sim = MobileUtils.getSimId(ctx);
                                     final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
-                                    if (!list.contains(number)) {
+                                    if (!list.contains(number) && !mIsDialogShown) {
+                                        mIsDialogShown = true;
                                         Dialog dialog = new AlertDialog.Builder(ctx)
                                                 .setTitle(R.string.attention)
                                                 .setMessage(R.string.is_out_of_home_network)
