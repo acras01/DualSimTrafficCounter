@@ -321,6 +321,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     TIP.setText(getResources().getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
+                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity());
                 }
                 else {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
@@ -328,6 +329,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     TIP.setText(getResources().getString(R.string.tip_calls));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
+                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity());
                 }
                 break;
         }

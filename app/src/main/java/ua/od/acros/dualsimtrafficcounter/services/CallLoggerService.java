@@ -19,6 +19,8 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -369,33 +371,52 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+                    final Context ctx = context;
                     final String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-                    final int sim = MobileUtils.getSimId(context);
-                    final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
-                    if (!list.contains(number)) {
-                        Dialog dialog = new AlertDialog.Builder(context)
-                                .setTitle(R.string.attention)
-                                .setMessage(R.string.is_out_of_home_network)
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        mIsOutgoing = true;
-                                        dialog.dismiss();
+                    final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+                    tm.listen(new PhoneStateListener() {
+                        @Override
+                        public void onCallStateChanged(int state, String incomingNumber) {
+                            switch (state) {
+                                case TelephonyManager.CALL_STATE_RINGING:
+                                    mIsOutgoing = false;
+                                    break;
+                                case TelephonyManager.CALL_STATE_OFFHOOK:
+                                    final int sim = MobileUtils.getSimId(ctx);
+                                    final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
+                                    if (!list.contains(number)) {
+                                        Dialog dialog = new AlertDialog.Builder(ctx)
+                                                .setTitle(R.string.attention)
+                                                .setMessage(R.string.is_out_of_home_network)
+                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        mIsOutgoing = true;
+                                                        dialog.dismiss();
+                                                    }
+                                                })
+                                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        mIsOutgoing = false;
+                                                        list.add(number);
+                                                        MyDatabase.writeWhiteList(sim, list, mDatabaseHelper);
+                                                        dialog.dismiss();
+                                                    }
+                                                })
+                                                .create();
+                                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                        dialog.show();
                                     }
-                                })
-                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        mIsOutgoing = false;
-                                        list.add(number);
-                                        MyDatabase.writeWhiteList(sim, list, mDatabaseHelper);
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .create();
-                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                        dialog.show();
-                    }
+                                    break;
+                                case TelephonyManager.CALL_STATE_IDLE:
+                                    mIsOutgoing = false;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }, PhoneStateListener.LISTEN_CALL_STATE);
                 }
             }
         };
@@ -552,4 +573,5 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     public static Context getCallLoggerServiceContext() {
         return CallLoggerService.mContext;
     }
+
 }
