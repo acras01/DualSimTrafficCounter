@@ -71,6 +71,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private Bitmap mBitmapLarge;
     private boolean mIsOutgoing = false;
     private boolean mIsDialogShown = false;
+    private int mLastSim = Constants.DISABLED;
+    private String mLastNumber = "";
 
     public CallLoggerService() {
     }
@@ -379,60 +381,67 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     tm.listen(new PhoneStateListener() {
                         @Override
                         public void onCallStateChanged(int state, String incomingNumber) {
-                            switch (state) {
-                                case TelephonyManager.CALL_STATE_RINGING:
-                                    mIsOutgoing = false;
-                                    break;
-                                case TelephonyManager.CALL_STATE_OFFHOOK:
-                                    final int sim = MobileUtils.getSimId(ctx);
-                                    String out = sim + " " + number + "\n";
-                                    try {
-                                        // to this path add a new directory path
-                                        File dir = new File(String.valueOf(ctx.getFilesDir()));
-                                        // create this directory if not already created
-                                        dir.mkdir();
-                                        // create the file in which we will write the contents
-                                        String fileName = "call_log.txt";
-                                        File file = new File(dir, fileName);
-                                        FileOutputStream os = new FileOutputStream(file, true);
-                                        os.write(out.getBytes());
-                                        os.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
-                                    if (!list.contains(number) && !mIsDialogShown) {
-                                        mIsDialogShown = true;
-                                        Dialog dialog = new AlertDialog.Builder(ctx)
-                                                .setTitle(R.string.attention)
-                                                .setMessage(R.string.is_out_of_home_network)
-                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        mIsOutgoing = true;
-                                                        dialog.dismiss();
-                                                    }
-                                                })
-                                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        mIsOutgoing = false;
-                                                        list.add(number);
-                                                        MyDatabase.writeWhiteList(sim, list, mDatabaseHelper);
-                                                        dialog.dismiss();
-                                                    }
-                                                })
-                                                .create();
-                                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                                        dialog.show();
-                                    }
-                                    break;
-                                case TelephonyManager.CALL_STATE_IDLE:
-                                    mIsOutgoing = false;
-                                    break;
-                                default:
-                                    break;
-                            }
+                            if (!mIsOutgoing)
+                                switch (state) {
+                                    case TelephonyManager.CALL_STATE_RINGING:
+                                        mIsOutgoing = false;
+                                        break;
+                                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                                        final int sim = MobileUtils.getSimId(ctx);
+                                        if (sim != mLastSim && number.equals(mLastNumber))
+                                            break;
+                                        else {
+                                            String out = sim + " " + number + "\n";
+                                            try {
+                                                // to this path add a new directory path
+                                                File dir = new File(String.valueOf(ctx.getFilesDir()));
+                                                // create this directory if not already created
+                                                dir.mkdir();
+                                                // create the file in which we will write the contents
+                                                String fileName = "call_log.txt";
+                                                File file = new File(dir, fileName);
+                                                FileOutputStream os = new FileOutputStream(file, true);
+                                                os.write(out.getBytes());
+                                                os.close();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
+                                            if (!list.contains(number) && !mIsDialogShown) {
+                                                mIsDialogShown = true;
+                                                mLastNumber = number;
+                                                mLastSim = sim;
+                                                Dialog dialog = new AlertDialog.Builder(ctx)
+                                                        .setTitle(R.string.attention)
+                                                        .setMessage(R.string.is_out_of_home_network)
+                                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                mIsOutgoing = true;
+                                                                dialog.dismiss();
+                                                            }
+                                                        })
+                                                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                mIsOutgoing = false;
+                                                                list.add(number);
+                                                                MyDatabase.writeWhiteList(sim, list, mDatabaseHelper);
+                                                                dialog.dismiss();
+                                                            }
+                                                        })
+                                                        .create();
+                                                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                                dialog.show();
+                                            }
+                                        }
+                                        break;
+                                    case TelephonyManager.CALL_STATE_IDLE:
+                                        mIsOutgoing = false;
+                                        break;
+                                    default:
+                                        break;
+                                }
                         }
                     }, PhoneStateListener.LISTEN_CALL_STATE);
                 }
