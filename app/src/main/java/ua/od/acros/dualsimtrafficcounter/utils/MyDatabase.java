@@ -26,6 +26,9 @@ public class MyDatabase extends SQLiteOpenHelper {
     private static final String WHITE_LIST_1 = "list1";
     private static final String WHITE_LIST_2 = "list2";
     private static final String WHITE_LIST_3 = "list3";
+    private static final String BLACK_LIST_1 = "list1_b";
+    private static final String BLACK_LIST_2 = "list2_b";
+    private static final String BLACK_LIST_3 = "list3_b";
     private static SQLiteDatabase mSqLiteDatabase;
     private static MyDatabase mInstance;
 
@@ -87,6 +90,15 @@ public class MyDatabase extends SQLiteOpenHelper {
         db.execSQL(DATABASE_CREATE_SCRIPT);
         DATABASE_CREATE_SCRIPT = "create table "
                 + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null);";
+        db.execSQL(DATABASE_CREATE_SCRIPT);
+        DATABASE_CREATE_SCRIPT = "create table "
+                + BLACK_LIST_1 + " (" + Constants.NUMBER + " text not null);";
+        db.execSQL(DATABASE_CREATE_SCRIPT);
+        DATABASE_CREATE_SCRIPT = "create table "
+                + BLACK_LIST_2 + " (" + Constants.NUMBER + " text not null);";
+        db.execSQL(DATABASE_CREATE_SCRIPT);
+        DATABASE_CREATE_SCRIPT = "create table "
+                + BLACK_LIST_3 + " (" + Constants.NUMBER + " text not null);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
     }
 
@@ -275,6 +287,17 @@ public class MyDatabase extends SQLiteOpenHelper {
             db.execSQL(ALTER_TBL);
             ALTER_TBL = "create table "
                     + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null);";
+            db.execSQL(ALTER_TBL);
+        }
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 8) {
+            ALTER_TBL = "create table "
+                    + BLACK_LIST_1 + " (" + Constants.NUMBER + " text not null);";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL = "create table "
+                    + BLACK_LIST_2 + " (" + Constants.NUMBER + " text not null);";
+            db.execSQL(ALTER_TBL);
+            ALTER_TBL = "create table "
+                    + BLACK_LIST_3 + " (" + Constants.NUMBER + " text not null);";
             db.execSQL(ALTER_TBL);
         }
     }
@@ -756,6 +779,55 @@ public class MyDatabase extends SQLiteOpenHelper {
                 break;
             case Constants.SIM3:
                 table = WHITE_LIST_3;
+                break;
+        }
+        Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }
+        return list;
+    }
+
+    public static void writeBlackList(int sim, List<String> list, MyDatabase mDatabaseHelper) {
+        mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+        String table = "";
+        switch (sim) {
+            case Constants.SIM1:
+                table = BLACK_LIST_1;
+                break;
+            case Constants.SIM2:
+                table = BLACK_LIST_2;
+                break;
+            case Constants.SIM3:
+                table = BLACK_LIST_3;
+                break;
+        }
+        mSqLiteDatabase.execSQL("DELETE FROM " + table);
+        for (String s : list) {
+            ContentValues cv = new ContentValues();
+            cv.put(Constants.NUMBER, s);
+            mSqLiteDatabase.insert(table, null, cv);
+        }
+    }
+
+    public static List<String> readBlackList(int sim, MyDatabase mDatabaseHelper) {
+        List<String> list = new ArrayList<>();
+        mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
+        String table = "";
+        switch (sim) {
+            case Constants.SIM1:
+                table = BLACK_LIST_1;
+                break;
+            case Constants.SIM2:
+                table = BLACK_LIST_2;
+                break;
+            case Constants.SIM3:
+                table = BLACK_LIST_3;
                 break;
         }
         Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);

@@ -1,7 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 public class Constants {
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
     public static final String SIM1RX = "sim1rx";
     public static final String SIM2RX = "sim2rx";
     public static final String SIM3RX = "sim3rx";

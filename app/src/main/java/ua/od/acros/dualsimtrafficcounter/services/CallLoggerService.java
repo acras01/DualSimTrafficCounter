@@ -406,8 +406,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
-                                            final List<String> list = MyDatabase.readWhiteList(sim, mDatabaseHelper);
-                                            if (!list.contains(number) && !mIsDialogShown) {
+                                            final List<String> whiteList = MyDatabase.readWhiteList(sim, mDatabaseHelper);
+                                            final List<String> blackList = MyDatabase.readBlackList(sim, mDatabaseHelper);
+                                            if (!whiteList.contains(number) && !blackList.contains(number) && !mIsDialogShown) {
                                                 mIsDialogShown = true;
                                                 mLastNumber = number;
                                                 mLastSim = sim;
@@ -418,6 +419,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 mIsOutgoing = true;
+                                                                blackList.add(number);
+                                                                MyDatabase.writeBlackList(sim, blackList, mDatabaseHelper);
                                                                 dialog.dismiss();
                                                             }
                                                         })
@@ -425,8 +428,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 mIsOutgoing = false;
-                                                                list.add(number);
-                                                                MyDatabase.writeWhiteList(sim, list, mDatabaseHelper);
+                                                                whiteList.add(number);
+                                                                MyDatabase.writeWhiteList(sim, whiteList, mDatabaseHelper);
                                                                 dialog.dismiss();
                                                             }
                                                         })
