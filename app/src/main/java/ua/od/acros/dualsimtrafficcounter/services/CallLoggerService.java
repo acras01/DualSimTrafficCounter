@@ -436,7 +436,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                                         .create();
                                                 dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
                                                 dialog.show();
-                                            }
+                                            } else if (blackList.contains(number))
+                                                mIsOutgoing = true;
                                         }
                                         break;
                                     case TelephonyManager.CALL_STATE_IDLE:
