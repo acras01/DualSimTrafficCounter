@@ -117,8 +117,10 @@ public class MobileUtils {
                             if (m.getName().equalsIgnoreCase("getCallState")) {
                                 m.setAccessible(true);
                                 int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                                if (state == TelephonyManager.CALL_STATE_OFFHOOK)
+                                if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                                     sim = i;
+                                    break;
+                                }
                             }
                         }
                     } catch (Exception e0) {
@@ -132,8 +134,10 @@ public class MobileUtils {
                             if (m.getName().equalsIgnoreCase("getCallState")) {
                                 m.setAccessible(true);
                                 int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                                if (state == TelephonyManager.CALL_STATE_OFFHOOK)
+                                if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                                     sim = i;
+                                    break;
+                                }
                             }
                         }
                     } catch (Exception e0) {
@@ -147,8 +151,10 @@ public class MobileUtils {
                                 if (m.getName().equalsIgnoreCase("getCallState")) {
                                     m.setAccessible(true);
                                     int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
-                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK)
-                                        return i;
+                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                        sim = i;
+                                        break;
+                                    }
                                 }
                             }
                         } catch (Exception e0) {
@@ -162,8 +168,10 @@ public class MobileUtils {
                                 if (m.getName().equalsIgnoreCase("getCallState")) {
                                     m.setAccessible(true);
                                     int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
-                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK)
-                                        return i;
+                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                        sim = i;
+                                        break;
+                                    };
                                 }
                             }
                         } catch (Exception e0) {

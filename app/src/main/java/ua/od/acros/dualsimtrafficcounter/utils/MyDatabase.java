@@ -758,11 +758,13 @@ public class MyDatabase extends SQLiteOpenHelper {
                 table = WHITE_LIST_3;
                 break;
         }
-        mSqLiteDatabase.execSQL("DELETE FROM " + table);
-        for (String s : list) {
-            ContentValues cv = new ContentValues();
-            cv.put(Constants.NUMBER, s);
-            mSqLiteDatabase.insert(table, null, cv);
+        if (sim >= 0) {
+            mSqLiteDatabase.execSQL("DELETE FROM " + table);
+            for (String s : list) {
+                ContentValues cv = new ContentValues();
+                cv.put(Constants.NUMBER, s);
+                mSqLiteDatabase.insert(table, null, cv);
+            }
         }
     }
 
@@ -781,14 +783,16 @@ public class MyDatabase extends SQLiteOpenHelper {
                 table = WHITE_LIST_3;
                 break;
         }
-        Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
-                cursor.moveToNext();
+        if (sim >= 0) {
+            Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
+                    cursor.moveToNext();
+                }
+                cursor.close();
             }
-            cursor.close();
         }
         return list;
     }
@@ -807,11 +811,13 @@ public class MyDatabase extends SQLiteOpenHelper {
                 table = BLACK_LIST_3;
                 break;
         }
-        mSqLiteDatabase.execSQL("DELETE FROM " + table);
-        for (String s : list) {
-            ContentValues cv = new ContentValues();
-            cv.put(Constants.NUMBER, s);
-            mSqLiteDatabase.insert(table, null, cv);
+        if (sim >= 0) {
+            mSqLiteDatabase.execSQL("DELETE FROM " + table);
+            for (String s : list) {
+                ContentValues cv = new ContentValues();
+                cv.put(Constants.NUMBER, s);
+                mSqLiteDatabase.insert(table, null, cv);
+            }
         }
     }
 
@@ -830,14 +836,16 @@ public class MyDatabase extends SQLiteOpenHelper {
                 table = BLACK_LIST_3;
                 break;
         }
-        Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
-                cursor.moveToNext();
+        if (sim >= 0) {
+            Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
+                    cursor.moveToNext();
+                }
+                cursor.close();
             }
-            cursor.close();
         }
         return list;
     }
