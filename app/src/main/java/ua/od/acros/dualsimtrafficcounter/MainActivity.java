@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                                 emailIntent.setType("text/plain");
+                                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"acras1@gmail.com"});
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
                                 emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.body));
                                 File dir = new File(String.valueOf(mContext.getFilesDir()));
