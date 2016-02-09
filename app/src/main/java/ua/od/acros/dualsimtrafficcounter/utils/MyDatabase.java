@@ -701,9 +701,9 @@ public class MyDatabase extends SQLiteOpenHelper {
         return out;
     }
 
-    public static ContentValues readCallsData(MyDatabase mDatabaseHelper) {
+    public static ContentValues readCallsData(MyDatabase dbHelper) {
         ContentValues mMap = new ContentValues();
-        mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.CALLS1,
                 Constants.CALLS1_EX, Constants.CALLS2, Constants.CALLS2_EX, Constants.CALLS3, Constants.CALLS3_EX,
                 Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3}, null, null, null, null, null);
@@ -736,16 +736,16 @@ public class MyDatabase extends SQLiteOpenHelper {
         return mMap;
     }
 
-    public static void writeCallsData(ContentValues mCalls, MyDatabase mDatabaseHelper) {
-        mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+    public static void writeCallsData(ContentValues mCalls, MyDatabase dbHelper) {
+        mSqLiteDatabase = dbHelper.getWritableDatabase();
         String filter = Constants.LAST_DATE + "='" + mCalls.get(Constants.LAST_DATE) + "'";
         int id = mSqLiteDatabase.update(CALLS_TABLE, mCalls, filter, null);
         if (id == 0)
             mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
     }
 
-    public static void writeWhiteList(int sim, List<String> list, MyDatabase mDatabaseHelper) {
-        mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+    public static void writeWhiteList(int sim, List<String> list, MyDatabase dbHelper) {
+        mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
@@ -768,9 +768,9 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static List<String> readWhiteList(int sim, MyDatabase mDatabaseHelper) {
+    public static List<String> readWhiteList(int sim, MyDatabase dbHelper) {
         List<String> list = new ArrayList<>();
-        mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
@@ -797,8 +797,8 @@ public class MyDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public static void writeBlackList(int sim, List<String> list, MyDatabase mDatabaseHelper) {
-        mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+    public static void writeBlackList(int sim, List<String> list, MyDatabase dbHelper) {
+        mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
@@ -821,9 +821,9 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static List<String> readBlackList(int sim, MyDatabase mDatabaseHelper) {
+    public static List<String> readBlackList(int sim, MyDatabase dbHelper) {
         List<String> list = new ArrayList<>();
-        mSqLiteDatabase = mDatabaseHelper.getReadableDatabase();
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
