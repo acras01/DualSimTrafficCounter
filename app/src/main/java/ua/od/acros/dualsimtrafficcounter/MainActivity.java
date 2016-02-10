@@ -131,8 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
-        if (XposedUtils.isPackageExisted(mContext, XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) &&
-                mPrefs.getBoolean(Constants.PREF_OTHER[25], true))
+        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[25], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
         String action = getIntent().getAction();

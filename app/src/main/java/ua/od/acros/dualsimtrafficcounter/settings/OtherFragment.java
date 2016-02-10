@@ -15,6 +15,7 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
+import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 
 public class OtherFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -22,6 +23,8 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
 
     private TwoLineEditTextPreference timer, simQuantity;
     private TwoLineCheckPreference callLogger;
+
+    private static final String XPOSED = "de.robv.android.xposed.installer";
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -40,6 +43,10 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
+        if (!XposedUtils.isPackageExisted(getActivity(), XPOSED)) {
+            callLogger.setChecked(false);
+            callLogger.setEnabled(false);
+        }
         updateSummary();
     }
 
