@@ -585,10 +585,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         unregisterReceiver(setUsageReceiver);
         unregisterReceiver(callDurationReceiver);
         unregisterReceiver(outgoingCallReceiver);
-        if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
-            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.cancel(Constants.STARTED_ID);
-        }
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(Constants.STARTED_ID);
+        if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
+            buildNotification();
         Picasso.with(mContext).cancelRequest(mTarget);
         MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);

@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -681,6 +682,23 @@ public class MobileUtils {
         return String.valueOf(field.getInt(null));
     }
 
+    private static void setMobileDataEnabled(Context context, boolean enabled) throws ClassNotFoundException,
+            NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        final ConnectivityManager conman = (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final Class conmanClass = Class.forName(conman.getClass().getName());
+        final Field connectivityManagerField = conmanClass.getDeclaredField("mService");
+        connectivityManagerField.setAccessible(true);
+        final Object connectivityManager = connectivityManagerField.get(conman);
+        final Class connectivityManagerClass =  Class.forName(connectivityManager.getClass().getName());
+        Method[] conmanMethods = connectivityManagerClass.getDeclaredMethods();
+        for (Method m : conmanMethods) {
+            if (m.getName().equals("setMobileDataEnabled")) {
+                m.setAccessible(true);
+                m.invoke(connectivityManager, enabled);
+            }
+        }
+    }
+
     public static int[] getMobileDataInfo(Context context, boolean sim) {
         int[] mobileDataEnabled = {0, -1}; // Assume disabled
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -729,6 +747,8 @@ public class MobileUtils {
             mLastActiveSIM = (int) activeSIM(context, mActiveNetworkInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM);
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) {
+                setMobileDataEnabled(context, false);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 localIntent.putExtra("simid", Constants.DISABLED);
