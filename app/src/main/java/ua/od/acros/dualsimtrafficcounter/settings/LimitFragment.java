@@ -19,14 +19,13 @@ import com.stericson.RootTools.RootTools;
 
 import java.util.Calendar;
 
-import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
+import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
-import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -120,8 +119,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
-        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) {
             autoff1.setChecked(false);
             autoff1.setEnabled(false);
             autoff2.setChecked(false);

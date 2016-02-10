@@ -25,7 +25,12 @@ import android.widget.TextView;
 
 import com.stericson.RootTools.RootTools;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
@@ -239,14 +244,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 emailIntent.setType("text/plain");
                                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"acras1@gmail.com"});
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
-                                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.body));
                                 File dir = new File(String.valueOf(mContext.getFilesDir()));
                                 String fileName = "telephony.txt";
+                                String content = getString(R.string.body) + "\n";
                                 File file = new File(dir, fileName);
-                                if (file.exists() && file.canRead()) {
+                                try {
                                     Uri uri = Uri.fromFile(file);
                                     emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                                    InputStream is = openFileInput(fileName);
+                                    if ( is != null ) {
+                                        InputStreamReader isr = new InputStreamReader(is);
+                                        BufferedReader br = new BufferedReader(isr);
+                                        String read;
+                                        StringBuilder sb = new StringBuilder();
+                                        while ((read = br.readLine()) != null ) {
+                                            read += "\n";
+                                            sb.append(read);
+                                        }
+                                        is.close();
+                                        content += sb.toString();
+                                    }
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
+                                emailIntent.putExtra(Intent.EXTRA_TEXT, content);
                                 startActivity(Intent.createChooser(emailIntent, getString(R.string.choose_client)));
                                 dialog.dismiss();
                             }

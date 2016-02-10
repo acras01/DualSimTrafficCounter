@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class OnOffDialog extends DialogFragment {
@@ -46,7 +47,7 @@ public class OnOffDialog extends DialogFragment {
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) {
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             if (simQuantity == 1) {
