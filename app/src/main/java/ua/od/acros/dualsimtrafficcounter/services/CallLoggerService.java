@@ -409,7 +409,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             Dialog dialog = new AlertDialog.Builder(ctx)
                                                     .setTitle(number[0])
                                                     .setMessage(R.string.is_out_of_home_network)
-                                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             mIsOutgoing = true;

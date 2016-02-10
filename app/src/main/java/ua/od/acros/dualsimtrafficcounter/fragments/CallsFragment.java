@@ -76,24 +76,40 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
+                long limit1, limit2, limit3;
+                try {
+                    limit1 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
+                } catch (Exception e) {
+                    limit1 = Long.MAX_VALUE;
+                }
+                try {
+                    limit2 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
+                } catch (Exception e) {
+                    limit2 = Long.MAX_VALUE;
+                }
+                try {
+                    limit3 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
+                } catch (Exception e) {
+                    limit3 = Long.MAX_VALUE;
+                }
                 switch (sim) {
                     case Constants.SIM1:
                         TOT1.setText(DataFormat.formatCallDuration(getActivity(), duration));
-                        if (duration >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE)
+                        if (duration >= limit1)
                             TOT1.setTextColor(Color.RED);
                         else
                             TOT1.setTextColor(Color.WHITE);
                         break;
                     case Constants.SIM2:
                         TOT2.setText(DataFormat.formatCallDuration(getActivity(), duration));
-                        if (duration >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE)
+                        if (duration >= limit2)
                             TOT2.setTextColor(Color.RED);
                         else
                             TOT2.setTextColor(Color.WHITE);
                         break;
                     case Constants.SIM3:
                         TOT3.setText(DataFormat.formatCallDuration(getActivity(), duration));
-                        if (duration >= Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE)
+                        if (duration >= limit3)
                             TOT3.setTextColor(Color.RED);
                         else
                             TOT3.setTextColor(Color.WHITE);

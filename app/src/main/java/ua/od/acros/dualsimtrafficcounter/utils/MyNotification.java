@@ -16,10 +16,12 @@ public class MyNotification extends Notification {
     private static String mTraffic, mCalls;
     private static NotificationCompat.Builder builder;
     private static final String XPOSED = "de.robv.android.xposed.installer";
+    private static SharedPreferences mPrefs;
 
     private static NotificationCompat.Builder newInstance(Context context) {
         if (builder == null) {
             Intent notificationIntent = new Intent(context, MainActivity.class);
+            notificationIntent.setAction("tap");
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder = new NotificationCompat.Builder(context)

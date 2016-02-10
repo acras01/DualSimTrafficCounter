@@ -148,23 +148,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .add(R.id.content_frame, mTest)
                             .commit();
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
-        } else if (action != null && !action.equals("") && !action.equals(Intent.ACTION_MAIN)) {
-            switch (action) {
-                case TRAFFIC_TAG:
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.content_frame, mTraffic)
-                            .addToBackStack(action)
-                            .commit();
-                break;
-                case CALLS_TAG:
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.content_frame, mCalls)
-                            .addToBackStack(action)
-                            .commit();
-                break;
-            }
+        } else if (action != null && action.equals("tap")) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true))
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, mTraffic)
+                        .addToBackStack(TRAFFIC_TAG)
+                        .commit();
+            else
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, mCalls)
+                        .addToBackStack(CALLS_TAG)
+                        .commit();
         } else {
             if (savedInstanceState == null)
                 getSupportFragmentManager()

@@ -125,6 +125,7 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
                     day1.setTitle(getActivity().getResources().getString(R.string.day_in_period));
             }
         }
+
         if (period2 != null) {
             period2.setSummary(period2.getEntry());
             if (period2.getValue().equals("0") && day2 != null)
@@ -137,6 +138,7 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
                     day2.setTitle(getActivity().getResources().getString(R.string.day_in_period));
             }
         }
+
         if (period3 != null) {
             period3.setSummary(period3.getEntry());
             if (period3.getValue().equals("0") && day3 != null)
@@ -149,12 +151,14 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
                     day3.setTitle(getActivity().getResources().getString(R.string.day_in_period));
             }
         }
+
         if (day1 != null && day1.isEnabled())
             day1.setSummary(day1.getText());
         if (day2 != null && day2.isEnabled())
             day2.setSummary(day2.getText());
         if (day3 != null && day3.isEnabled())
             day3.setSummary(day3.getText());
+
         if (round1 != null)
             round1.setSummary(String.format(getResources().getString(R.string.seconds), round1.getText()));
         if (round2 != null)

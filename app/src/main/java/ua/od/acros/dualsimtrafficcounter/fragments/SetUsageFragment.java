@@ -53,8 +53,7 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
         txInput = (EditText) view.findViewById(R.id.txamount);
         rxInput = (EditText) view.findViewById(R.id.rxamount);
@@ -71,17 +70,11 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simQuantity == 1) {
-            sim1rb.setChecked(true);
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
         }
         if (simQuantity == 2)
             sim3rb.setEnabled(false);
-        else {
-            sim1rb.setEnabled(false);
-            sim2rb.setEnabled(false);
-            sim3rb.setEnabled(false);
-        }
         total = (CheckBox) view.findViewById(R.id.checktotal);
         total.setChecked(false);
         total.setOnCheckedChangeListener(this);
@@ -89,7 +82,6 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
         txSpinner.setOnItemSelectedListener(this);
         rxSpinner.setOnItemSelectedListener(this);
         view.findViewById(R.id.buttonOK).setOnClickListener(this);
-
         if (savedInstanceState != null) {
             switch (savedInstanceState.getInt("sim")) {
                 case Constants.SIM1:
@@ -108,7 +100,6 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
             rxSpinner.setSelection(savedInstanceState.getInt("rxs"));
             txSpinner.setSelection(savedInstanceState.getInt("txs"));
         }
-
         return view;
     }
 

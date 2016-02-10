@@ -71,8 +71,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.traffic_for_date_fragment, container, false);
         pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.GONE);
@@ -82,14 +81,12 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-
         RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
         RadioButton sim2rb = (RadioButton) view.findViewById(R.id.sim2RB);
         sim2rb.setText(mOperatorNames[1]);
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-
         if (mSimQuantity == 1) {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
@@ -109,12 +106,10 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         bOK.setOnClickListener(this);
         bSetDate = (Button) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
-
         RXN.setVisibility(View.GONE);
         TXN.setVisibility(View.GONE);
         TOTN.setVisibility(View.GONE);
         night.setVisibility(View.GONE);
-
         if (savedInstanceState != null) {
             switch (savedInstanceState.getInt("sim")) {
                 case Constants.SIM1:
@@ -137,7 +132,6 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             TOTN.setText(savedInstanceState.getString("totn"));
             bSetDate.setText(savedInstanceState.getString("set"));
         }
-
         // Inflate the layout for this fragment
         return view;
     }

@@ -47,8 +47,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.test_fragment, container, false);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
@@ -59,24 +58,17 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
         sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         edit = prefs.edit();
-        if (android.os.Build.VERSION.SDK_INT != android.os.Build.VERSION_CODES.LOLLIPOP) {
-            int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
-                    : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            if (simQuantity == 1) {
-                sim2rb.setEnabled(false);
-                sim3rb.setEnabled(false);
-            }
-            if (simQuantity == 2)
-                sim3rb.setEnabled(false);
-        } else {
-            sim1rb.setEnabled(false);
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        if (simQuantity == 1) {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
         }
+        if (simQuantity == 2)
+            sim3rb.setEnabled(false);
         radioGroup.setOnCheckedChangeListener(this);
         view.findViewById(R.id.buttonOK).setOnClickListener(this);
         view.findViewById(R.id.test).setOnClickListener(this);
-
         return view;
     }
 

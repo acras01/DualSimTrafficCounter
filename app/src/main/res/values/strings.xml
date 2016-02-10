@@ -177,4 +177,6 @@
     <string name="view_white_list">View and edit white list</string>
     <string name="title_activity_white_list" translatable="false">WhiteListActivity</string>
     <string name="limit_settings">Limits</string>
+    <string name="open_fragment">Open when tap notification</string>
+    <string name="ok">Yes</string>
 </resources>

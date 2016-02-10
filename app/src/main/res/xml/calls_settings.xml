@@ -25,7 +25,7 @@
             <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_round1"
                 android:inputType="numberDecimal"
-                android:defaultValue="0"
+                android:defaultValue="10"
                 android:title="@string/time_before_limit"
                 android:summary="" />
 
@@ -87,7 +87,7 @@
             <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_round2"
                 android:inputType="numberDecimal"
-                android:defaultValue="0"
+                android:defaultValue="10"
                 android:title="@string/time_before_limit"
                 android:summary="" />
 
@@ -149,7 +149,7 @@
             <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_round3"
                 android:inputType="numberDecimal"
-                android:defaultValue="0"
+                android:defaultValue="10"
                 android:title="@string/time_before_limit"
                 android:summary="" />
 

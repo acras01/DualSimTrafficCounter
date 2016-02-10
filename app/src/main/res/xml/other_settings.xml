@@ -9,6 +9,13 @@
         android:defaultValue="true"/>
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="notification_tap"
+        android:title="@string/open_fragment"
+        android:defaultValue="true"
+        android:summaryOn="@string/notification_title"
+        android:summaryOff="@string/calls_fragment"/>
+
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
         android:key="watchdog"
         android:title="@string/use_watchdog"
         android:defaultValue="true"

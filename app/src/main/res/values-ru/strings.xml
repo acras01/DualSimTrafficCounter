@@ -171,4 +171,6 @@
     <string name="view_white_list">Просмотр и редактирование белого списка</string>
     <string name="white_list">Белый список</string>
     <string name="limit_title">Ограничение передачи данных</string>
+    <string name="open_fragment">Открывать из шторки</string>
+    <string name="ok">Да</string>
 </resources>
