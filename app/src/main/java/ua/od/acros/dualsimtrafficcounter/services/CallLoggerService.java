@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -89,6 +88,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDatabaseHelper = MyDatabase.getInstance(mContext);
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
@@ -454,6 +454,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5]))
             mResetRuleHasChanged = true;
+        if (key.equals(Constants.PREF_OTHER[5]))
+            buildNotification();
     }
 
     private DateTime getResetTime(int sim) {
@@ -587,8 +589,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         unregisterReceiver(outgoingCallReceiver);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
-            buildNotification();
         Picasso.with(mContext).cancelRequest(mTarget);
         MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);

@@ -50,7 +50,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseActionDialog;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
@@ -584,6 +583,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
             mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        if (key.equals(Constants.PREF_OTHER[24])) {
+            if (mActiveSIM == Constants.DISABLED)
+                buildNotification(mLastActiveSIM);
+            else
+                buildNotification(mActiveSIM);
+        }
     }
 
     private long[] getSIMLimits() {
@@ -1914,12 +1919,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
-            if (mActiveSIM == Constants.DISABLED)
-                buildNotification(mLastActiveSIM);
-            else
-                buildNotification(mActiveSIM);
-        }
         MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(clearReceiver);
