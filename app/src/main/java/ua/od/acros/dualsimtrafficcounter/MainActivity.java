@@ -45,7 +45,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static Context mContext;
     private SharedPreferences mPrefs;
-    private static final String XPOSED = "de.robv.android.xposed.installer";
     private static final String TRAFFIC_TAG = "traffic";
     private static final String CALLS_TAG = "calls";
     private static final String FIRST_RUN = "first_run";
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
-        if (XposedUtils.isPackageExisted(mContext, XPOSED) && mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
             mCallsItem.setVisible(true);
             mCallsItem.setEnabled(true);
         } else {
@@ -131,8 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
-        if (XposedUtils.isPackageExisted(mContext, XPOSED) && !CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) &&
-                mPrefs.getBoolean(Constants.PREF_OTHER[25], true))
+        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
         String action = getIntent().getAction();

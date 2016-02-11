@@ -15,8 +15,6 @@ public class MyNotification extends Notification {
 
     private static String mTraffic, mCalls;
     private static NotificationCompat.Builder builder;
-    private static final String XPOSED = "de.robv.android.xposed.installer";
-    private static SharedPreferences mPrefs;
 
     private static NotificationCompat.Builder newInstance(Context context) {
         if (builder == null) {
@@ -42,7 +40,7 @@ public class MyNotification extends Notification {
             calls = mCalls;
         String bigText;
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (XposedUtils.isPackageExisted(context, XPOSED) && prefs.getBoolean(Constants.PREF_OTHER[25], true))
+        if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
             bigText = context.getString(R.string.traffic)  + "\n" + traffic + "\n" +
                     context.getString(R.string.calls) + "\n" + calls + "\n";
         else

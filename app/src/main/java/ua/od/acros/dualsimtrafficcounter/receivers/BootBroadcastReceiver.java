@@ -14,11 +14,8 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
-
-    private static final String XPOSED = "de.robv.android.xposed.installer";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -26,7 +23,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         //start CountService
         context.startService(new Intent(context, TrafficCountService.class));
         //start CallLoggerService
-        if (XposedUtils.isPackageExisted(context, XPOSED) && !prefs.getBoolean(Constants.PREF_OTHER[25], false))
+        if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
             context.startService(new Intent(context, CallLoggerService.class));
 
         //Scheduled ON/OFF
