@@ -168,21 +168,19 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 DateTime now = new DateTime();
                 mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
                 mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+                long mTotal = DataFormat.getDuration(limitBundle.getString("duration"), limitBundle.getInt("spinner"));
                 switch (limitBundle.getInt("sim")) {
                     case Constants.SIM1:
-                        long mTotal1 = DataFormat.getFormatLong(limitBundle.getString("tot1"), limitBundle.getInt("tot1"));
-                        mCalls.put(Constants.CALLS1, mTotal1);
-                        mCalls.put(Constants.CALLS1_EX, mTotal1);
+                        mCalls.put(Constants.CALLS1, mTotal);
+                        mCalls.put(Constants.CALLS1_EX, mTotal);
                         break;
                     case Constants.SIM2:
-                        long mTotal2 = DataFormat.getFormatLong(limitBundle.getString("tot2"), limitBundle.getInt("tot2"));
-                        mCalls.put(Constants.CALLS2, mTotal2);
-                        mCalls.put(Constants.CALLS2_EX, mTotal2);
+                        mCalls.put(Constants.CALLS2, mTotal);
+                        mCalls.put(Constants.CALLS2_EX, mTotal);
                         break;
                     case Constants.SIM3:
-                        long mTotal3 = DataFormat.getFormatLong(limitBundle.getString("tot3"), limitBundle.getInt("tot3"));
-                        mCalls.put(Constants.CALLS3, mTotal3);
-                        mCalls.put(Constants.CALLS3_EX, mTotal3);
+                        mCalls.put(Constants.CALLS3, mTotal);
+                        mCalls.put(Constants.CALLS3_EX, mTotal);
                         break;
                 }
                 MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
@@ -190,7 +188,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 nm.notify(Constants.STARTED_ID, buildNotification());
             }
         };
-        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE_CALLS);
+        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_DURATION);
         registerReceiver(setUsageReceiver, setUsageFilter);
 
         clearReceiver = new BroadcastReceiver() {

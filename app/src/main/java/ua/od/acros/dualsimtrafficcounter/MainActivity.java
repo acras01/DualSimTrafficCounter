@@ -34,7 +34,8 @@ import java.io.InputStreamReader;
 
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
-import ua.od.acros.dualsimtrafficcounter.fragments.SetUsageFragment;
+import ua.od.acros.dualsimtrafficcounter.fragments.SetCallsDurationFragment;
+import ua.od.acros.dualsimtrafficcounter.fragments.SetTrafficUsageFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TestFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficForDateFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
@@ -49,7 +50,8 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
         TrafficForDateFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener,
-        SetUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener{
+        SetTrafficUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener,
+        SetCallsDurationFragment.OnFragmentInteractionListener {
 
     private static Context mContext;
     private SharedPreferences mPrefs;
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String ANDROID_5_0 = "API21";
     private static final String EMAIL = "email";
     private static final String MTK = "mtk";
-    private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSet, mCalls;
+    private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSetUsage, mCalls, mSetDuration;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
 
@@ -120,7 +122,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mTraffic = new TrafficFragment();
         mTrafficForDate = new TrafficForDateFragment();
         mTest = new TestFragment();
-        mSet = new SetUsageFragment();
+        mSetUsage = new SetTrafficUsageFragment();
+        mSetDuration = new SetCallsDurationFragment();
         mCalls = new CallsFragment();
 
         MobileUtils.getTelephonyManagerMethods(mContext);
@@ -350,7 +353,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 newFragment = mTest;
                 break;
             case R.id.nav_set_usage:
-                newFragment = mSet;
+                newFragment = mSetUsage;
+                break;
+            case R.id.nav_set_duration:
+                newFragment = mSetDuration;
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(mContext, SettingsActivity.class);
@@ -401,6 +407,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onCallsFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onSetDurationFragmentInteraction(Uri uri) {
 
     }
 }

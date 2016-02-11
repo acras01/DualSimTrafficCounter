@@ -410,6 +410,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         setButtonLimitText();
 
+        mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             RX1.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
                     (long) mDataMap.get(Constants.SIM1RX)));

@@ -91,4 +91,8 @@
         <item>1 секунда</item>
         <item>1 хвилина</item>
     </string-array>
+    <string-array name="duration">
+        <item>секунди</item>
+        <item>хвилини</item>
+    </string-array>
 </resources>

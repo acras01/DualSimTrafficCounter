@@ -43,7 +43,7 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
-        if (XposedUtils.isPackageExisted(getActivity(), XPOSED)) {
+        if (!XposedUtils.isPackageExisted(getActivity(), XPOSED)) {
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
         }

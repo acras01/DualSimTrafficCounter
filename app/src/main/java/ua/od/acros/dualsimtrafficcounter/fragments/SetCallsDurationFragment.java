@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,23 +21,21 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
-public class SetUsageFragment extends Fragment implements CompoundButton.OnCheckedChangeListener,
-        RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnCheckedChangeListener,
+        AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    private EditText txInput, rxInput;
-    private int mTXSpinnerSel, mRXSpinnerSel;
+    private EditText duration;
     private int mSimChecked = Constants.DISABLED;
-    private Spinner rxSpinner;
     private String[] mOperatorNames = new String[3];
-    private CheckBox total;
     private OnFragmentInteractionListener mListener;
+    private int mSpinnerSel;
 
 
-    public static SetUsageFragment newInstance() {
-        return new SetUsageFragment();
+    public static SetCallsDurationFragment newInstance() {
+        return new SetCallsDurationFragment();
     }
 
-    public SetUsageFragment() {
+    public SetCallsDurationFragment() {
         // Required empty public constructor
     }
 
@@ -54,11 +50,9 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.usage_fragment, container, false);
-        txInput = (EditText) view.findViewById(R.id.txamount);
-        rxInput = (EditText) view.findViewById(R.id.rxamount);
-        Spinner txSpinner = (Spinner) view.findViewById(R.id.spinnertx);
-        rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
+        View view = inflater.inflate(R.layout.duration_fragment, container, false);
+        duration = (EditText) view.findViewById(R.id.duration);
+        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
@@ -75,12 +69,8 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
         }
         if (simQuantity == 2)
             sim3rb.setEnabled(false);
-        total = (CheckBox) view.findViewById(R.id.checktotal);
-        total.setChecked(false);
-        total.setOnCheckedChangeListener(this);
         radioGroup.setOnCheckedChangeListener(this);
-        txSpinner.setOnItemSelectedListener(this);
-        rxSpinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(this);
         view.findViewById(R.id.buttonOK).setOnClickListener(this);
         if (savedInstanceState != null) {
             switch (savedInstanceState.getInt("sim")) {
@@ -94,11 +84,8 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
                     sim3rb.setChecked(true);
                     break;
             }
-            txInput.setText(savedInstanceState.getString("day"));
-            rxInput.setText(savedInstanceState.getString("night"));
-            total.setChecked(savedInstanceState.getBoolean("tot"));
-            rxSpinner.setSelection(savedInstanceState.getInt("rxs"));
-            txSpinner.setSelection(savedInstanceState.getInt("txs"));
+            duration.setText(savedInstanceState.getString("duration"));
+            spinner.setSelection(savedInstanceState.getInt("spinner"));
         }
         return view;
     }
@@ -107,37 +94,25 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("sim", mSimChecked);
-        outState.putInt("rxs", mTXSpinnerSel);
-        outState.putString("rx", rxInput.getText().toString());
-        outState.putInt("txs", mRXSpinnerSel);
-        outState.putString("tx", txInput.getText().toString());
-        outState.putBoolean("tot", total.isChecked());
+        outState.putInt("spinner", mSpinnerSel);
+        outState.putString("duration", duration.getText().toString());
     }
 
     @Override
     public void onResume(){
         super.onResume();
         android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);
-        toolBar.setSubtitle(R.string.action_set_usage);
+        toolBar.setSubtitle(R.string.action_set_duration);
     }
 
     @Override
     public void onClick(View view) {
         Bundle bundle = new Bundle();
-        if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
-                !txInput.getText().toString().equals("")) ||
-                (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
+        if (mSimChecked != Constants.DISABLED && !duration.getText().toString().equals("")) {
             bundle.putInt("sim", mSimChecked);
-            bundle.putString("trans", txInput.getText().toString());
-            bundle.putInt("txV", mTXSpinnerSel);
-            if (total.isChecked()) {
-                bundle.putString("rcvd", "0");
-                bundle.putInt("rxV", 0);
-            } else {
-                bundle.putString("rcvd", rxInput.getText().toString());
-                bundle.putInt("rxV", mRXSpinnerSel);
-            }
-            Intent intent = new Intent(Constants.SET_USAGE);
+            bundle.putString("duration", duration.getText().toString());
+            bundle.putInt("spinner", mSpinnerSel);
+            Intent intent = new Intent(Constants.SET_DURATION);
             intent.putExtra("data", bundle);
             getActivity().sendBroadcast(intent);
             getActivity().onBackPressed();
@@ -163,11 +138,8 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
-            case (R.id.spinnertx):
-                mTXSpinnerSel = parent.getSelectedItemPosition();
-                break;
-            case (R.id.spinnerrx):
-                mRXSpinnerSel = parent.getSelectedItemPosition();
+            case (R.id.spinner):
+                mSpinnerSel = parent.getSelectedItemPosition();
                 break;
         }
     }
@@ -177,25 +149,15 @@ public class SetUsageFragment extends Fragment implements CompoundButton.OnCheck
 
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        rxSpinner.setEnabled(!isChecked);
-        rxInput.setEnabled(!isChecked);
-        if (isChecked)
-            txInput.setHint(R.string.total);
-        else
-            txInput.setHint(R.string.transmitted);
-    }
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onSetUsageFragmentInteraction(Uri uri);
+        void onSetDurationFragmentInteraction(Uri uri);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onSetUsageFragmentInteraction(uri);
+            mListener.onSetDurationFragmentInteraction(uri);
         }
     }
 

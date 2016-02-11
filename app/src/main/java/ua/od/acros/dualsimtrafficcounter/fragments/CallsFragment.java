@@ -188,6 +188,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         if (!limit3.equals(""))
             lim3 = Long.valueOf(limit3) * Constants.MINUTE;
 
+        mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         TOT1.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS1)));
         if ((long) mCalls.get(Constants.CALLS1) >= lim1)
             TOT1.setTextColor(Color.RED);

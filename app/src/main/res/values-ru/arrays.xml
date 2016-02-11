@@ -91,4 +91,8 @@
         <item>1 секунда</item>
         <item>1 минута</item>
     </string-array>
+    <string-array name="duration">
+        <item>секунды</item>
+        <item>минуты</item>
+    </string-array>
 </resources>
