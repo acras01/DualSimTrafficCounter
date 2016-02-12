@@ -167,10 +167,13 @@ public class MobileUtils {
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        Class<?> mTelephonyClass;
+        Class<?> mTelephonyClass = null;
         try {
             mTelephonyClass = Class.forName(tm.getClass().getName());
-            if (mTelephonyClass != null) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
                     int sim = Constants.DISABLED;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -179,42 +182,56 @@ public class MobileUtils {
                             if (m.getName().equalsIgnoreCase(GET_CALL)) {
                                 m.setAccessible(true);
                                 for (int i = 0; i < simQuantity; i++) {
-                                    int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                        sim = i;
-                                        break;
+                                    try {
+                                        int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                            sim = i;
+                                            break;
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             }
                         }
                     } else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                         if (MTKUtils.isMtkDevice()) {
-                            Class<?> c = Class.forName(MEDIATEK);
-                            Method[] cm = c.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase(GET_CALL)) {
-                                    m.setAccessible(true);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                                        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                            sim = i;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if (sim == Constants.DISABLED) {
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                Method[] cm = c.getDeclaredMethods();
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_CALL)) {
                                         m.setAccessible(true);
                                         for (int i = 0; i < simQuantity; i++) {
-                                            int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
+                                            int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
                                             if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                                                 sim = i;
                                                 break;
                                             }
                                         }
                                     }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            if (sim == Constants.DISABLED) {
+                                try {
+                                    Class<?> c = Class.forName(MEDIATEK);
+                                    Method[] cm = c.getDeclaredMethods();
+                                    for (Method m : cm) {
+                                        if (m.getName().equalsIgnoreCase(GET_CALL)) {
+                                            m.setAccessible(true);
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
+                                                if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                    sim = i;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch(Exception e){
+                                    e.printStackTrace();
                                 }
                             }
                         } else {
@@ -223,10 +240,14 @@ public class MobileUtils {
                                 if (m.getName().equalsIgnoreCase(GET_CALL)) {
                                     m.setAccessible(true);
                                     for (int i = 0; i < simQuantity; i++) {
-                                        int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
-                                        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                            sim = i;
-                                            break;
+                                        try {
+                                            int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                            if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                sim = i;
+                                                break;
+                                            }
+                                        } catch(Exception e){
+                                            e.printStackTrace();
                                         }
                                     }
                                 }
@@ -238,14 +259,18 @@ public class MobileUtils {
                                         m.getParameterTypes();
                                         if (m.getParameterTypes().length > 0) {
                                             for (int i = 0; i < simQuantity; i++) {
-                                                final Object mTelephonyStub = m.invoke(tm, i);
-                                                final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-                                                final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-                                                Method getState = mClass.getDeclaredMethod(GET_CALL);
-                                                int state = (int) getState.invoke(mClass);
-                                                if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                                    sim = i;
-                                                    break;
+                                                try {
+                                                    final Object mTelephonyStub = m.invoke(tm, i);
+                                                    final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+                                                    final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+                                                    Method getState = mClass.getDeclaredMethod(GET_CALL);
+                                                    int state = (int) getState.invoke(mClass);
+                                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                        sim = i;
+                                                        break;
+                                                    }
+                                                } catch(Exception e){
+                                                    e.printStackTrace();
                                                 }
                                             }
                                         }
@@ -259,13 +284,17 @@ public class MobileUtils {
                                         if (m.getParameterTypes().length > 1) {
                                             for (int i = 0; i < simQuantity; i++) {
                                                 final Object[] params = {context, i};
-                                                final TelephonyManager mTelephonyStub = (TelephonyManager) m.invoke(tm, params);
-                                                if (mTelephonyStub != null) {
-                                                    int state = mTelephonyStub.getCallState();
-                                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                                        sim = i;
-                                                        break;
+                                                try {
+                                                    final TelephonyManager mTelephonyStub = (TelephonyManager) m.invoke(tm, params);
+                                                    if (mTelephonyStub != null) {
+                                                        int state = mTelephonyStub.getCallState();
+                                                        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                            sim = i;
+                                                            break;
+                                                        }
                                                     }
+                                                } catch(Exception e){
+                                                    e.printStackTrace();
                                                 }
                                             }
                                         }
@@ -278,10 +307,6 @@ public class MobileUtils {
                     return Constants.SIM1;
             } else
                 return Constants.SIM1;
-        } catch (Exception e0) {
-            e0.printStackTrace();
-            return Constants.SIM1;
-        }
     }
 
     public static ArrayList<String> getOperatorNames(Context context) {
@@ -317,8 +342,8 @@ public class MobileUtils {
                                     }
                                 }
                             }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         if (name.size() == 0) {
                             try {
@@ -332,8 +357,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     } else {
@@ -348,8 +373,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                         }
@@ -415,8 +440,8 @@ public class MobileUtils {
                                     }
                                 }
                             }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         if (code.size() == 0) {
                             try {
@@ -430,8 +455,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     } else {
@@ -446,8 +471,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                         if (code.size() == 0) {
@@ -510,8 +535,8 @@ public class MobileUtils {
                                     }
                                 }
                             }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         if (imei.size() == 0) {
                             try {
@@ -525,8 +550,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     } else {
@@ -541,8 +566,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                         if (imei.size() == 0) {
@@ -563,8 +588,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                         if (imei.size() == 0) {
