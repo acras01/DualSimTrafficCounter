@@ -570,6 +570,28 @@ public class MobileUtils {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
                                 for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("getSubscriberInfo")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 1) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                final Object mTelephonyStub = m.invoke(mTelephonyManager, i);
+                                                final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+                                                final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+                                                Method getId = mClass.getDeclaredMethod("getDeviceId");
+                                                imei.add(i, (String) getId.invoke(mClass));
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (Exception e0) {
+                                e0.printStackTrace();
+                            }
+                        }
+                        if (imei.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase("from")) {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
