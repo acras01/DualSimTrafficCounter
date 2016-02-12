@@ -167,17 +167,13 @@ public class MobileUtils {
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        Class<?> mTelephonyClass = null;
+        Class<?> mTelephonyClass;
         try {
             mTelephonyClass = Class.forName(tm.getClass().getName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (mTelephonyClass != null) {
-            if (simQuantity > 1) {
-                int sim = Constants.DISABLED;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
-                    try {
+            if (mTelephonyClass != null) {
+                if (simQuantity > 1) {
+                    int sim = Constants.DISABLED;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
                         Method[] cm = mTelephonyClass.getDeclaredMethods();
                         for (Method m : cm) {
                             if (m.getName().equalsIgnoreCase(GET_CALL)) {
@@ -191,12 +187,8 @@ public class MobileUtils {
                                 }
                             }
                         }
-                    } catch (Exception e0) {
-                        e0.printStackTrace();
-                    }
-                else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                    if (MTKUtils.isMtkDevice()) {
-                        try {
+                    } else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                        if (MTKUtils.isMtkDevice()) {
                             Class<?> c = Class.forName(MEDIATEK);
                             Method[] cm = c.getDeclaredMethods();
                             for (Method m : cm) {
@@ -211,13 +203,7 @@ public class MobileUtils {
                                     }
                                 }
                             }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                        if (sim == Constants.DISABLED)
-                            try {
-                                Class<?> c = Class.forName(MEDIATEK);
-                                Method[] cm = c.getDeclaredMethods();
+                            if (sim == Constants.DISABLED) {
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_CALL)) {
                                         m.setAccessible(true);
@@ -230,11 +216,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
                             }
-                    } else {
-                        try {
+                        } else {
                             Method[] cm = mTelephonyClass.getDeclaredMethods();
                             for (Method m : cm) {
                                 if (m.getName().equalsIgnoreCase(GET_CALL)) {
@@ -248,12 +231,7 @@ public class MobileUtils {
                                     }
                                 }
                             }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                        if (sim == Constants.DISABLED)
-                            try {
-                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                            if (sim == Constants.DISABLED)
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase("getITelephony")) {
                                         m.setAccessible(true);
@@ -273,12 +251,7 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e0) {
-                                e0.printStackTrace();
-                            }
-                        if (sim == Constants.DISABLED)
-                            try {
-                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                            if (sim == Constants.DISABLED)
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase("from")) {
                                         m.setAccessible(true);
@@ -298,16 +271,17 @@ public class MobileUtils {
                                         }
                                     }
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        }
                     }
-                }
-                return sim;
+                    return sim;
+                } else
+                    return Constants.SIM1;
             } else
                 return Constants.SIM1;
-        } else
+        } catch (Exception e0) {
+            e0.printStackTrace();
             return Constants.SIM1;
+        }
     }
 
     public static ArrayList<String> getOperatorNames(Context context) {
