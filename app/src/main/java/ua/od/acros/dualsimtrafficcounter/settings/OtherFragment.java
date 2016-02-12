@@ -46,6 +46,9 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         if (!XposedUtils.isPackageExisted(getActivity(), XPOSED)) {
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
+            getPreferenceScreen().getSharedPreferences().edit()
+                    .putBoolean(Constants.PREF_OTHER[24], true)
+                    .apply();
         }
         updateSummary();
     }
@@ -79,13 +82,15 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[25])) {
             if (!sharedPreferences.getBoolean(key, false)) {
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity()))
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
                     getActivity().stopService(new Intent(getActivity(), CallLoggerService.class));
+                    sharedPreferences.edit()
+                            .putBoolean(Constants.PREF_OTHER[24], true)
+                            .apply();
+                }
             } else
                 getActivity().startService(new Intent(getActivity(), CallLoggerService.class));
-            sharedPreferences.edit()
-                    .putBoolean(Constants.PREF_OTHER[24], sharedPreferences.getBoolean(key, false))
-                    .apply();
+
         }
         updateSummary();
     }

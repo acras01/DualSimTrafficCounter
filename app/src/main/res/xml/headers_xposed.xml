@@ -17,6 +17,13 @@
     </header>
 
     <header
+        android:id="@+id/calls_settings"
+        android:fragment="ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment"
+        android:summary="@string/calls_limit_summary"
+        android:title="@string/calls_limit_title">
+    </header>
+
+    <header
         android:id="@+id/name_settings"
         android:fragment="ua.od.acros.dualsimtrafficcounter.settings.OperatorFragment"
         android:summary="@string/name_summary"

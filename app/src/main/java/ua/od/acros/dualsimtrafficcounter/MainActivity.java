@@ -46,6 +46,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String ANDROID_5_0 = "API21";
     private static final String EMAIL = "email";
     private static final String MTK = "mtk";
+    private static final String XPOSED = "de.robv.android.xposed.installer";
     private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSetUsage, mCalls, mSetDuration;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
@@ -132,6 +134,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
+        if (!XposedUtils.isPackageExisted(mContext, XPOSED))
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_OTHER[24], true)
+                    .apply();
         if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
