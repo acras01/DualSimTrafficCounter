@@ -39,6 +39,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 public class MobileUtils {
 
     private static final String MEDIATEK = "com.mediatek.telephony.TelephonyManagerEx";
+    private static final String GENERIC = "android.telephony.TelephonyManager";
     private static final String GET_NAME = "getNetworkOperatorName";
     private static final String GET_IMEI = "getDeviceId";
     private static final String GET_CODE = "getSimOperator";
@@ -102,11 +103,14 @@ public class MobileUtils {
                         for (Method m : cm) {
                             if (m.getName().equalsIgnoreCase(GET_IMEI)) {
                                 m.setAccessible(true);
-                                for (int i = 0; i < 2; i++) {
-                                    String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
-                                    String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
-                                    if (idNext != null && !id.equals(idNext))
-                                        ret++;
+                                m.getParameterTypes();
+                                if (m.getParameterTypes().length > 0) {
+                                    for (int i = 0; i < 2; i++) {
+                                        String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                        String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
+                                        if (idNext != null && !id.equals(idNext))
+                                            ret++;
+                                    }
                                 }
                             }
                         }
@@ -120,7 +124,7 @@ public class MobileUtils {
                                 if (m.getName().equalsIgnoreCase("getITelephony")) {
                                     m.setAccessible(true);
                                     m.getParameterTypes();
-                                    if (m.getParameterTypes().length > 1) {
+                                    if (m.getParameterTypes().length > 0) {
                                         for (int i = 0; i < 2; i++) {
                                             final Object mTelephonyStub = m.invoke(tm, i);
                                             if (mTelephonyStub != null)
@@ -254,7 +258,7 @@ public class MobileUtils {
                                     if (m.getName().equalsIgnoreCase("getITelephony")) {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
-                                        if (m.getParameterTypes().length > 1) {
+                                        if (m.getParameterTypes().length > 0) {
                                             for (int i = 0; i < simQuantity; i++) {
                                                 final Object mTelephonyStub = m.invoke(tm, i);
                                                 final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
@@ -1342,7 +1346,7 @@ public class MobileUtils {
             String fileName = "telephony.txt";
             File file = new File(dir, fileName);
             FileOutputStream os = new FileOutputStream(file);
-            Class<?> c = Class.forName("android.telephony.TelephonyManager");
+            Class<?> c = Class.forName(GENERIC);
             Method[] cm = c.getDeclaredMethods();
             for (Method m : cm) {
                 out = m.toString() + "\n";
