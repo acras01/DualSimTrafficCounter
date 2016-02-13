@@ -45,10 +45,7 @@ public class TimePreference extends DialogPreference {
     protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
         mPicker = (TimePicker) v.findViewById(R.id.prefTimePicker);
-        if (!DateFormat.is24HourFormat(getContext()))
-            mPicker.setIs24HourView(false);
-        else
-            mPicker.setIs24HourView(true);
+        mPicker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             mPicker.setHour(mLastHour);
             mPicker.setMinute(mLastMinute);
