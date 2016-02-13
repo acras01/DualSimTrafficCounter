@@ -52,6 +52,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="time1"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_of_end"/>
 
         <ListPreference
@@ -84,10 +85,12 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeoff1"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_off"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeon1"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_on"/>
 
         </PreferenceCategory>
@@ -157,11 +160,13 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nighton1"
+            android:dialogLayout="@layout/time_preference"
             android:dependency="usenight1"
             android:title="@string/time_on"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nightoff1"
+            android:dialogLayout="@layout/time_preference"
             android:dependency="usenight1"
             android:title="@string/time_off"/>
 
@@ -213,6 +218,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="time2"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_of_end"/>
 
         <ListPreference
@@ -245,10 +251,12 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeoff2"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_off"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeon2"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_on"/>
 
         </PreferenceCategory>
@@ -318,11 +326,13 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nighton2"
+            android:dialogLayout="@layout/time_preference"
             android:dependency="usenight2"
             android:title="@string/time_on"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nightoff2"
+            android:dialogLayout="@layout/time_preference"
             android:dependency="usenight2"
             android:title="@string/time_off"/>
 
@@ -374,6 +384,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="time3"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_of_end"/>
 
         <ListPreference
@@ -406,10 +417,12 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeoff3"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_off"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="timeon3"
+            android:dialogLayout="@layout/time_preference"
             android:title="@string/time_on"/>
 
         </PreferenceCategory>
@@ -479,11 +492,13 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nighton3"
+            android:dialogLayout="@layout/time_preference"
             android:dependency="usenight3"
             android:title="@string/time_on"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
             android:key="nightoff3"
+            android:dialogLayout="@layout/time_preference"
             android:dependency="usenight3"
             android:title="@string/time_off"/>
 

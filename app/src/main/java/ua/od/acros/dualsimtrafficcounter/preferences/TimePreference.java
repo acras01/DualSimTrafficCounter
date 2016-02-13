@@ -31,7 +31,7 @@ public class TimePreference extends DialogPreference {
         setNegativeButtonText(android.R.string.cancel);
     }
 
-    @Override
+    /*@Override
     protected View onCreateDialogView() {
         mPicker = new TimePicker(getContext());
         if (!DateFormat.is24HourFormat(getContext()))
@@ -39,21 +39,36 @@ public class TimePreference extends DialogPreference {
         else
             mPicker.setIs24HourView(true);
         return(mPicker);
-    }
+    }*/
 
     @Override
     protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
-        mPicker.setCurrentHour(mLastHour);
-        mPicker.setCurrentMinute(mLastMinute);
+        mPicker = (TimePicker) v.findViewById(R.id.prefTimePicker);
+        if (!DateFormat.is24HourFormat(getContext()))
+            mPicker.setIs24HourView(false);
+        else
+            mPicker.setIs24HourView(true);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            mPicker.setHour(mLastHour);
+            mPicker.setMinute(mLastMinute);
+        } else {
+            mPicker.setCurrentHour(mLastHour);
+            mPicker.setCurrentMinute(mLastMinute);
+        }
     }
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (positiveResult) {
-            mLastHour = mPicker.getCurrentHour();
-            mLastMinute = mPicker.getCurrentMinute();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                mLastHour = mPicker.getHour();
+                mLastMinute = mPicker.getMinute();
+            } else {
+                mLastHour = mPicker.getCurrentHour();
+                mLastMinute = mPicker.getCurrentMinute();
+            }
             String hour, minute;
             if (mLastHour <= 9)
                 hour = "0" + String.valueOf(mLastHour);

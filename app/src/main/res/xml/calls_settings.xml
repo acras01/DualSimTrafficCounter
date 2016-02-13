@@ -31,6 +31,7 @@
 
             <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
                 android:key="calls_time1"
+                android:dialogLayout="@layout/time_preference"
                 android:title="@string/time_of_end"/>
 
             <ListPreference
@@ -93,6 +94,7 @@
 
             <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
                 android:key="calls_time2"
+                android:dialogLayout="@layout/time_preference"
                 android:title="@string/time_of_end"/>
 
             <ListPreference
@@ -155,6 +157,7 @@
 
             <ua.od.acros.dualsimtrafficcounter.preferences.TimePreference
                 android:key="calls_time3"
+                android:dialogLayout="@layout/time_preference"
                 android:title="@string/time_of_end"/>
 
             <ListPreference
