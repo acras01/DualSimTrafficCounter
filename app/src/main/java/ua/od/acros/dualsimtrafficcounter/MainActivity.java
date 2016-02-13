@@ -34,7 +34,8 @@ import java.io.InputStreamReader;
 
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
-import ua.od.acros.dualsimtrafficcounter.fragments.SetUsageFragment;
+import ua.od.acros.dualsimtrafficcounter.fragments.SetCallsDurationFragment;
+import ua.od.acros.dualsimtrafficcounter.fragments.SetTrafficUsageFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TestFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficForDateFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
@@ -50,18 +51,19 @@ import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
         TrafficForDateFragment.OnFragmentInteractionListener, TestFragment.OnFragmentInteractionListener,
-        SetUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener{
+        SetTrafficUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener,
+        SetCallsDurationFragment.OnFragmentInteractionListener {
 
     private static Context mContext;
     private SharedPreferences mPrefs;
-    private static final String XPOSED = "de.robv.android.xposed.installer";
     private static final String TRAFFIC_TAG = "traffic";
     private static final String CALLS_TAG = "calls";
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String EMAIL = "email";
     private static final String MTK = "mtk";
-    private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSet, mCalls;
+    private static final String XPOSED = "de.robv.android.xposed.installer";
+    private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSetUsage, mCalls, mSetDuration;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
 
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
-        if (XposedUtils.isPackageExisted(mContext, XPOSED) && mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
             mCallsItem.setVisible(true);
             mCallsItem.setEnabled(true);
         } else {
@@ -122,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mTraffic = new TrafficFragment();
         mTrafficForDate = new TrafficForDateFragment();
         mTest = new TestFragment();
-        mSet = new SetUsageFragment();
+        mSetUsage = new SetTrafficUsageFragment();
+        mSetDuration = new SetCallsDurationFragment();
         mCalls = new CallsFragment();
 
         MobileUtils.getTelephonyManagerMethods(mContext);
@@ -131,7 +134,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startService(new Intent(mContext, WatchDogService.class));
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
-        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[25], true))
+        if (!XposedUtils.isPackageExisted(mContext, XPOSED))
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_OTHER[24], true)
+                    .apply();
+        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
         String action = getIntent().getAction();
@@ -352,7 +359,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 newFragment = mTest;
                 break;
             case R.id.nav_set_usage:
-                newFragment = mSet;
+                newFragment = mSetUsage;
+                break;
+            case R.id.nav_set_duration:
+                newFragment = mSetDuration;
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(mContext, SettingsActivity.class);
@@ -403,6 +413,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onCallsFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onSetDurationFragmentInteraction(Uri uri) {
 
     }
 }

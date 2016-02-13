@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -29,10 +30,14 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.headers, target);
+        mContext = SettingsActivity.this;
+        if (mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
+                .getBoolean(Constants.PREF_OTHER[25], false))
+            loadHeadersFromResource(R.xml.headers_xposed, target);
+        else
+            loadHeadersFromResource(R.xml.headers, target);
         setTitle(R.string.action_settings);
         mHeaders = target;
-        mContext = SettingsActivity.this;
     }
 
     public static Context getAppContext() {

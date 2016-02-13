@@ -5,7 +5,7 @@
     <string name="action_start">Start service</string>
     <string name="action_disable">Disable mobile data</string>
     <string name="action_enable">Enable mobile data</string>
-    <string name="action_set_usage">Set usage</string>
+    <string name="action_set_usage">Set traffic usage</string>
     <string name="choose_sim">Choose SIM</string>
     <string name="data_dis">Mobile data disabled</string>
     <string name="other_network">Mobile data disabled. Other network is active (Wi-Fi, Bluetooth etc.)</string>
@@ -179,4 +179,5 @@
     <string name="limit_settings">Limits</string>
     <string name="open_fragment">Open when tap notification</string>
     <string name="ok">Yes</string>
+    <string name="action_set_duration">Set calls duration</string>
 </resources>

@@ -63,4 +63,17 @@ public class DataFormat {
         }
     }
 
+    public static long getDuration(String duration, int spinner) {
+        long res = 0;
+        long dData = Long.valueOf(duration);
+        switch (spinner) {
+            case 0:
+                res = dData * Constants.SECOND;
+                break;
+            case 1:
+                res = dData * Constants.MINUTE;
+                break;
+        }
+        return res;
+    }
 }

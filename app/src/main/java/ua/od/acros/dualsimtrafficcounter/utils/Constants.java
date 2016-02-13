@@ -108,5 +108,5 @@ public class Constants {
     public static final String CALLS3_EX = "calls3_ex";
     public static final String OUTGOING_CALL_COUNT = "count_call_duration";
     public static final String CLEAR_CALLS = "clear_calls";
-    public static final String SET_USAGE_CALLS = "usage_calls";
+    public static final String SET_DURATION = "duration";
 }

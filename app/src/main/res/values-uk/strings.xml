@@ -173,4 +173,5 @@
     <string name="limit_title">Обмеження мобільного трафіку</string>
     <string name="open_fragment">Відкривати зі шторки</string>
     <string name="ok">Так</string>
+    <string name="action_set_duration">Встановити тривалість дзвінків</string>
 </resources>

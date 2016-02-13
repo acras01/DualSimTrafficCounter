@@ -38,6 +38,13 @@ import ua.od.acros.dualsimtrafficcounter.R;
 
 public class MobileUtils {
 
+    private static final String MEDIATEK = "com.mediatek.telephony.TelephonyManagerEx";
+    private static final String GENERIC = "android.telephony.TelephonyManager";
+    private static final String GET_NAME = "getNetworkOperatorName";
+    private static final String GET_IMEI = "getDeviceId";
+    private static final String GET_CODE = "getSimOperator";
+    private static final String GET_CALL = "getCallState";
+    private static final String GET_DATA = "getDataState";
     private static int mLastActiveSIM;
 
     public static int isMultiSim(Context context) {
@@ -46,41 +53,24 @@ public class MobileUtils {
             return sm.getActiveSubscriptionInfoList().size();
         } else {
             int ret = 1;
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             Class<?> mTelephonyClass = null;
             try {
-                mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+                mTelephonyClass = Class.forName(tm.getClass().getName());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             if (mTelephonyClass != null) {
-                try {
-                    Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                    Method[] cm = c.getDeclaredMethods();
-                    for (Method m : cm) {
-                        if (m.getName().equalsIgnoreCase("getDeviceId")) {
-                            m.setAccessible(true);
-                            for (int i = 0; i < 2; i++) {
-                                String id = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
-                                String idNext = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i + 1);
-                                if (idNext != null && !id.equals(idNext))
-                                    ret++;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (ret == 1)
+                if (MTKUtils.isMtkDevice()) {
                     try {
-                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                        Class<?> c = Class.forName(MEDIATEK);
                         Method[] cm = c.getDeclaredMethods();
                         for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getDeviceId")) {
+                            if (m.getName().equalsIgnoreCase(GET_IMEI)) {
                                 m.setAccessible(true);
                                 for (int i = 0; i < 2; i++) {
-                                    String id = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
-                                    String idNext = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
+                                    String id = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                                    String idNext = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i + 1);
                                     if (idNext != null && !id.equals(idNext))
                                         ret++;
                                 }
@@ -89,34 +79,36 @@ public class MobileUtils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                if (ret == 1)
-                    try {
-                        Method[] cm = mTelephonyClass.getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getDeviceId")) {
-                                m.setAccessible(true);
-                                for (int i = 0; i < 2; i++) {
-                                    String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
-                                    String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
-                                    if (idNext != null && !id.equals(idNext))
-                                        ret++;
+                    if (ret == 1)
+                        try {
+                            Class<?> c = Class.forName(MEDIATEK);
+                            Method[] cm = c.getDeclaredMethods();
+                            for (Method m : cm) {
+                                if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                                    m.setAccessible(true);
+                                    for (int i = 0; i < 2; i++) {
+                                        String id = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                        String idNext = (String) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
+                                        if (idNext != null && !id.equals(idNext))
+                                            ret++;
+                                    }
                                 }
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                if (ret == 1)
+                } else {
                     try {
                         Method[] cm = mTelephonyClass.getDeclaredMethods();
                         for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getITelephony")) {
+                            if (m.getName().equalsIgnoreCase(GET_IMEI)) {
                                 m.setAccessible(true);
                                 m.getParameterTypes();
-                                if (m.getParameterTypes().length > 1) {
+                                if (m.getParameterTypes().length > 0) {
                                     for (int i = 0; i < 2; i++) {
-                                        final Object mTelephonyStub = m.invoke(mTelephonyManager, i);
-                                        if (mTelephonyStub != null)
+                                        String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                        String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
+                                        if (idNext != null && !id.equals(idNext))
                                             ret++;
                                     }
                                 }
@@ -125,6 +117,46 @@ public class MobileUtils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    if (ret == 1)
+                        try {
+                            Method[] cm = mTelephonyClass.getDeclaredMethods();
+                            for (Method m : cm) {
+                                if (m.getName().equalsIgnoreCase("getITelephony")) {
+                                    m.setAccessible(true);
+                                    m.getParameterTypes();
+                                    if (m.getParameterTypes().length > 0) {
+                                        for (int i = 0; i < 2; i++) {
+                                            final Object mTelephonyStub = m.invoke(tm, i);
+                                            if (mTelephonyStub != null)
+                                                ret++;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    if (ret == 1)
+                        try {
+                            Method[] cm = mTelephonyClass.getDeclaredMethods();
+                            for (Method m : cm) {
+                                if (m.getName().equalsIgnoreCase("from")) {
+                                    m.setAccessible(true);
+                                    m.getParameterTypes();
+                                    if (m.getParameterTypes().length > 1) {
+                                        for (int i = 0; i < 2; i++) {
+                                            final Object[] params = {context, i};
+                                            final Object mTelephonyStub = m.invoke(tm, params);
+                                            if (mTelephonyStub != null)
+                                                ret++;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
             }
             return ret;
         }
@@ -134,104 +166,44 @@ public class MobileUtils {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         Class<?> mTelephonyClass = null;
         try {
-            mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
-        } catch (ClassNotFoundException e) {
+            mTelephonyClass = Class.forName(tm.getClass().getName());
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (mTelephonyClass != null) {
-            if (simQuantity > 1) {
-                int sim = Constants.DISABLED;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
-                    try {
+                if (simQuantity > 1) {
+                    int sim = Constants.DISABLED;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
                         Method[] cm = mTelephonyClass.getDeclaredMethods();
                         for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getCallState")) {
+                            if (m.getName().equalsIgnoreCase(GET_CALL)) {
                                 m.setAccessible(true);
                                 for (int i = 0; i < simQuantity; i++) {
-                                    int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                        sim = i;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    } catch (Exception e0) {
-                        e0.printStackTrace();
-                    }
-                else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                    try {
-                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                        Method[] cm = c.getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getCallState")) {
-                                m.setAccessible(true);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                        sim = i;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    } catch (Exception e0) {
-                        e0.printStackTrace();
-                    }
-                    if (sim == Constants.DISABLED)
-                        try {
-                            Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                            Method[] cm = c.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getCallState")) {
-                                    m.setAccessible(true);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
+                                    try {
+                                        int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
                                         if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                                             sim = i;
                                             break;
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
                         }
-                    if (sim == Constants.DISABLED)
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getCallState")) {
-                                    m.setAccessible(true);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
-                                        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                            sim = i;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                    if (sim == Constants.DISABLED)
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getITelephony")) {
-                                    m.setAccessible(true);
-                                    m.getParameterTypes();
-                                    if (m.getParameterTypes().length > 1) {
+                    } else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                        if (MTKUtils.isMtkDevice()) {
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                Method[] cm = c.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_CALL)) {
+                                        m.setAccessible(true);
                                         for (int i = 0; i < simQuantity; i++) {
-                                            final Object mTelephonyStub = m.invoke(mTelephonyManager, i);
-                                            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-                                            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-                                            Method getState = mClass.getDeclaredMethod("getCallState");
-                                            int state = (int) getState.invoke(mClass);
+                                            int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), i);
                                             if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                                                 sim = i;
                                                 break;
@@ -239,16 +211,102 @@ public class MobileUtils {
                                         }
                                     }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
+                            if (sim == Constants.DISABLED) {
+                                try {
+                                    Class<?> c = Class.forName(MEDIATEK);
+                                    Method[] cm = c.getDeclaredMethods();
+                                    for (Method m : cm) {
+                                        if (m.getName().equalsIgnoreCase(GET_CALL)) {
+                                            m.setAccessible(true);
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                int state = (int) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
+                                                if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                    sim = i;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch(Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            Method[] cm = mTelephonyClass.getDeclaredMethods();
+                            for (Method m : cm) {
+                                if (m.getName().equalsIgnoreCase(GET_CALL)) {
+                                    m.setAccessible(true);
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        try {
+                                            int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                            if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                sim = i;
+                                                break;
+                                            }
+                                        } catch(Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                            if (sim == Constants.DISABLED)
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("getITelephony")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 0) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                try {
+                                                    final Object mTelephonyStub = m.invoke(tm, i);
+                                                    final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+                                                    final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+                                                    Method getState = mClass.getDeclaredMethod(GET_CALL);
+                                                    int state = (int) getState.invoke(mClass);
+                                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                        sim = i;
+                                                        break;
+                                                    }
+                                                } catch(Exception e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            if (sim == Constants.DISABLED)
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("from")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 1) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                final Object[] params = {context, i};
+                                                try {
+                                                    final TelephonyManager mTelephonyStub = (TelephonyManager) m.invoke(tm, params);
+                                                    if (mTelephonyStub != null) {
+                                                        int state = mTelephonyStub.getCallState();
+                                                        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                            sim = i;
+                                                            break;
+                                                        }
+                                                    }
+                                                } catch(Exception e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                         }
-                }
-                return sim;
+                    }
+                    return sim;
+                } else
+                    return Constants.SIM1;
             } else
                 return Constants.SIM1;
-        } else
-            return Constants.SIM1;
     }
 
     public static ArrayList<String> getOperatorNames(Context context) {
@@ -263,87 +321,87 @@ public class MobileUtils {
             SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             Class<?> mTelephonyClass = null;
             try {
-                mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+                mTelephonyClass = Class.forName(tm.getClass().getName());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
-                    try {
-                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                        Method[] cm = c.getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getNetworkOperatorName")) {
-                                m.setAccessible(true);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    name.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), i));
-                                }
-                            }
-                        }
-                    } catch (Exception e0) {
-                        e0.printStackTrace();
-                    }
-                    if (name.size() == 0) {
+                    if (MTKUtils.isMtkDevice()) {
                         try {
-                            Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                            Class<?> c = Class.forName(MEDIATEK);
                             Method[] cm = c.getDeclaredMethods();
                             for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getNetworkOperatorName")) {
+                                if (m.getName().equalsIgnoreCase(GET_NAME)) {
                                     m.setAccessible(true);
                                     for (int i = 0; i < simQuantity; i++) {
-                                        name.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
-                                    }
-                                }
-                            }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                    }
-                    if (name.size() == 0) {
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getNetworkOperatorName")) {
-                                    m.setAccessible(true);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        name.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
-                                    }
-                                }
-                            }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-
-                    }
-                    if (name.size() == 0) {
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getITelephony")) {
-                                    m.setAccessible(true);
-                                    m.getParameterTypes();
-                                    if (m.getParameterTypes().length > 1) {
-                                        for (int i = 0; i < simQuantity; i++) {
-                                            final Object mTelephonyStub = m.invoke(mTelephonyManager, i);
-                                            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-                                            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-                                            Method method = mClass.getDeclaredMethod("getNetworkOperatorName");
-                                            name.add(i, (String) method.invoke(mClass));
-                                        }
+                                        name.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), i));
                                     }
                                 }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        if (name.size() == 0) {
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                Method[] cm = c.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_NAME)) {
+                                        m.setAccessible(true);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            name.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        if (name.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_NAME)) {
+                                        m.setAccessible(true);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            name.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        if (name.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("from")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 1) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                final Object[] params = {context, i};
+                                                final TelephonyManager mTelephonyStub = (TelephonyManager) m.invoke(tm, params);
+                                                if (mTelephonyStub != null)
+                                                    name.add(i, mTelephonyStub.getNetworkOperatorName());
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                } else {
-                    TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                } else
                     name.add(tm.getNetworkOperatorName());
-                }
             }
         }
         return name;
@@ -361,86 +419,86 @@ public class MobileUtils {
             SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             Class<?> mTelephonyClass = null;
             try {
-                mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+                mTelephonyClass = Class.forName(tm.getClass().getName());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
-                    try {
-                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                        Method[] cm = c.getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getSimOperator")) {
-                                m.setAccessible(true);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    code.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), i));
-                                }
-                            }
-                        }
-                    } catch (Exception e0) {
-                        e0.printStackTrace();
-                    }
-                    if (code.size() == 0) {
+                    if (MTKUtils.isMtkDevice()) {
                         try {
-                            Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                            Class<?> c = Class.forName(MEDIATEK);
                             Method[] cm = c.getDeclaredMethods();
                             for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getSimOperator")) {
+                                if (m.getName().equalsIgnoreCase(GET_CODE)) {
                                     m.setAccessible(true);
                                     for (int i = 0; i < simQuantity; i++) {
-                                        code.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
-                                    }
-                                }
-                            }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                    }
-                    if (code.size() == 0) {
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getSimOperator")) {
-                                    m.setAccessible(true);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        code.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
-                                    }
-                                }
-                            }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                    }
-                    if (code.size() == 0) {
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getITelephony")) {
-                                    m.setAccessible(true);
-                                    m.getParameterTypes();
-                                    if (m.getParameterTypes().length > 1) {
-                                        for (int i = 0; i < simQuantity; i++) {
-                                            final Object mTelephonyStub = m.invoke(mTelephonyManager, i);
-                                            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-                                            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-                                            Method method = mClass.getDeclaredMethod("getSimOperator");
-                                            code.add(i, (String) method.invoke(mClass));
-                                        }
+                                        code.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), i));
                                     }
                                 }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        if (code.size() == 0) {
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                Method[] cm = c.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_CODE)) {
+                                        m.setAccessible(true);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            code.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        if (code.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_CODE)) {
+                                        m.setAccessible(true);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            code.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (code.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("from")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 1) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                final Object[] params = {context, i};
+                                                final TelephonyManager mTelephonyStub = (TelephonyManager) m.invoke(tm, params);
+                                                if (mTelephonyStub != null)
+                                                    code.add(i, mTelephonyStub.getSimOperator());
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                } else {
-                    TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                } else
                     code.add(tm.getSimOperator());
-                }
             }
         }
         return code;
@@ -451,92 +509,113 @@ public class MobileUtils {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
             for (int i = 0; i < simQuantity; i++) {
-                imei.add(i, mTelephonyManager.getDeviceId(i));
+                imei.add(i, tm.getDeviceId(i));
             }
-        } else {
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        else {
             Class<?> mTelephonyClass = null;
             try {
-                mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+                mTelephonyClass = Class.forName(tm.getClass().getName());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
-                    try {
-                        Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                        Method[] cm = c.getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getDeviceId")) {
-                                m.setAccessible(true);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    imei.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), i));
-                                }
-                            }
-                        }
-                    } catch (Exception e0) {
-                        e0.printStackTrace();
-                    }
-                    if (imei.size() == 0) {
+                    if (MTKUtils.isMtkDevice()) {
                         try {
-                            Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
+                            Class<?> c = Class.forName(MEDIATEK);
                             Method[] cm = c.getDeclaredMethods();
                             for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getDeviceId")) {
+                                if (m.getName().equalsIgnoreCase(GET_IMEI)) {
                                     m.setAccessible(true);
                                     for (int i = 0; i < simQuantity; i++) {
-                                        imei.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
-                                    }
-                                }
-                            }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                    }
-                    if (imei.size() == 0) {
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getDeviceId")) {
-                                    m.setAccessible(true);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        imei.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
-                                    }
-                                }
-                            }
-                        } catch (Exception e0) {
-                            e0.printStackTrace();
-                        }
-                    }
-                    if (imei.size() == 0) {
-                        try {
-                            Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getITelephony")) {
-                                    m.setAccessible(true);
-                                    m.getParameterTypes();
-                                    if (m.getParameterTypes().length > 1) {
-                                        for (int i = 0; i < simQuantity; i++) {
-                                            final Object mTelephonyStub = m.invoke(mTelephonyManager, i);
-                                            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-                                            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-                                            Method method = mClass.getDeclaredMethod("getDeviceId");
-                                            imei.add(i, (String) method.invoke(mClass));
-                                        }
+                                        imei.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), i));
                                     }
                                 }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        if (imei.size() == 0) {
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                Method[] cm = c.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                                        m.setAccessible(true);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            imei.add(i, (String) m.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        if (imei.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                                        m.setAccessible(true);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            imei.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (imei.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("getSubscriberInfo")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 1) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                final Object mTelephonyStub = m.invoke(tm, i);
+                                                final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+                                                final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+                                                Method getId = mClass.getDeclaredMethod(GET_IMEI);
+                                                imei.add(i, (String) getId.invoke(mClass));
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (imei.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("from")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 1) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                final Object[] params = {context, i};
+                                                final TelephonyManager mTelephonyStub = (TelephonyManager) m.invoke(tm, params);
+                                                if (mTelephonyStub != null)
+                                                    imei.add(i, mTelephonyStub.getDeviceId());
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                } else {
-                    TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                } else
                     imei.add(tm.getDeviceId());
-                }
             }
         }
         return imei;
@@ -663,10 +742,10 @@ public class MobileUtils {
             SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             Class<?> mTelephonyClass = null;
             try {
-                mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+                mTelephonyClass = Class.forName(tm.getClass().getName());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -687,55 +766,57 @@ public class MobileUtils {
                         e.printStackTrace();
                     }
                     if (sim == Constants.DISABLED) {
-                        for (int i = 0; i < simQuantity; i++) {
-                            int state = Constants.DISABLED;
-                            try {
-                                Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                                Method[] cm = c.getDeclaredMethods();
-                                for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase("getDataState")) {
-                                        m.setAccessible(true);
-                                        state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
-                                        break;
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            if (state == TelephonyManager.DATA_CONNECTED
-                                    || state == TelephonyManager.DATA_CONNECTING
-                                    || state == TelephonyManager.DATA_SUSPENDED) {
-                                sim = i;
-                                out = "getDataStateExInt " + sim;
-                                break;
-                            }
-                        }
-                    }
-                    if (sim == Constants.DISABLED) {
-                        for (int i = 0; i < simQuantity; i++) {
-                            int state = Constants.DISABLED;
-                            try {
-                                Class<?> c = Class.forName("com.mediatek.telephony.TelephonyManagerEx");
-                                Method[] cm = c.getDeclaredMethods();
-                                for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase("getDataState")) {
-                                        m.setAccessible(true);
-                                        m.getParameterTypes();
-                                        if (m.getParameterTypes().length > 1) {
-                                            state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                        if (MTKUtils.isMtkDevice()) {
+                            for (int i = 0; i < simQuantity; i++) {
+                                int state = Constants.DISABLED;
+                                try {
+                                    Class<?> c = Class.forName(MEDIATEK);
+                                    Method[] cm = c.getDeclaredMethods();
+                                    for (Method m : cm) {
+                                        if (m.getName().equalsIgnoreCase(GET_DATA)) {
+                                            m.setAccessible(true);
+                                            state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
                                             break;
                                         }
                                     }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                if (state == TelephonyManager.DATA_CONNECTED
+                                        || state == TelephonyManager.DATA_CONNECTING
+                                        || state == TelephonyManager.DATA_SUSPENDED) {
+                                    sim = i;
+                                    out = "getDataStateExInt " + sim;
+                                    break;
+                                }
                             }
-                            if (state == TelephonyManager.DATA_CONNECTED
-                                    || state == TelephonyManager.DATA_CONNECTING
-                                    || state == TelephonyManager.DATA_SUSPENDED) {
-                                sim = i;
-                                out = "getDataStateExLong " + sim;
-                                break;
+                        }
+                        if (sim == Constants.DISABLED) {
+                            for (int i = 0; i < simQuantity; i++) {
+                                int state = Constants.DISABLED;
+                                try {
+                                    Class<?> c = Class.forName(MEDIATEK);
+                                    Method[] cm = c.getDeclaredMethods();
+                                    for (Method m : cm) {
+                                        if (m.getName().equalsIgnoreCase(GET_DATA)) {
+                                            m.setAccessible(true);
+                                            m.getParameterTypes();
+                                            if (m.getParameterTypes().length > 1) {
+                                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                if (state == TelephonyManager.DATA_CONNECTED
+                                        || state == TelephonyManager.DATA_CONNECTING
+                                        || state == TelephonyManager.DATA_SUSPENDED) {
+                                    sim = i;
+                                    out = "getDataStateExLong " + sim;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -745,7 +826,7 @@ public class MobileUtils {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
                                 for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase("getDataState")) {
+                                    if (m.getName().equalsIgnoreCase(GET_DATA)) {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
                                         if (m.getParameterTypes().length > 1) {
@@ -776,10 +857,10 @@ public class MobileUtils {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
                                         if (m.getParameterTypes().length > 1) {
-                                            final Object mTelephonyStub = m.invoke(mTelephonyManager, i);
+                                            final Object mTelephonyStub = m.invoke(tm, i);
                                             final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
                                             final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-                                            Method getState = mClass.getDeclaredMethod("getDataState");
+                                            Method getState = mClass.getDeclaredMethod(GET_DATA);
                                             state = (int) getState.invoke(mClass);
                                             break;
                                         }
@@ -859,11 +940,11 @@ public class MobileUtils {
     }
 
     private static String getTransactionCode(Context context) throws Exception {
-        final TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        final Class<?> mTelephonyClass = Class.forName(mTelephonyManager.getClass().getName());
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        final Class<?> mTelephonyClass = Class.forName(tm.getClass().getName());
         final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
         mTelephonyMethod.setAccessible(true);
-        final Object mTelephonyStub = mTelephonyMethod.invoke(mTelephonyManager);
+        final Object mTelephonyStub = mTelephonyMethod.invoke(tm);
         final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
         final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
         final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
@@ -1264,7 +1345,7 @@ public class MobileUtils {
             String fileName = "telephony.txt";
             File file = new File(dir, fileName);
             FileOutputStream os = new FileOutputStream(file);
-            Class<?> c = Class.forName("android.telephony.TelephonyManager");
+            Class<?> c = Class.forName(GENERIC);
             Method[] cm = c.getDeclaredMethods();
             for (Method m : cm) {
                 out = m.toString() + "\n";
