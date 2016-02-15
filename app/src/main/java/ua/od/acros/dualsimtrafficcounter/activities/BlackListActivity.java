@@ -2,15 +2,16 @@ package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.acra.ACRA;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.BlackListAdapter;
@@ -52,19 +53,29 @@ public class BlackListActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        List<String> checked = mArrayAdapter.getCheckedItems();
-        if (mList.removeAll(checked))
-            try {
-                if (item.getItemId() == R.id.save) {
-                    MyDatabase.writeBlackList(mKey, mList, mDatabaseHelper);
-                    finish();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
+        try {
+            if (item.getItemId() == R.id.save) {
+                new SaveTask().execute();
+                finish();
             }
-        else
-            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    class SaveTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            MyDatabase.writeBlackList(mKey, mList, mDatabaseHelper);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -57,6 +57,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private int mSimQuantity;
     private OnFragmentInteractionListener mListener;
     private boolean mIsRunning = false;
+    private Context mContext;
 
     public static TrafficFragment newInstance(String param1, String param2) {
         return new TrafficFragment();
@@ -70,15 +71,16 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity());
+        mContext = getActivity();
+        mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
-        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
-        mDatabaseHelper = MyDatabase.getInstance(getActivity());
+        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mDatabaseHelper = MyDatabase.getInstance(mContext);
         mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
-        mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         mIsNight =  TrafficCountService.getIsNight();
@@ -172,7 +174,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             }
         };
         IntentFilter countServiceFilter = new IntentFilter(Constants.BROADCAST_ACTION);
-        getActivity().registerReceiver(dataReceiver, countServiceFilter);
+        mContext.registerReceiver(dataReceiver, countServiceFilter);
 
         tipReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -187,7 +189,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             }
         };
         IntentFilter tipFilter = new IntentFilter(Constants.TIP);
-        getActivity().registerReceiver(tipReceiver, tipFilter);
+        mContext.registerReceiver(tipReceiver, tipFilter);
 
         onoffReceiver = new BroadcastReceiver() {
             @Override
@@ -206,13 +208,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             }
         };
         IntentFilter onoffFilter = new IntentFilter(Constants.ON_OFF);
-        getActivity().registerReceiver(onoffReceiver, onoffFilter);
+        mContext.registerReceiver(onoffReceiver, onoffFilter);
 
-        Intent intent = new Intent(getActivity(), TrafficInfoWidget.class);
+        Intent intent = new Intent(mContext, TrafficInfoWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int ids[] = AppWidgetManager.getInstance(getActivity()).getAppWidgetIds(new ComponentName(getActivity(), TrafficInfoWidget.class));
+        int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, TrafficInfoWidget.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        getActivity().sendBroadcast(intent);
+        mContext.sendBroadcast(intent);
     }
 
     @Override
@@ -239,7 +241,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onPrepareOptionsMenu (Menu menu) {
-        /*MenuInflater inflater = new MenuInflater(getActivity().getApplicationContext());
+        /*MenuInflater inflater = new MenuInflater(mContext.getApplicationContext());
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
@@ -255,7 +257,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
-            switch (MobileUtils.getMobileDataInfo(getActivity(), false)[0]) {
+            switch (MobileUtils.getMobileDataInfo(mContext, false)[0]) {
                 case 0:
                     mMobileData.setEnabled(true);
                     mMobileData.setTitle(R.string.action_enable);
@@ -283,19 +285,19 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             case R.id.action_service_start_stop:
                 if (mIsRunning) {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
-                    getActivity().stopService(new Intent(getActivity(), TrafficCountService.class));
+                    mContext.stopService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
-                    mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity());
+                    mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext);
                 }
                 else {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
-                    getActivity().startService(new Intent(getActivity(), TrafficCountService.class));
+                    mContext.startService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.tip));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
-                    mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity());
+                    mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext);
                 }
                 break;
             case R.id.action_mobile_data_on_off:
@@ -320,6 +322,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
+        mContext = getActivity();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             view = inflater.inflate(R.layout.traffic_fragment, container, false);
             RX1 = (TextView) view.findViewById(R.id.RX1);
@@ -412,24 +415,24 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
+            RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
                     (long) mDataMap.get(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
+            TX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
                     (long) mDataMap.get(Constants.SIM1TX)));
-            RX2.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.SIM2RX_N) :
+            RX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM2RX_N) :
                     (long) mDataMap.get(Constants.SIM2RX)));
-            TX2.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.SIM2TX_N) :
+            TX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM2TX_N) :
                     (long) mDataMap.get(Constants.SIM2TX)));
-            RX3.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.SIM3RX_N) :
+            RX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM3RX_N) :
                     (long) mDataMap.get(Constants.SIM3RX)));
-            TX3.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.SIM3TX_N) :
+            TX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.SIM3TX_N) :
                     (long) mDataMap.get(Constants.SIM3TX)));
         }
-        TOT1.setText(DataFormat.formatData(getActivity(), mIsNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
+        TOT1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
                 (long) mDataMap.get(Constants.TOTAL1)));
-        TOT2.setText(DataFormat.formatData(getActivity(), mIsNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
+        TOT2.setText(DataFormat.formatData(mContext, mIsNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
                 (long) mDataMap.get(Constants.TOTAL2)));
-        TOT3.setText(DataFormat.formatData(getActivity(), mIsNight[2] ? (long) mDataMap.get(Constants.TOTAL3_N) :
+        TOT3.setText(DataFormat.formatData(mContext, mIsNight[2] ? (long) mDataMap.get(Constants.TOTAL3_N) :
                 (long) mDataMap.get(Constants.TOTAL3)));
 
         setLabelText((int) mDataMap.get(Constants.LAST_ACTIVE_SIM), "0", "0");
@@ -471,15 +474,15 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         super.onDetach();
         mListener = null;
         if (dataReceiver != null)
-            getActivity().unregisterReceiver(dataReceiver);
+            mContext.unregisterReceiver(dataReceiver);
         if (tipReceiver != null)
-            getActivity().unregisterReceiver(tipReceiver);
+            mContext.unregisterReceiver(tipReceiver);
         if (onoffReceiver != null)
-            getActivity().unregisterReceiver(onoffReceiver);
+            mContext.unregisterReceiver(onoffReceiver);
     }
 
     private void setLabelText(int sim, String rx, String tx) {
-        int swtch = MobileUtils.getMobileDataInfo(getActivity(), false)[0];
+        int swtch = MobileUtils.getMobileDataInfo(mContext, false)[0];
         switch (sim) {
             default:
                 if (swtch== 0)
@@ -528,10 +531,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 startActivity(settIntent);
                 break;
             case R.id.buttonClear1:
-                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
                     Intent clear1Intent = new Intent(Constants.CLEAR);
                     clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
-                    getActivity().sendBroadcast(clear1Intent);
+                    mContext.sendBroadcast(clear1Intent);
                 } else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[0]) {
@@ -546,21 +549,21 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
-                            RX1.setText(DataFormat.formatData(getActivity(), isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
+                            RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
                                     (long) mDataMap.get(Constants.SIM1RX)));
                         if (TX1 != null)
-                            TX1.setText(DataFormat.formatData(getActivity(), isNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
+                            TX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
                                     (long) mDataMap.get(Constants.SIM1TX)));
                     }
-                    TOT1.setText(DataFormat.formatData(getActivity(), isNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
+                    TOT1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
                             (long) mDataMap.get(Constants.TOTAL1)));
                 }
                 break;
             case R.id.buttonClear2:
-                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR);
                     clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
-                    getActivity().sendBroadcast(clear2Intent);
+                    mContext.sendBroadcast(clear2Intent);
                 } else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[1]) {
@@ -575,21 +578,21 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
-                            RX2.setText(DataFormat.formatData(getActivity(), isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
+                            RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
                                     (long) mDataMap.get(Constants.SIM2RX)));
                         if (TX2 != null)
-                            TX2.setText(DataFormat.formatData(getActivity(), isNight[1] ? (long) mDataMap.get(Constants.SIM2TX_N) :
+                            TX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mDataMap.get(Constants.SIM2TX_N) :
                                     (long) mDataMap.get(Constants.SIM2TX)));
                     }
-                    TOT2.setText(DataFormat.formatData(getActivity(), isNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
+                    TOT2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
                             (long) mDataMap.get(Constants.TOTAL2)));
                 }
                 break;
             case R.id.buttonClear3:
-                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
                     Intent clear3Intent = new Intent(Constants.CLEAR);
                     clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
-                    getActivity().sendBroadcast(clear3Intent);
+                    mContext.sendBroadcast(clear3Intent);
                 } else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[2]) {
@@ -604,13 +607,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX3 != null)
-                            RX3.setText(DataFormat.formatData(getActivity(), isNight[2] ? (long) mDataMap.get(Constants.SIM3RX_N) :
+                            RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mDataMap.get(Constants.SIM3RX_N) :
                                     (long) mDataMap.get(Constants.SIM3RX)));
                         if (TX3 != null)
-                            TX3.setText(DataFormat.formatData(getActivity(), isNight[2] ? (long) mDataMap.get(Constants.SIM3TX_N) :
+                            TX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mDataMap.get(Constants.SIM3TX_N) :
                                     (long) mDataMap.get(Constants.SIM3TX)));
                     }
-                    TOT3.setText(DataFormat.formatData(getActivity(), isNight[2] ? (long) mDataMap.get(Constants.TOTAL3_N) :
+                    TOT3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mDataMap.get(Constants.TOTAL3_N) :
                             (long) mDataMap.get(Constants.TOTAL3)));
                 }
                 break;
@@ -624,13 +627,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                             SIM1.setText(!isNight[0] ? mOperatorNames[0] + getString(R.string.night) : mOperatorNames[0]);
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                             if (RX1 != null)
-                                RX1.setText(DataFormat.formatData(getActivity(), !isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
+                                RX1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mDataMap.get(Constants.SIM1RX_N) :
                                         (long) mDataMap.get(Constants.SIM1RX)));
                             if (TX1 != null)
-                                TX1.setText(DataFormat.formatData(getActivity(), !isNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
+                                TX1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mDataMap.get(Constants.SIM1TX_N) :
                                         (long) mDataMap.get(Constants.SIM1TX)));
                         }
-                        TOT1.setText(DataFormat.formatData(getActivity(), !isNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
+                        TOT1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mDataMap.get(Constants.TOTAL1_N) :
                                 (long) mDataMap.get(Constants.TOTAL1)));
                     }
                 }
@@ -645,13 +648,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                             SIM2.setText(!isNight[1] ? mOperatorNames[1] + getString(R.string.night) : mOperatorNames[1]);
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                             if (RX2 != null)
-                                RX2.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
+                                RX2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM2RX_N) :
                                         (long) mDataMap.get(Constants.SIM2RX)));
                             if (TX2 != null)
-                                TX2.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.SIM2TX_N) :
+                                TX2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM2TX_N) :
                                         (long) mDataMap.get(Constants.SIM2TX)));
                         }
-                        TOT2.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
+                        TOT2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.TOTAL2_N) :
                                 (long) mDataMap.get(Constants.TOTAL2)));
                     }
                 }
@@ -666,13 +669,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                             else
                                 SIM3.setText(!isNight[2] ? mOperatorNames[2] + getString(R.string.night) : mOperatorNames[2]);
                             if (RX3 != null)
-                                RX3.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.SIM3RX_N) :
+                                RX3.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM3RX_N) :
                                         (long) mDataMap.get(Constants.SIM3RX)));
                             if (TX3 != null)
-                                TX3.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.SIM3TX_N) :
+                                TX3.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.SIM3TX_N) :
                                         (long) mDataMap.get(Constants.SIM2TX)));
                         }
-                        TOT3.setText(DataFormat.formatData(getActivity(), !isNight[1] ? (long) mDataMap.get(Constants.TOTAL3_N) :
+                        TOT3.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mDataMap.get(Constants.TOTAL3_N) :
                                 (long) mDataMap.get(Constants.TOTAL3)));
                     }
                 }
@@ -680,7 +683,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             case R.id.limit1:
             case R.id.limit2:
             case R.id.limit3:
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                Intent intent = new Intent(mContext, SettingsActivity.class);
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
                 intent.putExtra(Constants.SIM_ACTIVE, v.getId());
@@ -718,9 +721,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         double lim2 = !limit2.equals("") ? DataFormat.getFormatLong(limit2, value2) : Double.MAX_VALUE;
         double lim3 = !limit3.equals("") ? DataFormat.getFormatLong(limit3, value3) : Double.MAX_VALUE;
 
-        limit1 = !limit1.equals("") ? DataFormat.formatData(getActivity(), (long) lim1) : getString(R.string.not_set);
-        limit2 = !limit2.equals("") ? DataFormat.formatData(getActivity(), (long) lim2) : getString(R.string.not_set);
-        limit3 = !limit3.equals("") ? DataFormat.formatData(getActivity(), (long) lim3) : getString(R.string.not_set);
+        limit1 = !limit1.equals("") ? DataFormat.formatData(mContext, (long) lim1) : getString(R.string.not_set);
+        limit2 = !limit2.equals("") ? DataFormat.formatData(mContext, (long) lim2) : getString(R.string.not_set);
+        limit3 = !limit3.equals("") ? DataFormat.formatData(mContext, (long) lim3) : getString(R.string.not_set);
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.period);

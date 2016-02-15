@@ -52,6 +52,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private BroadcastReceiver callDataReceiver;
     private MenuItem mService;
     private boolean mIsRunning = false;
+    private Context mContext;
 
     public static CallsFragment newInstance(String param1, String param2) {
         return new CallsFragment();
@@ -65,11 +66,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity());
-        mDatabaseHelper = MyDatabase.getInstance(getActivity());
+        mContext = getActivity();
+        mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
+        mDatabaseHelper = MyDatabase.getInstance(mContext);
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
-        mPrefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         callDataReceiver = new BroadcastReceiver() {
             @Override
@@ -94,21 +96,21 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 }
                 switch (sim) {
                     case Constants.SIM1:
-                        TOT1.setText(DataFormat.formatCallDuration(getActivity(), duration));
+                        TOT1.setText(DataFormat.formatCallDuration(mContext, duration));
                         if (duration >= limit1)
                             TOT1.setTextColor(Color.RED);
                         else
                             TOT1.setTextColor(Color.WHITE);
                         break;
                     case Constants.SIM2:
-                        TOT2.setText(DataFormat.formatCallDuration(getActivity(), duration));
+                        TOT2.setText(DataFormat.formatCallDuration(mContext, duration));
                         if (duration >= limit2)
                             TOT2.setTextColor(Color.RED);
                         else
                             TOT2.setTextColor(Color.WHITE);
                         break;
                     case Constants.SIM3:
-                        TOT3.setText(DataFormat.formatCallDuration(getActivity(), duration));
+                        TOT3.setText(DataFormat.formatCallDuration(mContext, duration));
                         if (duration >= limit3)
                             TOT3.setTextColor(Color.RED);
                         else
@@ -118,13 +120,14 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             }
         };
         IntentFilter callDataFilter = new IntentFilter(Constants.CALLS);
-        getActivity().registerReceiver(callDataReceiver, callDataFilter);
+        mContext.registerReceiver(callDataReceiver, callDataFilter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calls_fragment, container, false);
+        mContext = getActivity();
         TOT1 = (TextView) view.findViewById(R.id.Tot1);
         TOT2 = (TextView) view.findViewById(R.id.Tot2);
         TOT3 = (TextView) view.findViewById(R.id.Tot3);
@@ -189,25 +192,25 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             lim3 = Long.valueOf(limit3) * Constants.MINUTE;
 
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
-        TOT1.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS1)));
+        TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1)));
         if ((long) mCalls.get(Constants.CALLS1) >= lim1)
             TOT1.setTextColor(Color.RED);
         else
             TOT1.setTextColor(Color.WHITE);
-        TOT2.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS2)));
+        TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2)));
         if ((long) mCalls.get(Constants.CALLS2) >= lim2)
             TOT2.setTextColor(Color.RED);
         else
             TOT2.setTextColor(Color.WHITE);
-        TOT3.setText(DataFormat.formatCallDuration(getActivity(), (long) mCalls.get(Constants.CALLS3)));
+        TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3)));
         if ((long) mCalls.get(Constants.CALLS3) >= lim3)
             TOT3.setTextColor(Color.RED);
         else
             TOT3.setTextColor(Color.WHITE);
 
-        SIM1.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-        SIM2.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-        SIM3.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+        SIM1.setText(MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+        SIM2.setText(MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+        SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
 
         setButtonLimitText();
 
@@ -238,7 +241,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         super.onDetach();
         mListener = null;
         if (callDataReceiver != null)
-            getActivity().unregisterReceiver(callDataReceiver);
+            mContext.unregisterReceiver(callDataReceiver);
     }
 
     @Override
@@ -253,48 +256,48 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonClear1:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
                     Intent clear1Intent = new Intent(Constants.CLEAR_CALLS);
                     clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
-                    getActivity().sendBroadcast(clear1Intent);
+                    mContext.sendBroadcast(clear1Intent);
                 } else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS1, 0L);
                     mCalls.put(Constants.CALLS1_EX, 0L);
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                 }
-                TOT1.setText(DataFormat.formatCallDuration(getActivity(), 0L));
+                TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear2:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
                     Intent clear2Intent = new Intent(Constants.CLEAR_CALLS);
                     clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
-                    getActivity().sendBroadcast(clear2Intent);
+                    mContext.sendBroadcast(clear2Intent);
                 } else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS2, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                 }
-                TOT2.setText(DataFormat.formatCallDuration(getActivity(), 0L));
+                TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear3:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
                     Intent clear3Intent = new Intent(Constants.CLEAR_CALLS);
                     clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
-                    getActivity().sendBroadcast(clear3Intent);
+                    mContext.sendBroadcast(clear3Intent);
                 } else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS3, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                 }
-                TOT3.setText(DataFormat.formatCallDuration(getActivity(), 0L));
+                TOT3.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.limit1_calls:
             case R.id.limit2_calls:
             case R.id.limit3_calls:
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                Intent intent = new Intent(mContext, SettingsActivity.class);
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, CallsLimitFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
                 intent.putExtra(Constants.SIM_ACTIVE, v.getId());
@@ -311,7 +314,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
 
     @Override
     public void onPrepareOptionsMenu (Menu menu) {
-        /*MenuInflater inflater = new MenuInflater(getActivity().getApplicationContext());
+        /*MenuInflater inflater = new MenuInflater(mContext.getApplicationContext());
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
@@ -334,19 +337,19 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             case R.id.action_service_start_stop:
                 if (mIsRunning) {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], true).apply();
-                    getActivity().stopService(new Intent(getActivity(), CallLoggerService.class));
+                    mContext.stopService(new Intent(mContext, CallLoggerService.class));
                     TIP.setText(getResources().getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
-                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity());
+                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
                 }
                 else {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
-                    getActivity().startService(new Intent(getActivity(), CallLoggerService.class));
+                    mContext.startService(new Intent(mContext, CallLoggerService.class));
                     TIP.setText(getResources().getString(R.string.tip_calls));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
-                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity());
+                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
                 }
                 break;
         }
@@ -399,10 +402,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_SIM1[5]) || key.equals(Constants.PREF_SIM1[6]))
-            SIM1.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
+            SIM1.setText(MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
         if (key.equals(Constants.PREF_SIM2[5]) || key.equals(Constants.PREF_SIM2[6]))
-            SIM2.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
+            SIM2.setText(MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
-            SIM3.setText(MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+            SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.Menu;
@@ -125,7 +126,7 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         try {
             if (item.getItemId() == R.id.save) {
-                MyDatabase.writeWhiteList(mKey, mList, mDatabaseHelper);
+                new SaveTask().execute();
                 finish();
             }
         } catch (Exception e) {
@@ -133,5 +134,19 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
             ACRA.getErrorReporter().handleException(e);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    class SaveTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            MyDatabase.writeWhiteList(mKey, mList, mDatabaseHelper);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
     }
 }

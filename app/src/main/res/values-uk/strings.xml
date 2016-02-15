@@ -177,4 +177,5 @@
     <string name="black_list">Чорний список</string>
     <string name="view_black_list">Перегляд та редагування чорного списку</string>
     <string name="unknown">Невідомий</string>
+    <string name="saved">Список збережено!</string>
 </resources>
