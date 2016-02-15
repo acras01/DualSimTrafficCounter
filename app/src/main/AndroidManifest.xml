@@ -105,6 +105,7 @@
         <activity
             android:name=".activities.WidgetConfigActivity"
             android:label="@string/widget_title"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.AppBarOverlay" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -135,12 +136,14 @@
         <activity
             android:name=".activities.WhiteListActivity"
             android:label="@string/title_activity_white_list"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.AppBarOverlay" >
         </activity>
 
         <activity
             android:name=".activities.BlackListActivity"
             android:label="@string/title_activity_black_list"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.AppBarOverlay" >
         </activity>
 

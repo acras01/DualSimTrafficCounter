@@ -36,7 +36,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -400,8 +400,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        final List<String> whiteList = MyDatabase.readWhiteList(sim, mDatabaseHelper);
-                                        final List<String> blackList = MyDatabase.readBlackList(sim, mDatabaseHelper);
+                                        final ArrayList<String> whiteList = MyDatabase.readWhiteList(sim, mDatabaseHelper);
+                                        final ArrayList<String> blackList = MyDatabase.readBlackList(sim, mDatabaseHelper);
                                         if (!whiteList.contains(number[0]) && !blackList.contains(number[0]) && !mIsDialogShown) {
                                             mIsDialogShown = true;
                                             Dialog dialog = new AlertDialog.Builder(ctx)

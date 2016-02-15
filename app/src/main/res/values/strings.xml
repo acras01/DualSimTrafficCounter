@@ -183,4 +183,5 @@
     <string name="black_list">Black list</string>
     <string name="view_black_list">View and edit black list</string>
     <string name="title_activity_black_list" translatable="false">BlackListActivity</string>
+    <string name="unknown">Unknown</string>
 </resources>

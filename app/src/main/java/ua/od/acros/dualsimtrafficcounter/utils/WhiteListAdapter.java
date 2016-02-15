@@ -8,18 +8,18 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class WhiteListAdapter extends BaseAdapter {
 
 
-    public List<String> names, numbers, list;
+    public ArrayList<String> names, numbers, list;
     public LayoutInflater inflater;
 
-    public WhiteListAdapter(Context context, List<String> names,
-                            List<String> numbers, List<String> list) {
+    public WhiteListAdapter(Context context, ArrayList<String> names,
+                            ArrayList<String> numbers, ArrayList<String> list) {
         super();
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.names = names;
@@ -41,7 +41,7 @@ public class WhiteListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public List<String> getCheckedItems(){
+    public ArrayList<String> getCheckedItems(){
         return list;
     }
 

@@ -15,7 +15,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MyDatabase extends SQLiteOpenHelper {
@@ -37,7 +36,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         // don't accidentally leak an Activity's context.
         // See this article for more information: http://bit.ly/6LRzfx
         if (mInstance == null) {
-            mInstance = new MyDatabase(context);
+            mInstance = new MyDatabase(context.getApplicationContext());
         }
         return mInstance;
     }
@@ -744,7 +743,7 @@ public class MyDatabase extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
     }
 
-    public static void writeWhiteList(int sim, List<String> list, MyDatabase dbHelper) {
+    public static void writeWhiteList(int sim, ArrayList<String> list, MyDatabase dbHelper) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
@@ -768,8 +767,8 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static List<String> readWhiteList(int sim, MyDatabase dbHelper) {
-        List<String> list = new ArrayList<>();
+    public static ArrayList<String> readWhiteList(int sim, MyDatabase dbHelper) {
+        ArrayList<String> list = new ArrayList<>();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
         switch (sim) {
@@ -801,7 +800,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public static void writeBlackList(int sim, List<String> list, MyDatabase dbHelper) {
+    public static void writeBlackList(int sim, ArrayList<String> list, MyDatabase dbHelper) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
@@ -825,8 +824,8 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static List<String> readBlackList(int sim, MyDatabase dbHelper) {
-        List<String> list = new ArrayList<>();
+    public static ArrayList<String> readBlackList(int sim, MyDatabase dbHelper) {
+        ArrayList<String> list = new ArrayList<>();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
         switch (sim) {

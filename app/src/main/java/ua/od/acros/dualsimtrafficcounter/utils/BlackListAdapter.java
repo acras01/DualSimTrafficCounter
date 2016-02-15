@@ -9,22 +9,21 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class BlackListAdapter  extends BaseAdapter {
 
 
-    private static List<String> mList, mChecked;
+    private ArrayList<String> mList, mChecked;
     private LayoutInflater inflater;
 
-    public BlackListAdapter(Context context, List<String> list) {
+    public BlackListAdapter(Context context, ArrayList<String> list) {
         super();
-        mChecked = new ArrayList<>();
+        this.mChecked = new ArrayList<>();
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (list != null)
-            mList = list;
+            this.mList = list;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class BlackListAdapter  extends BaseAdapter {
         return true;
     }
 
-    public static List<String> getCheckedItems(){
+    public ArrayList<String> getCheckedItems(){
         return mChecked;
     }
 
@@ -51,10 +50,13 @@ public class BlackListAdapter  extends BaseAdapter {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 String number = (String) buttonView.getText();
-                if (isChecked)
-                    mChecked.add(number);
-                else
-                    mChecked.remove(number);
+                if (isChecked) {
+                    if (!mChecked.contains(number))
+                        mChecked.add(number);
+                } else {
+                    if (mChecked.contains(number))
+                        mChecked.remove(number);
+                }
             }
         });
 
