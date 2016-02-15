@@ -21,12 +21,12 @@ import java.util.List;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyArrayAdapter;
+import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class WhiteListActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
-    private MyArrayAdapter mArrayAdapter;
+    private WhiteListAdapter mArrayAdapter;
     private List<String> mNames, mNumbers, mList;
     private Context mContext = this;
     private int mKey;
@@ -51,7 +51,7 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
         mNumbers = new ArrayList<>();
         mNames = new ArrayList<>();
         loadContactsFromDB(mContext);
-        mArrayAdapter = new MyArrayAdapter(mContext, mNames, mNumbers, mList);
+        mArrayAdapter = new WhiteListAdapter(mContext, mNames, mNumbers, mList);
         listView.setAdapter(mArrayAdapter);
         listView.setOnItemSelectedListener(this);
         listView.setOnItemClickListener(this);

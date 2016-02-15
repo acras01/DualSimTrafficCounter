@@ -171,7 +171,7 @@
     <string name="send_email">Send email to developer</string>
     <string name="body">Here are methods from TelephonyManager</string>
     <string name="choose_client">Choose your email client</string>
-    <string name="why_email">If app on your device isn\'t working correctly, you can send me email with some usefull information about your device. For example, ROM version and CPU name</string>
+    <string name="why_email">If app on your device isn\'t working correctly, you can send me email with some useful information about your device. For example, ROM version and CPU name</string>
     <string name="use_call_logger">Enable outgoing calls logger service</string>
     <string name="white_list">White list</string>
     <string name="view_white_list">View and edit white list</string>
@@ -180,4 +180,7 @@
     <string name="open_fragment">Open when tap notification</string>
     <string name="ok">Yes</string>
     <string name="action_set_duration">Set calls duration</string>
+    <string name="black_list">Black list</string>
+    <string name="view_black_list">View and edit black list</string>
+    <string name="title_activity_black_list" translatable="false">BlackListActivity</string>
 </resources>

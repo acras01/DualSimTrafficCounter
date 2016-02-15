@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter.widget;
+package ua.od.acros.dualsimtrafficcounter.widgets;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;

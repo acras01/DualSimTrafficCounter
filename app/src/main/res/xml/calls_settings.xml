@@ -62,6 +62,17 @@
             </intent>
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="calls_sim1_black"
+            android:title="@string/black_list"
+            android:summary="@string/view_black_list">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.BlackListActivity"
+                android:data="0">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -125,6 +136,17 @@
             </intent>
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="calls_sim2_black"
+            android:title="@string/black_list"
+            android:summary="@string/view_black_list">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.BlackListActivity"
+                android:data="1">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -184,6 +206,17 @@
             <intent
                 android:targetPackage="ua.od.acros.dualsimtrafficcounter"
                 android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.WhiteListActivity"
+                android:data="2">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="calls_sim3_black"
+            android:title="@string/black_list"
+            android:summary="@string/view_black_list">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.BlackListActivity"
                 android:data="2">
             </intent>
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>

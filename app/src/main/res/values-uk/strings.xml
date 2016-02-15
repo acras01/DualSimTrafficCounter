@@ -174,4 +174,6 @@
     <string name="open_fragment">Відкривати зі шторки</string>
     <string name="ok">Так</string>
     <string name="action_set_duration">Встановлення тривалості дзвінків</string>
+    <string name="black_list">Чорний список</string>
+    <string name="view_black_list">Перегляд та редагування чорного списку</string>
 </resources>

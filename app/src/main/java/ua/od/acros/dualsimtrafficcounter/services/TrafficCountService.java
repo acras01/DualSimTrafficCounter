@@ -58,7 +58,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import ua.od.acros.dualsimtrafficcounter.utils.MyNotification;
-import ua.od.acros.dualsimtrafficcounter.widget.TrafficInfoWidget;
+import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 
 public class TrafficCountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -141,21 +141,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mContinueOverLimit = mPrefs.getBoolean(Constants.PREF_OTHER[17], false);
-        mHasActionChosen = mPrefs.getBoolean(Constants.PREF_OTHER[18], false);
-        mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
-        if (mIsResetNeeded1)
-            mResetTime1 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
-        mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2[25], false);
-        if (mIsResetNeeded2)
-            mResetTime2 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
-        mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3[25], false);
-        if (mIsResetNeeded3)
-            mResetTime3 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
-
-        mLimits = getSIMLimits();
-
-        mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
@@ -170,6 +155,29 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
             mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
         }
+
+        mActiveSIM = Constants.DISABLED;
+        mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
+
+        mIDSmall = getOperatorLogoID(mLastActiveSIM);
+
+        mTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mBitmapLarge = bitmap;
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable drawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable drawable) {
+            }
+        };
+        Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
+
+        sendDataBroadcast(0L, 0L);
 
         connReceiver = new BroadcastReceiver() {
             @Override
@@ -356,7 +364,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 timerStart(Constants.COUNT);
             }
         };
-
         IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
         registerReceiver(setUsageReceiver, setUsageFilter);
 
@@ -412,12 +419,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 timerStart(Constants.COUNT);
             }
         };
-
         IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR);
         registerReceiver(clearReceiver, clearSimDataFilter);
-
-        mActiveSIM = Constants.DISABLED;
-        mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
 
         // cancel if already existed
         if (mTaskExecutor != null) {
@@ -433,9 +436,47 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        mContinueOverLimit = mPrefs.getBoolean(Constants.PREF_OTHER[17], false);
+
+        mHasActionChosen = mPrefs.getBoolean(Constants.PREF_OTHER[18], false);
+
+        mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
+        if (mIsResetNeeded1)
+            mResetTime1 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+        mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2[25], false);
+        if (mIsResetNeeded2)
+            mResetTime2 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
+        mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3[25], false);
+        if (mIsResetNeeded3)
+            mResetTime3 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+
+
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+
+        mLimits = getSIMLimits();
+
+        mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
+
+        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+
+        mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
+        if (mDataMap.get(Constants.LAST_DATE).equals("")) {
+            Calendar myCalendar = Calendar.getInstance();
+            SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
+            SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
+            mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
+            mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+        }
+
+        mActiveSIM = Constants.DISABLED;
+        mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
+
         mIDSmall = getOperatorLogoID(mLastActiveSIM);
+
         mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -451,6 +492,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         };
         Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
+
+        sendDataBroadcast(0L, 0L);
+
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
         // schedule task
         timerStart(Constants.COUNT);
@@ -495,8 +539,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
         mIDSmall = getOperatorLogoID(mActiveSIM);
-
-        sendDataBroadcast(0L, 0L);
         if (task == Constants.COUNT) {
             switch (mActiveSIM) {
                 case Constants.SIM1:

@@ -174,4 +174,6 @@
     <string name="open_fragment">Открывать из шторки</string>
     <string name="ok">Да</string>
     <string name="action_set_duration">Установка длительности вызовов</string>
+    <string name="black_list">Черный список</string>
+    <string name="view_black_list">Просмотр и редактирование черного списка</string>
 </resources>

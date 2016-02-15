@@ -12,14 +12,14 @@ import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
-public class MyArrayAdapter extends BaseAdapter {
+public class WhiteListAdapter extends BaseAdapter {
 
 
     public List<String> names, numbers, list;
     public LayoutInflater inflater;
 
-    public MyArrayAdapter(Context context, List<String> names,
-                          List<String> numbers, List<String> list) {
+    public WhiteListAdapter(Context context, List<String> names,
+                            List<String> numbers, List<String> list) {
         super();
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.names = names;
@@ -57,7 +57,7 @@ public class MyArrayAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.list_row, null);
+            convertView = inflater.inflate(R.layout.white_list_row, null);
             holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
             holder.txtViewName = (TextView) convertView.findViewById(R.id.name);
             holder.txtViewNumber = (TextView) convertView.findViewById(R.id.number);

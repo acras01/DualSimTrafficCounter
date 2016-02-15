@@ -37,7 +37,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         // don't accidentally leak an Activity's context.
         // See this article for more information: http://bit.ly/6LRzfx
         if (mInstance == null) {
-            mInstance = new MyDatabase(context.getApplicationContext());
+            mInstance = new MyDatabase(context);
         }
         return mInstance;
     }
@@ -784,14 +784,18 @@ public class MyDatabase extends SQLiteOpenHelper {
                 break;
         }
         if (sim >= 0) {
-            Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
-                    cursor.moveToNext();
+            try {
+                Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
+                        cursor.moveToNext();
+                    }
+                    cursor.close();
                 }
-                cursor.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return list;
@@ -837,14 +841,18 @@ public class MyDatabase extends SQLiteOpenHelper {
                 break;
         }
         if (sim >= 0) {
-            Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
-                    cursor.moveToNext();
+            try {
+                Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
+                        cursor.moveToNext();
+                    }
+                    cursor.close();
                 }
-                cursor.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return list;

@@ -38,7 +38,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
-import ua.od.acros.dualsimtrafficcounter.widget.TrafficInfoWidget;
+import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
 
