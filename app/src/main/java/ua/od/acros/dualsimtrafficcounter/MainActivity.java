@@ -23,7 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.stericson.RootTools.RootTools;
+import com.stericson.RootShell.RootShell;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-                    !RootTools.isAccessGiven())
+                    !RootShell.isAccessGiven())
                 showDialog(ANDROID_5_0);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !MTKUtils.isMtkDevice())

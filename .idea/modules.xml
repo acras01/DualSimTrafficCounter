@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DualSimTrafficCounter.iml" filepath="$PROJECT_DIR$/DualSimTrafficCounter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RootShell/RootShell.iml" filepath="$PROJECT_DIR$/RootShell/RootShell.iml" />
       <module fileurl="file://$PROJECT_DIR$/XposedBridge/XposedBridge.iml" filepath="$PROJECT_DIR$/XposedBridge/XposedBridge.iml" />
       <module fileurl="file://$PROJECT_DIR$/acra/acra.iml" filepath="$PROJECT_DIR$/acra/acra.iml" />
       <module fileurl="file://$PROJECT_DIR$/ambilwarna/ambilwarna.iml" filepath="$PROJECT_DIR$/ambilwarna/ambilwarna.iml" />
@@ -10,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/joda-time-2.8.2/joda-time-2.8.2.iml" filepath="$PROJECT_DIR$/joda-time-2.8.2/joda-time-2.8.2.iml" />
       <module fileurl="file://$PROJECT_DIR$/mediatek-compatibility/mediatek-compatibility.iml" filepath="$PROJECT_DIR$/mediatek-compatibility/mediatek-compatibility.iml" />
       <module fileurl="file://$PROJECT_DIR$/picasso/picasso.iml" filepath="$PROJECT_DIR$/picasso/picasso.iml" />
-      <module fileurl="file://$PROJECT_DIR$/roottools/roottools.iml" filepath="$PROJECT_DIR$/roottools/roottools.iml" />
     </modules>
   </component>
 </project>

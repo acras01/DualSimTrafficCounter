@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.stericson.RootTools.RootTools;
+import com.stericson.RootShell.RootShell;
 
 import org.acra.ACRA;
 
@@ -253,7 +253,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             mService.setTitle(R.string.action_start);
             mService.setIcon(R.drawable.ic_action_enable);
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootShell.isAccessGiven()) {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {

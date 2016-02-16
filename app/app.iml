@@ -91,10 +91,10 @@
     <orderEntry type="library" exported="" name="design-23.1.1" level="project" />
     <orderEntry type="module" module-name="joda-time-2.8.2" exported="" />
     <orderEntry type="module" module-name="ambilwarna" exported="" />
-    <orderEntry type="module" module-name="roottools" exported="" />
     <orderEntry type="module" module-name="acra" exported="" />
     <orderEntry type="module" module-name="picasso" exported="" />
     <orderEntry type="module" module-name="mediatek-compatibility" exported="" />
+    <orderEntry type="module" module-name="RootShell" exported="" />
     <orderEntry type="module" module-name="XposedBridge" exported="" />
     <orderEntry type="library" exported="" name="acra-unspecified" level="project" />
   </component>

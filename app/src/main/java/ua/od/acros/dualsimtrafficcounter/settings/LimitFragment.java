@@ -15,7 +15,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
 
-import com.stericson.RootTools.RootTools;
+import com.stericson.RootShell.RootShell;
 
 import java.util.Calendar;
 
@@ -120,7 +120,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootTools.isAccessGiven()) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootShell.isAccessGiven()) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             autoff1.setChecked(false);

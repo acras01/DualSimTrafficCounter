@@ -25,7 +25,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
 
-import com.stericson.RootTools.RootTools;
+import com.stericson.RootShell.RootShell;
 
 import org.acra.ACRA;
 import org.joda.time.DateTime;
@@ -241,7 +241,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             timerStart(Constants.CHECK);
                             break;
                         case Constants.CONTINUE_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
+                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 MobileUtils.toggleMobileDataConnection(true, context, simid);
                             mContinueOverLimit = true;
@@ -249,7 +249,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                 timerStart(Constants.COUNT);
                             break;
                         case Constants.OFF_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
+                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
                                     (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                                 timerStart(Constants.CHECK);
                             else
@@ -959,7 +959,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsSIM1OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isShown()) {
@@ -1216,7 +1216,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsSIM2OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isShown()) {
@@ -1472,7 +1472,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsSIM3OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootTools.isAccessGiven()) ||
+                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isShown()) {

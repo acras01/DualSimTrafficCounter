@@ -41,8 +41,8 @@ dependencies {
     compile project(':joda-time-2.8.2')
     compile project(':mediatek-compatibility')
     compile project(':picasso')
-    compile project(':roottools')
     compile project(':acra')
     compile project(':ambilwarna')
     provided project(':XposedBridge')
+    compile project(':RootShell')
 }

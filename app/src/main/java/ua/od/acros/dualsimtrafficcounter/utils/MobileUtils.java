@@ -14,8 +14,8 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.stericson.RootShell.RootShell;
 import com.stericson.RootShell.execution.Command;
-import com.stericson.RootTools.RootTools;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -930,8 +930,8 @@ public class MobileUtils {
                 // Android 5.0 (API 21) only.
                 if (transactionCode != null && transactionCode.length() > 0)
                     cmd = "service call phone " + transactionCode + " i32 " + state;
-            if (RootTools.isAccessGiven() && cmd != null)
-                RootTools.getShell(true).add(new Command(0, cmd));
+            if (RootShell.isAccessGiven() && cmd != null)
+                RootShell.getShell(true).add(new Command(0, cmd));
             else
                 Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
