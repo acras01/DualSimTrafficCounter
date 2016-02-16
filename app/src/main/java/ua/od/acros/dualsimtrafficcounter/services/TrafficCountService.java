@@ -14,19 +14,17 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.stericson.RootTools.RootTools;
 
 import org.acra.ACRA;
@@ -103,9 +101,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private ScheduledExecutorService mTaskExecutor = null;
     private ScheduledFuture<?> mTaskResult = null;
     private SharedPreferences mPrefs;
-    private Bitmap mBitmapLarge;
-    private Target mTarget;
-    private int mIDSmall;
     private boolean mResetRuleHasChanged;
     private String[] mOperatorNames = new String[3];
     private static boolean mHasActionChosen;
@@ -158,24 +153,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
-
-        mIDSmall = getOperatorLogoID(mLastActiveSIM);
-
-        mTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mBitmapLarge = bitmap;
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable drawable) {
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable drawable) {
-            }
-        };
-        Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
 
         sendDataBroadcast(0L, 0L);
 
@@ -475,24 +452,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
 
-        mIDSmall = getOperatorLogoID(mLastActiveSIM);
-
-        mTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mBitmapLarge = bitmap;
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable drawable) {
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable drawable) {
-            }
-        };
-        Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
-
         sendDataBroadcast(0L, 0L);
 
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
@@ -510,35 +469,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         return new boolean[]{mIsNight1, mIsNight2, mIsNight3};
     }
 
-    private int getOperatorLogoID (int sim) {
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
-            String[] pref = new String[27];
-            switch (sim) {
-                case Constants.SIM1:
-                    pref = Constants.PREF_SIM1;
-                    break;
-                case Constants.SIM2:
-                    pref = Constants.PREF_SIM2;
-                    break;
-                case Constants.SIM3:
-                    pref = Constants.PREF_SIM3;
-                    break;
-            }
-            if (mPrefs.getString(pref[23], "none").equals("auto"))
-                return getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, sim), "drawable", mContext.getPackageName());
-            else
-                return getResources().getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", mContext.getPackageName());
-        } else
-            return R.drawable.ic_launcher_small;
-    }
-
     private void timerStart(int task) {
         TimerTask tTask = null;
         mHasActionChosen = false;
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
-        mIDSmall = getOperatorLogoID(mActiveSIM);
         if (task == Constants.COUNT) {
             switch (mActiveSIM) {
                 case Constants.SIM1:
@@ -568,9 +504,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Constants.PREF_OTHER[12]))
-            mPriority = sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
-
         if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && mActiveSIM == Constants.SIM1 && mContinueOverLimit) {
             mContinueOverLimit = false;
             mHasActionChosen = false;
@@ -582,34 +515,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if ((key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2])) && mActiveSIM == Constants.SIM3 && mContinueOverLimit) {
             mContinueOverLimit = false;
             mHasActionChosen = false;
-        }
-        if (key.equals(Constants.PREF_OTHER[15]))
-            if (sharedPreferences.getBoolean(key, false)) {
-                String[] pref = new String[27];
-                switch (mActiveSIM) {
-                    case Constants.SIM1:
-                        pref = Constants.PREF_SIM1;
-                        break;
-                    case Constants.SIM2:
-                        pref = Constants.PREF_SIM2;
-                        break;
-                    case Constants.SIM3:
-                        pref = Constants.PREF_SIM3;
-                        break;
-                }
-                if (mPrefs.getString(pref[23], "none").equals("auto"))
-                    mIDSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
-                else
-                    mIDSmall = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
-            } else
-                mIDSmall = R.drawable.ic_launcher_small;
-        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[15], false)) {
-            if (key.equals(Constants.PREF_SIM1[23]) || key.equals(Constants.PREF_SIM2[23]) ||
-                    key.equals(Constants.PREF_SIM3[23]))
-                if (mPrefs.getString(key, "none").equals("auto"))
-                    mIDSmall = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
-                else
-                    mIDSmall = getResources().getIdentifier(mPrefs.getString(key, "none"), "drawable", mContext.getPackageName());
         }
         if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
@@ -625,11 +530,25 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
             mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
-        if (key.equals(Constants.PREF_OTHER[24])) {
-            if (mActiveSIM == Constants.DISABLED)
-                buildNotification(mLastActiveSIM);
-            else
-                buildNotification(mActiveSIM);
+        if (key.equals(Constants.PREF_OTHER[24]) && sharedPreferences.getBoolean(key, false)) {
+            CountDownTimer timer = new CountDownTimer(2000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    int sim;
+                    if (mActiveSIM == Constants.DISABLED)
+                        sim = mLastActiveSIM;
+                    else
+                        sim = mActiveSIM;
+                    NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    nm.notify(Constants.STARTED_ID, buildNotification(sim));
+                }
+            };
+            timer.start();
         }
     }
 
@@ -1783,7 +1702,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
             }
         }
-        return MyNotification.getNotification(mContext, text, "", mBitmapLarge, mIDSmall, mPriority);
+        return MyNotification.getNotification(mContext, text, "");
     }
 
     private void startCheck(int alertID) {
@@ -1954,7 +1873,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mPrefs.edit().putBoolean(Constants.PREF_OTHER[17], mContinueOverLimit)
                 .putBoolean(Constants.PREF_OTHER[18], mHasActionChosen)
                 .apply();
-        Picasso.with(mContext).cancelRequest(mTarget);
         if (mTaskResult != null) {
             mTaskResult.cancel(false);
             mTaskExecutor.shutdown();

@@ -12,20 +12,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
@@ -66,8 +60,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private DateTime mResetTime1;
     private DateTime mResetTime2;
     private DateTime mResetTime3;
-    private Target mTarget;
-    private Bitmap mBitmapLarge;
     private boolean mIsOutgoing = false;
     private boolean mIsDialogShown = false;
     private final String[] number = new String[1];
@@ -452,8 +444,21 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5]))
             mResetRuleHasChanged = true;
-        if (key.equals(Constants.PREF_OTHER[5]))
-            buildNotification();
+        if (key.equals(Constants.PREF_OTHER[5]) && sharedPreferences.getBoolean(key, false)) {
+            CountDownTimer timer = new CountDownTimer(2000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    nm.notify(Constants.STARTED_ID, buildNotification());
+                }
+            };
+            timer.start();
+        }
     }
 
     private DateTime getResetTime(int sim) {
@@ -549,21 +554,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mBitmapLarge = bitmap;
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable drawable) {
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable drawable) {
-            }
-        };
-        Picasso.with(mContext).load(R.mipmap.ic_launcher).into(mTarget);
         startForeground(Constants.STARTED_ID, buildNotification());
         return START_STICKY;
     }
@@ -574,7 +564,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2));
         if (mSimQuantity == 3)
             text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3));
-        return MyNotification.getNotification(mContext, "", text, mBitmapLarge, 0, NotificationCompat.PRIORITY_MIN - 1);
+        return MyNotification.getNotification(mContext, "", text);
     }
 
     @Override
@@ -587,7 +577,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         unregisterReceiver(outgoingCallReceiver);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        Picasso.with(mContext).cancelRequest(mTarget);
         MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }

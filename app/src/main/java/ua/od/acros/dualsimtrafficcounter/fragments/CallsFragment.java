@@ -94,28 +94,32 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 } catch (Exception e) {
                     limit3 = Long.MAX_VALUE;
                 }
-                switch (sim) {
-                    case Constants.SIM1:
-                        TOT1.setText(DataFormat.formatCallDuration(mContext, duration));
-                        if (duration >= limit1)
-                            TOT1.setTextColor(Color.RED);
-                        else
-                            TOT1.setTextColor(Color.WHITE);
-                        break;
-                    case Constants.SIM2:
-                        TOT2.setText(DataFormat.formatCallDuration(mContext, duration));
-                        if (duration >= limit2)
-                            TOT2.setTextColor(Color.RED);
-                        else
-                            TOT2.setTextColor(Color.WHITE);
-                        break;
-                    case Constants.SIM3:
-                        TOT3.setText(DataFormat.formatCallDuration(mContext, duration));
-                        if (duration >= limit3)
-                            TOT3.setTextColor(Color.RED);
-                        else
-                            TOT3.setTextColor(Color.WHITE);
-                        break;
+                try {
+                    switch (sim) {
+                        case Constants.SIM1:
+                            TOT1.setText(DataFormat.formatCallDuration(mContext, duration));
+                            if (duration >= limit1)
+                                TOT1.setTextColor(Color.RED);
+                            else
+                                TOT1.setTextColor(Color.WHITE);
+                            break;
+                        case Constants.SIM2:
+                            TOT2.setText(DataFormat.formatCallDuration(mContext, duration));
+                            if (duration >= limit2)
+                                TOT2.setTextColor(Color.RED);
+                            else
+                                TOT2.setTextColor(Color.WHITE);
+                            break;
+                        case Constants.SIM3:
+                            TOT3.setText(DataFormat.formatCallDuration(mContext, duration));
+                            if (duration >= limit3)
+                                TOT3.setTextColor(Color.RED);
+                            else
+                                TOT3.setTextColor(Color.WHITE);
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };
