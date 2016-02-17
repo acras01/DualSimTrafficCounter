@@ -13,12 +13,13 @@ import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 
-public class MyNotification extends Notification implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MyNotification extends Notification {
 
     private static String mTraffic = "", mCalls = "";
     private static NotificationCompat.Builder mBuilder;
-    private static int mId, mPriority, mActiveSIM;
+    private static int mId, mPriority;
     private static Context mContext;
+    private static boolean mIdChanged = false;
 
     private static NotificationCompat.Builder newInstance() {
         if (mBuilder == null) {
@@ -40,7 +41,7 @@ public class MyNotification extends Notification implements SharedPreferences.On
 
     public static Notification getNotification(Context context, String traffic, String calls) {
         mContext = context.getApplicationContext();
-        mActiveSIM = TrafficCountService.getActiveSIM();
+        int mActiveSIM = TrafficCountService.getActiveSIM();
         if (mActiveSIM == Constants.DISABLED)
             mActiveSIM = TrafficCountService.getLastActiveSIM();
         if (traffic.equals(""))
@@ -50,20 +51,23 @@ public class MyNotification extends Notification implements SharedPreferences.On
         String bigText;
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
-            bigText = mContext.getString(R.string.traffic)  + "\n" + traffic + "\n" +
+            bigText = mContext.getString(R.string.traffic) + "\n" + traffic + "\n" +
                     mContext.getString(R.string.calls) + "\n" + calls + "\n";
         else
-            bigText = mContext.getString(R.string.traffic)  + "\n" + traffic;
+            bigText = mContext.getString(R.string.traffic) + "\n" + traffic;
         mTraffic = traffic;
         mCalls = calls;
         NotificationCompat.Builder b = newInstance();
-        mId = getOperatorLogoID(mContext, mActiveSIM);
+        if (mIdChanged) {
+            mId = getOperatorLogoID(mContext, mActiveSIM);
+            mIdChanged = false;
+        }
         b.setSmallIcon(mId);
         b.setPriority(mPriority);
         return new NotificationCompat.BigTextStyle(b).bigText(bigText).build();
     }
 
-    private static int getOperatorLogoID (Context context, int sim) {
+    private static int getOperatorLogoID(Context context, int sim) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
             String[] pref = new String[27];
@@ -86,37 +90,11 @@ public class MyNotification extends Notification implements SharedPreferences.On
             return R.drawable.ic_launcher_small;
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Constants.PREF_OTHER[15]))
-            if (sharedPreferences.getBoolean(key, false)) {
-                String[] pref = new String[27];
-                switch (mActiveSIM) {
-                    case Constants.SIM1:
-                        pref = Constants.PREF_SIM1;
-                        break;
-                    case Constants.SIM2:
-                        pref = Constants.PREF_SIM2;
-                        break;
-                    case Constants.SIM3:
-                        pref = Constants.PREF_SIM3;
-                        break;
-                }
-                if (sharedPreferences.getString(pref[23], "none").equals("auto"))
-                    mId = mContext.getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
-                else
-                    mId = mContext.getResources().getIdentifier(sharedPreferences.getString(pref[23], "none"), "drawable", mContext.getPackageName());
-            } else
-                mId = R.drawable.ic_launcher_small;
-        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[15], false)) {
-            if (key.equals(Constants.PREF_SIM1[23]) || key.equals(Constants.PREF_SIM2[23]) ||
-                    key.equals(Constants.PREF_SIM3[23]))
-                if (sharedPreferences.getString(key, "none").equals("auto"))
-                    mId = mContext.getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, mActiveSIM), "drawable", mContext.getPackageName());
-                else
-                    mId = mContext.getResources().getIdentifier(sharedPreferences.getString(key, "none"), "drawable", mContext.getPackageName());
-        }
-        if (key.equals(Constants.PREF_OTHER[12]))
-            mPriority = sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
+    public static void setPriority(int priority) {
+        mPriority = priority;
+    }
+
+    public static void setIdNeedsChange(boolean idNeedsChange) {
+        mIdChanged = idNeedsChange;
     }
 }

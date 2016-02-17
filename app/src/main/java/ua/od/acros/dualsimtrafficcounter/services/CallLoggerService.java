@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.WindowManager;
@@ -366,6 +367,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
                     final Context ctx = context;
                     number[0] = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER).replaceAll("[\\s\\-()]", "");
+                    //number[0] = MobileUtils.getMeMyNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
                     final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
                     tm.listen(new PhoneStateListener() {
                         @Override
@@ -377,7 +379,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                         break;
                                     case TelephonyManager.CALL_STATE_OFFHOOK:
                                         final int sim = MobileUtils.getSimId(ctx);
-                                        String out = sim + " " + number[0] + "\n";
+                                        /*String out = sim + " " + number[0] + "\n";
                                         try {
                                             // to this path add a new directory path
                                             File dir = new File(String.valueOf(ctx.getFilesDir()));
@@ -391,7 +393,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             os.close();
                                         } catch (IOException e) {
                                             e.printStackTrace();
-                                        }
+                                        }*/
                                         final ArrayList<String> whiteList = MyDatabase.readWhiteList(sim, mDatabaseHelper);
                                         final ArrayList<String> blackList = MyDatabase.readBlackList(sim, mDatabaseHelper);
                                         if (!whiteList.contains(number[0]) && !blackList.contains(number[0]) && !mIsDialogShown) {
@@ -459,6 +461,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             };
             timer.start();
         }
+        if (key.equals(Constants.PREF_OTHER[12]))
+            MyNotification.setPriority(sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN);
     }
 
     private DateTime getResetTime(int sim) {

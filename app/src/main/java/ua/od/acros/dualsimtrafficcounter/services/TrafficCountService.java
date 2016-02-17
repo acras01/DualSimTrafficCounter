@@ -427,10 +427,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (mIsResetNeeded3)
             mResetTime3 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
 
-
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-
         mLimits = getSIMLimits();
 
         mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
@@ -454,6 +450,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         sendDataBroadcast(0L, 0L);
 
+        MyNotification.setIdNeedsChange(true);
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
         // schedule task
         timerStart(Constants.COUNT);
@@ -549,6 +546,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             };
             timer.start();
+        }
+        if (key.equals(Constants.PREF_OTHER[12]))
+            MyNotification.setPriority(sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN);
+        if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
+                key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23])) {
+            MyNotification.setIdNeedsChange(true);
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.notify(Constants.STARTED_ID, buildNotification(mActiveSIM));
         }
     }
 
