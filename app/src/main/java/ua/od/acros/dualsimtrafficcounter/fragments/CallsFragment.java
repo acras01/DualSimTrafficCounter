@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.acra.ACRA;
+
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
@@ -78,41 +80,26 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                long limit1, limit2, limit3;
-                try {
-                    limit1 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
-                } catch (Exception e) {
-                    limit1 = Long.MAX_VALUE;
-                }
-                try {
-                    limit2 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
-                } catch (Exception e) {
-                    limit2 = Long.MAX_VALUE;
-                }
-                try {
-                    limit3 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
-                } catch (Exception e) {
-                    limit3 = Long.MAX_VALUE;
-                }
+                long[] limit = setTotalText();
                 try {
                     switch (sim) {
                         case Constants.SIM1:
                             TOT1.setText(DataFormat.formatCallDuration(mContext, duration));
-                            if (duration >= limit1)
+                            if (duration >= limit[0])
                                 TOT1.setTextColor(Color.RED);
                             else
                                 TOT1.setTextColor(Color.WHITE);
                             break;
                         case Constants.SIM2:
                             TOT2.setText(DataFormat.formatCallDuration(mContext, duration));
-                            if (duration >= limit2)
+                            if (duration >= limit[1])
                                 TOT2.setTextColor(Color.RED);
                             else
                                 TOT2.setTextColor(Color.WHITE);
                             break;
                         case Constants.SIM3:
                             TOT3.setText(DataFormat.formatCallDuration(mContext, duration));
-                            if (duration >= limit3)
+                            if (duration >= limit[2])
                                 TOT3.setTextColor(Color.RED);
                             else
                                 TOT3.setTextColor(Color.WHITE);
@@ -120,6 +107,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
                 }
             }
         };
@@ -182,32 +170,21 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim2.setOnClickListener(this);
         bLim3.setOnClickListener(this);
 
-        String limit1 = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
-        String limit2 = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
-        String limit3 = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
-        long lim1 = Long.MAX_VALUE;
-        long lim2 = Long.MAX_VALUE;
-        long lim3 = Long.MAX_VALUE;
-        if (!limit1.equals(""))
-            lim1 = Long.valueOf(limit1) * Constants.MINUTE;
-        if (!limit2.equals(""))
-            lim2 = Long.valueOf(limit2) * Constants.MINUTE;
-        if (!limit3.equals(""))
-            lim3 = Long.valueOf(limit3) * Constants.MINUTE;
-
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
         TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1)));
-        if ((long) mCalls.get(Constants.CALLS1) >= lim1)
+
+        long[] limit = setTotalText();
+        if ((long) mCalls.get(Constants.CALLS1) >= limit[0])
             TOT1.setTextColor(Color.RED);
         else
             TOT1.setTextColor(Color.WHITE);
         TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2)));
-        if ((long) mCalls.get(Constants.CALLS2) >= lim2)
+        if ((long) mCalls.get(Constants.CALLS2) >= limit[1])
             TOT2.setTextColor(Color.RED);
         else
             TOT2.setTextColor(Color.WHITE);
         TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3)));
-        if ((long) mCalls.get(Constants.CALLS3) >= lim3)
+        if ((long) mCalls.get(Constants.CALLS3) >= limit[2])
             TOT3.setTextColor(Color.RED);
         else
             TOT3.setTextColor(Color.WHITE);
@@ -401,6 +378,26 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim1.setText(limit1);
         bLim2.setText(limit2);
         bLim3.setText(limit3);
+    }
+
+    private long[] setTotalText() {
+        long limit1, limit2, limit3;
+        try {
+            limit1 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
+        } catch (Exception e) {
+            limit1 = Long.MAX_VALUE;
+        }
+        try {
+            limit2 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
+        } catch (Exception e) {
+            limit2 = Long.MAX_VALUE;
+        }
+        try {
+            limit3 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
+        } catch (Exception e) {
+            limit3 = Long.MAX_VALUE;
+        }
+        return new long[]{limit1, limit2, limit3};
     }
 
     @Override

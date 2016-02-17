@@ -22,7 +22,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 public class BlackListActivity extends Activity {
 
     private ArrayList<String> mList;
-    private BlackListAdapter mArrayAdapter, mSavedAdapter;
     private Context mContext = this;
     private int mKey;
     private MyDatabase mDatabaseHelper;
@@ -42,8 +41,7 @@ public class BlackListActivity extends Activity {
         mKey = Integer.valueOf(getIntent().getDataString());
         mList = MyDatabase.readBlackList(mKey, mDatabaseHelper);
         setTitle(mOperatorNames[mKey]);
-        mArrayAdapter = new BlackListAdapter(mContext, mList);
-        listView.setAdapter(mArrayAdapter);
+        listView.setAdapter(new BlackListAdapter(mContext, mList));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

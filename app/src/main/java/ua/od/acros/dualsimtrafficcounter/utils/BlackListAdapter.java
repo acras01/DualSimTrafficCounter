@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +54,11 @@ public class BlackListAdapter  extends BaseAdapter {
                 if (isChecked) {
                     if (!mChecked.contains(number))
                         mChecked.add(number);
+                    checkBox.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
                 } else {
                     if (mChecked.contains(number))
                         mChecked.remove(number);
+                    checkBox.setPaintFlags(0);
                 }
             }
         });
