@@ -22,7 +22,6 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
 
 
     private TwoLineEditTextPreference timer, simQuantity;
-    private TwoLineCheckPreference callLogger;
 
     private static final String XPOSED = "de.robv.android.xposed.installer";
 
@@ -42,7 +41,7 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
         simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
-        callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
+        TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
         if (!XposedUtils.isPackageExisted(getActivity(), XPOSED)) {
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
@@ -84,9 +83,12 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
                             .putBoolean(Constants.PREF_OTHER[24], true)
                             .apply();
                 }
-            } else
+            } else {
                 getActivity().startService(new Intent(getActivity(), CallLoggerService.class));
-
+                sharedPreferences.edit()
+                        .putBoolean(Constants.PREF_OTHER[24], false)
+                        .apply();
+            }
         }
         updateSummary();
     }
