@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.WindowManager;
@@ -461,8 +460,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             };
             timer.start();
         }
-        if (key.equals(Constants.PREF_OTHER[12]))
-            MyNotification.setPriority(sharedPreferences.getBoolean(key, true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN);
+        if (key.equals(Constants.PREF_OTHER[12])) {
+            MyNotification.setPriorityNeedsChange(true);
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.notify(Constants.STARTED_ID, buildNotification());
+        }
     }
 
     private DateTime getResetTime(int sim) {

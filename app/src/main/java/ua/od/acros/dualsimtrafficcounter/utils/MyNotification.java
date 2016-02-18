@@ -17,9 +17,9 @@ public class MyNotification extends Notification {
 
     private static String mTraffic = "", mCalls = "";
     private static NotificationCompat.Builder mBuilder;
-    private static int mId, mPriority;
     private static Context mContext;
     private static boolean mIdChanged = false;
+    private static boolean mPriorityChanged = false;
 
     private static NotificationCompat.Builder newInstance() {
         if (mBuilder == null) {
@@ -59,11 +59,13 @@ public class MyNotification extends Notification {
         mCalls = calls;
         NotificationCompat.Builder b = newInstance();
         if (mIdChanged) {
-            mId = getOperatorLogoID(mContext, mActiveSIM);
             mIdChanged = false;
+            b.setSmallIcon(getOperatorLogoID(mContext, mActiveSIM));
         }
-        b.setSmallIcon(mId);
-        b.setPriority(mPriority);
+        if (mPriorityChanged) {
+            mPriorityChanged = false;
+            b.setPriority(prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN);
+        }
         return new NotificationCompat.BigTextStyle(b).bigText(bigText).build();
     }
 
@@ -90,8 +92,8 @@ public class MyNotification extends Notification {
             return R.drawable.ic_launcher_small;
     }
 
-    public static void setPriority(int priority) {
-        mPriority = priority;
+    public static void setPriorityNeedsChange(boolean idNeedsChange) {
+        mPriorityChanged = idNeedsChange;
     }
 
     public static void setIdNeedsChange(boolean idNeedsChange) {

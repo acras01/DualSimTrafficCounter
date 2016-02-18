@@ -58,10 +58,6 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
             timer.setSummary(String.format(getResources().getString(R.string.minutes), timer.getText()));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
-        if (callLogger != null)
-            getPreferenceScreen().getSharedPreferences().edit()
-                    .putBoolean(Constants.PREF_OTHER[24], callLogger.isChecked())
-                    .apply();
     }
 
     @Override

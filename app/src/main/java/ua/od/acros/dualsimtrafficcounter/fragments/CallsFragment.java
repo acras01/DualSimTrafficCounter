@@ -317,20 +317,20 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         switch (item.getItemId()) {
             case R.id.action_service_start_stop:
                 if (mIsRunning) {
-                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], true).apply();
                     mContext.stopService(new Intent(mContext, CallLoggerService.class));
                     TIP.setText(getResources().getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
                     mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
+                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], true).apply();
                 }
                 else {
-                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
                     mContext.startService(new Intent(mContext, CallLoggerService.class));
                     TIP.setText(getResources().getString(R.string.tip_calls));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
                     mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
+                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
                 }
                 break;
         }
@@ -408,5 +408,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             SIM2.setText(MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
             SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
+        if (key.equals(Constants.PREF_OTHER[25]))
+            mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
     }
 }
