@@ -366,7 +366,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
                     final Context ctx = context;
                     number[0] = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER).replaceAll("[\\s\\-()]", "");
-                    //number[0] = MobileUtils.getMeMyNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
+                    //number[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
                     final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
                     tm.listen(new PhoneStateListener() {
                         @Override

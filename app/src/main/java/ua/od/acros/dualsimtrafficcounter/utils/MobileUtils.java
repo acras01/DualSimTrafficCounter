@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.stericson.RootShell.RootShell;
 import com.stericson.RootShell.execution.Command;
 
+import org.acra.ACRA;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -27,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -790,32 +790,32 @@ public class MobileUtils {
                                     break;
                                 }
                             }
-                        }
-                        if (sim == Constants.DISABLED) {
-                            for (int i = 0; i < simQuantity; i++) {
-                                int state = Constants.DISABLED;
-                                try {
-                                    Class<?> c = Class.forName(MEDIATEK);
-                                    Method[] cm = c.getDeclaredMethods();
-                                    for (Method m : cm) {
-                                        if (m.getName().equalsIgnoreCase(GET_DATA)) {
-                                            m.setAccessible(true);
-                                            m.getParameterTypes();
-                                            if (m.getParameterTypes().length > 1) {
-                                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
-                                                break;
+                            if (sim == Constants.DISABLED) {
+                                for (int i = 0; i < simQuantity; i++) {
+                                    int state = Constants.DISABLED;
+                                    try {
+                                        Class<?> c = Class.forName(MEDIATEK);
+                                        Method[] cm = c.getDeclaredMethods();
+                                        for (Method m : cm) {
+                                            if (m.getName().equalsIgnoreCase(GET_DATA)) {
+                                                m.setAccessible(true);
+                                                m.getParameterTypes();
+                                                if (m.getParameterTypes().length > 1) {
+                                                    state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                                    break;
+                                                }
                                             }
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                if (state == TelephonyManager.DATA_CONNECTED
-                                        || state == TelephonyManager.DATA_CONNECTING
-                                        || state == TelephonyManager.DATA_SUSPENDED) {
-                                    sim = i;
-                                    out = "getDataStateExLong " + sim;
-                                    break;
+                                    if (state == TelephonyManager.DATA_CONNECTED
+                                            || state == TelephonyManager.DATA_CONNECTING
+                                            || state == TelephonyManager.DATA_SUSPENDED) {
+                                        sim = i;
+                                        out = "getDataStateExLong " + sim;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -936,36 +936,48 @@ public class MobileUtils {
                 Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
         }
     }
 
-    private static String getTransactionCode(Context context) throws Exception {
-        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        final Class<?> mTelephonyClass = Class.forName(tm.getClass().getName());
-        final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
-        mTelephonyMethod.setAccessible(true);
-        final Object mTelephonyStub = mTelephonyMethod.invoke(tm);
-        final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-        final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-        final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
-        field.setAccessible(true);
-        return String.valueOf(field.getInt(null));
+    private static String getTransactionCode(Context context) {
+        try {
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final Class<?> mTelephonyClass = Class.forName(tm.getClass().getName());
+            final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
+            mTelephonyMethod.setAccessible(true);
+            final Object mTelephonyStub = mTelephonyMethod.invoke(tm);
+            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
+            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
+            final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
+            field.setAccessible(true);
+            return String.valueOf(field.getInt(null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+            return null;
+        }
     }
 
-    private static void setMobileDataEnabled(Context context, boolean enabled) throws ClassNotFoundException,
-            NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        final ConnectivityManager conman = (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final Class conmanClass = Class.forName(conman.getClass().getName());
-        final Field connectivityManagerField = conmanClass.getDeclaredField("mService");
-        connectivityManagerField.setAccessible(true);
-        final Object connectivityManager = connectivityManagerField.get(conman);
-        final Class connectivityManagerClass =  Class.forName(connectivityManager.getClass().getName());
-        Method[] conmanMethods = connectivityManagerClass.getDeclaredMethods();
-        for (Method m : conmanMethods) {
-            if (m.getName().equals("setMobileDataEnabled")) {
-                m.setAccessible(true);
-                m.invoke(connectivityManager, enabled);
+    private static void setMobileDataEnabled(Context context, boolean enabled) {
+        try {
+            final ConnectivityManager conman = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            final Class conmanClass = Class.forName(conman.getClass().getName());
+            final Field connectivityManagerField = conmanClass.getDeclaredField("mService");
+            connectivityManagerField.setAccessible(true);
+            final Object connectivityManager = connectivityManagerField.get(conman);
+            final Class connectivityManagerClass = Class.forName(connectivityManager.getClass().getName());
+            Method[] conmanMethods = connectivityManagerClass.getDeclaredMethods();
+            for (Method m : conmanMethods) {
+                if (m.getName().equals("setMobileDataEnabled")) {
+                    m.setAccessible(true);
+                    if (m.getParameterTypes().length == 1)
+                        m.invoke(connectivityManager, enabled);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
         }
     }
 
@@ -1352,7 +1364,7 @@ public class MobileUtils {
         return CountryZipCode;
     }
 
-    public static String getMeMyNumber(Context context, String number) {
+    public static String getFullNumber(Context context, String number) {
         String countryCode = getCountryZipCode(context);
         return number.replaceAll("[^0-9\\+]", "")        //remove all the non numbers (brackets dashes spaces etc.) except the + signs
                     .replaceAll("(^[1-9].+)", countryCode + "$1")         //if the number is starting with no zero and +, its a local number. prepend cc
