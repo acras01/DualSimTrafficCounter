@@ -154,12 +154,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     !MTKUtils.isMtkDevice())
                 showDialog(MTK);
             if (MTKUtils.isMtkDevice() &&
-                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 if (savedInstanceState == null)
                     getSupportFragmentManager()
                             .beginTransaction()
                             .add(R.id.content_frame, mTest)
                             .commit();
+            } else
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.content_frame, mTraffic)
+                        .addToBackStack(TRAFFIC_TAG)
+                        .commit();
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         } else if (action != null && action.equals("tap")) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true))
