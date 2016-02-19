@@ -179,4 +179,5 @@
     <string name="unknown">Невідомий</string>
     <string name="saved">Список збережено!</string>
     <string name="info_widget_calls">Віджет DSTC (дзвінки)</string>
+    <string name="deleted">Віджет видалено!</string>
 </resources>

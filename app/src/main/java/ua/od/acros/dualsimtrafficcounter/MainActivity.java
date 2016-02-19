@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static Context mContext;
     private SharedPreferences mPrefs;
-    private static final String TRAFFIC_TAG = "traffic";
-    private static final String CALLS_TAG = "calls";
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String EMAIL = "email";
@@ -165,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.content_frame, mTraffic)
-                        .addToBackStack(TRAFFIC_TAG)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         } else if (action != null && action.equals("tap")) {
@@ -173,20 +171,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.content_frame, mTraffic)
-                        .addToBackStack(TRAFFIC_TAG)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
             else
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.content_frame, mCalls)
-                        .addToBackStack(CALLS_TAG)
+                        .addToBackStack(Constants.CALLS_TAG)
                         .commit();
         } else {
             if (savedInstanceState == null)
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.content_frame, mTraffic)
-                        .addToBackStack(TRAFFIC_TAG)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
         }
     }
@@ -406,11 +404,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String tag = "";
         switch (item.getItemId()) {
             case R.id.nav_traffic:
-                tag = TRAFFIC_TAG;
+                tag = Constants.TRAFFIC_TAG;
                 newFragment = mTraffic;
                 break;
             case R.id.nav_calls:
-                tag = CALLS_TAG;
+                tag = Constants.CALLS_TAG;
                 newFragment = mCalls;
                 break;
             case R.id.nav_traf_for_date:

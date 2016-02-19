@@ -30,8 +30,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class TrafficInfoWidget extends AppWidgetProvider {
 
-    private static final String PREF_PREFIX_KEY = "_traffic";
-
     @Override
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
         super.onUpdate(context, widgetManager, widgetId);
@@ -120,7 +118,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         }
 
         for (int i : ids) {
-            SharedPreferences prefs = context.getSharedPreferences(i + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences(i + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
@@ -540,7 +538,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         String[] children = dir.list();
         for (String aChildren : children) {
             for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES))
                     context.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
         }
         try {
@@ -551,9 +549,9 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         }
         for (String aChildren : children) {
             for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES))
                     if (new File(dir, aChildren).delete())
-                        Toast.makeText(context, "Widget deleted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, R.string.deleted, Toast.LENGTH_LONG).show();
         }
     }
 

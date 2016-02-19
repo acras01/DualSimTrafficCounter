@@ -40,9 +40,9 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class TrafficWidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
-        CompoundButton.OnCheckedChangeListener, View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
+        CompoundButton.OnCheckedChangeListener, View.OnClickListener,
+        SetSizeDialog.TextSizeDialogListener, ShowSimDialog.ShowSimDialogClosedListener {
 
-    private static final String PREF_PREFIX_KEY = "_traffic";
     private static final int SELECT_PHOTO = 101;
     private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent mResultValueIntent;
@@ -50,14 +50,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
             speedTextSum, speedIconsSum, showSimSum, divSum, activesum, daynightSum;
-    private RelativeLayout simLogoL;
-    private RelativeLayout speedFontL;
-    private RelativeLayout speedArrowsL;
-    private RelativeLayout showSimL;
-    private RelativeLayout backColorL;
-    private RelativeLayout logoL1;
-    private RelativeLayout logoL2;
-    private RelativeLayout logoL3;
+    private RelativeLayout simLogoL, speedFontL, speedArrowsL, showSimL, backColorL, logoL1, logoL2, logoL3;
     private SharedPreferences mPrefs;
     private SharedPreferences.Editor mEdit;
     private int mTextColor, mBackColor;
@@ -70,6 +63,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     private String mUserPickedImage;
 
     private final Context mContext = this;
+    private boolean[] mSim;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -91,36 +85,39 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             finish();
         }
 
-        mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();
         if (mPrefs.getAll().size() == 0) {
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);
-            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");
-            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], "none");
-            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], "none");
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
-            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE);
-            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);
-            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true);
-            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
-            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
-            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show names
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);//Show full/short info
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);//Show speed
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);//Show sim icons
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");//SIM1 icon
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], "none");//SIM2 icon
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], "none");//SIM3 icon
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);//SIM1 user icon
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);//SIM2 user icon
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);//SIM3 user icon
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE);//Icon size
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);//Font size
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);//Text color
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true);//Use background
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);//Background color
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);//Speed text size
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);//Speed arrows size
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);//show sim1
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);//show sim2
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);//Show sim3
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);//Show divider
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);//Show only active SIM
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);//Show day/night icons
             mEdit.apply();
         }
+
+        mSim = new boolean[]{mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true),
+                mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true), mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true)};
 
         mTextColor = mPrefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
         mBackColor = mPrefs.getInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
@@ -227,12 +224,12 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         String sum = "";
         if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true))
             sum = "SIM1";
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true))
+        if (mSimQuantity >= 2 && mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true))
             if (sum.equals(""))
                 sum = "SIM2";
             else
                 sum += ", SIM2";
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true))
+        if (mSimQuantity == 3 && mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true))
             if (sum.equals(""))
                 sum = "SIM3";
             else
@@ -328,8 +325,6 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         setOnClickListenerWithChild(speedArrowsL);
         setOnClickListenerWithChild(showSimL);
         backColorL.setOnClickListener(this);
-
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -434,7 +429,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         }
     }
 
-    public void showDialog(View view) {
+    private void showDialog(View view) {
         DialogFragment dialog = null;
         switch (view.getId()) {
             case R.id.logoPreview1:
@@ -449,27 +444,31 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             case R.id.simFontSize:
             case R.id.textSize:
             case R.id.textSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE), KEY_TEXT);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE),
+                        KEY_TEXT, Constants.TRAFFIC_TAG);
                 break;
             case R.id.simLogoSize:
             case R.id.iconSize:
             case R.id.iconSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE), KEY_ICON);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE),
+                        KEY_ICON, Constants.TRAFFIC_TAG);
                 break;
             case R.id.speedFontSize:
             case R.id.speedTextSize:
             case R.id.speedTextSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE), KEY_TEXT_S);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE),
+                        KEY_TEXT_S, Constants.TRAFFIC_TAG);
                 break;
             case R.id.speedArrowsSize:
             case R.id.speedIconsSize:
             case R.id.speedIconsSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE), KEY_ICON_S);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE),
+                        KEY_ICON_S, Constants.TRAFFIC_TAG);
                 break;
             case R.id.showSim:
             case R.id.simChoose:
             case R.id.simChooseSum:
-                dialog = ShowSimDialog.newInstance(mWidgetID);
+                dialog = ShowSimDialog.newInstance(Constants.TRAFFIC_TAG, mSim);
                 break;
         }
         if (dialog != null) {
@@ -477,8 +476,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         }
     }
 
-    public void onFinishEditDialog(String inputText, int dialog) {
-        if (!inputText.equals("")) {
+    @Override
+    public void onFinishEditDialog(String inputText, int dialog, String activity) {
+        if (activity.equals(Constants.TRAFFIC_TAG) && !inputText.equals("")) {
             switch (dialog) {
                 case KEY_TEXT:
                     mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[12], inputText);
@@ -567,7 +567,6 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK){
@@ -612,7 +611,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         }
     }
 
-    public String getRealPathFromURI(Context context, Uri contentUri) {
+    private String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
@@ -768,27 +767,33 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             dialog.show();
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        String sum = "";
-        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true))
-            sum = "SIM1";
-        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true))
-            if (sum.equals(""))
-                sum = "SIM2";
-            else
-                sum += ", SIM2";
-        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true))
-            if (sum.equals(""))
-                sum = "SIM3";
-            else
-                sum += ", SIM3";
-        showSimSum.setText(sum);
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void OnDialogClosed(String activity, boolean[] sim) {
+        if (activity.equals(Constants.TRAFFIC_TAG)) {
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], sim[0]);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], sim[1]);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], sim[2]);
+            mSim = sim;
+            String sum = "";
+            if (sim[0])
+                sum = "SIM1";
+            if (sim[1])
+                if (sum.equals(""))
+                    sum = "SIM2";
+                else
+                    sum += ", SIM2";
+            if (sim[2])
+                if (sum.equals(""))
+                    sum = "SIM3";
+                else
+                    sum += ", SIM3";
+            showSimSum.setText(sum);
+        }
     }
 }

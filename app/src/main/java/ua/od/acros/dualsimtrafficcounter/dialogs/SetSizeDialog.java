@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.TrafficWidgetConfigActivity;
 
 public class SetSizeDialog extends DialogFragment implements TextView.OnEditorActionListener {
 
@@ -20,14 +19,16 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
     private int mDialog;
     private static final String mKey1 = "size";
     private static final String mKey2 = "id";
-
+    private static final String mKey3 = "act";
     private EditText mEditText;
+    private String mActivity;
 
-    public static DialogFragment newInstance(String size, int dialog) {
+    public static DialogFragment newInstance(String size, int dialog, String activity) {
         SetSizeDialog f = new SetSizeDialog();
         Bundle args = new Bundle();
         args.putString(mKey1, size);
         args.putInt(mKey2, dialog);
+        args.putString(mKey3, activity);
         f.setArguments(args);
         return f;
     }
@@ -38,10 +39,12 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
         // Get back arguments
         mSize = getArguments().getString(mKey1, "");
         mDialog = getArguments().getInt(mKey2, -1);
+        mActivity = getArguments().getString(mKey3, "");
+
     }
 
     public interface TextSizeDialogListener {
-        void onFinishEditDialog(String inputText, int dialog);
+        void onFinishEditDialog(String inputText, int dialog, String activity);
     }
 
     public SetSizeDialog() {
@@ -67,8 +70,8 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
         if (actionId == EditorInfo.IME_ACTION_DONE || (event.getAction() == KeyEvent.ACTION_DOWN &&
                 event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
             // Return input text to activity
-            TrafficWidgetConfigActivity activity = (TrafficWidgetConfigActivity) getActivity();
-            activity.onFinishEditDialog(mEditText.getText().toString(), mDialog);
+            TextSizeDialogListener listener = (TextSizeDialogListener) getActivity();
+            listener.onFinishEditDialog(mEditText.getText().toString(), mDialog, mActivity);
             this.dismiss();
             return true;
         }

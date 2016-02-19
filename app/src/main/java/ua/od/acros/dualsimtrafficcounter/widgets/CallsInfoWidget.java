@@ -23,8 +23,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class CallsInfoWidget extends AppWidgetProvider {
 
-    private static final String PREF_PREFIX_KEY = "_calls";
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Bundle bundle = new Bundle();
@@ -62,7 +60,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             bundle.putLong(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
         }
         for (int i : ids) {
-            SharedPreferences prefs = context.getSharedPreferences(i + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences(i + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
 
@@ -98,7 +96,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
         String[] children = dir.list();
         for (String aChildren : children) {
             for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES))
                     context.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
         }
         try {
@@ -109,9 +107,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
         }
         for (String aChildren : children) {
             for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES))
                     if (new File(dir, aChildren).delete())
-                        Toast.makeText(context, "Widget deleted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, R.string.deleted, Toast.LENGTH_LONG).show();
         }
     }
 
