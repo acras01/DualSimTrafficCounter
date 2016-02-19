@@ -111,7 +111,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 }
             }
         };
-        IntentFilter callDataFilter = new IntentFilter(Constants.CALLS);
+        IntentFilter callDataFilter = new IntentFilter(Constants.CALLS_BROADCAST_ACTION);
         mContext.registerReceiver(callDataReceiver, callDataFilter);
     }
 

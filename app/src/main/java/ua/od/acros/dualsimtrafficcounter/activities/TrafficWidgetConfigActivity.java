@@ -353,7 +353,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         try {
             if (item.getItemId() == R.id.save) {
                 mEdit.apply();
-                Intent intent = new Intent(Constants.BROADCAST_ACTION);
+                Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
                 if (!MyDatabase.isEmpty(new MyDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
                     ContentValues dataMap = MyDatabase.readTrafficData(MyDatabase.getInstance(mContext));

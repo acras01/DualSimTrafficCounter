@@ -173,7 +173,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
             }
         };
-        IntentFilter countServiceFilter = new IntentFilter(Constants.BROADCAST_ACTION);
+        IntentFilter countServiceFilter = new IntentFilter(Constants.TRAFFIC_BROADCAST_ACTION);
         mContext.registerReceiver(dataReceiver, countServiceFilter);
 
         tipReceiver = new BroadcastReceiver() {

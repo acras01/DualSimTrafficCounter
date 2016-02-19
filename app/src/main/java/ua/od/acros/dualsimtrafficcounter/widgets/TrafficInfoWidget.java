@@ -88,7 +88,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 deleteWidgetPreferences(context, new int[]{appWidgetId});
             }
-        } else if (action.equals(Constants.BROADCAST_ACTION) && widgetIds != null)
+        } else if (action.equals(Constants.TRAFFIC_BROADCAST_ACTION) && widgetIds != null)
             updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
     }
 
@@ -122,29 +122,29 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);
-                edit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");
-                edit.putString(Constants.PREF_WIDGET_TRAFFIC[6], "none");
-                edit.putString(Constants.PREF_WIDGET_TRAFFIC[7], "none");
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
-                edit.putString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE);
-                edit.putString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);
-                edit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true);
-                edit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
-                edit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
-                edit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show names
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);//Show full/short info
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);//Show speed
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);//Show sim icons
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");//SIM1 icon
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[6], "none");//SIM2 icon
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[7], "none");//SIM3 icon
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);//SIM1 user icon
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);//SIM2 user icon
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);//SIM3 user icon
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE);//Icon size
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);//Font size
+                edit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);//Text color
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true);//Use background
+                edit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);//Background color
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);//Speed text size
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);//Speed arrows size
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);//show sim1
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);//show sim2
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);//Show sim3
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);//Show divider
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);//Show only active SIM
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);//Show day/night icons
                 edit.apply();
             }
 

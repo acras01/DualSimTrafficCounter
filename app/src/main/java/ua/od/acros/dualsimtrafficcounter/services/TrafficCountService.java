@@ -1603,7 +1603,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     }
 
     private void sendDataBroadcast(long speedRX, long speedTX) {
-        Intent intent = new Intent(Constants.BROADCAST_ACTION);
+        Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
         intent.putExtra(Constants.WIDGET_IDS, getWidgetIds(mContext));
         intent.putExtra(Constants.SPEEDRX, speedRX);
         intent.putExtra(Constants.SPEEDTX, speedTX);

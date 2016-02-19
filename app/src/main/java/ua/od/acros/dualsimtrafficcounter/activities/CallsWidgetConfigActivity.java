@@ -308,7 +308,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
         try {
             if (item.getItemId() == R.id.save) {
                 mEdit.apply();
-                Intent intent = new Intent(Constants.CALLS);
+                Intent intent = new Intent(Constants.CALLS_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
                 if (!MyDatabase.isEmpty(new MyDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
                     ContentValues dataMap = MyDatabase.readCallsData(MyDatabase.getInstance(mContext));

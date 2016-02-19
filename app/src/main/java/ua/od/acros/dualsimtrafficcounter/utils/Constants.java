@@ -24,7 +24,8 @@ public class Constants {
     public static final String OPERATOR1 = "operator1";
     public static final String OPERATOR2 = "operator2";
     public static final String OPERATOR3 = "operator3";
-    public static final String BROADCAST_ACTION = "ua.od.acros.dualsimtrafficcounter.DATABROADCAST";
+    public static final String TRAFFIC_BROADCAST_ACTION = "ua.od.acros.dualsimtrafficcounter.DATABROADCAST";
+    public static final String CALLS_BROADCAST_ACTION = "ua.od.acros.dualsimtrafficcounter.CALLS";
     public static final String TIP = "tip";
     public static final String APP_PREFERENCES = "ua.od.acros.dualsimtrafficcounter_preferences";
     public static final String WIDGET_PREFERENCES = "_widget_preferences";
@@ -43,7 +44,6 @@ public class Constants {
     public static final String OFF_ACTION = "off";
     public static final String ACTION = "action";
     public static final String OUTGOING_CALL = "outgoing_call";
-    public static final String CALLS = "calls";
     public static final String ALARM_ACTION = "ua.od.acros.dualsimtrafficcounter.ALARM";
     public static final String CONTINUE_ACTION = "continue";
     public static final long NOTIFY_INTERVAL = 1000; // 1 second

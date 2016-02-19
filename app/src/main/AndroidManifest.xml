@@ -156,7 +156,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
-                <action android:name="ua.od.acros.dualsimtrafficcounter.DATABROADCAST" />
+                <action android:name="ua.od.acros.dualsimtrafficcounter.CALLS" />
             </intent-filter>
 
             <meta-data
