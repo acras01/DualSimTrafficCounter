@@ -104,200 +104,200 @@ public class MyDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String ALTER_TBL;
-        if (oldVersion < Constants.DATABASE_VERSION && oldVersion <= 1) {
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3RX + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3TX + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL3 + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD1 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD2 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD3 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM1RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM1TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL1_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM2RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM2TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL2_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL3_N + " long;";
-            db.execSQL(ALTER_TBL);
-        }
-
-        if (oldVersion < Constants.DATABASE_VERSION && oldVersion <= 2) {
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD1 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD2 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.PERIOD3 + " integer;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM1RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM1TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL1_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM2RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM2TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL2_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL3_N + " long;";
-            db.execSQL(ALTER_TBL);
-        }
-
-        if (oldVersion < Constants.DATABASE_VERSION && oldVersion <= 3) {
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM1RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM1TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL1_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM2RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM2TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL2_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3RX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.SIM3TX_N + " long;";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL =
-                    "ALTER TABLE " + DATA_TABLE +
-                            " ADD COLUMN " + Constants.TOTAL3_N + " long;";
-            db.execSQL(ALTER_TBL);
-        }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 4) {
-            ALTER_TBL = "create table "
-                    + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
-                    + " text not null, " +  Constants.CALLS1 + " long, "
-                    + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
-                    + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
-                    + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
-                    + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
-            db.execSQL(ALTER_TBL);
-        }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 6) {
-            db.execSQL("DROP TABLE IF EXISTS " + CALLS_TABLE);
-            ALTER_TBL = "create table "
-                    + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
-                    + " text not null, " +  Constants.CALLS1 + " long, "
-                    + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
-                    + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
-                    + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
-                    + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
-            db.execSQL(ALTER_TBL);
-        }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 7) {
-            ALTER_TBL = "create table "
-                    + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null);";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL = "create table "
-                    + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null);";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL = "create table "
-                    + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null);";
-            db.execSQL(ALTER_TBL);
-        }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 8) {
-            ALTER_TBL = "create table "
-                    + BLACK_LIST_1 + " (" + Constants.NUMBER + " text not null);";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL = "create table "
-                    + BLACK_LIST_2 + " (" + Constants.NUMBER + " text not null);";
-            db.execSQL(ALTER_TBL);
-            ALTER_TBL = "create table "
-                    + BLACK_LIST_3 + " (" + Constants.NUMBER + " text not null);";
-            db.execSQL(ALTER_TBL);
+        if (oldVersion < Constants.DATABASE_VERSION) {
+            if (oldVersion <= 1) {
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3RX + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3TX + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL3 + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.PERIOD1 + " integer;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.PERIOD2 + " integer;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.PERIOD3 + " integer;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM1RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM1TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL1_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM2RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM2TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL2_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL3_N + " long;";
+                db.execSQL(ALTER_TBL);
+            }
+            if (oldVersion <= 2) {
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.PERIOD1 + " integer;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.PERIOD2 + " integer;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.PERIOD3 + " integer;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM1RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM1TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL1_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM2RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM2TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL2_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL3_N + " long;";
+                db.execSQL(ALTER_TBL);
+            }
+            if (oldVersion <= 3) {
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM1RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM1TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL1_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM2RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM2TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL2_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3RX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.SIM3TX_N + " long;";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL =
+                        "ALTER TABLE " + DATA_TABLE +
+                                " ADD COLUMN " + Constants.TOTAL3_N + " long;";
+                db.execSQL(ALTER_TBL);
+            }
+            if (oldVersion <= 4) {
+                ALTER_TBL = "create table "
+                        + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                        + " text not null, " + Constants.CALLS1 + " long, "
+                        + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
+                        + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
+                        + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
+                        + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
+                db.execSQL(ALTER_TBL);
+            }
+            if (oldVersion <= 6) {
+                db.execSQL("DROP TABLE IF EXISTS " + CALLS_TABLE);
+                ALTER_TBL = "create table "
+                        + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                        + " text not null, " + Constants.CALLS1 + " long, "
+                        + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
+                        + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
+                        + Constants.CALLS3_EX + " long, " + Constants.PERIOD1 + " integer,"
+                        + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
+                db.execSQL(ALTER_TBL);
+            }
+            if (oldVersion <= 7) {
+                ALTER_TBL = "create table "
+                        + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null);";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL = "create table "
+                        + WHITE_LIST_2 + " (" + Constants.NUMBER + " text not null);";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL = "create table "
+                        + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null);";
+                db.execSQL(ALTER_TBL);
+            }
+            if (oldVersion <= 8) {
+                ALTER_TBL = "create table "
+                        + BLACK_LIST_1 + " (" + Constants.NUMBER + " text not null);";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL = "create table "
+                        + BLACK_LIST_2 + " (" + Constants.NUMBER + " text not null);";
+                db.execSQL(ALTER_TBL);
+                ALTER_TBL = "create table "
+                        + BLACK_LIST_3 + " (" + Constants.NUMBER + " text not null);";
+                db.execSQL(ALTER_TBL);
+            }
         }
     }
 
