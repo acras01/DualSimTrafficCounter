@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -119,7 +120,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         }
 
         for (int i : ids) {
-            SharedPreferences prefs = context.getSharedPreferences(i + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences(i + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
@@ -551,7 +552,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         for (String aChildren : children) {
             for (int j : appWidgetIds)
                 if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
-                    new File(dir, aChildren).delete();
+                    if (new File(dir, aChildren).delete())
+                        Toast.makeText(context, "Widget deleted", Toast.LENGTH_LONG).show();
         }
     }
 

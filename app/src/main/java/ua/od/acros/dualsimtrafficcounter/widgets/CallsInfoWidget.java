@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import org.acra.ACRA;
 
@@ -61,7 +62,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             bundle.putLong(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
         }
         for (int i : ids) {
-            SharedPreferences prefs = context.getSharedPreferences(i + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences(i + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
 
@@ -109,7 +110,8 @@ public class CallsInfoWidget extends AppWidgetProvider {
         for (String aChildren : children) {
             for (int j : appWidgetIds)
                 if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
-                    new File(dir, aChildren).delete();
+                    if (new File(dir, aChildren).delete())
+                        Toast.makeText(context, "Widget deleted", Toast.LENGTH_LONG).show();
         }
     }
 
