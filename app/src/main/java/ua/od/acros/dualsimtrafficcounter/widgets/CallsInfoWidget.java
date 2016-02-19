@@ -67,7 +67,6 @@ public class CallsInfoWidget extends AppWidgetProvider {
         }
         for (int i : ids) {
             SharedPreferences prefs = context.getSharedPreferences(i + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-            SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[1], true); //Show names
@@ -99,11 +98,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, i, intent, 0);
 
-            int dim = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_CALLS[11], Constants.ICON_SIZE));
-            int dims = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_CALLS[17], Constants.ICON_SIZE));
+            int dim = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE));
 
-            String sizestr = prefs.getString(Constants.PREF_WIDGET_CALLS[12], Constants.TEXT_SIZE);
-            String sizestrs = prefs.getString(Constants.PREF_WIDGET_CALLS[16], Constants.TEXT_SIZE);
+            String sizestr = prefs.getString(Constants.PREF_WIDGET_CALLS[10], Constants.TEXT_SIZE);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.calls_info_widget);
 
@@ -146,7 +143,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.operSIM1, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM1, settPIntent);
                 }
-                if (!sizestr.equals("") && !sizestrs.equals("")) {
+                if (!sizestr.equals("")) {
                     updateViews.setFloat(R.id.totSIM1, "setTextSize", Float.parseFloat(sizestr));
                     updateViews.setFloat(R.id.operSIM1, "setTextSize", Float.parseFloat(sizestr));
                 } else {
@@ -173,16 +170,16 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setTextViewText(R.id.operSIM2, title2);
                 }
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
-                    if (!prefs.getBoolean(Constants.PREF_WIDGET_CALLS[4], false))
+                    if (!prefs.getBoolean(Constants.PREF_WIDGET_CALLS[7], false))
                         Picasso.with(context)
-                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_CALLS[7], "none"), "drawable", context.getPackageName()))
+                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_CALLS[4], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
                                 .into(updateViews, R.id.logo2, new int[]{i});
                     else
                         Picasso.with(context)
-                                .load(new File(prefs.getString(Constants.PREF_WIDGET_CALLS[7], "")))
+                                .load(new File(prefs.getString(Constants.PREF_WIDGET_CALLS[4], "")))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
@@ -197,7 +194,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.operSIM2, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM2, settPIntent);
                 }
-                if (!sizestr.equals("") && !sizestrs.equals("")) {
+                if (!sizestr.equals("")) {
                     updateViews.setFloat(R.id.totSIM2, "setTextSize", Float.parseFloat(sizestr));
                     updateViews.setFloat(R.id.operSIM2, "setTextSize", Float.parseFloat(sizestr));
                 } else {
@@ -259,7 +256,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.operSIM3, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM3, settPIntent);
                 }
-                if (!sizestr.equals("") && !sizestrs.equals("")) {
+                if (!sizestr.equals("")) {
                     updateViews.setFloat(R.id.totSIM3, "setTextSize", Float.parseFloat(sizestr));
                     updateViews.setFloat(R.id.operSIM3, "setTextSize", Float.parseFloat(sizestr));
                 } else {
