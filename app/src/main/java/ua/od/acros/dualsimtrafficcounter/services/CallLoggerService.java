@@ -378,7 +378,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                         break;
                                     case TelephonyManager.CALL_STATE_OFFHOOK:
                                         final int sim = MobileUtils.getSimId(ctx);
-                                        /*String out = sim + " " + number[0] + "\n";
+                                        String out = sim + " " + number[0] + "\n";
                                         try {
                                             // to this path add a new directory path
                                             File dir = new File(String.valueOf(ctx.getFilesDir()));
@@ -392,7 +392,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             os.close();
                                         } catch (IOException e) {
                                             e.printStackTrace();
-                                        }*/
+                                        }
                                         final ArrayList<String> whiteList = MyDatabase.readWhiteList(sim, mDatabaseHelper);
                                         final ArrayList<String> blackList = MyDatabase.readBlackList(sim, mDatabaseHelper);
                                         if (!whiteList.contains(number[0]) && !blackList.contains(number[0]) && !mIsDialogShown) {

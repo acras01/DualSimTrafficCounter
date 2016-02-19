@@ -310,6 +310,7 @@ public class MobileUtils {
     }
 
     public static ArrayList<String> getOperatorNames(Context context) {
+        String out = "";
         ArrayList<String> name = new ArrayList<>();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
@@ -317,6 +318,8 @@ public class MobileUtils {
             for (SubscriptionInfo si : sl) {
                 name.add((String) si.getCarrierName());
             }
+            if (name.size() > 0)
+                out = "Subscription " + name.size();
         } else {
             SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
@@ -342,6 +345,8 @@ public class MobileUtils {
                                     }
                                 }
                             }
+                            if (name.size() > 0)
+                                out = GET_NAME + "GeminiInt " + name.size();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -357,6 +362,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
+                                if (name.size() > 0)
+                                    out = GET_NAME + "GeminiLong " + name.size();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -373,6 +380,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
+                                if (name.size() > 0)
+                                    out = GET_NAME + name.size();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -395,6 +404,8 @@ public class MobileUtils {
                                         }
                                     }
                                 }
+                                if (name.size() > 0)
+                                    out = "from " + name.size();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -403,6 +414,20 @@ public class MobileUtils {
                 } else
                     name.add(tm.getNetworkOperatorName());
             }
+        }
+        try {
+            // to this path add a new directory path
+            File dir = new File(String.valueOf(context.getFilesDir()));
+            // create this directory if not already created
+            dir.mkdir();
+            // create the file in which we will write the contents
+            String fileName = "name_log.txt";
+            File file = new File(dir, fileName);
+            FileOutputStream os = new FileOutputStream(file);
+            os.write(out.getBytes());
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return name;
     }
@@ -765,8 +790,31 @@ public class MobileUtils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (sim == Constants.DISABLED) {
-                        if (MTKUtils.isMtkDevice()) {
+                    if (sim == Constants.DISABLED && MTKUtils.isMtkDevice()) {
+                        for (int i = 0; i < simQuantity; i++) {
+                            int state = Constants.DISABLED;
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                Method[] cm = c.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_DATA)) {
+                                        m.setAccessible(true);
+                                        state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                                        break;
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            if (state == TelephonyManager.DATA_CONNECTED
+                                    || state == TelephonyManager.DATA_CONNECTING
+                                    || state == TelephonyManager.DATA_SUSPENDED) {
+                                sim = i;
+                                out = "getDataStateExInt " + sim;
+                                break;
+                            }
+                        }
+                        if (sim == Constants.DISABLED) {
                             for (int i = 0; i < simQuantity; i++) {
                                 int state = Constants.DISABLED;
                                 try {
@@ -775,8 +823,11 @@ public class MobileUtils {
                                     for (Method m : cm) {
                                         if (m.getName().equalsIgnoreCase(GET_DATA)) {
                                             m.setAccessible(true);
-                                            state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
-                                            break;
+                                            m.getParameterTypes();
+                                            if (m.getParameterTypes().length > 1) {
+                                                state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                                break;
+                                            }
                                         }
                                     }
                                 } catch (Exception e) {
@@ -786,36 +837,8 @@ public class MobileUtils {
                                         || state == TelephonyManager.DATA_CONNECTING
                                         || state == TelephonyManager.DATA_SUSPENDED) {
                                     sim = i;
-                                    out = "getDataStateExInt " + sim;
+                                    out = "getDataStateExLong " + sim;
                                     break;
-                                }
-                            }
-                            if (sim == Constants.DISABLED) {
-                                for (int i = 0; i < simQuantity; i++) {
-                                    int state = Constants.DISABLED;
-                                    try {
-                                        Class<?> c = Class.forName(MEDIATEK);
-                                        Method[] cm = c.getDeclaredMethods();
-                                        for (Method m : cm) {
-                                            if (m.getName().equalsIgnoreCase(GET_DATA)) {
-                                                m.setAccessible(true);
-                                                m.getParameterTypes();
-                                                if (m.getParameterTypes().length > 1) {
-                                                    state = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    if (state == TelephonyManager.DATA_CONNECTED
-                                            || state == TelephonyManager.DATA_CONNECTING
-                                            || state == TelephonyManager.DATA_SUSPENDED) {
-                                        sim = i;
-                                        out = "getDataStateExLong " + sim;
-                                        break;
-                                    }
                                 }
                             }
                         }
@@ -875,6 +898,35 @@ public class MobileUtils {
                                 sim = i;
                                 out = "getITelephony " + sim;
                                 break;
+                            }
+                        }
+                    }
+                    if (sim == Constants.DISABLED) {
+                        for (int i = 0; i < simQuantity; i++) {
+                            try {
+                                int state = Constants.DISABLED;
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase("from")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 1) {
+                                            final Object[] params = {context, i};
+                                            final TelephonyManager mTelephonyStub = (TelephonyManager) m.invoke(tm, params);
+                                            if (mTelephonyStub != null)
+                                                state = mTelephonyStub.getDataState();
+                                        }
+                                    }
+                                }
+                                if (state == TelephonyManager.DATA_CONNECTED
+                                        || state == TelephonyManager.DATA_CONNECTING
+                                        || state == TelephonyManager.DATA_SUSPENDED) {
+                                    sim = i;
+                                    out = "TelephonyManager.from " + sim;
+                                    break;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }

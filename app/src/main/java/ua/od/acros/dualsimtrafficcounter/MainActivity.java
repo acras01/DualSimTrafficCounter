@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
@@ -254,19 +255,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                                Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                                 emailIntent.setType("text/plain");
-                                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"acras1@gmail.com"});
+                                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"acras1@gmail.com"});
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
+                                ArrayList<Uri> uris = new ArrayList<>();
                                 File dir = new File(String.valueOf(mContext.getFilesDir()));
+                                //TelephonyMethods
                                 String fileName = "telephony.txt";
                                 String content = getString(R.string.body) + "\n";
                                 File file = new File(dir, fileName);
                                 try {
-                                    Uri uri = Uri.fromFile(file);
-                                    emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                                    uris.add(Uri.fromFile(file));
                                     InputStream is = openFileInput(fileName);
-                                    if ( is != null ) {
+                                    if (is != null) {
+                                        InputStreamReader isr = new InputStreamReader(is);
+                                        BufferedReader br = new BufferedReader(isr);
+                                        String read;
+                                        StringBuilder sb = new StringBuilder();
+                                        while ((read = br.readLine()) != null ) {
+                                            read += "\n";
+                                            sb.append(read);
+                                        }
+                                        is.close();
+                                        content += sb.toString();
+                                    }
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                //Active SIM
+                                int sim = MobileUtils.getMobileDataInfo(mContext, true)[1];
+                                fileName = "sim_log.txt";
+                                content += "\n" + "Active SIM " + sim + "\n";
+                                file = new File(dir, fileName);
+                                try {
+                                    uris.add(Uri.fromFile(file));
+                                    InputStream is = openFileInput(fileName);
+                                    if (is != null) {
+                                        InputStreamReader isr = new InputStreamReader(is);
+                                        BufferedReader br = new BufferedReader(isr);
+                                        String read;
+                                        StringBuilder sb = new StringBuilder();
+                                        while ((read = br.readLine()) != null ) {
+                                            read += "\n";
+                                            sb.append(read);
+                                        }
+                                        is.close();
+                                        content += sb.toString();
+                                    }
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                //Operator Names
+                                ArrayList<String> names = MobileUtils.getOperatorNames(mContext);
+                                fileName = "name_log.txt";
+                                content += "\n" + "Operator names " + names.toString() + "\n";
+                                file = new File(dir, fileName);
+                                try {
+                                    uris.add(Uri.fromFile(file));
+                                    InputStream is = openFileInput(fileName);
+                                    if (is != null) {
                                         InputStreamReader isr = new InputStreamReader(is);
                                         BufferedReader br = new BufferedReader(isr);
                                         String read;
@@ -284,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     e.printStackTrace();
                                 }
                                 emailIntent.putExtra(Intent.EXTRA_TEXT, content);
+                                emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                                 startActivity(Intent.createChooser(emailIntent, getString(R.string.choose_client)));
                                 dialog.dismiss();
                             }
