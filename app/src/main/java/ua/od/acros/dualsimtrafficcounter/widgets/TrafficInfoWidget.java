@@ -19,15 +19,17 @@ import org.acra.ACRA;
 
 import java.io.File;
 
-import ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity;
-import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.activities.TrafficWidgetConfigActivity;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class TrafficInfoWidget extends AppWidgetProvider {
+
+    private static final String PREF_PREFIX_KEY = "_traffic";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
@@ -147,7 +149,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 edit.apply();
             }
 
-            Intent settIntent = new Intent(context, WidgetConfigActivity.class);
+            Intent settIntent = new Intent(context, TrafficWidgetConfigActivity.class);
             Bundle extras = new Bundle();
             extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, i);
             settIntent.putExtras(extras);
@@ -163,7 +165,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             String sizestr = prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE);
             String sizestrs = prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
 
-            RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.info_widget_layout);
+            RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.traffic_info_widget);
             boolean[] isNight =  TrafficCountService.getIsNight();
 
             //SIM1
@@ -537,7 +539,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         String[] children = dir.list();
         for (String aChildren : children) {
             for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + "_" + Constants.WIDGET_PREFERENCES))
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
                     context.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
         }
         try {
@@ -548,9 +550,15 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         }
         for (String aChildren : children) {
             for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + "_" + Constants.WIDGET_PREFERENCES))
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES))
                     new File(dir, aChildren).delete();
         }
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        // When the user deletes the widget, delete the preference associated with it.
+        deleteWidgetPreferences(context, appWidgetIds);
     }
 
     @Override

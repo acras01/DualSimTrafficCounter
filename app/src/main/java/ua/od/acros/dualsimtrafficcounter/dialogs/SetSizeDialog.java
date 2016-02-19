@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.WidgetConfigActivity;
+import ua.od.acros.dualsimtrafficcounter.activities.TrafficWidgetConfigActivity;
 
 public class SetSizeDialog extends DialogFragment implements TextView.OnEditorActionListener {
 
@@ -67,7 +67,7 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
         if (actionId == EditorInfo.IME_ACTION_DONE || (event.getAction() == KeyEvent.ACTION_DOWN &&
                 event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
             // Return input text to activity
-            WidgetConfigActivity activity = (WidgetConfigActivity) getActivity();
+            TrafficWidgetConfigActivity activity = (TrafficWidgetConfigActivity) getActivity();
             activity.onFinishEditDialog(mEditText.getText().toString(), mDialog);
             this.dismiss();
             return true;

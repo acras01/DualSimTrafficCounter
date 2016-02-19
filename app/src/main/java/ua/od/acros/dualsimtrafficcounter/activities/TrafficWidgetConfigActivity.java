@@ -39,9 +39,10 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
-public class WidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
+public class TrafficWidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
         CompoundButton.OnCheckedChangeListener, View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static final String PREF_PREFIX_KEY = "_traffic";
     private static final int SELECT_PHOTO = 101;
     private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent mResultValueIntent;
@@ -71,8 +72,8 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
     private final Context mContext = this;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
 
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
             mContext.startService(new Intent(mContext, TrafficCountService.class));
@@ -90,7 +91,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
             finish();
         }
 
-        mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + "_" + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + PREF_PREFIX_KEY + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();
@@ -129,7 +130,7 @@ public class WidgetConfigActivity extends Activity implements IconsList.OnComple
 
         setResult(RESULT_CANCELED, mResultValueIntent);
 
-        setContentView(R.layout.activity_widget_config);
+        setContentView(R.layout.traffic_info_widget_configure);
 
         CheckBox names = (CheckBox) findViewById(R.id.names);
         names.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[1], true));

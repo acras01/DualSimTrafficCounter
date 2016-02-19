@@ -1854,14 +1854,19 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private static int[] getWidgetIds(Context context) {
         int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, TrafficInfoWidget.class));
         if (ids.length == 0) {
-            File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
-            String[] children = dir.list();
-            int i = 0;
-            for (String aChildren : children) {
-                if (aChildren.split("_")[1].equalsIgnoreCase("widget.xml")) {
-                    ids[i] = Integer.valueOf(aChildren.split("_")[0]);
-                    i++;
+            try {
+                File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
+                String[] children = dir.list();
+                int i = 0;
+                for (String aChildren : children) {
+                    String[] str = aChildren.split("_");
+                    if (str.length > 0 && str[1].equalsIgnoreCase("traffic") && str[2].equalsIgnoreCase("widget")) {
+                        ids[i] = Integer.valueOf(aChildren.split("_")[0]);
+                        i++;
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return ids;

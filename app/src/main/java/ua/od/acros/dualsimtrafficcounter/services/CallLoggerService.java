@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,6 +40,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import ua.od.acros.dualsimtrafficcounter.utils.MyNotification;
+import ua.od.acros.dualsimtrafficcounter.widgets.CallsInfoWidget;
 
 public class CallLoggerService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -589,6 +592,27 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     public static Context getCallLoggerServiceContext() {
         return CallLoggerService.mContext;
+    }
+
+    private static int[] getWidgetIds(Context context) {
+        int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, CallsInfoWidget.class));
+        if (ids.length == 0) {
+            try {
+                File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
+                String[] children = dir.list();
+                int i = 0;
+                for (String aChildren : children) {
+                    String[] str = aChildren.split("_");
+                    if (str.length > 0 && str[1].equalsIgnoreCase("traffic") && str[2].equalsIgnoreCase("widget")) {
+                        ids[i] = Integer.valueOf(aChildren.split("_")[0]);
+                        i++;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return ids;
     }
 
 }
