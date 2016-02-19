@@ -104,7 +104,7 @@ public class MyDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String ALTER_TBL;
-        if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 1) {
+        if (oldVersion < Constants.DATABASE_VERSION && oldVersion <= 1) {
             ALTER_TBL =
                     "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM3RX + " long;";
@@ -167,7 +167,7 @@ public class MyDatabase extends SQLiteOpenHelper {
             db.execSQL(ALTER_TBL);
         }
 
-        if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 2) {
+        if (oldVersion < Constants.DATABASE_VERSION && oldVersion <= 2) {
             ALTER_TBL =
                     "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.PERIOD1 + " integer;";
@@ -218,7 +218,7 @@ public class MyDatabase extends SQLiteOpenHelper {
             db.execSQL(ALTER_TBL);
         }
 
-        if (oldVersion < Constants.DATABASE_VERSION && oldVersion == 3) {
+        if (oldVersion < Constants.DATABASE_VERSION && oldVersion <= 3) {
             ALTER_TBL =
                     "ALTER TABLE " + DATA_TABLE +
                             " ADD COLUMN " + Constants.SIM1RX_N + " long;";
@@ -256,7 +256,7 @@ public class MyDatabase extends SQLiteOpenHelper {
                             " ADD COLUMN " + Constants.TOTAL3_N + " long;";
             db.execSQL(ALTER_TBL);
         }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 4) {
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 4) {
             ALTER_TBL = "create table "
                     + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                     + " text not null, " +  Constants.CALLS1 + " long, "
@@ -266,7 +266,7 @@ public class MyDatabase extends SQLiteOpenHelper {
                     + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
             db.execSQL(ALTER_TBL);
         }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 6) {
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 6) {
             db.execSQL("DROP TABLE IF EXISTS " + CALLS_TABLE);
             ALTER_TBL = "create table "
                     + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
@@ -277,7 +277,7 @@ public class MyDatabase extends SQLiteOpenHelper {
                     + Constants.PERIOD2 + " integer, " + Constants.PERIOD3 + " integer);";
             db.execSQL(ALTER_TBL);
         }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 7) {
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 7) {
             ALTER_TBL = "create table "
                     + WHITE_LIST_1 + " (" + Constants.NUMBER + " text not null);";
             db.execSQL(ALTER_TBL);
@@ -288,7 +288,7 @@ public class MyDatabase extends SQLiteOpenHelper {
                     + WHITE_LIST_3 + " (" + Constants.NUMBER + " text not null);";
             db.execSQL(ALTER_TBL);
         }
-        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion == 8) {
+        if (oldVersion < Constants.DATABASE_VERSION  && oldVersion <= 8) {
             ALTER_TBL = "create table "
                     + BLACK_LIST_1 + " (" + Constants.NUMBER + " text not null);";
             db.execSQL(ALTER_TBL);
