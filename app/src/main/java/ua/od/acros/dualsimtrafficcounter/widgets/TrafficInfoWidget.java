@@ -123,29 +123,29 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
-                edit.putBoolean(Constants.PREF_WIDGET[1], true);
-                edit.putBoolean(Constants.PREF_WIDGET[2], true);
-                edit.putBoolean(Constants.PREF_WIDGET[3], false);
-                edit.putBoolean(Constants.PREF_WIDGET[4], true);
-                edit.putString(Constants.PREF_WIDGET[5], "none");
-                edit.putString(Constants.PREF_WIDGET[6], "none");
-                edit.putString(Constants.PREF_WIDGET[7], "none");
-                edit.putBoolean(Constants.PREF_WIDGET[8], false);
-                edit.putBoolean(Constants.PREF_WIDGET[9], false);
-                edit.putBoolean(Constants.PREF_WIDGET[10], false);
-                edit.putString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE);
-                edit.putString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE);
-                edit.putInt(Constants.PREF_WIDGET[13], Color.WHITE);
-                edit.putBoolean(Constants.PREF_WIDGET[14], true);
-                edit.putInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
-                edit.putString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
-                edit.putString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE);
-                edit.putBoolean(Constants.PREF_WIDGET[18], true);
-                edit.putBoolean(Constants.PREF_WIDGET[19], true);
-                edit.putBoolean(Constants.PREF_WIDGET[20], true);
-                edit.putBoolean(Constants.PREF_WIDGET[21], true);
-                edit.putBoolean(Constants.PREF_WIDGET[22], false);
-                edit.putBoolean(Constants.PREF_WIDGET[23], false);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[6], "none");
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[7], "none");
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE);
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);
+                edit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true);
+                edit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);
                 edit.apply();
             }
 
@@ -159,25 +159,25 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, i, intent, 0);
 
-            int dim = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE));
-            int dims = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE));
+            int dim = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE));
+            int dims = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE));
 
-            String sizestr = prefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE);
-            String sizestrs = prefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
+            String sizestr = prefs.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);
+            String sizestrs = prefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.traffic_info_widget);
             boolean[] isNight =  TrafficCountService.getIsNight();
 
             //SIM1
-            if ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM1)) {
+            if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))
+                    || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM1)) {
                 updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                         bundle.getLong(Constants.TOTAL1, 0)));
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.vert11, View.GONE);
                 updateViews.setViewVisibility(R.id.vert12, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[2], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
                     updateViews.setTextViewText(R.id.txSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.SIM1TX_N, 0) :
                             bundle.getLong(Constants.SIM1TX, 0)));
                     updateViews.setViewVisibility(R.id.txSIM1, View.VISIBLE);
@@ -190,7 +190,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
 
                 String title1 = "";
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[1], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true)) {
                     if (bundle.getString(Constants.OPERATOR1, "").equals(""))
                         title1 = "SIM1";
                     else
@@ -199,17 +199,17 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setTextViewText(R.id.operSIM1, title1);
                 }
 
-                if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
-                    if (!prefs.getBoolean(Constants.PREF_WIDGET[8], false))
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true)) {
+                    if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false))
                         Picasso.with(context)
-                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", context.getPackageName()))
+                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
                                 .into(updateViews, R.id.logo1, new int[]{i});
                     else
                         Picasso.with(context)
-                                .load(new File(prefs.getString(Constants.PREF_WIDGET[5], "")))
+                                .load(new File(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "")))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
@@ -228,7 +228,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM1, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM1, settPIntent);
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM1[17], false)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM1[17], false)) {
                     if (!isNight[0])
                         Picasso.with(context)
                                 .load(R.drawable.day)
@@ -257,11 +257,11 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM1, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM1, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
-                updateViews.setInt(R.id.operSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.operSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout1, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true)) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true)) {
+                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true))
                         updateViews.setViewVisibility(R.id.stub1, View.VISIBLE);
                     else
                         updateViews.setViewVisibility(R.id.stub1, View.GONE);
@@ -273,15 +273,15 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             }
 
             //SIM2
-            if ((prefs.getBoolean(Constants.PREF_WIDGET[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM2)) {
+            if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))
+                    || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM2)) {
                 updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                         bundle.getLong(Constants.TOTAL2, 0)));
                 updateViews.setViewVisibility(R.id.txSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.vert21, View.GONE);
                 updateViews.setViewVisibility(R.id.vert22, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[2], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
                     updateViews.setTextViewText(R.id.txSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.SIM2TX_N, 0) :
                             bundle.getLong(Constants.SIM2TX, 0)));
                     updateViews.setViewVisibility(R.id.txSIM2, View.VISIBLE);
@@ -293,7 +293,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 }
                 String title2 = "";
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[1], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true)) {
                     if (bundle.getString(Constants.OPERATOR2, "").equals(""))
                         title2 = "SIM2";
                     else
@@ -302,17 +302,17 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setTextViewText(R.id.operSIM2, title2);
                 }
 
-                if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
-                    if (!prefs.getBoolean(Constants.PREF_WIDGET[9], false))
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true)) {
+                    if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false))
                         Picasso.with(context)
-                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", context.getPackageName()))
+                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
                                 .into(updateViews, R.id.logo2, new int[]{i});
                     else
                         Picasso.with(context)
-                                .load(new File(prefs.getString(Constants.PREF_WIDGET[6], "")))
+                                .load(new File(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "")))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
@@ -331,7 +331,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM2, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM2, settPIntent);
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM2[17], false)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM2[17], false)) {
                     if (!isNight[1])
                         Picasso.with(context)
                                 .load(R.drawable.day)
@@ -360,12 +360,12 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM2, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM2, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
-                updateViews.setInt(R.id.operSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.operSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout2, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) ||
-                        (prefs.getBoolean(Constants.PREF_WIDGET[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true) ||
+                        (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))) {
+                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true))
                         updateViews.setViewVisibility(R.id.stub2, View.VISIBLE);
                     else
                         updateViews.setViewVisibility(R.id.stub2, View.GONE);
@@ -377,15 +377,15 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             }
 
             //SIM3
-            if ((prefs.getBoolean(Constants.PREF_WIDGET[20], true) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))
-                    || (prefs.getBoolean(Constants.PREF_WIDGET[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
+            if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))
+                    || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
                 updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                         bundle.getLong(Constants.TOTAL3, 0)));
                 updateViews.setViewVisibility(R.id.txSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.vert31, View.GONE);
                 updateViews.setViewVisibility(R.id.vert32, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[2], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
                     updateViews.setTextViewText(R.id.txSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.SIM3TX_N, 0) :
                             bundle.getLong(Constants.SIM3TX, 0)));
                     updateViews.setViewVisibility(R.id.txSIM3, View.VISIBLE);
@@ -396,7 +396,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.vert32, View.VISIBLE);
                 }
                 String title3 = "";
-                if (prefs.getBoolean(Constants.PREF_WIDGET[1], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                     if (bundle.getString(Constants.OPERATOR3, "").equals(""))
                         title3 = "SIM3";
@@ -406,18 +406,18 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setTextViewText(R.id.operSIM3, title3);
                 }
 
-                if (prefs.getBoolean(Constants.PREF_WIDGET[4], true)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true)) {
 
-                    if (!prefs.getBoolean(Constants.PREF_WIDGET[10], false))
+                    if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false))
                         Picasso.with(context)
-                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", context.getPackageName()))
+                                .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
                                 .into(updateViews, R.id.logo3, new int[]{i});
                     else
                         Picasso.with(context)
-                                .load(new File(prefs.getString(Constants.PREF_WIDGET[7], "")))
+                                .load(new File(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "")))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
@@ -436,7 +436,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.rxSIM3, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM3, settPIntent);
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM3[17], false)) {
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false) && prefsSIM.getBoolean(Constants.PREF_SIM3[17], false)) {
                     if (!isNight[2])
                         Picasso.with(context)
                                 .load(R.drawable.day)
@@ -465,12 +465,12 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM3, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM3, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
-                updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout3, View.VISIBLE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET[3], true) || ((prefs.getBoolean(Constants.PREF_WIDGET[18], true) ||
-                        prefs.getBoolean(Constants.PREF_WIDGET[19], true)) && !prefs.getBoolean(Constants.PREF_WIDGET[22], false))) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET[21], true))
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true) || ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true) ||
+                        prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true)) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))) {
+                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true))
                         updateViews.setViewVisibility(R.id.stub3, View.VISIBLE);
                     else
                         updateViews.setViewVisibility(R.id.stub3, View.GONE);
@@ -482,7 +482,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             }
 
             //SPEED
-            if (prefs.getBoolean(Constants.PREF_WIDGET[3], false)) {
+            if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false)) {
                 updateViews.setViewVisibility(R.id.speedLayout, View.VISIBLE);
                 String speedRX = String.format(context.getResources().getString(R.string.speed),
                         DataFormat.formatData(context, bundle.getLong(Constants.SPEEDRX, 0L)));
@@ -516,15 +516,15 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.tvSpeedRX, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.tvSpeedTX, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.tvSpeedRX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
-                updateViews.setInt(R.id.tvSpeedTX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.tvSpeedRX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.tvSpeedTX, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.speedLayout, View.VISIBLE);
             } else
                 updateViews.setViewVisibility(R.id.speedLayout, View.GONE);
 
             //BACKGROUND
-            if (prefs.getBoolean(Constants.PREF_WIDGET[14], true)) {
-                updateViews.setInt(R.id.background, "setColorFilter", prefs.getInt(Constants.PREF_WIDGET[15], ContextCompat.getColor(context, R.color.background)));
+            if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true)) {
+                updateViews.setInt(R.id.background, "setColorFilter", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[15], ContextCompat.getColor(context, R.color.background)));
                 updateViews.setViewVisibility(R.id.background, View.VISIBLE);
             } else
                 updateViews.setViewVisibility(R.id.background, View.GONE);

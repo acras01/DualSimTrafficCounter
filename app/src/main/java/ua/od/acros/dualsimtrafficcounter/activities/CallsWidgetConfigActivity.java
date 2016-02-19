@@ -62,34 +62,34 @@ public class CallsWidgetConfigActivity extends Activity implements SharedPrefere
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();
         if (mPrefs.getAll().size() == 0) {
-            mEdit.putBoolean(Constants.PREF_WIDGET[1], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[2], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[3], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[4], true);
-            mEdit.putString(Constants.PREF_WIDGET[5], "none");
-            mEdit.putString(Constants.PREF_WIDGET[6], "none");
-            mEdit.putString(Constants.PREF_WIDGET[7], "none");
-            mEdit.putBoolean(Constants.PREF_WIDGET[8], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[9], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[10], false);
-            mEdit.putString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE);
-            mEdit.putString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE);
-            mEdit.putInt(Constants.PREF_WIDGET[13], Color.WHITE);
-            mEdit.putBoolean(Constants.PREF_WIDGET[14], true);
-            mEdit.putInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
-            mEdit.putString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
-            mEdit.putString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE);
-            mEdit.putBoolean(Constants.PREF_WIDGET[18], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[19], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[20], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[21], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[22], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[23], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], "none");
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], "none");
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true);
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);
             mEdit.apply();
         }
 
-        mTextColor = mPrefs.getInt(Constants.PREF_WIDGET[13], Color.WHITE);
-        mBackColor = mPrefs.getInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
+        mTextColor = mPrefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
+        mBackColor = mPrefs.getInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
 
         mResultValueIntent = new Intent();
         mResultValueIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetID);
@@ -112,7 +112,7 @@ public class CallsWidgetConfigActivity extends Activity implements SharedPrefere
         try {
             if (item.getItemId() == R.id.save) {
                 mEdit.apply();
-                Intent intent = new Intent(Constants.BROADCAST_ACTION);
+                Intent intent = new Intent(Constants.CALLS);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
                 if (!MyDatabase.isEmpty(new MyDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
                     ContentValues dataMap = MyDatabase.readCallsData(MyDatabase.getInstance(mContext));

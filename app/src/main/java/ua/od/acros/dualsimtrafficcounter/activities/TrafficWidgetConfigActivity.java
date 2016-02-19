@@ -96,34 +96,34 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();
         if (mPrefs.getAll().size() == 0) {
-            mEdit.putBoolean(Constants.PREF_WIDGET[1], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[2], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[3], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[4], true);
-            mEdit.putString(Constants.PREF_WIDGET[5], "none");
-            mEdit.putString(Constants.PREF_WIDGET[6], "none");
-            mEdit.putString(Constants.PREF_WIDGET[7], "none");
-            mEdit.putBoolean(Constants.PREF_WIDGET[8], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[9], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[10], false);
-            mEdit.putString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE);
-            mEdit.putString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE);
-            mEdit.putInt(Constants.PREF_WIDGET[13], Color.WHITE);
-            mEdit.putBoolean(Constants.PREF_WIDGET[14], true);
-            mEdit.putInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
-            mEdit.putString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE);
-            mEdit.putString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE);
-            mEdit.putBoolean(Constants.PREF_WIDGET[18], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[19], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[20], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[21], true);
-            mEdit.putBoolean(Constants.PREF_WIDGET[22], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[23], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], "none");
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], "none");
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE);
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true);
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);
             mEdit.apply();
         }
 
-        mTextColor = mPrefs.getInt(Constants.PREF_WIDGET[13], Color.WHITE);
-        mBackColor = mPrefs.getInt(Constants.PREF_WIDGET[15], Color.TRANSPARENT);
+        mTextColor = mPrefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
+        mBackColor = mPrefs.getInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
 
         mResultValueIntent = new Intent();
         mResultValueIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetID);
@@ -133,21 +133,21 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         setContentView(R.layout.traffic_info_widget_configure);
 
         CheckBox names = (CheckBox) findViewById(R.id.names);
-        names.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[1], true));
+        names.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true));
         CheckBox info = (CheckBox) findViewById(R.id.info);
-        info.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[2], true));
+        info.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true));
         CheckBox icons = (CheckBox) findViewById(R.id.icons);
-        icons.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[4], true));
+        icons.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true));
         CheckBox speed = (CheckBox) findViewById(R.id.speed);
-        speed.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[3], true));
+        speed.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true));
         CheckBox back = (CheckBox) findViewById(R.id.useBack);
-        back.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[14], true));
+        back.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true));
         CheckBox div = (CheckBox) findViewById(R.id.divider);
-        div.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[21], true));
+        div.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true));
         CheckBox active = (CheckBox) findViewById(R.id.activesim);
-        active.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[22], false));
+        active.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false));
         CheckBox daynight = (CheckBox) findViewById(R.id.daynight_icons);
-        daynight.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET[23], false));
+        daynight.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -212,27 +212,27 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         onOff(backColorL, back.isChecked());
 
         textSizeSum = (TextView) findViewById(R.id.textSizeSum);
-        textSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE));
+        textSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE));
 
         iconsSizeSum = (TextView) findViewById(R.id.iconSizeSum);
-        iconsSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE));
+        iconsSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE));
 
         speedTextSum = (TextView) findViewById(R.id.speedTextSizeSum);
-        speedTextSum.setText(mPrefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE));
+        speedTextSum.setText(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE));
 
         speedIconsSum = (TextView) findViewById(R.id.speedIconsSizeSum);
-        speedIconsSum.setText(mPrefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE));
+        speedIconsSum.setText(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE));
 
         showSimSum = (TextView) findViewById(R.id.simChooseSum);
         String sum = "";
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET[18], true))
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true))
             sum = "SIM1";
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET[19], true))
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true))
             if (sum.equals(""))
                 sum = "SIM2";
             else
                 sum += ", SIM2";
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET[20], true))
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true))
             if (sum.equals(""))
                 sum = "SIM3";
             else
@@ -260,9 +260,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         logoSum2 = (TextView) findViewById(R.id.logoSum2);
         logoSum3 = (TextView) findViewById(R.id.logoSum3);
 
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET[8], false)) {
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false)) {
             Picasso.with(mContext)
-                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET[5], "")))
+                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "")))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -270,14 +270,14 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             logoSum1.setText(getResources().getString(R.string.userpick));
         } else
             Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET[5], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "none"), "drawable", getApplicationContext().getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo1);
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET[9], false)) {
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false)) {
             Picasso.with(mContext)
-                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET[6], "")))
+                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "")))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -285,14 +285,14 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             logoSum2.setText(getResources().getString(R.string.userpick));
         } else
             Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET[6], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "none"), "drawable", getApplicationContext().getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo2);
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET[10], false)) {
+        if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false)) {
             Picasso.with(mContext)
-                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET[7], "")))
+                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "")))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -300,7 +300,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             logoSum3.setText(getResources().getString(R.string.userpick));
         } else
             Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET[7], "none"), "drawable", getApplicationContext().getPackageName()))
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "none"), "drawable", getApplicationContext().getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -309,11 +309,11 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         String[] listitems = getResources().getStringArray(R.array.icons_values);
         String[] list = getResources().getStringArray(R.array.icons);
         for (int i = 0; i < list.length; i++) {
-            if (!mPrefs.getBoolean(Constants.PREF_WIDGET[8], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET[5], "none")))
+            if (!mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "none")))
                 logoSum1.setText(list[i]);
-            if (!mPrefs.getBoolean(Constants.PREF_WIDGET[9], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET[6], "none")))
+            if (!mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "none")))
                 logoSum2.setText(list[i]);
-            if (!mPrefs.getBoolean(Constants.PREF_WIDGET[10], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET[7], "none")))
+            if (!mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "none")))
                 logoSum3.setText(list[i]);
         }
 
@@ -438,33 +438,33 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         DialogFragment dialog = null;
         switch (view.getId()) {
             case R.id.logoPreview1:
-                dialog = IconsList.newInstance(Constants.PREF_WIDGET[5]);
+                dialog = IconsList.newInstance(Constants.PREF_WIDGET_TRAFFIC[5]);
                 break;
             case R.id.logoPreview2:
-                dialog = IconsList.newInstance(Constants.PREF_WIDGET[6]);
+                dialog = IconsList.newInstance(Constants.PREF_WIDGET_TRAFFIC[6]);
                 break;
             case R.id.logoPreview3:
-                dialog = IconsList.newInstance(Constants.PREF_WIDGET[7]);
+                dialog = IconsList.newInstance(Constants.PREF_WIDGET_TRAFFIC[7]);
                 break;
             case R.id.simFontSize:
             case R.id.textSize:
             case R.id.textSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[12], Constants.TEXT_SIZE), KEY_TEXT);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE), KEY_TEXT);
                 break;
             case R.id.simLogoSize:
             case R.id.iconSize:
             case R.id.iconSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[11], Constants.ICON_SIZE), KEY_ICON);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE), KEY_ICON);
                 break;
             case R.id.speedFontSize:
             case R.id.speedTextSize:
             case R.id.speedTextSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[16], Constants.TEXT_SIZE), KEY_TEXT_S);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE), KEY_TEXT_S);
                 break;
             case R.id.speedArrowsSize:
             case R.id.speedIconsSize:
             case R.id.speedIconsSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET[17], Constants.ICON_SIZE), KEY_ICON_S);
+                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE), KEY_ICON_S);
                 break;
             case R.id.showSim:
             case R.id.simChoose:
@@ -481,19 +481,19 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         if (!inputText.equals("")) {
             switch (dialog) {
                 case KEY_TEXT:
-                    mEdit.putString(Constants.PREF_WIDGET[12], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[12], inputText);
                     textSizeSum.setText(inputText);
                     break;
                 case KEY_ICON:
-                    mEdit.putString(Constants.PREF_WIDGET[11], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[11], inputText);
                     iconsSizeSum.setText(inputText);
                     break;
                 case KEY_TEXT_S:
-                    mEdit.putString(Constants.PREF_WIDGET[16], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[16], inputText);
                     speedTextSum.setText(inputText);
                     break;
                 case KEY_ICON_S:
-                    mEdit.putString(Constants.PREF_WIDGET[17], inputText);
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[17], inputText);
                     speedIconsSum.setText(inputText);
                     break;
             }
@@ -524,9 +524,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             else
                 opLogo = listitems[position];
             int resourceId = getApplicationContext().getResources().getIdentifier(opLogo, "drawable", getApplicationContext().getPackageName());
-            if (logo.equals(Constants.PREF_WIDGET[5])) {
-                mEdit.putBoolean(Constants.PREF_WIDGET[8], false);
-                mEdit.putString(Constants.PREF_WIDGET[5], opLogo);
+            if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[5])) {
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], opLogo);
                 Picasso.with(mContext)
                         .load(resourceId)
                         .resize(mDim, mDim)
@@ -534,9 +534,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                         .error(R.drawable.none)
                         .into(logo1);
                 logoSum1.setText(list[position]);
-            } else if (logo.equals(Constants.PREF_WIDGET[6])) {
-                mEdit.putBoolean(Constants.PREF_WIDGET[9], false);
-                mEdit.putString(Constants.PREF_WIDGET[6], opLogo);
+            } else if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[6])) {
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], opLogo);
                 Picasso.with(mContext)
                         .load(resourceId)
                         .resize(mDim, mDim)
@@ -544,9 +544,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                         .error(R.drawable.none)
                         .into(logo2);
                 logoSum2.setText(list[position]);
-            } else if (logo.equals(Constants.PREF_WIDGET[7])) {
-                mEdit.putBoolean(Constants.PREF_WIDGET[10], false);
-                mEdit.putString(Constants.PREF_WIDGET[7], opLogo);
+            } else if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[7])) {
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], opLogo);
                 Picasso.with(mContext)
                         .load(resourceId)
                         .resize(mDim, mDim)
@@ -572,10 +572,10 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
-                    if (mUserPickedImage.equals(Constants.PREF_WIDGET[5])) {
-                        mEdit.putBoolean(Constants.PREF_WIDGET[8], true);
+                    if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[5])) {
+                        mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], true);
                         String path = getRealPathFromURI(getApplicationContext(), selectedImage);
-                        mEdit.putString(Constants.PREF_WIDGET[5], path);
+                        mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], path);
                         Picasso.with(mContext)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
@@ -583,10 +583,10 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                                 .error(R.drawable.none)
                                 .into(logo1);
                         logoSum3.setText(getResources().getString(R.string.userpick));
-                    } else if (mUserPickedImage.equals(Constants.PREF_WIDGET[6])) {
-                        mEdit.putBoolean(Constants.PREF_WIDGET[9], true);
+                    } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[6])) {
+                        mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], true);
                         String path = getRealPathFromURI(getApplicationContext(), selectedImage);
-                        mEdit.putString(Constants.PREF_WIDGET[6], path);
+                        mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], path);
                         Picasso.with(mContext)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
@@ -594,10 +594,10 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                                 .error(R.drawable.none)
                                 .into(logo2);
                         logoSum3.setText(getResources().getString(R.string.userpick));
-                    } else if (mUserPickedImage.equals(Constants.PREF_WIDGET[7])) {
-                        mEdit.putBoolean(Constants.PREF_WIDGET[10], true);
+                    } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[7])) {
+                        mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], true);
                         String path = getRealPathFromURI(getApplicationContext(), selectedImage);
-                        mEdit.putString(Constants.PREF_WIDGET[7], path);
+                        mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], path);
                         Picasso.with(mContext)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
@@ -637,21 +637,21 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.names:
-                mEdit.putBoolean(Constants.PREF_WIDGET[1], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], isChecked);
                 if (isChecked)
                     namesSum.setText(R.string.on);
                 else
                     namesSum.setText(R.string.off);
                 break;
             case R.id.info:
-                mEdit.putBoolean(Constants.PREF_WIDGET[2], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], isChecked);
                 if (isChecked)
                     infoSum.setText(R.string.all);
                 else
                     infoSum.setText(R.string.only_total);
                 break;
             case R.id.speed:
-                mEdit.putBoolean(Constants.PREF_WIDGET[3], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], isChecked);
                 onOff(speedFontL, isChecked);
                 onOff(speedArrowsL, isChecked);
                 if (isChecked) {
@@ -663,14 +663,14 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                     speedSum.setText(R.string.off);
                 break;
             case R.id.divider:
-                mEdit.putBoolean(Constants.PREF_WIDGET[21], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], isChecked);
                 if (isChecked)
                     divSum.setText(R.string.on);
                 else
                     divSum.setText(R.string.off);
                 break;
             case R.id.useBack:
-                mEdit.putBoolean(Constants.PREF_WIDGET[14], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[14], isChecked);
                 if (isChecked)
                     backSum.setText(R.string.on);
                 else
@@ -678,7 +678,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                 onOff(backColorL, isChecked);
                 break;
             case R.id.icons:
-                mEdit.putBoolean(Constants.PREF_WIDGET[4], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], isChecked);
                 onOff(logoL1, isChecked);
                 onOff(logoL2, isChecked);
                 onOff(logoL3, isChecked);
@@ -694,7 +694,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                     iconsSum.setText(R.string.off);
                 break;
             case R.id.activesim:
-                mEdit.putBoolean(Constants.PREF_WIDGET[22], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], isChecked);
                 onOff(showSimL, !isChecked);
                 if (isChecked)
                     activesum.setText(R.string.on);
@@ -704,7 +704,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                 }
                 break;
             case R.id.daynight_icons:
-                mEdit.putBoolean(Constants.PREF_WIDGET[23], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], isChecked);
                 if (isChecked)
                     daynightSum.setText(R.string.on);
                 else
@@ -721,7 +721,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                 dialog = new AmbilWarnaDialog(mContext, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
-                        mEdit.putInt(Constants.PREF_WIDGET[13], color);
+                        mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], color);
                         tiv.setBackgroundColor(color);
                     }
                     @Override
@@ -734,7 +734,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                 dialog = new AmbilWarnaDialog(mContext, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
-                        mEdit.putInt(Constants.PREF_WIDGET[15], color);
+                        mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], color);
                         biv.setBackgroundColor(color);
                     }
                     @Override
@@ -771,14 +771,14 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         String sum = "";
-        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET[18], true))
+        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true))
             sum = "SIM1";
-        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET[19], true))
+        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true))
             if (sum.equals(""))
                 sum = "SIM2";
             else
                 sum += ", SIM2";
-        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET[20], true))
+        if (sharedPreferences.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true))
             if (sum.equals(""))
                 sum = "SIM3";
             else

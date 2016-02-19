@@ -42,24 +42,24 @@ public class ShowSimDialog extends DialogFragment implements  CompoundButton.OnC
         if (simQuantity == 1) {
             sim2.setEnabled(false);
             sim2.setChecked(false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[19], false).apply();
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], false).apply();
             sim3.setEnabled(false);
             sim3.setChecked(false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[20], false).apply();
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], false).apply();
         }
         if (simQuantity == 2) {
             sim3.setEnabled(false);
             sim3.setChecked(false);
-            mEdit.putBoolean(Constants.PREF_WIDGET[20], false).apply();
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], false).apply();
         }
 
         sim1.setOnCheckedChangeListener(this);
         sim2.setOnCheckedChangeListener(this);
         sim3.setOnCheckedChangeListener(this);
 
-        sim1.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[18], true));
-        sim2.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[19], true));
-        sim3.setChecked(prefs.getBoolean(Constants.PREF_WIDGET[20], true));
+        sim1.setChecked(prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true));
+        sim2.setChecked(prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true));
+        sim3.setChecked(prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true));
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
@@ -92,13 +92,13 @@ public class ShowSimDialog extends DialogFragment implements  CompoundButton.OnC
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.sim1:
-                mEdit.putBoolean(Constants.PREF_WIDGET[18], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], isChecked);
                 break;
             case R.id.sim2:
-                mEdit.putBoolean(Constants.PREF_WIDGET[19], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], isChecked);
                 break;
             case R.id.sim3:
-                mEdit.putBoolean(Constants.PREF_WIDGET[20], isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], isChecked);
                 break;
         }
     }
