@@ -269,14 +269,14 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true) ||
                         prefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true)) {
                     if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[14], true))
-                        updateViews.setViewVisibility(R.id.stub3, View.VISIBLE);
+                        updateViews.setViewVisibility(R.id.stub2, View.VISIBLE);
                     else
-                        updateViews.setViewVisibility(R.id.stub3, View.GONE);
+                        updateViews.setViewVisibility(R.id.stub2, View.GONE);
                 } else
-                    updateViews.setViewVisibility(R.id.stub3, View.GONE);
+                    updateViews.setViewVisibility(R.id.stub2, View.GONE);
             } else {
                 updateViews.setViewVisibility(R.id.simLayout3, View.GONE);
-                updateViews.setViewVisibility(R.id.stub3, View.GONE);
+                updateViews.setViewVisibility(R.id.stub2, View.GONE);
             }
 
             //BACKGROUND
