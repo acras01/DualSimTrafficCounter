@@ -130,7 +130,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                     NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     nm.notify(Constants.STARTED_ID, buildNotification());
-                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && MyApplication.isScreenOn(mContext)) {
+                    if ((MyApplication.isActivityVisible() && MyApplication.isScreenOn(mContext) || getWidgetIds(mContext).length != 0)) {
                         Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
                         callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
                         callsIntent.putExtra(Constants.CALL_DURATION, duration);
