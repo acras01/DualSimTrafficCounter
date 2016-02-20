@@ -564,6 +564,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(Constants.STARTED_ID, buildNotification());
+        sendBroadcast(new Intent(Constants.CALLS_BROADCAST_ACTION));
         return START_STICKY;
     }
 
