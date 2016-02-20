@@ -395,8 +395,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.vert32, View.VISIBLE);
                 }
                 String title3 = "";
+                updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true)) {
-                    updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                     if (bundle.getString(Constants.OPERATOR3, "").equals(""))
                         title3 = "SIM3";
                     else

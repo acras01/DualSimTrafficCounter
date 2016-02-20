@@ -127,9 +127,8 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0)));
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
-                    String title1 = mOperatorNames[0];
                     updateViews.setViewVisibility(R.id.operSIM1, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.operSIM1, title1);
+                    updateViews.setTextViewText(R.id.operSIM1, mOperatorNames[0]);
                 }
 
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
@@ -175,9 +174,8 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0)));
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
-                    String title2 = mOperatorNames[1];
                     updateViews.setViewVisibility(R.id.operSIM2, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.operSIM2, title2);
+                    updateViews.setTextViewText(R.id.operSIM2, mOperatorNames[1]);
                 }
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
                     if (!prefs.getBoolean(Constants.PREF_WIDGET_CALLS[7], false))
@@ -229,11 +227,10 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM3
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)) {
                 updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0)));
+                updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
-                    updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
-                    String title3 = mOperatorNames[2];
                     updateViews.setViewVisibility(R.id.operSIM3, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.operSIM3, title3);
+                    updateViews.setTextViewText(R.id.operSIM3, mOperatorNames[2]);
                 }
 
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
