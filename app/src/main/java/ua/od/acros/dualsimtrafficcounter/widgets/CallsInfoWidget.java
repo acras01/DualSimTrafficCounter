@@ -54,8 +54,20 @@ public class CallsInfoWidget extends AppWidgetProvider {
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 deleteWidgetPreferences(context, new int[]{appWidgetId});
             }
-        } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null)
-            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
+        } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null) {
+            Bundle bundle = new Bundle();
+            if (!MyDatabase.isEmpty(new MyDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
+                ContentValues dataMap = MyDatabase.readCallsData(MyDatabase.getInstance(context));
+                bundle.putLong(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
+                bundle.putLong(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
+                bundle.putLong(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
+            } else {
+                bundle.putLong(Constants.CALLS1, 0L);
+                bundle.putLong(Constants.CALLS2, 0L);
+                bundle.putLong(Constants.CALLS3, 0L);
+            }
+            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, bundle);
+        }
     }
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {

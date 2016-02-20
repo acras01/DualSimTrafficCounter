@@ -86,7 +86,8 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         }
 
         mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();
         if (mPrefs.getAll().size() == 0) {

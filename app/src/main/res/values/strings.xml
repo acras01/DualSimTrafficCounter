@@ -19,7 +19,7 @@
     <string name="transmitted">Transmitted</string>
     <string name="total">Total</string>
     <string name="reset">Reset</string>
-    <string name="action_set_limit">Set limit</string>
+    <string name="action_set_limit">Set traffic limit</string>
     <string name="sim2_limit">Set SIM2 limit</string>
     <string name="sim1_limit">Set SIM1 limit</string>
     <string name="set_limit_for_sim">Limit for each SIM</string>
