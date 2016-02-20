@@ -1,6 +1,8 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.PowerManager;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -39,4 +41,12 @@ public class MyApplication extends Application {
     }
 
     private static boolean mIsActivityVisible;
+
+    public static boolean isScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
+            return pm.isInteractive();
+        else
+            return pm.isScreenOn();
+    }
 }

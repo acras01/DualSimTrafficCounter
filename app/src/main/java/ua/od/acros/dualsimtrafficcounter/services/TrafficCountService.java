@@ -20,7 +20,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
@@ -992,13 +991,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        if (isScreenOn(mContext)) {
+                        if (MyApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                             nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM1));
                         }
                     }
 
-                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
+                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && MyApplication.isScreenOn(mContext))
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1249,13 +1248,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        if (isScreenOn(mContext)) {
+                        if (MyApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                             nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM2));
                         }
                     }
 
-                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
+                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && MyApplication.isScreenOn(mContext))
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1505,13 +1504,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB, dt);
-                        if (isScreenOn(mContext)) {
+                        if (MyApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                             nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM3));
                         }
                     }
 
-                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && isScreenOn(mContext))
+                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && MyApplication.isScreenOn(mContext))
                         sendDataBroadcast(speedRX, speedTX);
                 }
 
@@ -1870,14 +1869,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         }
         return ids;
-    }
-
-    private static boolean isScreenOn(Context context) {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
-            return pm.isInteractive();
-        else
-            return pm.isScreenOn();
     }
 
     @Override

@@ -38,6 +38,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 import ua.od.acros.dualsimtrafficcounter.utils.MyNotification;
 import ua.od.acros.dualsimtrafficcounter.widgets.CallsInfoWidget;
@@ -129,10 +130,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
                     NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     nm.notify(Constants.STARTED_ID, buildNotification());
-                    Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
-                    callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
-                    callsIntent.putExtra(Constants.CALL_DURATION, duration);
-                    sendBroadcast(callsIntent);
+                    if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && MyApplication.isScreenOn(mContext)) {
+                        Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
+                        callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
+                        callsIntent.putExtra(Constants.CALL_DURATION, duration);
+                        sendBroadcast(callsIntent);
+                    }
                     String out = "Call Ends\n";
                     try {
                         // to this path add a new directory path
@@ -564,7 +567,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(Constants.STARTED_ID, buildNotification());
-        sendBroadcast(new Intent(Constants.CALLS_BROADCAST_ACTION));
+        int[] ids = getWidgetIds(mContext);
+        if (ids.length != 0) {
+            Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
+            intent.putExtra(Constants.WIDGET_IDS, ids);
+            sendBroadcast(i);
+        }
         return START_STICKY;
     }
 
@@ -604,7 +612,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 int i = 0;
                 for (String aChildren : children) {
                     String[] str = aChildren.split("_");
-                    if (str.length > 0 && str[1].equalsIgnoreCase("traffic") && str[2].equalsIgnoreCase("widget")) {
+                    if (str.length > 0 && str[1].equalsIgnoreCase("calls") && str[2].equalsIgnoreCase("widget")) {
                         ids[i] = Integer.valueOf(aChildren.split("_")[0]);
                         i++;
                     }
