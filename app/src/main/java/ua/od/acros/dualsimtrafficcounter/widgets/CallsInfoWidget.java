@@ -25,9 +25,12 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.CallsWidgetConfigActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
 public class CallsInfoWidget extends AppWidgetProvider {
+
+    private String[] mOperatorNames;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -55,6 +58,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 deleteWidgetPreferences(context, new int[]{appWidgetId});
             }
         } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null) {
+            mOperatorNames[0] = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+            mOperatorNames[1] = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+            mOperatorNames[2] = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
             Bundle bundle = new Bundle();
             if (!MyDatabase.isEmpty(new MyDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
                 ContentValues dataMap = MyDatabase.readCallsData(MyDatabase.getInstance(context));
@@ -119,13 +125,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM1
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true)) {
                 updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0)));
-                String title1 = "";
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
-                    if (bundle.getString(Constants.OPERATOR1, "").equals(""))
-                        title1 = "SIM1";
-                    else
-                        title1 = bundle.getString(Constants.OPERATOR1, "");
+                    String title1 = mOperatorNames[0];
                     updateViews.setViewVisibility(R.id.operSIM1, View.VISIBLE);
                     updateViews.setTextViewText(R.id.operSIM1, title1);
                 }
@@ -171,13 +173,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM2
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true)) {
                 updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0)));
-                String title2 = "";
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
-                    if (bundle.getString(Constants.OPERATOR2, "").equals(""))
-                        title2 = "SIM2";
-                    else
-                        title2 = bundle.getString(Constants.OPERATOR2);
+                    String title2 = mOperatorNames[1];
                     updateViews.setViewVisibility(R.id.operSIM2, View.VISIBLE);
                     updateViews.setTextViewText(R.id.operSIM2, title2);
                 }
@@ -231,13 +229,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM3
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)) {
                 updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0)));
-                String title3 = "";
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
-                    if (bundle.getString(Constants.OPERATOR3, "").equals(""))
-                        title3 = "SIM3";
-                    else
-                        title3 = bundle.getString(Constants.OPERATOR3);
+                    String title3 = mOperatorNames[2];
                     updateViews.setViewVisibility(R.id.operSIM3, View.VISIBLE);
                     updateViews.setTextViewText(R.id.operSIM3, title3);
                 }
