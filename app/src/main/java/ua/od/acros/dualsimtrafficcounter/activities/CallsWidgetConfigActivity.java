@@ -55,7 +55,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
     private int mTextColor;
     private int mBackColor;
     private Intent mResultValueIntent;
-    private TextView namesSum, iconsSum, divSum, backSum, textSizeSum, iconsSizeSum, logoSum1, logoSum2, logoSum3, showSimSum;
+    private TextView namesSum, iconsSum, divSum, backSum, textSizeSum, iconsSizeSum, logoSum1, logoSum2, logoSum3, showSimSum, remainSum;
     private RelativeLayout logoL1, logoL2, logoL3, simLogoL, backColorL;
     private ImageView tiv, biv, logo1, logo2, logo3;
     private String mUserPickedImage;
@@ -108,6 +108,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[15], true); //Show SIM1
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[16], true); //Show SIM2
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
+            mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
             mEdit.apply();
         }
 
@@ -132,6 +133,8 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
         back.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[12], true));
         CheckBox div = (CheckBox) findViewById(R.id.divider);
         div.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[14], true));
+        CheckBox remain = (CheckBox) findViewById(R.id.remain_calls);
+        remain.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -153,6 +156,11 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
             backSum.setText(R.string.on);
         else
             backSum.setText(R.string.off);
+        remainSum = (TextView) findViewById(R.id.remain_calls_summary);
+        if (remain.isChecked())
+            remainSum.setText(R.string.remain);
+        else
+            remainSum.setText(R.string.used);
 
 
         logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
@@ -195,6 +203,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
         names.setOnCheckedChangeListener(this);
         icons.setOnCheckedChangeListener(this);
         back.setOnCheckedChangeListener(this);
+        remain.setOnCheckedChangeListener(this);
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
         biv = (ImageView) findViewById(R.id.backColorPreview);
@@ -498,6 +507,13 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                 else
                     backSum.setText(R.string.off);
                 onOff(backColorL, isChecked);
+                break;
+            case R.id.remain_calls:
+                mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[18], isChecked);
+                if (isChecked)
+                    remainSum.setText(R.string.remain);
+                else
+                    remainSum.setText(R.string.used);
                 break;
             case R.id.icons:
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[2], isChecked);
