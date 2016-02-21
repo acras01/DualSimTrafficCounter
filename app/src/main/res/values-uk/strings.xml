@@ -180,4 +180,8 @@
     <string name="saved">Список збережено!</string>
     <string name="info_widget_calls">Віджет DSTC (дзвінки)</string>
     <string name="deleted">Віджет видалено!</string>
+    <string name="remain_calls">"Залишок: "</string>
+    <string name="show_remaining_calls">Вiдображати залишок хвилин в панелi повiдомлень</string>
+    <string name="show_remaining_calls_widget">Вiдображати залишок хвилин на віджеті</string>
+    <string name="show_remaining_widget">Вiдображати залишок трафiку на віджеті</string>
 </resources>

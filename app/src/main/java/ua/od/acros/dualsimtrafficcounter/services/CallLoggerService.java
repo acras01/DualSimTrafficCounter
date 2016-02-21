@@ -67,6 +67,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private boolean mIsOutgoing = false;
     private boolean mIsDialogShown = false;
     private final String[] number = new String[1];
+    private boolean mLimitHasChanged;
+    private long[] mLimits = new long[3];
 
     public CallLoggerService() {
     }
@@ -86,6 +88,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+        mLimits = getSIMLimits();
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
@@ -447,10 +450,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1[4]) ||
+        if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5]))
             mResetRuleHasChanged = true;
+        if (key.equals(Constants.PREF_SIM1_CALLS[1]) || key.equals(Constants.PREF_SIM2_CALLS[1]) || key.equals(Constants.PREF_SIM3_CALLS[1]))
+            mLimitHasChanged = true;
         if (key.equals(Constants.PREF_OTHER[5]) && sharedPreferences.getBoolean(key, false)) {
             CountDownTimer timer = new CountDownTimer(2000, 1000) {
                 @Override
@@ -577,11 +582,39 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     private Notification buildNotification() {
-        String text = DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1));
+        long tot1, tot2 = 0, tot3 = 0;
+        String text = "";
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
+            text = getString(R.string.remain_calls);
+            if (mLimitHasChanged) {
+                mLimits = getSIMLimits();
+                mLimitHasChanged = false;
+            }
+            tot1 = mLimits[0] - (long) mCalls.get(Constants.CALLS1);
+            if (mSimQuantity >= 2)
+                tot2 = mLimits[1] - (long) mCalls.get(Constants.CALLS2);
+            if (mSimQuantity == 3)
+                tot3 = mLimits[2] - (long) mCalls.get(Constants.CALLS3);
+        } else {
+            tot1 = (long) mCalls.get(Constants.CALLS1);
+            tot2 = (long) mCalls.get(Constants.CALLS2);
+            tot3 = (long) mCalls.get(Constants.CALLS3);
+        }
+
+        if (mLimits[0] != Long.MAX_VALUE)
+            text += DataFormat.formatCallDuration(mContext, tot1);
+        else
+            text += getString(R.string.not_set);
         if (mSimQuantity >= 2)
-            text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2));
+            if (mLimits[1] != Long.MAX_VALUE)
+                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot2);
+            else
+                text += "  ||  " + getString(R.string.not_set);
         if (mSimQuantity == 3)
-            text += "  ||  " + DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3));
+            if (mLimits[2] != Long.MAX_VALUE)
+                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
+            else
+                text += "  ||  " + getString(R.string.not_set);
         return MyNotification.getNotification(mContext, "", text);
     }
 
@@ -624,4 +657,20 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         return ids;
     }
 
+    private long[] getSIMLimits() {
+        long lim1 = Long.MAX_VALUE;
+        long lim2 = Long.MAX_VALUE;
+        long lim3 = Long.MAX_VALUE;
+        String limit1 = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "");
+        String limit2 = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "");
+        String limit3 = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "");
+        if (!limit1.equals(""))
+            lim1 = Long.valueOf(limit1) * Constants.MINUTE;
+        if (!limit2.equals(""))
+            lim2 = Long.valueOf(limit2) * Constants.MINUTE;
+        if (!limit3.equals(""))
+            lim3 = Long.valueOf(limit3) * Constants.MINUTE;
+
+        return new long[] {lim1, lim2, lim3};
+    }
 }

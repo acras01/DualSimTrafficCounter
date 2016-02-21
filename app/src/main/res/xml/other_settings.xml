@@ -52,6 +52,13 @@
         android:defaultValue="false"/>
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="calls_remain"
+        android:title="@string/show_remaining_calls"
+        android:summaryOn="@string/remain"
+        android:summaryOff="@string/used"
+        android:defaultValue="false"/>
+
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
         android:key="status_icon"
         android:title="@string/show_icon_in_statusbar"
         android:summaryOn="@string/on"

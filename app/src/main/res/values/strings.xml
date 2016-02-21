@@ -187,4 +187,8 @@
     <string name="saved">List saved!</string>
     <string name="info_widget_calls">DSTC widget (calls)</string>
     <string name="deleted">Widget deleted!</string>
+    <string name="remain_calls">"Remaining: "</string>
+    <string name="show_remaining_calls">Show remaining call time in notification area</string>
+    <string name="show_remaining_widget" >Show remaining traffic on widget</string>
+    <string name="show_remaining_calls_widget" >Show remaining call time on widget</string>
 </resources>

@@ -65,18 +65,18 @@ public class Constants {
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
             "status_icon", "auto_sim", "user_sim", "operator_logo", "info_status", //16
             "continue_overlimit", "action_chosen", "data_remain", "alt", "sim1", "sim2", //22
-            "sim3", "calls_stopped", "calllogger", "notification_tap"}; //26
+            "sim3", "calls_stopped", "calllogger", "notification_tap", "calls_remain"}; //27
     public static final String[] PREF_WIDGET_TRAFFIC = {"stub", "names", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
-            "showsim1","showsim2", "showsim3", "showdiv", "active", "day_night"}; //23
+            "showsim1","showsim2", "showsim3", "showdiv", "active", "day_night", "data_remain"}; //24
     public static final String[] PREF_WIDGET_CALLS = {"stub", "names", "icons", //2
             "logo1", "logo2", "logo3", //5
             "user_pick1", "user_pick2", "user_pick3", //8
             "icon_size", "size", "text_color", "useback", //12
-            "background_color", "showdiv", "showsim1","showsim2", "showsim3",}; //17
+            "background_color", "showdiv", "showsim1","showsim2", "showsim3", "calls_remain"}; //18
     public static final String[] PREF_SIM1_CALLS = {"calls_stub", "calls_limit1", "calls_period1", "calls_round1", //3
             "calls_time1", "calls_day1", "calls_op_value1", "calls_period1", "calls_reset1", "calls_needs_reset1"}; //9
     public static final String[] PREF_SIM2_CALLS = {"calls_stub", "calls_limit2", "calls_period2", "calls_round2", //3
