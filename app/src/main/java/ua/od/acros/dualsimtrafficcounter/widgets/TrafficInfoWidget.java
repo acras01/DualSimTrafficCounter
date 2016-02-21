@@ -170,8 +170,28 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))
                     || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM1)) {
-                updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
-                        bundle.getLong(Constants.TOTAL1, 0)));
+                String text;
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                    String limit = isNight[0] ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
+                    String round = isNight[0] ? prefs.getString(Constants.PREF_SIM1[22], "") : prefs.getString(Constants.PREF_SIM1[4], "0");
+                    int value;
+                    if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+                        value = 0;
+                    else
+                        value = isNight[0] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], "")) :
+                                Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
+                    float valuer;
+                    long lim = Long.MAX_VALUE;
+                    if (!limit.equals("")) {
+                        valuer = 1 - Float.valueOf(round) / 100;
+                        lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
+                    }
+                    text = DataFormat.formatData(context, isNight[0] ? lim - bundle.getLong(Constants.TOTAL1_N, 0) :
+                            lim - bundle.getLong(Constants.TOTAL1, 0));;
+                } else
+                    text = DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
+                            bundle.getLong(Constants.TOTAL1, 0));
+                updateViews.setTextViewText(R.id.totSIM1, text);
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.vert11, View.GONE);
@@ -274,8 +294,28 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             //SIM2
             if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))
                     || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM2)) {
-                updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
-                        bundle.getLong(Constants.TOTAL2, 0)));
+                String text;
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                    String limit = isNight[1] ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
+                    String round = isNight[1] ? prefs.getString(Constants.PREF_SIM2[22], "") : prefs.getString(Constants.PREF_SIM2[4], "0");
+                    int value;
+                    if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+                        value = 0;
+                    else
+                        value = isNight[1] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], "")) :
+                                Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+                    float valuer;
+                    long lim = Long.MAX_VALUE;
+                    if (!limit.equals("")) {
+                        valuer = 1 - Float.valueOf(round) / 100;
+                        lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
+                    }
+                    text = DataFormat.formatData(context, isNight[1] ? lim - bundle.getLong(Constants.TOTAL2_N, 0) :
+                            lim - bundle.getLong(Constants.TOTAL2, 0));;
+                } else
+                    text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
+                            bundle.getLong(Constants.TOTAL2, 0));
+                updateViews.setTextViewText(R.id.totSIM2, text);
                 updateViews.setViewVisibility(R.id.txSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.vert21, View.GONE);
@@ -378,8 +418,28 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             //SIM3
             if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))
                     || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
-                updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
-                        bundle.getLong(Constants.TOTAL3, 0)));
+                String text;
+                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                    String limit = isNight[2] ? prefs.getString(Constants.PREF_SIM3[18], "") : prefs.getString(Constants.PREF_SIM3[1], "");
+                    String round = isNight[2] ? prefs.getString(Constants.PREF_SIM3[22], "") : prefs.getString(Constants.PREF_SIM3[4], "0");
+                    int value;
+                    if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+                        value = 0;
+                    else
+                        value = isNight[2] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], "")) :
+                                Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+                    float valuer;
+                    long lim = Long.MAX_VALUE;
+                    if (!limit.equals("")) {
+                        valuer = 1 - Float.valueOf(round) / 100;
+                        lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
+                    }
+                    text = DataFormat.formatData(context, isNight[2] ? lim - bundle.getLong(Constants.TOTAL3_N, 0) :
+                            lim - bundle.getLong(Constants.TOTAL2, 0));;
+                } else
+                    text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL3_N, 0) :
+                            bundle.getLong(Constants.TOTAL3, 0));
+                updateViews.setTextViewText(R.id.totSIM3, text);
                 updateViews.setViewVisibility(R.id.txSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.rxSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.vert31, View.GONE);

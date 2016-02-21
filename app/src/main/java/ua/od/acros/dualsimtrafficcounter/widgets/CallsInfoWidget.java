@@ -124,7 +124,16 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
             //SIM1
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true)) {
-                updateViews.setTextViewText(R.id.totSIM1, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0)));
+                String text;
+                if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
+                    long lim = Long.MAX_VALUE;
+                    String limit = prefs.getString(Constants.PREF_SIM1_CALLS[1], "");
+                    if (!limit.equals(""))
+                        lim = Long.valueOf(limit) * Constants.MINUTE;
+                    text = DataFormat.formatCallDuration(context, lim - bundle.getLong(Constants.CALLS1, 0));
+                } else
+                    text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0));
+                updateViews.setTextViewText(R.id.totSIM1, text);
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM1, View.VISIBLE);
@@ -171,7 +180,16 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
             //SIM2
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true)) {
-                updateViews.setTextViewText(R.id.totSIM2, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0)));
+                String text;
+                if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
+                    long lim = Long.MAX_VALUE;
+                    String limit = prefs.getString(Constants.PREF_SIM2_CALLS[1], "");
+                    if (!limit.equals(""))
+                        lim = Long.valueOf(limit) * Constants.MINUTE;
+                    text = DataFormat.formatCallDuration(context, lim - bundle.getLong(Constants.CALLS2, 0));
+                } else
+                    text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0));
+                updateViews.setTextViewText(R.id.totSIM2, text);
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM2, View.VISIBLE);
@@ -226,7 +244,16 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
             //SIM3
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)) {
-                updateViews.setTextViewText(R.id.totSIM3, DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0)));
+                String text;
+                if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
+                    long lim = Long.MAX_VALUE;
+                    String limit = prefs.getString(Constants.PREF_SIM3_CALLS[1], "");
+                    if (!limit.equals(""))
+                        lim = Long.valueOf(limit) * Constants.MINUTE;
+                    text = DataFormat.formatCallDuration(context, lim - bundle.getLong(Constants.CALLS3, 0));
+                } else
+                    text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0));
+                updateViews.setTextViewText(R.id.totSIM1, text);
                 updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM3, View.VISIBLE);
