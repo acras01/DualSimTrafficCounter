@@ -58,9 +58,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 deleteWidgetPreferences(context, new int[]{appWidgetId});
             }
         } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null) {
-            mOperatorNames[0] = MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-            mOperatorNames[1] = MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-            mOperatorNames[2] = MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+            mOperatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                    MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                    MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
             Bundle bundle = new Bundle();
             if (!MyDatabase.isEmpty(new MyDatabase(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
                 ContentValues dataMap = MyDatabase.readCallsData(MyDatabase.getInstance(context));
