@@ -145,6 +145,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);//Show divider
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);//Show only active SIM
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);//Show day/night icons
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false);//Show remaining
                 edit.apply();
             }
 
@@ -172,22 +173,22 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM1)) {
                 String text;
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
-                    String limit = isNight[0] ? prefs.getString(Constants.PREF_SIM1[18], "") : prefs.getString(Constants.PREF_SIM1[1], "");
-                    String round = isNight[0] ? prefs.getString(Constants.PREF_SIM1[22], "") : prefs.getString(Constants.PREF_SIM1[4], "0");
+                    String limit = isNight[0] ? prefsSIM.getString(Constants.PREF_SIM1[18], "") : prefsSIM.getString(Constants.PREF_SIM1[1], "");
+                    String round = isNight[0] ? prefsSIM.getString(Constants.PREF_SIM1[22], "") : prefsSIM.getString(Constants.PREF_SIM1[4], "0");
                     int value;
-                    if (prefs.getString(Constants.PREF_SIM1[2], "").equals(""))
+                    if (prefsSIM.getString(Constants.PREF_SIM1[2], "").equals(""))
                         value = 0;
                     else
-                        value = isNight[0] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM1[19], "")) :
-                                Integer.valueOf(prefs.getString(Constants.PREF_SIM1[2], ""));
+                        value = isNight[0] ? Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM1[19], "")) :
+                                Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM1[2], ""));
                     float valuer;
                     long lim = Long.MAX_VALUE;
                     if (!limit.equals("")) {
                         valuer = 1 - Float.valueOf(round) / 100;
                         lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                     }
-                    text = DataFormat.formatData(context, isNight[0] ? lim - bundle.getLong(Constants.TOTAL1_N, 0) :
-                            lim - bundle.getLong(Constants.TOTAL1, 0));;
+                    text = "-" + DataFormat.formatData(context, isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
+                            (lim - bundle.getLong(Constants.TOTAL1, 0)));
                 } else
                     text = DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                             bundle.getLong(Constants.TOTAL1, 0));
@@ -296,22 +297,22 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM2)) {
                 String text;
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
-                    String limit = isNight[1] ? prefs.getString(Constants.PREF_SIM2[18], "") : prefs.getString(Constants.PREF_SIM2[1], "");
-                    String round = isNight[1] ? prefs.getString(Constants.PREF_SIM2[22], "") : prefs.getString(Constants.PREF_SIM2[4], "0");
+                    String limit = isNight[1] ? prefsSIM.getString(Constants.PREF_SIM2[18], "") : prefsSIM.getString(Constants.PREF_SIM2[1], "");
+                    String round = isNight[1] ? prefsSIM.getString(Constants.PREF_SIM2[22], "") : prefsSIM.getString(Constants.PREF_SIM2[4], "0");
                     int value;
-                    if (prefs.getString(Constants.PREF_SIM2[2], "").equals(""))
+                    if (prefsSIM.getString(Constants.PREF_SIM2[2], "").equals(""))
                         value = 0;
                     else
-                        value = isNight[1] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM2[19], "")) :
-                                Integer.valueOf(prefs.getString(Constants.PREF_SIM2[2], ""));
+                        value = isNight[1] ? Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM2[19], "")) :
+                                Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM2[2], ""));
                     float valuer;
                     long lim = Long.MAX_VALUE;
                     if (!limit.equals("")) {
                         valuer = 1 - Float.valueOf(round) / 100;
                         lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                     }
-                    text = DataFormat.formatData(context, isNight[1] ? lim - bundle.getLong(Constants.TOTAL2_N, 0) :
-                            lim - bundle.getLong(Constants.TOTAL2, 0));;
+                    text = "-" + DataFormat.formatData(context, isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
+                            (lim - bundle.getLong(Constants.TOTAL2, 0)));
                 } else
                     text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                             bundle.getLong(Constants.TOTAL2, 0));
@@ -420,22 +421,22 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     || (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false) && bundle.getInt(Constants.SIM_ACTIVE) == Constants.SIM3)) {
                 String text;
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
-                    String limit = isNight[2] ? prefs.getString(Constants.PREF_SIM3[18], "") : prefs.getString(Constants.PREF_SIM3[1], "");
-                    String round = isNight[2] ? prefs.getString(Constants.PREF_SIM3[22], "") : prefs.getString(Constants.PREF_SIM3[4], "0");
+                    String limit = isNight[2] ? prefsSIM.getString(Constants.PREF_SIM3[18], "") : prefsSIM.getString(Constants.PREF_SIM3[1], "");
+                    String round = isNight[2] ? prefsSIM.getString(Constants.PREF_SIM3[22], "") : prefsSIM.getString(Constants.PREF_SIM3[4], "0");
                     int value;
-                    if (prefs.getString(Constants.PREF_SIM3[2], "").equals(""))
+                    if (prefsSIM.getString(Constants.PREF_SIM3[2], "").equals(""))
                         value = 0;
                     else
-                        value = isNight[2] ? Integer.valueOf(prefs.getString(Constants.PREF_SIM3[19], "")) :
-                                Integer.valueOf(prefs.getString(Constants.PREF_SIM3[2], ""));
+                        value = isNight[2] ? Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM3[19], "")) :
+                                Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM3[2], ""));
                     float valuer;
                     long lim = Long.MAX_VALUE;
                     if (!limit.equals("")) {
                         valuer = 1 - Float.valueOf(round) / 100;
                         lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                     }
-                    text = DataFormat.formatData(context, isNight[2] ? lim - bundle.getLong(Constants.TOTAL3_N, 0) :
-                            lim - bundle.getLong(Constants.TOTAL2, 0));;
+                    text = "-" + DataFormat.formatData(context, isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
+                            (lim - bundle.getLong(Constants.TOTAL2, 0)));
                 } else
                     text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                             bundle.getLong(Constants.TOTAL3, 0));

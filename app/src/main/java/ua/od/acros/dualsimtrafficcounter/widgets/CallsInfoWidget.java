@@ -85,6 +85,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
         }
         for (int i : ids) {
             SharedPreferences prefs = context.getSharedPreferences(i + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[1], true); //Show names
@@ -104,6 +105,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[15], true); //Show SIM1
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[16], true); //Show SIM2
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
+                edit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
                 edit.apply();
             }
             Intent settIntent = new Intent(context, CallsWidgetConfigActivity.class);
@@ -127,10 +129,10 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 String text;
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
                     long lim = Long.MAX_VALUE;
-                    String limit = prefs.getString(Constants.PREF_SIM1_CALLS[1], "");
+                    String limit = prefsSIM.getString(Constants.PREF_SIM1_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = DataFormat.formatCallDuration(context, lim - bundle.getLong(Constants.CALLS1, 0));
+                    text = "-" + DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS1, 0)));
                 } else
                     text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);
@@ -183,10 +185,10 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 String text;
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
                     long lim = Long.MAX_VALUE;
-                    String limit = prefs.getString(Constants.PREF_SIM2_CALLS[1], "");
+                    String limit = prefsSIM.getString(Constants.PREF_SIM2_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = DataFormat.formatCallDuration(context, lim - bundle.getLong(Constants.CALLS2, 0));
+                    text = "-" + DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS2, 0)));
                 } else
                     text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0));
                 updateViews.setTextViewText(R.id.totSIM2, text);
@@ -247,10 +249,10 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 String text;
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
                     long lim = Long.MAX_VALUE;
-                    String limit = prefs.getString(Constants.PREF_SIM3_CALLS[1], "");
+                    String limit = prefsSIM.getString(Constants.PREF_SIM3_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = DataFormat.formatCallDuration(context, lim - bundle.getLong(Constants.CALLS3, 0));
+                    text = "-" + DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS3, 0)));
                 } else
                     text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);

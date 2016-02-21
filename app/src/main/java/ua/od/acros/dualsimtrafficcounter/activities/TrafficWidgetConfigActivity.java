@@ -150,6 +150,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         daynight.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false));
         remain = (CheckBox) findViewById(R.id.remain_data);
         remain.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false));
+        remain.setEnabled((!info.isChecked()));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -196,7 +197,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             remainSum.setText(R.string.remain);
         else
             remainSum.setText(R.string.used);
-
+        remainSum.setEnabled((!info.isChecked()));
 
         logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
         logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
@@ -660,8 +661,8 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                     mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false);
                 } else
                     infoSum.setText(R.string.only_total);
-                remain.setEnabled(isChecked);
-                remainSum.setEnabled(isChecked);
+                remain.setEnabled(!isChecked);
+                remainSum.setEnabled(!isChecked);
                 break;
             case R.id.speed:
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], isChecked);
