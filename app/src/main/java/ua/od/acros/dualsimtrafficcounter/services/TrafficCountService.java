@@ -136,19 +136,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
-
         mDatabaseHelper = MyDatabase.getInstance(mContext);
-        mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
-        if (mDataMap.get(Constants.LAST_DATE).equals("")) {
-            Calendar myCalendar = Calendar.getInstance();
-            SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-            SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-            mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-            mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
-        }
 
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
@@ -434,7 +422,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
 
-        mDatabaseHelper = MyDatabase.getInstance(mContext);
         mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
         if (mDataMap.get(Constants.LAST_DATE).equals("")) {
             Calendar myCalendar = Calendar.getInstance();
