@@ -74,6 +74,7 @@ public class MobileUtils {
                                     if (idNext != null && !id.equals(idNext))
                                         ret++;
                                 }
+                                break;
                             }
                         }
                     } catch (Exception e) {
@@ -92,6 +93,7 @@ public class MobileUtils {
                                         if (idNext != null && !id.equals(idNext))
                                             ret++;
                                     }
+                                    break;
                                 }
                             }
                         } catch (Exception e) {
@@ -111,6 +113,7 @@ public class MobileUtils {
                                         if (idNext != null && !id.equals(idNext))
                                             ret++;
                                     }
+                                    break;
                                 }
                             }
                         }
@@ -130,6 +133,7 @@ public class MobileUtils {
                                             if (mTelephonyStub != null)
                                                 ret++;
                                         }
+                                        break;
                                     }
                                 }
                             }
@@ -150,6 +154,7 @@ public class MobileUtils {
                                             if (mTelephonyStub != null)
                                                 ret++;
                                         }
+                                        break;
                                     }
                                 }
                             }
