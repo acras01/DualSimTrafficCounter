@@ -1628,10 +1628,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         else
             intent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
         intent.putExtra(Constants.OPERATOR1, mOperatorNames[0]);
-        if (mSimQuantity >= 2)
-            intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
-        if (mSimQuantity == 3)
-            intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
+        intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
+        intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
         mContext.sendBroadcast(intent);
     }
 
