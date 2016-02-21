@@ -137,6 +137,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
+        if (mDataMap.get(Constants.LAST_DATE).equals("")) {
+            Calendar myCalendar = Calendar.getInstance();
+            SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
+            SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
+            mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
+            mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+        }
 
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);

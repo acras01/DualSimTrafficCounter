@@ -570,7 +570,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         int[] ids = getWidgetIds(mContext);
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
-            intent.putExtra(Constants.WIDGET_IDS, ids);
+            i.putExtra(Constants.WIDGET_IDS, ids);
             sendBroadcast(i);
         }
         return START_STICKY;
