@@ -132,9 +132,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     String limit = prefsSIM.getString(Constants.PREF_SIM1_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = "-" + DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS1, 0)));
+                    text = DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS1, 0)));
                 } else
-                    text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0));
+                    text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
@@ -188,9 +188,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     String limit = prefsSIM.getString(Constants.PREF_SIM2_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = "-" + DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS2, 0)));
+                    text = DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS2, 0)));
                 } else
-                    text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0));
+                    text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0));
                 updateViews.setTextViewText(R.id.totSIM2, text);
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
@@ -252,9 +252,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     String limit = prefsSIM.getString(Constants.PREF_SIM3_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = "-" + DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS3, 0)));
+                    text = DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS3, 0)));
                 } else
-                    text = DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0));
+                    text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);
                 updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {

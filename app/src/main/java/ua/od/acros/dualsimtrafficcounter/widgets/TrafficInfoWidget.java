@@ -187,10 +187,10 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         valuer = 1 - Float.valueOf(round) / 100;
                         lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                     }
-                    text = "-" + DataFormat.formatData(context, isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
+                    text = DataFormat.formatData(context, isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
                             (lim - bundle.getLong(Constants.TOTAL1, 0)));
                 } else
-                    text = DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
+                    text = "-" + DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                             bundle.getLong(Constants.TOTAL1, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);
                 updateViews.setViewVisibility(R.id.txSIM1, View.GONE);
@@ -311,10 +311,10 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         valuer = 1 - Float.valueOf(round) / 100;
                         lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                     }
-                    text = "-" + DataFormat.formatData(context, isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
+                    text = DataFormat.formatData(context, isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
                             (lim - bundle.getLong(Constants.TOTAL2, 0)));
                 } else
-                    text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
+                    text = "-" + DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                             bundle.getLong(Constants.TOTAL2, 0));
                 updateViews.setTextViewText(R.id.totSIM2, text);
                 updateViews.setViewVisibility(R.id.txSIM2, View.GONE);
@@ -435,10 +435,10 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         valuer = 1 - Float.valueOf(round) / 100;
                         lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                     }
-                    text = "-" + DataFormat.formatData(context, isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
+                    text = DataFormat.formatData(context, isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
                             (lim - bundle.getLong(Constants.TOTAL2, 0)));
                 } else
-                    text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL3_N, 0) :
+                    text = "-" + DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                             bundle.getLong(Constants.TOTAL3, 0));
                 updateViews.setTextViewText(R.id.totSIM3, text);
                 updateViews.setViewVisibility(R.id.txSIM3, View.GONE);
