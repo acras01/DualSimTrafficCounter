@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -22,7 +21,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class TestFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
 
     private String mSimChecked = "";
-    private Button bOK;
     private boolean mAlternative = false;
     private SharedPreferences.Editor edit;
     private String[] mOperatorNames = new String[3];

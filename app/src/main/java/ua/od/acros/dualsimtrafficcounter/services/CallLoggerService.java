@@ -131,14 +131,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             break;
                     }
                     MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
-                    NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.notify(Constants.STARTED_ID, buildNotification());
-                    if ((MyApplication.isActivityVisible() && MyApplication.isScreenOn(mContext) || getWidgetIds(mContext).length != 0)) {
-                        Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
-                        callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
-                        callsIntent.putExtra(Constants.CALL_DURATION, duration);
-                        sendBroadcast(callsIntent);
-                    }
+                    refresh(context, sim, duration);
                     String out = "Call Ends\n";
                     try {
                         // to this path add a new directory path
@@ -169,24 +162,24 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 DateTime now = new DateTime();
                 mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
                 mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
-                long mTotal = DataFormat.getDuration(limitBundle.getString("duration"), limitBundle.getInt("spinner"));
-                switch (limitBundle.getInt("sim")) {
+                int sim = limitBundle.getInt("sim");
+                long duration = DataFormat.getDuration(limitBundle.getString("duration"), limitBundle.getInt("spinner"));
+                switch (sim) {
                     case Constants.SIM1:
-                        mCalls.put(Constants.CALLS1, mTotal);
-                        mCalls.put(Constants.CALLS1_EX, mTotal);
+                        mCalls.put(Constants.CALLS1, duration);
+                        mCalls.put(Constants.CALLS1_EX, duration);
                         break;
                     case Constants.SIM2:
-                        mCalls.put(Constants.CALLS2, mTotal);
-                        mCalls.put(Constants.CALLS2_EX, mTotal);
+                        mCalls.put(Constants.CALLS2, duration);
+                        mCalls.put(Constants.CALLS2_EX, duration);
                         break;
                     case Constants.SIM3:
-                        mCalls.put(Constants.CALLS3, mTotal);
-                        mCalls.put(Constants.CALLS3_EX, mTotal);
+                        mCalls.put(Constants.CALLS3, duration);
+                        mCalls.put(Constants.CALLS3_EX, duration);
                         break;
                 }
                 MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
-                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                nm.notify(Constants.STARTED_ID, buildNotification());
+                refresh(context, sim, duration);
             }
         };
         IntentFilter setUsageFilter = new IntentFilter(Constants.SET_DURATION);
@@ -198,7 +191,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 DateTime now = new DateTime();
                 mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
                 mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
-                switch (intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) {
+                int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+                switch (sim) {
                     case Constants.SIM1:
                         mCalls.put(Constants.CALLS1, 0L);
                         mCalls.put(Constants.CALLS1_EX, 0L);
@@ -213,6 +207,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                         break;
                 }
                 MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                refresh(context, sim, 0L);
             }
         };
         IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR_CALLS);
@@ -446,6 +441,17 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         };
         IntentFilter outgoingCallFilter = new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
         registerReceiver(outgoingCallReceiver, outgoingCallFilter);
+    }
+
+    private void refresh(Context context, int sim, long duration) {
+        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(Constants.STARTED_ID, buildNotification());
+        if ((MyApplication.isActivityVisible() && MyApplication.isScreenOn(context) || getWidgetIds(context).length != 0)) {
+            Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
+            callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
+            callsIntent.putExtra(Constants.CALL_DURATION, duration);
+            sendBroadcast(callsIntent);
+        }
     }
 
     @Override
