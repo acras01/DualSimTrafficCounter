@@ -112,8 +112,8 @@ public class MobileUtils {
                                 m.getParameterTypes();
                                 if (m.getParameterTypes().length > 0) {
                                     for (int i = 0; i < 2; i++) {
-                                        String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
-                                        String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
+                                        String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
+                                        String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
                                         if (idNext != null && !id.equals(idNext))
                                             ret++;
                                     }
@@ -124,6 +124,27 @@ public class MobileUtils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    if (ret == 1)
+                        try {
+                            Method[] cm = mTelephonyClass.getDeclaredMethods();
+                            for (Method m : cm) {
+                                if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                                    m.setAccessible(true);
+                                    m.getParameterTypes();
+                                    if (m.getParameterTypes().length > 0) {
+                                        for (int i = 0; i < 2; i++) {
+                                            String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
+                                            String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
+                                            if (idNext != null && !id.equals(idNext))
+                                                ret++;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     if (ret == 1)
                         try {
                             Method[] cm = mTelephonyClass.getDeclaredMethods();
@@ -886,6 +907,23 @@ public class MobileUtils {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
                                             for (int i = 0; i < simQuantity; i++) {
+                                                imei.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }if (imei.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                                        m.setAccessible(true);
+                                        if (m.getParameterTypes().length > 0) {
+                                            for (int i = 0; i < simQuantity; i++) {
                                                 imei.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
                                             }
                                             break;
@@ -896,6 +934,7 @@ public class MobileUtils {
                                 e.printStackTrace();
                             }
                         }
+
                         if (imei.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
