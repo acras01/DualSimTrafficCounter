@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
-        } else if (action != null && action.equals("tap")) {
+        } else if (action != null && action.equals("tap") && savedInstanceState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true))
                 getSupportFragmentManager()
                         .beginTransaction()

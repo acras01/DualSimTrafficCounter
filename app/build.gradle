@@ -4,7 +4,7 @@ android {
     signingConfigs {
         acras {
             keyAlias 'acras_1'
-            storeFile file('D:/Development/acras_keystore.jks')
+            storeFile file('D:/android/development/acras_keystore.jks')
             keyPassword 'ZqwErtY19810506'
             storePassword 'fpfhjdfbhbyf12091977'
         }
@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile project(':joda-time-2.8.2')
