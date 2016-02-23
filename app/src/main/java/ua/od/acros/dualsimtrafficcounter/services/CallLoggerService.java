@@ -150,7 +150,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 }
             }
         };
-        IntentFilter callDataFilter = new IntentFilter(Constants.OUTGOING_CALL);
+        IntentFilter callDataFilter = new IntentFilter(Constants.PROCESS_OUTGOING_CALL);
         registerReceiver(callDataReceiver, callDataFilter);
 
         setUsageReceiver = new BroadcastReceiver() {
@@ -367,12 +367,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         outgoingCallReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+                if (intent.getAction().equals(Constants.NEW_OUTGOING_CALL)) {
                     startTask(context, intent);
                 }
             }
         };
-        IntentFilter outgoingCallFilter = new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
+        IntentFilter outgoingCallFilter = new IntentFilter(Constants.NEW_OUTGOING_CALL);
         registerReceiver(outgoingCallReceiver, outgoingCallFilter);
     }
 

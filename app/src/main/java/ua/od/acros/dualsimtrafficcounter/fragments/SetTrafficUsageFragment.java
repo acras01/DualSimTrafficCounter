@@ -20,6 +20,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -139,8 +141,11 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
             }
             Intent intent = new Intent(Constants.SET_USAGE);
             intent.putExtra("data", bundle);
-            getActivity().sendBroadcast(intent);
-            getActivity().onBackPressed();
+            if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
+                getActivity().sendBroadcast(intent);
+                getActivity().onBackPressed();
+            } else
+                Toast.makeText(getActivity(), R.string.service_stop, Toast.LENGTH_LONG).show();
         } else
             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
     }

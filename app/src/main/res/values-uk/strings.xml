@@ -184,4 +184,5 @@
     <string name="show_remaining_calls">Вiдображати залишок хвилин в панелi повiдомлень</string>
     <string name="show_remaining_calls_widget">Вiдображати залишок хвилин на віджеті</string>
     <string name="show_remaining_widget">Вiдображати залишок трафiку на віджеті</string>
+    <string name="service_stop">Сервіс зупинено. Будь ласка, спочатку запустіть сервіс</string>
 </resources>

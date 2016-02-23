@@ -49,6 +49,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="org.acra.CrashReportDialog"
             android:excludeFromRecents="true"
@@ -56,6 +57,7 @@
             android:launchMode="singleInstance"
             android:process=":error_report"
             android:theme="@style/AppTheme.Dialog" />
+
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize"
@@ -72,36 +74,13 @@
             android:exported="false" >
         </service>
 
-        <receiver
-            android:name=".receivers.BootBroadcastReceiver"
-            android:enabled="true"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".widgets.TrafficInfoWidget"
-            android:label="@string/info_widget_traffic" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
-                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
-                <action android:name="ua.od.acros.dualsimtrafficcounter.DATABROADCAST" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/traffic_info_widget" />
-        </receiver>
-
         <activity
             android:name=".dialogs.ChooseActionDialog"
             android:label="@string/attention"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog" >
         </activity>
+
         <activity
             android:name=".activities.TrafficWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
@@ -118,15 +97,6 @@
             android:exported="false" >
         </service>
 
-        <receiver
-            android:name=".receivers.OnOffReceiver"
-            android:enabled="true"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="ua.od.acros.dualsimtrafficcounter.ALARM" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name=".services.CallLoggerService"
             android:enabled="true"
@@ -139,12 +109,57 @@
             android:label="@string/title_activity_white_list"
             android:theme="@style/AppTheme.AppBarOverlay" >
         </activity>
+
         <activity
             android:name=".activities.BlackListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_black_list"
             android:theme="@style/AppTheme.AppBarOverlay" >
         </activity>
+
+        <activity
+            android:name=".activities.CallsWidgetConfigActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/widget_title"
+            android:theme="@style/AppTheme.AppBarOverlay" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".receivers.BootBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".widgets.TrafficInfoWidget"
+            android:label="@string/info_widget_traffic" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
+                <action android:name="ua.od.acros.dualsimtrafficcounter.DATABROADCAST" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/traffic_info_widget" />
+        </receiver>
+
+        <receiver
+            android:name=".receivers.OnOffReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="ua.od.acros.dualsimtrafficcounter.ALARM" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".widgets.CallsInfoWidget"
@@ -161,16 +176,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/calls_info_widget" />
         </receiver>
-
-        <activity
-            android:name=".activities.CallsWidgetConfigActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/widget_title"
-            android:theme="@style/AppTheme.AppBarOverlay" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
 
         <receiver
             android:name=".receivers.OutgoingCallReceiver"

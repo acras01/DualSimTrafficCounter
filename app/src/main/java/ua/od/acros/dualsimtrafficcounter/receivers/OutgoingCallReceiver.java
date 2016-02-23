@@ -10,6 +10,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
 public class OutgoingCallReceiver extends BroadcastReceiver {
+
     public OutgoingCallReceiver() {
     }
 
@@ -23,6 +24,12 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
             i.putExtras(intent.getExtras());
             i.setFlags(intent.getFlags());
             context.startService(i);
+        } else if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, context)
+                && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+            Intent i = new Intent(Constants.NEW_OUTGOING_CALL);
+            i.putExtras(intent.getExtras());
+            i.setFlags(intent.getFlags());
+            context.sendBroadcast(i);
         }
     }
 }

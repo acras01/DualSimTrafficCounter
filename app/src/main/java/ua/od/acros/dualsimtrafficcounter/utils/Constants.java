@@ -35,15 +35,14 @@ public class Constants {
     public static final String LAST_RX = "lastrx";
     public static final String LAST_TIME = "time";
     public static final String LAST_DATE = "date";
-    public static final String CLEAR = "clear";
-    public static final String SET_USAGE = "usage";
-    public static final String ON_OFF = "onoff";
+    public static final String CLEAR = "ua.od.acros.dualsimtrafficcounter.clear";
+    public static final String SET_USAGE = "ua.od.acros.dualsimtrafficcounter.usage";
+    public static final String ON_OFF = "ua.od.acros.dualsimtrafficcounter.onoff";
     public static final String CHANGE_ACTION = "change";
     public static final String SETTINGS_ACTION = "mobile_data";
     public static final String LIMIT_ACTION = "limit";
     public static final String OFF_ACTION = "off";
-    public static final String ACTION = "action";
-    public static final String OUTGOING_CALL = "outgoing_call";
+    public static final String ACTION = "ua.od.acros.dualsimtrafficcounter.action";
     public static final String ALARM_ACTION = "ua.od.acros.dualsimtrafficcounter.ALARM";
     public static final String CONTINUE_ACTION = "continue";
     public static final long NOTIFY_INTERVAL = 1000; // 1 second
@@ -111,9 +110,11 @@ public class Constants {
     public static final String CALLS1_EX = "calls1_ex";
     public static final String CALLS2_EX = "calls2_ex";
     public static final String CALLS3_EX = "calls3_ex";
-    public static final String OUTGOING_CALL_COUNT = "count_call_duration";
-    public static final String CLEAR_CALLS = "clear_calls";
-    public static final String SET_DURATION = "duration";
+    public static final String OUTGOING_CALL_COUNT = "ua.od.acros.dualsimtrafficcounter.COUNT";
+    public static final String CLEAR_CALLS = "ua.od.acros.dualsimtrafficcounter.CLEAR_CALLS";
+    public static final String SET_DURATION = "ua.od.acros.dualsimtrafficcounter.DURATION";
     public static final String TRAFFIC_TAG = "_traffic";
     public static final String CALLS_TAG = "_calls";
+    public static final String NEW_OUTGOING_CALL = "ua.od.acros.dualsimtrafficcounter.NEW_OUTGOING_CALL";
+    public static final String PROCESS_OUTGOING_CALL = "ua.od.acros.dualsimtrafficcounter.PROCESS_OUTGOING_CALL";
 }
