@@ -21,7 +21,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         //start CountService
-        context.startService(new Intent(context, TrafficCountService.class));
+        if (!prefs.getBoolean(Constants.PREF_OTHER[5], false))
+            context.startService(new Intent(context, TrafficCountService.class));
         //start CallLoggerService
         if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
             context.startService(new Intent(context, CallLoggerService.class));
