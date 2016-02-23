@@ -4,8 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.SubscriptionInfo;
@@ -988,7 +990,7 @@ public class MobileUtils {
         return imei;
     }
 
-    /*private static boolean getNetworkFromDB(Context context, String code, String apn) {
+    private static boolean getNetworkFromDB(Context context, String code, String apn) {
         boolean operatorFound = false;
         final Uri APN_TABLE_URI = Uri.parse("content://telephony/carriers");
         context.enforceCallingOrSelfPermission("android.permission.WRITE_APN_SETTINGS", "No permission to write APN settings");
@@ -1003,7 +1005,7 @@ public class MobileUtils {
             cursor.close();
         }
         return operatorFound;
-    }*/
+    }
 
     private static boolean getNetworkFromApnsFile(String code, String apn) {
         FileReader reader = null;
