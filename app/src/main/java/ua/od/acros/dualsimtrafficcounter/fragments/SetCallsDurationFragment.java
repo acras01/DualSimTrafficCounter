@@ -114,6 +114,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
             if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
                 SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
                 BusProvider.getInstance().post(event);
+                getActivity().onBackPressed();
             } else
                 Toast.makeText(getActivity(), R.string.service_stop, Toast.LENGTH_LONG).show();
         } else
