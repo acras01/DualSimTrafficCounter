@@ -137,6 +137,24 @@
         </receiver>
 
         <receiver
+            android:name=".receivers.OnOffReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="ua.od.acros.dualsimtrafficcounter.ALARM" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receivers.OutgoingCallReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".widgets.TrafficInfoWidget"
             android:label="@string/info_widget_traffic" >
             <intent-filter>
@@ -153,15 +171,6 @@
         </receiver>
 
         <receiver
-            android:name=".receivers.OnOffReceiver"
-            android:enabled="true"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="ua.od.acros.dualsimtrafficcounter.ALARM" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name=".widgets.CallsInfoWidget"
             android:label="@string/info_widget_calls" >
             <intent-filter>
@@ -175,15 +184,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/calls_info_widget" />
-        </receiver>
-
-        <receiver
-            android:name=".receivers.OutgoingCallReceiver"
-            android:enabled="true"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-            </intent-filter>
         </receiver>
 
     </application>
