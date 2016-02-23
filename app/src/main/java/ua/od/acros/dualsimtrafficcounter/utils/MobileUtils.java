@@ -683,7 +683,7 @@ public class MobileUtils {
                                     }
                                 }
                                 if (name.size() > 0)
-                                    out = GET_NAME + name.size();
+                                    out = GET_NAME + " " + name.size();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

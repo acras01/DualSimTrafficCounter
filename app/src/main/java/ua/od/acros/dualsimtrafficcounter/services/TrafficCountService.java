@@ -84,7 +84,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private static boolean mIsNight1 = false;
     private static boolean mIsNight2 = false;
     private static boolean mIsNight3 = false;
-    private int mSIMChosen = Constants.DISABLED;
     private int mSimQuantity = 0;
     private int mPriority;
     private static int mActiveSIM = Constants.DISABLED;
@@ -281,8 +280,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 if (mDataMap == null)
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                 Bundle limitBundle = intent.getBundleExtra("data");
-                mSIMChosen = limitBundle.getInt("sim");
-                switch (mSIMChosen) {
+                int sim = limitBundle.getInt("sim");
+                switch (sim) {
                     case Constants.SIM1:
                         mReceived1 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
                         mTransmitted1 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
@@ -326,17 +325,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
                         break;
                 }
-                Intent notificationIntent = new Intent(context, MainActivity.class);
-                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setContentIntent(contentIntent)
-                        .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                        .setPriority(mPriority)
-                        .setContentText(DataFormat.formatData(context, mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1)) + "   ||   "
-                                + DataFormat.formatData(context, mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2)) + "   ||   "
-                                + DataFormat.formatData(context, mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3)));
-                nm.notify(Constants.STARTED_ID, builder.build());
+                if (MyApplication.isScreenOn(context)) {
+                    NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    nm.notify(Constants.STARTED_ID, buildNotification(sim));
+                }
+                if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && MyApplication.isScreenOn(context))
+                    sendDataBroadcast(0L, 0L);
                 timerStart(Constants.COUNT);
             }
         };
@@ -356,7 +350,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
-                switch (intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)) {
+                int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+                switch (sim) {
                     case Constants.SIM1:
                         if (mIsNight1) {
                             mDataMap.put(Constants.SIM1RX_N, 0L);
@@ -392,6 +387,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         break;
                 }
                 MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                if (MyApplication.isScreenOn(context)) {
+                    NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    nm.notify(Constants.STARTED_ID, buildNotification(sim));
+                }
+                if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && MyApplication.isScreenOn(context))
+                    sendDataBroadcast(0L, 0L);
                 timerStart(Constants.COUNT);
             }
         };
@@ -959,7 +960,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        mSIMChosen = Constants.DISABLED;
                         mIsSIM1OverLimit = false;
                     } else if (!mHasActionChosen) {
                         mIsSIM1OverLimit = true;
@@ -1216,7 +1216,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        mSIMChosen = Constants.DISABLED;
                         mIsSIM2OverLimit = false;
                     } else if (!mHasActionChosen) {
                         mIsSIM2OverLimit = true;
@@ -1472,7 +1471,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
-                        mSIMChosen = Constants.DISABLED;
                         mIsSIM3OverLimit = false;
                     } else if (!mHasActionChosen) {
                         mIsSIM3OverLimit = true;

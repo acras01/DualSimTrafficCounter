@@ -446,10 +446,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private void refresh(Context context, int sim, long duration) {
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(Constants.STARTED_ID, buildNotification());
-        if ((MyApplication.isActivityVisible() && MyApplication.isScreenOn(context) || getWidgetIds(context).length != 0)) {
+        int[] ids = getWidgetIds(context);
+        if ((MyApplication.isActivityVisible() && MyApplication.isScreenOn(context)) || ids.length != 0) {
             Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
             callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
             callsIntent.putExtra(Constants.CALL_DURATION, duration);
+            callsIntent.putExtra(Constants.WIDGET_IDS, ids);
             sendBroadcast(callsIntent);
         }
     }
