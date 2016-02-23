@@ -2,7 +2,6 @@ package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +11,10 @@ import android.widget.RadioGroup;
 
 import com.stericson.RootShell.RootShell;
 
+import org.greenrobot.eventbus.EventBus;
+
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
@@ -70,18 +72,20 @@ public class ChooseActionDialog extends Activity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(Constants.ACTION);
+        int sim = Constants.DISABLED;
+        String action = "";
         switch (v.getId()) {
             case R.id.buttonOK:
-                intent.putExtra(Constants.SIM_ACTIVE, mSimID);
-                intent.putExtra(Constants.ACTION, mAction);
+                sim = mSimID;
+                action = mAction;
                 break;
             case R.id.buttonCancel:
-                intent.putExtra(Constants.ACTION, Constants.OFF_ACTION);
+                action = Constants.OFF_ACTION;
                 break;
         }
         TrafficCountService.setIsActionChosen(true);
-        sendBroadcast(intent);
+        ActionTrafficEvent event = new ActionTrafficEvent(sim, action);
+        EventBus.getDefault().post(event);
         finish();
     }
 

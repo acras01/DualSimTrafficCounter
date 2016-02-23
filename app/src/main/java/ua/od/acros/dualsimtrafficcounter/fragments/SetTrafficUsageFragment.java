@@ -2,7 +2,6 @@ package ua.od.acros.dualsimtrafficcounter.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +18,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -125,24 +127,13 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
 
     @Override
     public void onClick(View view) {
-        Bundle bundle = new Bundle();
         if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
-            bundle.putInt("sim", mSimChecked);
-            bundle.putString("trans", txInput.getText().toString());
-            bundle.putInt("txV", mTXSpinnerSel);
-            if (total.isChecked()) {
-                bundle.putString("rcvd", "0");
-                bundle.putInt("rxV", 0);
-            } else {
-                bundle.putString("rcvd", rxInput.getText().toString());
-                bundle.putInt("rxV", mRXSpinnerSel);
-            }
-            Intent intent = new Intent(Constants.SET_USAGE);
-            intent.putExtra("data", bundle);
             if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
-                getActivity().sendBroadcast(intent);
+                SetTrafficEvent event = new SetTrafficEvent(txInput.getText().toString(),
+                        rxInput.getText().toString(), mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
+                EventBus.getDefault().post(event);
                 getActivity().onBackPressed();
             } else
                 Toast.makeText(getActivity(), R.string.service_stop, Toast.LENGTH_LONG).show();

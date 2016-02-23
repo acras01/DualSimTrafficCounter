@@ -13,9 +13,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class OnOffReceiver extends BroadcastReceiver {
 
-    public OnOffReceiver() {
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
 

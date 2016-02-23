@@ -26,10 +26,15 @@ import android.widget.TextView;
 import com.stericson.RootShell.RootShell;
 
 import org.acra.ACRA;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
+import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
@@ -46,7 +51,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
     private ContentValues mDataMap;
-    private BroadcastReceiver dataReceiver, tipReceiver, onoffReceiver;
+    private BroadcastReceiver dataReceiver;
     private Button bLim1, bLim2, bLim3;
     private MenuItem mService, mMobileData;
     private MyDatabase mDatabaseHelper;
@@ -72,6 +77,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mContext = getActivity();
+        EventBus.getDefault().register(mContext);
         mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
@@ -176,45 +182,38 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         IntentFilter countServiceFilter = new IntentFilter(Constants.TRAFFIC_BROADCAST_ACTION);
         mContext.registerReceiver(dataReceiver, countServiceFilter);
 
-        tipReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                if (isVisible()) {
-                    try {
-                        TIP.setText(getString(R.string.count_stopped_tip));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ACRA.getErrorReporter().handleException(e);
-                    }
-                }
-            }
-        };
-        IntentFilter tipFilter = new IntentFilter(Constants.TIP);
-        mContext.registerReceiver(tipReceiver, tipFilter);
-
-        onoffReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                int simChosen = intent.getIntExtra("sim", Constants.NULL);
-                try {
-                    if (simChosen > Constants.DISABLED)
-                        MobileUtils.toggleMobileDataConnection(true, context, simChosen);
-                    else
-                        MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
-                invalidateOptionsMenu(getActivity());
-            }
-        };
-        IntentFilter onoffFilter = new IntentFilter(Constants.ON_OFF);
-        mContext.registerReceiver(onoffReceiver, onoffFilter);
-
         Intent intent = new Intent(mContext, TrafficInfoWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, TrafficInfoWidget.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         mContext.sendBroadcast(intent);
+    }
+
+    @Subscribe
+    public void onMessageEvent(OnOffTrafficEvent event) {
+        int sim = event.sim;
+        try {
+            if (sim > Constants.DISABLED)
+                MobileUtils.toggleMobileDataConnection(true, mContext, sim);
+            else
+                MobileUtils.toggleMobileDataConnection(false, mContext, Constants.DISABLED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
+        invalidateOptionsMenu(getActivity());
+    }
+
+    @Subscribe
+    public void onMessageEvent(TipTrafficEvent event) {
+        if (isVisible()) {
+            try {
+                TIP.setText(getString(R.string.count_stopped_tip));
+            } catch (Exception e) {
+                e.printStackTrace();
+                ACRA.getErrorReporter().handleException(e);
+            }
+        }
     }
 
     @Override
@@ -475,10 +474,12 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         mListener = null;
         if (dataReceiver != null)
             mContext.unregisterReceiver(dataReceiver);
-        if (tipReceiver != null)
-            mContext.unregisterReceiver(tipReceiver);
-        if (onoffReceiver != null)
-            mContext.unregisterReceiver(onoffReceiver);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(mContext);
     }
 
     private void setLabelText(int sim, String rx, String tx) {
@@ -532,9 +533,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.buttonClear1:
                 if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
-                    Intent clear1Intent = new Intent(Constants.CLEAR);
-                    clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
-                    mContext.sendBroadcast(clear1Intent);
+                    ClearTrafficEvent event = new ClearTrafficEvent(Constants.SIM1);
+                    EventBus.getDefault().post(event);
                 } else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[0]) {
@@ -561,9 +561,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.buttonClear2:
                 if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
-                    Intent clear2Intent = new Intent(Constants.CLEAR);
-                    clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
-                    mContext.sendBroadcast(clear2Intent);
+                    ClearTrafficEvent event = new ClearTrafficEvent(Constants.SIM2);
+                    EventBus.getDefault().post(event);
                 } else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[1]) {
@@ -590,9 +589,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.buttonClear3:
                 if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
-                    Intent clear3Intent = new Intent(Constants.CLEAR);
-                    clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
-                    mContext.sendBroadcast(clear3Intent);
+                    ClearTrafficEvent event = new ClearTrafficEvent(Constants.SIM3);
+                    EventBus.getDefault().post(event);
                 } else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[2]) {

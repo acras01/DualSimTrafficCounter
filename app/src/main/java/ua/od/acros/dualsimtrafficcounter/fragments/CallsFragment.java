@@ -23,7 +23,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.acra.ACRA;
+import org.greenrobot.eventbus.EventBus;
 
+import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
@@ -34,14 +36,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CallsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CallsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CallsFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TextView SIM1, SIM2, SIM3, TOT1, TOT2, TOT3, TIP;
@@ -237,11 +231,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonClear1:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
-                    Intent clear1Intent = new Intent(Constants.CLEAR_CALLS);
-                    clear1Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
-                    mContext.sendBroadcast(clear1Intent);
-                } else {
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM1));
+                else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS1, 0L);
                     mCalls.put(Constants.CALLS1_EX, 0L);
@@ -250,11 +242,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear2:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
-                    Intent clear2Intent = new Intent(Constants.CLEAR_CALLS);
-                    clear2Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
-                    mContext.sendBroadcast(clear2Intent);
-                } else {
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM2));
+                else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS2, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);
@@ -263,11 +253,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear3:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
-                    Intent clear3Intent = new Intent(Constants.CLEAR_CALLS);
-                    clear3Intent.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
-                    mContext.sendBroadcast(clear3Intent);
-                } else {
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM3));
+                else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS3, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);

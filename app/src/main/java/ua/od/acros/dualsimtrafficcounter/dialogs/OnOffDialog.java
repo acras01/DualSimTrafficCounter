@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +14,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -101,9 +103,7 @@ public class OnOffDialog extends DialogFragment {
                     public void onClick(View view) {
                         if (mSimChecked != Constants.NULL) {
                             dialog.dismiss();
-                            Intent intent = new Intent(Constants.ON_OFF);
-                            intent.putExtra("sim", mSimChecked);
-                            getActivity().sendBroadcast(intent);
+                            EventBus.getDefault().post(new OnOffTrafficEvent(mSimChecked));
                         } else
                             Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }

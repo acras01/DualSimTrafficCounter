@@ -17,7 +17,6 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -27,6 +26,8 @@ import android.support.v4.app.NotificationCompat;
 import com.stericson.RootShell.RootShell;
 
 import org.acra.ACRA;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.Days;
@@ -46,6 +47,10 @@ import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseActionDialog;
+import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -94,7 +99,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private DateTime mResetTime2;
     private DateTime mResetTime3;
     private ContentValues mDataMap;
-    private BroadcastReceiver clearReceiver, connReceiver, setUsageReceiver, actionReceiver;
+    private BroadcastReceiver connReceiver;
     private MyDatabase mDatabaseHelper;
     private ScheduledExecutorService mTaskExecutor = null;
     private ScheduledFuture<?> mTaskResult = null;
@@ -131,6 +136,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         super.onCreate();
 
         mContext = TrafficCountService.this;
+        EventBus.getDefault().register(mContext);
 
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -194,211 +200,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         IntentFilter connFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(connReceiver, connFilter);
 
-        actionReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                int simid = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-                try {
-                    switch (intent.getStringExtra(Constants.ACTION)) {
-                        case Constants.CHANGE_ACTION:
-                            if (!mIsSIM2OverLimit && simid == Constants.SIM1) {
-                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
-                                timerStart(Constants.COUNT);
-                            } else if (!mIsSIM3OverLimit && simid == Constants.SIM1) {
-                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
-                                timerStart(Constants.COUNT);
-                            } else if (!mIsSIM1OverLimit && simid == Constants.SIM2) {
-                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
-                                timerStart(Constants.COUNT);
-                            } else if (!mIsSIM3OverLimit && simid == Constants.SIM2) {
-                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM3);
-                                timerStart(Constants.COUNT);
-                            } else if (!mIsSIM1OverLimit && simid == Constants.SIM3) {
-                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM1);
-                                timerStart(Constants.COUNT);
-                            } else if (!mIsSIM2OverLimit && simid == Constants.SIM3) {
-                                MobileUtils.toggleMobileDataConnection(true, context, Constants.SIM2);
-                                timerStart(Constants.COUNT);
-                            } else
-                                timerStart(Constants.CHECK);
-                            break;
-                        case Constants.SETTINGS_ACTION:
-                            final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
-                            Intent settIntent = new Intent(Intent.ACTION_MAIN);
-                            settIntent.setComponent(cn);
-                            settIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(settIntent);
-                            break;
-                        case Constants.LIMIT_ACTION:
-                            Intent i = new Intent(context, SettingsActivity.class);
-                            i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
-                            i.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            i.putExtra(Constants.SIM_ACTIVE, simid);
-                            startActivity(i);
-                            timerStart(Constants.CHECK);
-                            break;
-                        case Constants.CONTINUE_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
-                                    (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
-                                MobileUtils.toggleMobileDataConnection(true, context, simid);
-                            mContinueOverLimit = true;
-                            if (mTaskResult.isCancelled())
-                                timerStart(Constants.COUNT);
-                            break;
-                        case Constants.OFF_ACTION:
-                            if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
-                                    (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
-                                timerStart(Constants.CHECK);
-                            else
-                                mContinueOverLimit = true;
-                            break;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
-            }
-        };
-        IntentFilter actionFilter = new IntentFilter(Constants.ACTION);
-        registerReceiver(actionReceiver, actionFilter);
-
-
-        setUsageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (mTaskResult != null) {
-                    mTaskResult.cancel(false);
-                    mTaskExecutor.shutdown();
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
-                if (mDataMap == null)
-                    mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
-                Bundle limitBundle = intent.getBundleExtra("data");
-                int sim = limitBundle.getInt("sim");
-                switch (sim) {
-                    case Constants.SIM1:
-                        mReceived1 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
-                        mTransmitted1 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
-                        if (mIsNight1) {
-                            mDataMap.put(Constants.SIM1RX_N, mReceived1);
-                            mDataMap.put(Constants.SIM1TX_N, mTransmitted1);
-                            mDataMap.put(Constants.TOTAL1_N, mReceived1 + mTransmitted1);
-                        } else {
-                            mDataMap.put(Constants.SIM1RX, mReceived1);
-                            mDataMap.put(Constants.SIM1TX, mTransmitted1);
-                            mDataMap.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
-                        }
-                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
-                        break;
-                    case Constants.SIM2:
-                        mReceived2 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
-                        mTransmitted2 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
-                        if (mIsNight2) {
-                            mDataMap.put(Constants.SIM2RX_N, mReceived2);
-                            mDataMap.put(Constants.SIM2TX_N, mTransmitted2);
-                            mDataMap.put(Constants.TOTAL2_N, mReceived2 + mTransmitted2);
-                        } else {
-                            mDataMap.put(Constants.SIM2RX, mReceived2);
-                            mDataMap.put(Constants.SIM2TX, mTransmitted2);
-                            mDataMap.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
-                        }
-                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
-                        break;
-                    case Constants.SIM3:
-                        mReceived3 = DataFormat.getFormatLong(limitBundle.getString("rcvd"), limitBundle.getInt("rxV"));
-                        mTransmitted3 = DataFormat.getFormatLong(limitBundle.getString("trans"), limitBundle.getInt("txV"));
-                        if (mIsNight3) {
-                            mDataMap.put(Constants.SIM3RX_N, mReceived3);
-                            mDataMap.put(Constants.SIM3TX_N, mTransmitted3);
-                            mDataMap.put(Constants.TOTAL3_N, mReceived3 + mTransmitted3);
-                        } else {
-                            mDataMap.put(Constants.SIM3RX, mReceived3);
-                            mDataMap.put(Constants.SIM3TX, mTransmitted3);
-                            mDataMap.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
-                        }
-                        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
-                        break;
-                }
-                if (MyApplication.isScreenOn(context)) {
-                    NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.notify(Constants.STARTED_ID, buildNotification(sim));
-                }
-                if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && MyApplication.isScreenOn(context))
-                    sendDataBroadcast(0L, 0L);
-                timerStart(Constants.COUNT);
-            }
-        };
-        IntentFilter setUsageFilter = new IntentFilter(Constants.SET_USAGE);
-        registerReceiver(setUsageReceiver, setUsageFilter);
-
-        clearReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (mTaskResult != null) {
-                    mTaskResult.cancel(false);
-                    mTaskExecutor.shutdown();
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
-                int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-                switch (sim) {
-                    case Constants.SIM1:
-                        if (mIsNight1) {
-                            mDataMap.put(Constants.SIM1RX_N, 0L);
-                            mDataMap.put(Constants.SIM1TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL1_N, 0L);
-                        } else {
-                            mDataMap.put(Constants.SIM1RX, 0L);
-                            mDataMap.put(Constants.SIM1TX, 0L);
-                            mDataMap.put(Constants.TOTAL1, 0L);
-                        }
-                        break;
-                    case Constants.SIM2:
-                        if (mIsNight2) {
-                            mDataMap.put(Constants.SIM2RX_N, 0L);
-                            mDataMap.put(Constants.SIM2TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL2_N, 0L);
-                        } else {
-                            mDataMap.put(Constants.SIM2RX, 0L);
-                            mDataMap.put(Constants.SIM2TX, 0L);
-                            mDataMap.put(Constants.TOTAL2, 0L);
-                        }
-                        break;
-                    case Constants.SIM3:
-                        if (mIsNight3) {
-                            mDataMap.put(Constants.SIM3RX_N, 0L);
-                            mDataMap.put(Constants.SIM3TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL3_N, 0L);
-                        } else {
-                            mDataMap.put(Constants.SIM3RX, 0L);
-                            mDataMap.put(Constants.SIM3TX, 0L);
-                            mDataMap.put(Constants.TOTAL3, 0L);
-                        }
-                        break;
-                }
-                MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
-                if (MyApplication.isScreenOn(context)) {
-                    NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.notify(Constants.STARTED_ID, buildNotification(sim));
-                }
-                if ((MyApplication.isActivityVisible() || getWidgetIds(context).length != 0) && MyApplication.isScreenOn(context))
-                    sendDataBroadcast(0L, 0L);
-                timerStart(Constants.COUNT);
-            }
-        };
-        IntentFilter clearSimDataFilter = new IntentFilter(Constants.CLEAR);
-        registerReceiver(clearReceiver, clearSimDataFilter);
-
         // cancel if already existed
         if (mTaskExecutor != null) {
             mTaskResult.cancel(true);
@@ -408,6 +209,198 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             // recreate new
             mTaskExecutor = Executors.newSingleThreadScheduledExecutor();
         }
+    }
+
+    @Subscribe
+    public void onMessageEvent(ActionTrafficEvent event) {
+        int sim = event.sim;
+        try {
+            switch (event.action) {
+                case Constants.CHANGE_ACTION:
+                    if (!mIsSIM2OverLimit && sim == Constants.SIM1) {
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
+                        timerStart(Constants.COUNT);
+                    } else if (!mIsSIM3OverLimit && sim == Constants.SIM1) {
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
+                        timerStart(Constants.COUNT);
+                    } else if (!mIsSIM1OverLimit && sim == Constants.SIM2) {
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
+                        timerStart(Constants.COUNT);
+                    } else if (!mIsSIM3OverLimit && sim == Constants.SIM2) {
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
+                        timerStart(Constants.COUNT);
+                    } else if (!mIsSIM1OverLimit && sim == Constants.SIM3) {
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
+                        timerStart(Constants.COUNT);
+                    } else if (!mIsSIM2OverLimit && sim == Constants.SIM3) {
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
+                        timerStart(Constants.COUNT);
+                    } else
+                        timerStart(Constants.CHECK);
+                    break;
+                case Constants.SETTINGS_ACTION:
+                    final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
+                    Intent settIntent = new Intent(Intent.ACTION_MAIN);
+                    settIntent.setComponent(cn);
+                    settIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(settIntent);
+                    break;
+                case Constants.LIMIT_ACTION:
+                    Intent i = new Intent(mContext, SettingsActivity.class);
+                    i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
+                    i.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.putExtra(Constants.SIM_ACTIVE, sim);
+                    startActivity(i);
+                    timerStart(Constants.CHECK);
+                    break;
+                case Constants.CONTINUE_ACTION:
+                    if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
+                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
+                        MobileUtils.toggleMobileDataConnection(true, mContext, sim);
+                    mContinueOverLimit = true;
+                    if (mTaskResult.isCancelled())
+                        timerStart(Constants.COUNT);
+                    break;
+                case Constants.OFF_ACTION:
+                    if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && RootShell.isAccessGiven()) ||
+                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()))
+                        timerStart(Constants.CHECK);
+                    else
+                        mContinueOverLimit = true;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
+
+    }
+
+    @Subscribe
+    public void onMessageEvent(ClearTrafficEvent event) {
+        if (mTaskResult != null) {
+            mTaskResult.cancel(false);
+            mTaskExecutor.shutdown();
+        }
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
+        int sim = event.sim;
+        switch (sim) {
+            case Constants.SIM1:
+                if (mIsNight1) {
+                    mDataMap.put(Constants.SIM1RX_N, 0L);
+                    mDataMap.put(Constants.SIM1TX_N, 0L);
+                    mDataMap.put(Constants.TOTAL1_N, 0L);
+                } else {
+                    mDataMap.put(Constants.SIM1RX, 0L);
+                    mDataMap.put(Constants.SIM1TX, 0L);
+                    mDataMap.put(Constants.TOTAL1, 0L);
+                }
+                break;
+            case Constants.SIM2:
+                if (mIsNight2) {
+                    mDataMap.put(Constants.SIM2RX_N, 0L);
+                    mDataMap.put(Constants.SIM2TX_N, 0L);
+                    mDataMap.put(Constants.TOTAL2_N, 0L);
+                } else {
+                    mDataMap.put(Constants.SIM2RX, 0L);
+                    mDataMap.put(Constants.SIM2TX, 0L);
+                    mDataMap.put(Constants.TOTAL2, 0L);
+                }
+                break;
+            case Constants.SIM3:
+                if (mIsNight3) {
+                    mDataMap.put(Constants.SIM3RX_N, 0L);
+                    mDataMap.put(Constants.SIM3TX_N, 0L);
+                    mDataMap.put(Constants.TOTAL3_N, 0L);
+                } else {
+                    mDataMap.put(Constants.SIM3RX, 0L);
+                    mDataMap.put(Constants.SIM3TX, 0L);
+                    mDataMap.put(Constants.TOTAL3, 0L);
+                }
+                break;
+        }
+        MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+        if (MyApplication.isScreenOn(mContext)) {
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.notify(Constants.STARTED_ID, buildNotification(sim));
+        }
+        if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && MyApplication.isScreenOn(mContext))
+            sendDataBroadcast(0L, 0L);
+        timerStart(Constants.COUNT);
+    }
+
+    @Subscribe
+    public void onMessageEvent(SetTrafficEvent event) {
+        if (mTaskResult != null) {
+            mTaskResult.cancel(false);
+            mTaskExecutor.shutdown();
+        }
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
+        }
+        if (mDataMap == null)
+            mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
+        int sim = event.sim;
+        switch (sim) {
+            case Constants.SIM1:
+                mReceived1 = DataFormat.getFormatLong(event.rx, event.rxv);
+                mTransmitted1 = DataFormat.getFormatLong(event.tx, event.txv);
+                if (mIsNight1) {
+                    mDataMap.put(Constants.SIM1RX_N, mReceived1);
+                    mDataMap.put(Constants.SIM1TX_N, mTransmitted1);
+                    mDataMap.put(Constants.TOTAL1_N, mReceived1 + mTransmitted1);
+                } else {
+                    mDataMap.put(Constants.SIM1RX, mReceived1);
+                    mDataMap.put(Constants.SIM1TX, mTransmitted1);
+                    mDataMap.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
+                }
+                MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                break;
+            case Constants.SIM2:
+                mReceived2 = DataFormat.getFormatLong(event.rx, event.rxv);
+                mTransmitted2 = DataFormat.getFormatLong(event.tx, event.txv);
+                if (mIsNight2) {
+                    mDataMap.put(Constants.SIM2RX_N, mReceived2);
+                    mDataMap.put(Constants.SIM2TX_N, mTransmitted2);
+                    mDataMap.put(Constants.TOTAL2_N, mReceived2 + mTransmitted2);
+                } else {
+                    mDataMap.put(Constants.SIM2RX, mReceived2);
+                    mDataMap.put(Constants.SIM2TX, mTransmitted2);
+                    mDataMap.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
+                }
+                MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                break;
+            case Constants.SIM3:
+                mReceived3 = DataFormat.getFormatLong(event.rx, event.rxv);
+                mTransmitted3 = DataFormat.getFormatLong(event.tx, event.txv);
+                if (mIsNight3) {
+                    mDataMap.put(Constants.SIM3RX_N, mReceived3);
+                    mDataMap.put(Constants.SIM3TX_N, mTransmitted3);
+                    mDataMap.put(Constants.TOTAL3_N, mReceived3 + mTransmitted3);
+                } else {
+                    mDataMap.put(Constants.SIM3RX, mReceived3);
+                    mDataMap.put(Constants.SIM3TX, mTransmitted3);
+                    mDataMap.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
+                }
+                MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
+                break;
+        }
+        if (MyApplication.isScreenOn(mContext)) {
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.notify(Constants.STARTED_ID, buildNotification(sim));
+        }
+        if ((MyApplication.isActivityVisible() || getWidgetIds(mContext).length != 0) && MyApplication.isScreenOn(mContext))
+            sendDataBroadcast(0L, 0L);
+        timerStart(Constants.COUNT);
     }
 
     @Override
@@ -610,7 +603,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
 
-            mContext.sendBroadcast(new Intent(Constants.TIP));
+            EventBus.getDefault().post(new TipTrafficEvent());
 
             DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
 
@@ -1782,8 +1775,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     .setContentTitle(getString(R.string.service_stopped_title));
             nm.notify(Constants.STARTED_ID, builder.build());
 
-            Intent intent = new Intent(Constants.TIP);
-            mContext.sendBroadcast(intent);
+            EventBus.getDefault().post(new TipTrafficEvent());
 
             timerStart(Constants.CHECK);
         }
@@ -1880,9 +1872,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         nm.cancel(Constants.STARTED_ID);
         MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        unregisterReceiver(clearReceiver);
-        unregisterReceiver(setUsageReceiver);
-        unregisterReceiver(actionReceiver);
         unregisterReceiver(connReceiver);
+        EventBus.getDefault().unregister(mContext);
     }
 }
