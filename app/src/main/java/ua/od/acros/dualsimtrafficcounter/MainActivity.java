@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
 
         mContext = MainActivity.this;
+
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
@@ -396,6 +397,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

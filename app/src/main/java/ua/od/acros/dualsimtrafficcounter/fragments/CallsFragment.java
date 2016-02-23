@@ -23,13 +23,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.acra.ACRA;
-import org.greenrobot.eventbus.EventBus;
 
+import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -232,7 +232,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         switch (v.getId()) {
             case R.id.buttonClear1:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM1));
+                    BusProvider.getInstance().post(new ClearCallsEvent(Constants.SIM1));
                 else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS1, 0L);
@@ -243,7 +243,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 break;
             case R.id.buttonClear2:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM2));
+                    BusProvider.getInstance().post(new ClearCallsEvent(Constants.SIM2));
                 else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS2, 0L);
@@ -254,7 +254,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 break;
             case R.id.buttonClear3:
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM3));
+                    BusProvider.getInstance().post(new ClearCallsEvent(Constants.SIM3));
                 else {
                     mCalls = MyDatabase.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS3, 0L);

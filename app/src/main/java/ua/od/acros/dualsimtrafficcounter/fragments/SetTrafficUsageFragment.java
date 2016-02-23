@@ -18,11 +18,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.greenrobot.eventbus.EventBus;
-
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -130,10 +129,10 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
-            if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
+            if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
                 SetTrafficEvent event = new SetTrafficEvent(txInput.getText().toString(),
                         rxInput.getText().toString(), mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
-                EventBus.getDefault().post(event);
+                BusProvider.getInstance().post(event);
                 getActivity().onBackPressed();
             } else
                 Toast.makeText(getActivity(), R.string.service_stop, Toast.LENGTH_LONG).show();

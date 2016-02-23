@@ -23,11 +23,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.squareup.otto.Subscribe;
 import com.stericson.RootShell.RootShell;
 
 import org.acra.ACRA;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -37,6 +36,7 @@ import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
+import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -77,7 +77,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mContext = getActivity();
-        EventBus.getDefault().register(mContext);
+        BusProvider.getInstance().register(this);
         mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
@@ -479,7 +479,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(mContext);
+        BusProvider.getInstance().unregister(this);
     }
 
     private void setLabelText(int sim, String rx, String tx) {
@@ -532,10 +532,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 startActivity(settIntent);
                 break;
             case R.id.buttonClear1:
-                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
-                    ClearTrafficEvent event = new ClearTrafficEvent(Constants.SIM1);
-                    EventBus.getDefault().post(event);
-                } else {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
+                    BusProvider.getInstance().post(new ClearTrafficEvent(Constants.SIM1));
+                else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[0]) {
                         mDataMap.put(Constants.SIM1RX_N, 0L);
@@ -560,10 +559,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.buttonClear2:
-                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
-                    ClearTrafficEvent event = new ClearTrafficEvent(Constants.SIM2);
-                    EventBus.getDefault().post(event);
-                } else {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
+                    BusProvider.getInstance().post(new ClearTrafficEvent(Constants.SIM2));
+                else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[1]) {
                         mDataMap.put(Constants.SIM2RX_N, 0L);
@@ -588,10 +586,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.buttonClear3:
-                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
-                    ClearTrafficEvent event = new ClearTrafficEvent(Constants.SIM3);
-                    EventBus.getDefault().post(event);
-                } else {
+                if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
+                    BusProvider.getInstance().post(new ClearTrafficEvent(Constants.SIM3));
+                else {
                     mDataMap = MyDatabase.readTrafficData(mDatabaseHelper);
                     if (isNight[2]) {
                         mDataMap.put(Constants.SIM3RX_N, 0L);
