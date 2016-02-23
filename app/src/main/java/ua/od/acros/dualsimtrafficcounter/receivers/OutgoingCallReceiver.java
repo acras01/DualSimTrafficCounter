@@ -24,6 +24,6 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
             context.startService(i);
         } else if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, context)
                 && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
-            BusProvider.getInstance().post(new NewOutgoingCallEvent(intent.getExtras()));
+            BusProvider.getInstance().post(new NewOutgoingCallEvent(intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)));
     }
 }

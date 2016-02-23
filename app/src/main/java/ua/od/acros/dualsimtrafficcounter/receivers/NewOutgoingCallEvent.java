@@ -1,11 +1,9 @@
 package ua.od.acros.dualsimtrafficcounter.receivers;
 
-import android.os.Bundle;
-
 public class NewOutgoingCallEvent {
-    public final Bundle bundle;
+    public final String number;
 
-    public NewOutgoingCallEvent(Bundle bundle) {
-        this.bundle = bundle;
+    public NewOutgoingCallEvent(String number) {
+        this.number = number;
     }
 }

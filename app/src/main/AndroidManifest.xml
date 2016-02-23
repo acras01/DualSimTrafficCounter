@@ -130,7 +130,7 @@
         <receiver
             android:name=".receivers.BootBroadcastReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -155,7 +155,7 @@
         <receiver
             android:name=".receivers.OnOffReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
             <intent-filter>
                 <action android:name="ua.od.acros.dualsimtrafficcounter.ALARM" />
             </intent-filter>
@@ -180,11 +180,12 @@
         <receiver
             android:name=".receivers.OutgoingCallReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
