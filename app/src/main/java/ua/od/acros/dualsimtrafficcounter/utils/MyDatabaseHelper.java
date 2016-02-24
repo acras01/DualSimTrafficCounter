@@ -377,7 +377,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(DATA_TABLE, null, mMap);
     }
 
-
     public static boolean isTrafficTableEmpty(MyDatabaseHelper db) {
         boolean result;
         mSqLiteDatabase = db.getReadableDatabase();
