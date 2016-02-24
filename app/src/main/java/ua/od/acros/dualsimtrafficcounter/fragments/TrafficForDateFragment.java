@@ -26,7 +26,6 @@ import org.joda.time.format.DateTimeFormatter;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -47,6 +46,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
 
     private TextView RX, TX, RXN, TXN, TOT, TOTN, day, night;
     private String[] mOperatorNames = new String[3];
+    private Context mContext;
 
     // TODO: Rename and change types and number of parameters
     public static TrafficForDateFragment newInstance(String param1, String param2) {
@@ -64,10 +64,10 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         mDay = new DateTime().getDayOfMonth();
         mMonth = new DateTime().getMonthOfYear();
         mYear = new DateTime().getYear();
-
-        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mContext = getActivity().getApplicationContext();
+        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
     }
 
     @Override
@@ -78,8 +78,8 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         bSetDate = (Button) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
@@ -221,8 +221,8 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             if (isCancelled())
                 return null;
             else
-                return MyDatabaseHelper.getDataForDate(MyDatabaseHelper.getInstance(MainActivity.getAppContext()),
-                        date, params[3], getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
+                return MyDatabaseHelper.getDataForDate(MyDatabaseHelper.getInstance(mContext),
+                        date, params[3], mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
         }
 
         @Override
@@ -237,7 +237,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             }
             bSetDate.setEnabled(true);
             if (result != null) {
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
                 String[] prefsConst = new String[27];
                 switch (mSimChecked) {
                     case Constants.SIM1:
@@ -250,25 +250,25 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                         prefsConst = Constants.PREF_SIM3;
                         break;
                 }
-                String opName = MobileUtils.getName(getActivity(), prefsConst[5], prefsConst[6], mSimChecked);
+                String opName = MobileUtils.getName(mContext, prefsConst[5], prefsConst[6], mSimChecked);
                 day.setText(opName);
                 night.setText(String.format(getResources().getString(R.string.night), opName));
 
-                RX.setText(DataFormat.formatData(getActivity(), result.getLong("rx")));
-                TX.setText(DataFormat.formatData(getActivity(), result.getLong("tx")));
-                TOT.setText(DataFormat.formatData(getActivity(), result.getLong("tot")));
+                RX.setText(DataFormat.formatData(mContext, result.getLong("rx")));
+                TX.setText(DataFormat.formatData(mContext, result.getLong("tx")));
+                TOT.setText(DataFormat.formatData(mContext, result.getLong("tot")));
 
                 if (prefs.getBoolean(prefsConst[17], false)) {
                     RXN.setVisibility(View.VISIBLE);
                     TXN.setVisibility(View.VISIBLE);
                     TOTN.setVisibility(View.VISIBLE);
                     night.setVisibility(View.VISIBLE);
-                    RXN.setText(DataFormat.formatData(getActivity(), result.getLong("rx_n")));
-                    TXN.setText(DataFormat.formatData(getActivity(), result.getLong("tx_n")));
-                    TOTN.setText(DataFormat.formatData(getActivity(), result.getLong("tot_n")));
+                    RXN.setText(DataFormat.formatData(mContext, result.getLong("rx_n")));
+                    TXN.setText(DataFormat.formatData(mContext, result.getLong("tx_n")));
+                    TOTN.setText(DataFormat.formatData(mContext, result.getLong("tot_n")));
                 }
             } else
-                Toast.makeText(getActivity(), R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -276,7 +276,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setdate:
-                DatePickerDialog tpd = new DatePickerDialog(getActivity(), mCallBack, mYear, mMonth - 1, mDay);
+                DatePickerDialog tpd = new DatePickerDialog(mContext, mCallBack, mYear, mMonth - 1, mDay);
                 tpd.show();
                 break;
             case R.id.buttonOK:
@@ -294,7 +294,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
             DateTime date = fmt.parseDateTime(mYear + "-" + mMonth + "-" + mDay);
 
-            Format dateFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+            Format dateFormat = android.text.format.DateFormat.getDateFormat(mContext);
             String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
 
             bSetDate.setText(new SimpleDateFormat(pattern).format(date.toDate()));

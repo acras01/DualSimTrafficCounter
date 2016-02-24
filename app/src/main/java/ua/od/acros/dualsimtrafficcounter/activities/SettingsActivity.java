@@ -30,7 +30,7 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     public void onBuildHeaders(List<Header> target) {
-        mContext = SettingsActivity.this;
+        mContext = getApplicationContext();
         if (mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
                 .getBoolean(Constants.PREF_OTHER[25], false))
             loadHeadersFromResource(R.xml.headers_xposed, target);
@@ -38,10 +38,6 @@ public class SettingsActivity extends PreferenceActivity {
             loadHeadersFromResource(R.xml.headers, target);
         setTitle(R.string.action_settings);
         mHeaders = target;
-    }
-
-    public static Context getAppContext() {
-        return SettingsActivity.mContext;
     }
 
     public void setListAdapter(ListAdapter adapter) {

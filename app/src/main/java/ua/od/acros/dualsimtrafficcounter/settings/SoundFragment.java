@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -12,24 +13,25 @@ import android.view.Gravity;
 import android.widget.Switch;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.SoundEnabler;
 
 public class SoundFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SoundEnabler mSoundEnabler;
+    private Context mContext;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        PreferenceManager.getDefaultSharedPreferences(getActivity())
+        mContext = getActivity().getApplicationContext();
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.notification);
 
         ActionBar actionbar = getActivity().getActionBar();
-        Switch actionBarSwitch = new Switch(getActivity());
+        Switch actionBarSwitch = new Switch(mContext);
         if (actionbar != null) {
             actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -40,7 +42,7 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
             actionbar.setTitle(R.string.use_notification_title);
         }
 
-        mSoundEnabler = new SoundEnabler(getActivity(), actionBarSwitch);
+        mSoundEnabler = new SoundEnabler(mContext, actionBarSwitch);
 
         updateSettings();
     }
@@ -52,9 +54,9 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
             Preference pref = getPreferenceScreen().getPreference(i);
             pref.setEnabled(available);
             if (pref.getKey().equals(Constants.PREF_OTHER[1]))
-                pref.setSummary(RingtoneManager.getRingtone(SettingsActivity.getAppContext(),
-                        Uri.parse(pref.getSharedPreferences().getString(Constants.PREF_OTHER[1], SettingsActivity.getAppContext().getResources().getString(R.string.not_set))))
-                        .getTitle(SettingsActivity.getAppContext()));
+                pref.setSummary(RingtoneManager.getRingtone(mContext,
+                        Uri.parse(pref.getSharedPreferences().getString(Constants.PREF_OTHER[1], getResources().getString(R.string.not_set))))
+                        .getTitle(mContext));
         }
     }
 

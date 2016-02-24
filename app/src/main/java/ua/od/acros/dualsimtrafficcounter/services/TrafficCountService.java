@@ -134,8 +134,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     public void onCreate() {
         super.onCreate();
 
-        mContext = TrafficCountService.this;
-        EventBus.getDefault().register(mContext);
+        mContext = getApplicationContext();
+        EventBus.getDefault().register(this);
 
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -447,10 +447,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         timerStart(Constants.COUNT);
 
         return START_STICKY;
-    }
-
-    public static Context getCountServiceContext() {
-        return TrafficCountService.mContext;
     }
 
     public static boolean[] getIsNight() {
@@ -1810,6 +1806,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(connReceiver);
-        EventBus.getDefault().unregister(mContext);
+        EventBus.getDefault().unregister(this);
     }
 }

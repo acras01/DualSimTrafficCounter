@@ -22,10 +22,9 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 public class BlackListActivity extends Activity {
 
     private ArrayList<String> mList;
-    private Context mContext = this;
+    private Context mContext;
     private int mKey;
     private MyDatabaseHelper mDatabaseHelper;
-    private String[] mOperatorNames = new String[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +32,16 @@ public class BlackListActivity extends Activity {
         setContentView(R.layout.activity_black_list);
 
         ListView listView = (ListView) findViewById(R.id.listView);
-
-        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mContext = getApplicationContext();
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
+
+        String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         setTitle(mOperatorNames[mKey]);
+
         listView.setAdapter(new BlackListAdapter(mContext, mList));
     }
 

@@ -62,7 +62,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mContext = getActivity();
+        mContext = getActivity().getApplicationContext();
         mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mCalls = MyDatabaseHelper.readCallsData(mDatabaseHelper);

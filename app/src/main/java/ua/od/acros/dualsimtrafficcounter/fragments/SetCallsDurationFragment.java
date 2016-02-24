@@ -30,9 +30,10 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
 
     private EditText duration;
     private int mSimChecked = Constants.DISABLED;
-    private String[] mOperatorNames = new String[3];
+    private String[] mOperatorNames;
     private OnFragmentInteractionListener mListener;
     private int mSpinnerSel;
+    private Context mContext;
 
 
     public static SetCallsDurationFragment newInstance() {
@@ -46,10 +47,10 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mContext = getActivity().getApplicationContext();
+        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
     }
 
     @Override
@@ -64,8 +65,8 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         sim2rb.setText(mOperatorNames[1]);
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simQuantity == 1) {
             sim2rb.setEnabled(false);
@@ -112,14 +113,14 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public void onClick(View view) {
         if (mSimChecked != Constants.DISABLED && !duration.getText().toString().equals("")) {
-            if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
+            if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
                 SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
                 EventBus.getDefault().post(event);
                 getActivity().onBackPressed();
             } else
-                Toast.makeText(getActivity(), R.string.service_stop, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.service_stop, Toast.LENGTH_LONG).show();
         } else
-            Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
     }
 
     @Override

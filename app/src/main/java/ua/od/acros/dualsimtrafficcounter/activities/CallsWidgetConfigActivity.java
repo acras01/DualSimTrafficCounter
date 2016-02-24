@@ -51,7 +51,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
     private SharedPreferences mPrefs;
     private int mSimQuantity;
     private SharedPreferences.Editor mEdit;
-    private Context mContext = this;
+    private Context mContext;
     private int mTextColor;
     private int mBackColor;
     private Intent mResultValueIntent;
@@ -68,6 +68,8 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        mContext = getApplicationContext();
 
         if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
             mContext.startService(new Intent(mContext, CallLoggerService.class));

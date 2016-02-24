@@ -41,11 +41,13 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
     private SharedPreferences mPrefs;
     private int mSimQuantity;
+    private Context mContext;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mContext = getActivity().getApplicationContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         //remove in next release
@@ -147,7 +149,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             everyday3.setEntries(getResources().getStringArray(R.array.onoff_LP));
             everyday3.setEntryValues(getResources().getStringArray(R.array.onoff_values_LP));
         }
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (mSimQuantity == 1) {
@@ -227,9 +229,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             if ((period1.getValue().equals("1") || period1.getValue().equals("2")) && day1 != null) {
                 day1.setEnabled(true);
                 if (period1.getValue().equals("1"))
-                    day1.setTitle(getActivity().getResources().getString(R.string.day));
+                    day1.setTitle(getResources().getString(R.string.day));
                 else
-                    day1.setTitle(getActivity().getResources().getString(R.string.day_in_period));
+                    day1.setTitle(getResources().getString(R.string.day_in_period));
             }
         }
         if (period2 != null) {
@@ -239,9 +241,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             if ((period2.getValue().equals("1") || period2.getValue().equals("2")) && day2 != null) {
                 day2.setEnabled(true);
                 if (period2.getValue().equals("1"))
-                    day2.setTitle(getActivity().getResources().getString(R.string.day));
+                    day2.setTitle(getResources().getString(R.string.day));
                 else
-                    day2.setTitle(getActivity().getResources().getString(R.string.day_in_period));
+                    day2.setTitle(getResources().getString(R.string.day_in_period));
             }
         }
         if (period3 != null) {
@@ -251,9 +253,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             if ((period3.getValue().equals("1") || period3.getValue().equals("2")) && day3 != null) {
                 day3.setEnabled(true);
                 if (period3.getValue().equals("1"))
-                    day3.setTitle(getActivity().getResources().getString(R.string.day));
+                    day3.setTitle(getResources().getString(R.string.day));
                 else
-                    day3.setTitle(getActivity().getResources().getString(R.string.day_in_period));
+                    day3.setTitle(getResources().getString(R.string.day_in_period));
             }
         }
         if (day1 != null && day1.isEnabled())
@@ -440,17 +442,17 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
-        AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         Calendar clndr = Calendar.getInstance();
 
         //Scheduled ON/OFF
         if (key.equals(Constants.PREF_SIM1[11]) || key.equals(Constants.PREF_SIM1[12]) || key.equals(Constants.PREF_SIM1[13])) {
-            Intent i1Off = new Intent(getActivity(), OnOffReceiver.class);
+            Intent i1Off = new Intent(mContext, OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1Off.putExtra(Constants.ON_OFF, false);
             i1Off.setAction(Constants.ALARM_ACTION);
             int SIM1_OFF = 100;
-            PendingIntent pi1Off = PendingIntent.getBroadcast(getActivity(), SIM1_OFF, i1Off, 0);
+            PendingIntent pi1Off = PendingIntent.getBroadcast(mContext, SIM1_OFF, i1Off, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("1")) {
                 am.cancel(pi1Off);
@@ -463,12 +465,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             } else
                 am.cancel(pi1Off);
 
-            Intent i1On = new Intent(getActivity(), OnOffReceiver.class);
+            Intent i1On = new Intent(mContext, OnOffReceiver.class);
             i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1On.putExtra(Constants.ON_OFF, true);
             i1On.setAction(Constants.ALARM_ACTION);
             int SIM1_ON = 101;
-            PendingIntent pi1On = PendingIntent.getBroadcast(getActivity(), SIM1_ON, i1On, 0);
+            PendingIntent pi1On = PendingIntent.getBroadcast(mContext, SIM1_ON, i1On, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("2")) {
                 am.cancel(pi1On);
@@ -482,12 +484,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.cancel(pi1On);
         }
         if (key.equals(Constants.PREF_SIM2[11]) || key.equals(Constants.PREF_SIM2[12]) || key.equals(Constants.PREF_SIM2[13])) {
-            Intent i2Off = new Intent(getActivity(), OnOffReceiver.class);
+            Intent i2Off = new Intent(mContext, OnOffReceiver.class);
             i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2Off.putExtra(Constants.ON_OFF, false);
             i2Off.setAction(Constants.ALARM_ACTION);
             int SIM2_OFF = 110;
-            PendingIntent pi2Off = PendingIntent.getBroadcast(getActivity(), SIM2_OFF, i2Off, 0);
+            PendingIntent pi2Off = PendingIntent.getBroadcast(mContext, SIM2_OFF, i2Off, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("1")) {
                 am.cancel(pi2Off);
@@ -500,12 +502,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             } else
                 am.cancel(pi2Off);
 
-            Intent i2On = new Intent(getActivity(), OnOffReceiver.class);
+            Intent i2On = new Intent(mContext, OnOffReceiver.class);
             i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2On.putExtra(Constants.ON_OFF, true);
             i2On.setAction(Constants.ALARM_ACTION);
             int SIM2_ON = 111;
-            PendingIntent pi2On = PendingIntent.getBroadcast(getActivity(), SIM2_ON, i2On, 0);
+            PendingIntent pi2On = PendingIntent.getBroadcast(mContext, SIM2_ON, i2On, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("2")) {
                 am.cancel(pi2On);
@@ -519,12 +521,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 am.cancel(pi2On);
         }
         if (key.equals(Constants.PREF_SIM3[11]) || key.equals(Constants.PREF_SIM3[12]) || key.equals(Constants.PREF_SIM3[13])) {
-            Intent i3Off = new Intent(getActivity(), OnOffReceiver.class);
+            Intent i3Off = new Intent(mContext, OnOffReceiver.class);
             i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3Off.putExtra(Constants.ON_OFF, false);
             i3Off.setAction(Constants.ALARM_ACTION);
             int SIM3_OFF = 120;
-            PendingIntent pi3Off = PendingIntent.getBroadcast(getActivity(), SIM3_OFF, i3Off, 0);
+            PendingIntent pi3Off = PendingIntent.getBroadcast(mContext, SIM3_OFF, i3Off, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("1")) {
                 am.cancel(pi3Off);
@@ -537,12 +539,12 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             } else
                 am.cancel(pi3Off);
 
-            Intent i3On = new Intent(getActivity(), OnOffReceiver.class);
+            Intent i3On = new Intent(mContext, OnOffReceiver.class);
             i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3On.putExtra(Constants.ON_OFF, true);
             i3On.setAction(Constants.ALARM_ACTION);
             int SIM3_ON = 121;
-            PendingIntent pi3On = PendingIntent.getBroadcast(getActivity(), SIM3_ON, i3On, 0);
+            PendingIntent pi3On = PendingIntent.getBroadcast(mContext, SIM3_ON, i3On, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("2")) {
                 am.cancel(pi3On);

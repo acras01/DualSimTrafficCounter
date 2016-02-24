@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,11 +25,12 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
     private TwoLineEditTextPreference timer, simQuantity;
 
     private static final String XPOSED = "de.robv.android.xposed.installer";
+    private Context mContext;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        PreferenceManager.getDefaultSharedPreferences(getActivity())
+        mContext = getActivity().getApplicationContext();
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.other_settings);
@@ -42,7 +44,7 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
         simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
-        if (!XposedUtils.isPackageExisted(getActivity(), XPOSED)) {
+        if (!XposedUtils.isPackageExisted(mContext, XPOSED)) {
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
             getPreferenceScreen().getSharedPreferences().edit()
@@ -77,14 +79,14 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[25])) {
             if (!sharedPreferences.getBoolean(key, false)) {
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
-                    getActivity().stopService(new Intent(getActivity(), CallLoggerService.class));
+                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
+                    mContext.stopService(new Intent(mContext, CallLoggerService.class));
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_OTHER[24], true)
                             .apply();
                 }
             } else {
-                getActivity().startService(new Intent(getActivity(), CallLoggerService.class));
+                mContext.startService(new Intent(mContext, CallLoggerService.class));
                 sharedPreferences.edit()
                         .putBoolean(Constants.PREF_OTHER[24], false)
                         .apply();

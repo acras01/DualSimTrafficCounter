@@ -35,7 +35,7 @@ import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.events.DurationCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.ProcessCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
-import ua.od.acros.dualsimtrafficcounter.receivers.NewOutgoingCallEvent;
+import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
@@ -83,8 +83,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = CallLoggerService.this;
-        EventBus.getDefault().register(mContext);
+        mContext = getApplicationContext();
+        EventBus.getDefault().register(this);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -540,11 +540,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         nm.cancel(Constants.STARTED_ID);
         MyDatabaseHelper.writeCallsData(mCalls, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        EventBus.getDefault().unregister(mContext);
-    }
-
-    public static Context getCallLoggerServiceContext() {
-        return CallLoggerService.mContext;
+        EventBus.getDefault().unregister(this);
     }
 
     private static int[] getWidgetIds(Context context) {

@@ -62,7 +62,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     private int mDim;
     private String mUserPickedImage;
 
-    private final Context mContext = this;
+    private Context mContext;
     private boolean[] mSim;
     private CheckBox remain;
 
@@ -70,6 +70,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        mContext = getApplicationContext();
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
             mContext.startService(new Intent(mContext, TrafficCountService.class));
 

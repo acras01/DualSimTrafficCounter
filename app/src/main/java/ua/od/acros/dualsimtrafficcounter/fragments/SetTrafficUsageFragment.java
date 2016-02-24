@@ -34,9 +34,10 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     private int mTXSpinnerSel, mRXSpinnerSel;
     private int mSimChecked = Constants.DISABLED;
     private Spinner rxSpinner;
-    private String[] mOperatorNames = new String[3];
+    private String[] mOperatorNames;
     private CheckBox total;
     private OnFragmentInteractionListener mListener;
+    private Context mContext;
 
 
     public static SetTrafficUsageFragment newInstance() {
@@ -50,10 +51,10 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mContext = getActivity().getApplicationContext();
+        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
     }
 
     @Override
@@ -70,8 +71,8 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         sim2rb.setText(mOperatorNames[1]);
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simQuantity == 1) {
             sim2rb.setEnabled(false);
@@ -130,15 +131,15 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
-            if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, getActivity())) {
+            if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
                 SetTrafficEvent event = new SetTrafficEvent(txInput.getText().toString(),
                         rxInput.getText().toString(), mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
                 EventBus.getDefault().post(event);
                 getActivity().onBackPressed();
             } else
-                Toast.makeText(getActivity(), R.string.service_stop, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.service_stop, Toast.LENGTH_LONG).show();
         } else
-            Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
     }
 
     @Override

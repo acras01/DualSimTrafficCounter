@@ -190,10 +190,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public static Context getAppContext() {
-        return MainActivity.mContext;
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

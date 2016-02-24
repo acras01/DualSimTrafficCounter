@@ -2,6 +2,7 @@ package ua.od.acros.dualsimtrafficcounter.settings;
 
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -27,11 +28,13 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
     private int mSimQuantity;
+    private Context mContext;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mContext = getActivity().getApplicationContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.calls_settings);
@@ -61,7 +64,7 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (mSimQuantity == 1) {
@@ -120,9 +123,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
             if ((period1.getValue().equals("1") || period1.getValue().equals("2")) && day1 != null) {
                 day1.setEnabled(true);
                 if (period1.getValue().equals("1"))
-                    day1.setTitle(getActivity().getResources().getString(R.string.day));
+                    day1.setTitle(getResources().getString(R.string.day));
                 else
-                    day1.setTitle(getActivity().getResources().getString(R.string.day_in_period));
+                    day1.setTitle(getResources().getString(R.string.day_in_period));
             }
         }
 
@@ -133,9 +136,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
             if ((period2.getValue().equals("1") || period2.getValue().equals("2")) && day2 != null) {
                 day2.setEnabled(true);
                 if (period2.getValue().equals("1"))
-                    day2.setTitle(getActivity().getResources().getString(R.string.day));
+                    day2.setTitle(getResources().getString(R.string.day));
                 else
-                    day2.setTitle(getActivity().getResources().getString(R.string.day_in_period));
+                    day2.setTitle(getResources().getString(R.string.day_in_period));
             }
         }
 
@@ -146,9 +149,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
             if ((period3.getValue().equals("1") || period3.getValue().equals("2")) && day3 != null) {
                 day3.setEnabled(true);
                 if (period3.getValue().equals("1"))
-                    day3.setTitle(getActivity().getResources().getString(R.string.day));
+                    day3.setTitle(getResources().getString(R.string.day));
                 else
-                    day3.setTitle(getActivity().getResources().getString(R.string.day_in_period));
+                    day3.setTitle(getResources().getString(R.string.day_in_period));
             }
         }
 

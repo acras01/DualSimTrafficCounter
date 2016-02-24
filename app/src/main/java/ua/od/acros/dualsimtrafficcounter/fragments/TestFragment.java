@@ -25,6 +25,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     private SharedPreferences.Editor edit;
     private String[] mOperatorNames = new String[3];
     private OnFragmentInteractionListener mListener;
+    private Context mContext;
 
 
     public static TestFragment newInstance() {
@@ -38,10 +39,10 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mContext = getActivity().getApplicationContext();
+        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
     }
 
     @Override
@@ -54,9 +55,9 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
         sim2rb.setText(mOperatorNames[1]);
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         edit = prefs.edit();
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simQuantity == 1) {
             sim2rb.setEnabled(false);
@@ -89,13 +90,13 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
                 if (!mSimChecked.equals("")) {
                     int sim = Constants.DISABLED;
                     try {
-                        sim = (int) Settings.System.getLong(getActivity().getContentResolver(), "gprs_connection_sim_setting");
+                        sim = (int) Settings.System.getLong(mContext.getContentResolver(), "gprs_connection_sim_setting");
                         edit.putInt(mSimChecked, sim);
                         mAlternative = true;
                     } catch (Settings.SettingNotFoundException e0) {
                         e0.printStackTrace();
                         try {
-                            sim = (int) Settings.System.getLong(getActivity().getContentResolver(), "gprs_connection_setting");
+                            sim = (int) Settings.System.getLong(mContext.getContentResolver(), "gprs_connection_setting");
                             edit.putInt(mSimChecked, sim);
                             mAlternative = true;
                         } catch (Settings.SettingNotFoundException e1) {
@@ -103,11 +104,11 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
                         }
                     }
                     if (mAlternative)
-                        Toast.makeText(getActivity(), mSimChecked + ": " + sim, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, mSimChecked + ": " + sim, Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.error, Toast.LENGTH_SHORT).show();
                 } else
-                    Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
