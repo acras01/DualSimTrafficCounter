@@ -24,7 +24,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
-import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -39,6 +38,7 @@ import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.receivers.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
@@ -170,8 +170,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 dt = now;
             else
                 dt = fmtDate.parseDateTime(lastDate);
+            String[] simPref;
             if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
-                mResetTime1 = getResetTime(Constants.SIM1);
+                simPref = new String[] {Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
+                        Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
+                mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mCalls, mPrefs, simPref);
                 if (mResetTime1 != null) {
                     mIsResetNeeded1 = true;
                     mPrefs.edit()
@@ -180,7 +183,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             .apply();
                 }
                 if (mSimQuantity >= 2) {
-                    mResetTime2 = getResetTime(Constants.SIM2);
+                    simPref = new String[] {Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
+                            Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+                    mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mCalls, mPrefs, simPref);
                     if (mResetTime2 != null) {
                         mIsResetNeeded2 = true;
                         mPrefs.edit()
@@ -190,7 +195,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     }
                 }
                 if (mSimQuantity == 3) {
-                    mResetTime3 = getResetTime(Constants.SIM3);
+                    simPref = new String[] {Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
+                            Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+                    mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mCalls, mPrefs, simPref);
                     if (mResetTime3 != null) {
                         mIsResetNeeded3 = true;
                         mPrefs.edit()
@@ -467,92 +474,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             MyNotification.setPriorityNeedsChange(true);
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification());
-        }
-    }
-
-    private DateTime getResetTime(int sim) {
-        DateTime now = new DateTime().withTimeAtStartOfDay();
-        String[] pref = new String[10];
-        int delta = 0;
-        String period = "";
-        switch (sim) {
-            case Constants.SIM1:
-                pref = Constants.PREF_SIM1_CALLS;
-                period = Constants.PERIOD1;
-                break;
-            case Constants.SIM2:
-                pref = Constants.PREF_SIM2_CALLS;
-                period = Constants.PERIOD2;
-                break;
-            case Constants.SIM3:
-                pref = Constants.PREF_SIM3_CALLS;
-                period = Constants.PERIOD3;
-                break;
-        }
-        DateTime last;
-        String date = mPrefs.getString(pref[8], "");
-        if (!date.equals(""))
-            last = fmtDateTime.parseDateTime(date).withTimeAtStartOfDay();
-        else
-            last = fmtDate.parseDateTime("1970-01-01");
-        switch (mPrefs.getString(pref[2], "")) {
-            case "0":
-                delta = 1;
-                break;
-            case "1":
-                delta = Integer.parseInt(mPrefs.getString(pref[5], "1"));
-                if (delta >= 28)
-                    switch (now.getMonthOfYear()) {
-                        case 2:
-                            if (now.year().isLeap())
-                                delta = 29;
-                            else
-                                delta = 28;
-                            break;
-                        case 4:
-                        case 6:
-                        case 9:
-                        case 11:
-                            if (delta == 31)
-                                delta = 30;
-                            break;
-                    }
-                break;
-            case "2":
-                delta = Integer.parseInt(mPrefs.getString(pref[5], "1"));
-                break;
-        }
-        int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
-        if (mPrefs.getString(pref[2], "").equals("1")) {
-            int month = now.getMonthOfYear();
-            int daysInMonth = 31;
-            switch (last.getMonthOfYear()) {
-                case 2:
-                    if (last.year().isLeap())
-                        daysInMonth = 29;
-                    else
-                        daysInMonth = 28;
-                    break;
-                case 4:
-                case 6:
-                case 9:
-                case 11:
-                    daysInMonth = 30;
-                    break;
-            }
-            if (now.getDayOfMonth() > delta && diff < daysInMonth)
-                month += 1;
-            date = now.getYear() + "-" + month + "-" + delta;
-            return fmtDateTime.parseDateTime(date + " " + mPrefs.getString(pref[4], "00:00"));
-        } else {
-            if (mPrefs.getString(pref[2], "").equals("2"))
-                mCalls.put(period, diff);
-            if (diff >= delta) {
-                if (mPrefs.getString(pref[3], "").equals("2"))
-                    mCalls.put(period, 0);
-                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + mPrefs.getString(pref[4], "00:00"));
-            } else
-                return null;
         }
     }
 

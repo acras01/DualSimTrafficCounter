@@ -30,7 +30,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
-import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -54,7 +53,7 @@ import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
-import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
@@ -617,7 +616,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             long tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
             long tot3 = mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3);
             try {
-                if (mIsSIM1OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
+                if (mIsSIM1OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
                         || (tot1 <= mLimits[0] && (mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -628,7 +627,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
                     timerStart(Constants.COUNT);
                 }
-                if (mIsSIM2OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
+                if (mIsSIM2OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
                         || (tot2 <= mLimits[1] && (mPrefs.getBoolean(Constants.PREF_SIM2[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -639,7 +638,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
                     timerStart(Constants.COUNT);
                 }
-                if (mIsSIM3OverLimit && (DateCompare.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
+                if (mIsSIM3OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
                         || (tot3 <= mLimits[2] && (mPrefs.getBoolean(Constants.PREF_SIM3[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -654,92 +653,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
-        }
-    }
-
-    private DateTime getResetTime(int simid) {
-        DateTime now = new DateTime().withTimeAtStartOfDay();
-        String[] pref = new String[27];
-        int delta = 0;
-        String period = "";
-        switch (simid) {
-            case Constants.SIM1:
-                pref = Constants.PREF_SIM1;
-                period = Constants.PERIOD1;
-                break;
-            case Constants.SIM2:
-                pref = Constants.PREF_SIM2;
-                period = Constants.PERIOD2;
-                break;
-            case Constants.SIM3:
-                pref = Constants.PREF_SIM3;
-                period = Constants.PERIOD3;
-                break;
-        }
-        DateTime last;
-        String date = mPrefs.getString(pref[24], "");
-        if (!date.equals(""))
-            last = fmtDateTime.parseDateTime(date).withTimeAtStartOfDay();
-        else
-            last = fmtDate.parseDateTime("1970-01-01");
-        switch (mPrefs.getString(pref[3], "")) {
-            case "0":
-                delta = 1;
-                break;
-            case "1":
-                delta = Integer.parseInt(mPrefs.getString(pref[10], "1"));
-                if (delta >= 28)
-                    switch (now.getMonthOfYear()) {
-                        case 2:
-                            if (now.year().isLeap())
-                                delta = 29;
-                            else
-                                delta = 28;
-                            break;
-                        case 4:
-                        case 6:
-                        case 9:
-                        case 11:
-                            if (delta == 31)
-                                delta = 30;
-                            break;
-                    }
-                break;
-            case "2":
-                delta = Integer.parseInt(mPrefs.getString(pref[10], "1"));
-                break;
-        }
-        int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
-        if (mPrefs.getString(pref[3], "").equals("1")) {
-            int month = now.getMonthOfYear();
-            int daysInMonth = 31;
-            switch (last.getMonthOfYear()) {
-                case 2:
-                    if (last.year().isLeap())
-                        daysInMonth = 29;
-                    else
-                        daysInMonth = 28;
-                    break;
-                case 4:
-                case 6:
-                case 9:
-                case 11:
-                    daysInMonth = 30;
-                    break;
-            }
-            if (now.getDayOfMonth() > delta && diff < daysInMonth)
-                month += 1;
-            date = now.getYear() + "-" + month + "-" + delta;
-            return fmtDateTime.parseDateTime(date + " " + mPrefs.getString(pref[9], "00:00"));
-        } else {
-            if (mPrefs.getString(pref[3], "").equals("2"))
-                mDataMap.put(period, diff);
-            if (diff >= delta) {
-                if (mPrefs.getString(pref[3], "").equals("2"))
-                    mDataMap.put(period, 0);
-                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + mPrefs.getString(pref[9], "00:00"));
-            } else
-                return null;
         }
     }
 
@@ -798,9 +711,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsNight1 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         mIsNight1 = false;
-
+                    String[] simPref;
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
-                        mResetTime1 = getResetTime(Constants.SIM1);
+                        simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
+                                Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
+                        mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mDataMap, mPrefs, simPref);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
@@ -809,7 +724,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                     .apply();
                         }
                         if (mSimQuantity >= 2) {
-                            mResetTime2 = getResetTime(Constants.SIM2);
+                            simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
+                                    Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
+                            mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mDataMap, mPrefs, simPref);
                             if (mResetTime2 != null) {
                                 mIsResetNeeded2 = true;
                                 mPrefs.edit()
@@ -819,7 +736,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                         }
                         if (mSimQuantity == 3) {
-                            mResetTime3 = getResetTime(Constants.SIM3);
+                            simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
+                                    Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
+                            mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mDataMap, mPrefs, simPref);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
                                 mPrefs.edit()
@@ -1056,9 +975,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsNight2 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         mIsNight2 = false;
-
+                    String[] simPref;
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
-                        mResetTime1 = getResetTime(Constants.SIM1);
+                        simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
+                                Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
+                        mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mDataMap, mPrefs, simPref);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
@@ -1066,16 +987,22 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
-                        mResetTime2 = getResetTime(Constants.SIM2);
-                        if (mResetTime2 != null) {
-                            mIsResetNeeded2 = true;
-                            mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
-                                    .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
-                                    .apply();
+                        if (mSimQuantity >= 2) {
+                            simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
+                                    Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
+                            mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mDataMap, mPrefs, simPref);
+                            if (mResetTime2 != null) {
+                                mIsResetNeeded2 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                                        .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
+                                        .apply();
+                            }
                         }
                         if (mSimQuantity == 3) {
-                            mResetTime3 = getResetTime(Constants.SIM3);
+                            simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
+                                    Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
+                            mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mDataMap, mPrefs, simPref);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
                                 mPrefs.edit()
@@ -1312,9 +1239,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsNight3 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         mIsNight3 = false;
-
+                    String[] simPref;
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
-                        mResetTime1 = getResetTime(Constants.SIM1);
+                        simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
+                                Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
+                        mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mDataMap, mPrefs, simPref);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
@@ -1322,23 +1251,30 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                     .putString(Constants.PREF_SIM1[26], mResetTime1.toString(fmtDateTime))
                                     .apply();
                         }
-                        mResetTime2 = getResetTime(Constants.SIM2);
-                        if (mResetTime2 != null) {
-                            mIsResetNeeded2 = true;
-                            mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
-                                    .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
-                                    .apply();
+                        if (mSimQuantity >= 2) {
+                            simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
+                                    Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
+                            mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mDataMap, mPrefs, simPref);
+                            if (mResetTime2 != null) {
+                                mIsResetNeeded2 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                                        .putString(Constants.PREF_SIM2[26], mResetTime2.toString(fmtDateTime))
+                                        .apply();
+                            }
                         }
-                        mResetTime3 = getResetTime(Constants.SIM3);
-                        if (mResetTime3 != null) {
-                            mIsResetNeeded3 = true;
-                            mPrefs.edit()
-                                    .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
-                                    .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
-                                    .apply();
+                        if (mSimQuantity == 3) {
+                            simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
+                                    Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
+                            mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mDataMap, mPrefs, simPref);
+                            if (mResetTime3 != null) {
+                                mIsResetNeeded3 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                                        .putString(Constants.PREF_SIM3[26], mResetTime3.toString(fmtDateTime))
+                                        .apply();
+                            }
                         }
-
                         mResetRuleHasChanged = false;
                     }
 
@@ -1571,8 +1507,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 dt_temp = new org.joda.time.DateTime();
             else
                 dt_temp = fmtDate.parseDateTime(last);
-            if (!DateCompare.isNextDayOrMonth(dt, "0") && !emptyDB
-                    && !DateCompare.isNextDayOrMonth(dt_temp, "0"))
+            if (!DateUtils.isNextDayOrMonth(dt, "0") && !emptyDB
+                    && !DateUtils.isNextDayOrMonth(dt_temp, "0"))
                 choice = 1;
             else
                 choice = 2;
