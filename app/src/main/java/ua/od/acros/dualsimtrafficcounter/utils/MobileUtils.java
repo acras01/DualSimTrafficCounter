@@ -195,9 +195,7 @@ public class MobileUtils {
     }
 
     private static long activeSIM(Context context, NetworkInfo networkInfo){
-
         String out = " ";
-
         long sim = Constants.DISABLED;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             try {
@@ -428,9 +426,9 @@ public class MobileUtils {
                             e.printStackTrace();
                         }
                     }
-                }
-            } else
-                return Constants.SIM1;
+                } else
+                    sim = Constants.SIM1;
+            }
         }
         try {
             // to this path add a new directory path
