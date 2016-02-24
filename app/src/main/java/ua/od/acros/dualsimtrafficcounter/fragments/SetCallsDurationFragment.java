@@ -16,10 +16,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -113,7 +114,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         if (mSimChecked != Constants.DISABLED && !duration.getText().toString().equals("")) {
             if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, getActivity())) {
                 SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
-                BusProvider.getInstance().post(event);
+                EventBus.getDefault().post(event);
                 getActivity().onBackPressed();
             } else
                 Toast.makeText(getActivity(), R.string.service_stop, Toast.LENGTH_LONG).show();

@@ -23,10 +23,11 @@ import android.os.SystemClock;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
 
-import com.squareup.otto.Subscribe;
 import com.stericson.RootShell.RootShell;
 
 import org.acra.ACRA;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.Days;
@@ -51,7 +52,6 @@ import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
-import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateCompare;
@@ -136,7 +136,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         super.onCreate();
 
         mContext = TrafficCountService.this;
-        BusProvider.getInstance().register(mContext);
+        EventBus.getDefault().register(mContext);
 
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -464,6 +464,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
+        MyNotification.setIdNeedsChange(true);
         if (task == Constants.COUNT) {
             switch (mActiveSIM) {
                 case Constants.SIM1:
@@ -603,7 +604,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
 
-            BusProvider.getInstance().post(new TipTrafficEvent());
+            EventBus.getDefault().post(new TipTrafficEvent());
 
             DateTime dt = fmtDate.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
 
@@ -1775,7 +1776,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     .setContentTitle(getString(R.string.service_stopped_title));
             nm.notify(Constants.STARTED_ID, builder.build());
 
-            BusProvider.getInstance().post(new TipTrafficEvent());
+            EventBus.getDefault().post(new TipTrafficEvent());
 
             timerStart(Constants.CHECK);
         }
@@ -1873,6 +1874,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         MyDatabase.writeTrafficData(mDataMap, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         unregisterReceiver(connReceiver);
-        BusProvider.getInstance().unregister(mContext);
+        EventBus.getDefault().unregister(mContext);
     }
 }

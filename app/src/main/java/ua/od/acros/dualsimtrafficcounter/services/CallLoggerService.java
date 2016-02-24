@@ -20,8 +20,8 @@ import android.telephony.TelephonyManager;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.squareup.otto.Subscribe;
-
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.Days;
@@ -39,7 +39,6 @@ import ua.od.acros.dualsimtrafficcounter.events.DurationCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.ProcessCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.receivers.NewOutgoingCallEvent;
-import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -87,7 +86,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     public void onCreate() {
         super.onCreate();
         mContext = CallLoggerService.this;
-        BusProvider.getInstance().register(mContext);
+        EventBus.getDefault().register(mContext);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDatabaseHelper = MyDatabase.getInstance(mContext);
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -622,7 +621,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         nm.cancel(Constants.STARTED_ID);
         MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        BusProvider.getInstance().unregister(mContext);
+        EventBus.getDefault().unregister(mContext);
     }
 
     public static Context getCallLoggerServiceContext() {

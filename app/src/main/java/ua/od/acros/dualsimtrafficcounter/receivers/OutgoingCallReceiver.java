@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import org.greenrobot.eventbus.EventBus;
+
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
@@ -24,6 +25,6 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
             context.startService(i);
         } else if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, context)
                 && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
-            BusProvider.getInstance().post(new NewOutgoingCallEvent(intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)));
+            EventBus.getDefault().post(new NewOutgoingCallEvent(intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)));
     }
 }

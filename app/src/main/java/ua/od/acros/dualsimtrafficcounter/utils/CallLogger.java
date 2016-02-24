@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,7 +84,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                         sim = i;
                                 }
                                 XposedBridge.log("Outgoing call answered: " + imei);
-                                BusProvider.getInstance().post(new ProcessCallEvent(sim));
+                                EventBus.getDefault().post(new ProcessCallEvent(sim));
                             }
                         }
                     }
@@ -113,7 +115,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                 mPrePreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING")) {
                             long durationMillis = System.currentTimeMillis() - start[0];
                             XposedBridge.log(sim[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                            BusProvider.getInstance().post(new DurationCallEvent(sim[0], durationMillis));
+                            EventBus.getDefault().post(new DurationCallEvent(sim[0], durationMillis));
                         }
                     }
                 });
@@ -140,7 +142,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                             sim[0] = MobileUtils.getSimId(mContext);
                                             start[0] = System.currentTimeMillis();
                                             XposedBridge.log("Outgoing call answered: " + sim[0]);
-                                            BusProvider.getInstance().post(new ProcessCallEvent(sim[0]));
+                                            EventBus.getDefault().post(new ProcessCallEvent(sim[0]));
                                         }
                                     }
                                 }
@@ -171,7 +173,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     }
                     long durationMillis = (long) XposedHelpers.callMethod(conn, "getDurationMillis");
                     XposedBridge.log(imei + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                    BusProvider.getInstance().post(new DurationCallEvent(sim, durationMillis));
+                    EventBus.getDefault().post(new DurationCallEvent(sim, durationMillis));
                 }
             } catch (Throwable t) {
                 XposedBridge.log(t);

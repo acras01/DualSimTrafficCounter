@@ -11,10 +11,11 @@ import android.widget.RadioGroup;
 
 import com.stericson.RootShell.RootShell;
 
+import org.greenrobot.eventbus.EventBus;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
-import ua.od.acros.dualsimtrafficcounter.utils.BusProvider;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -83,8 +84,7 @@ public class ChooseActionDialog extends Activity implements View.OnClickListener
                 break;
         }
         TrafficCountService.setIsActionChosen(true);
-        ActionTrafficEvent event = new ActionTrafficEvent(sim, action);
-        BusProvider.getInstance().post(event);
+        EventBus.getDefault().post(new ActionTrafficEvent(sim, action));
         finish();
     }
 
