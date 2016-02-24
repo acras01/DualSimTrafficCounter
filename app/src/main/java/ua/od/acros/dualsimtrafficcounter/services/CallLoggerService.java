@@ -29,8 +29,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -137,7 +135,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             }
             MyDatabaseHelper.writeCallsData(mCalls, mDatabaseHelper);
             refreshWidgetAndNotification(mContext, sim, duration);
-            String out = "Call Ends\n";
+            /*String out = "Call Ends\n";
             try {
                 // to this path add a new directory path
                 File dir = new File(String.valueOf(mContext.getFilesDir()));
@@ -151,14 +149,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 os.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
     @Subscribe
     public void onMessageEvent(ProcessCallEvent event) {
         if (mIsOutgoing) {
-            final String[] out = {"Call Starts\n"};
+            //final String[] out = {"Call Starts\n"};
             mCalls = MyDatabaseHelper.readCallsData(mDatabaseHelper);
             String lim, inter;
             long currentDuration = 0;
@@ -273,19 +271,19 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 timeToVibrate = 0;
             else
                 timeToVibrate = limit - currentDuration - interval;
-            out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
+            //out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
             mCountTimer = new android.os.CountDownTimer(timeToVibrate, Constants.SECOND) {
                 public void onTick(long millisUntilFinished) {
-                    out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
+                    //out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
                 }
 
                 public void onFinish() {
                     if (mVibrator.hasVibrator())
                         vibrate(mVibrator, Constants.SECOND, Constants.SECOND / 2);
-                    out[0] += "Limit reached\n";
+                    //out[0] += "Limit reached\n";
                 }
             }.start();
-            try {
+            /*try {
                 // to this path add a new directory path
                 File dir = new File(String.valueOf(mContext.getFilesDir()));
                 // create this directory if not already created
@@ -298,7 +296,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 os.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
@@ -373,7 +371,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             break;
                         case TelephonyManager.CALL_STATE_OFFHOOK:
                             final int sim = MobileUtils.getSimId(ctx);
-                            String out = sim + " " + CallLoggerService.this.number[0] + "\n";
+                            /*String out = sim + " " + CallLoggerService.this.number[0] + "\n";
                             try {
                                 // to this path add a new directory path
                                 File dir = new File(String.valueOf(ctx.getFilesDir()));
@@ -387,7 +385,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 os.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
-                            }
+                            }*/
                             final ArrayList<String> whiteList = MyDatabaseHelper.readWhiteList(sim, mDatabaseHelper);
                             final ArrayList<String> blackList = MyDatabaseHelper.readBlackList(sim, mDatabaseHelper);
                             if (!whiteList.contains(CallLoggerService.this.number[0]) && !blackList.contains(CallLoggerService.this.number[0]) && !mIsDialogShown) {
