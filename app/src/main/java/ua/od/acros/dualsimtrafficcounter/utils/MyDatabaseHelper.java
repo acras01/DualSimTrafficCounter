@@ -19,7 +19,6 @@ import java.util.Map;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
-
     private static final String DATA_TABLE = "data";
     private static final String CALLS_TABLE = "calls";
     private static final String WHITE_LIST_1 = "list1";
