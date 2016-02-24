@@ -99,7 +99,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private DateTime mResetTime3;
     private ContentValues mDataMap;
     private BroadcastReceiver connReceiver;
-    private MyDatabaseHelper mDatabaseHelper;
+    private MyDatabaseHelper mDbHelper;
     private ScheduledExecutorService mTaskExecutor = null;
     private ScheduledFuture<?> mTaskResult = null;
     private SharedPreferences mPrefs;
@@ -140,8 +140,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-        mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
-        mDataMap = MyDatabaseHelper.readTrafficData(mDatabaseHelper);
+        mDbHelper = MyDatabaseHelper.getInstance(mContext);
+        mDataMap = MyDatabaseHelper.readTrafficData(mDbHelper);
         if (mDataMap.get(Constants.LAST_DATE).equals("")) {
             DateTime dateTime = new DateTime();
             mDataMap.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
@@ -169,19 +169,19 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     if (mPrefs.getBoolean(Constants.PREF_SIM1[14], true) && mLastActiveSIM == Constants.SIM1) {
                         mDataMap.put(Constants.TOTAL1, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL1),
                                 mPrefs.getString(Constants.PREF_SIM1[15], "1"), mPrefs.getString(Constants.PREF_SIM1[16], "0")));
-                        MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                     }
 
                     if (mPrefs.getBoolean(Constants.PREF_SIM2[14], true) && mLastActiveSIM == Constants.SIM2) {
                         mDataMap.put(Constants.TOTAL2, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL2),
                                 mPrefs.getString(Constants.PREF_SIM2[15], "1"), mPrefs.getString(Constants.PREF_SIM2[16], "0")));
-                        MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                     }
 
                     if (mPrefs.getBoolean(Constants.PREF_SIM3[14], true) && mLastActiveSIM == Constants.SIM3) {
                         mDataMap.put(Constants.TOTAL3, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL3),
                                 mPrefs.getString(Constants.PREF_SIM3[15], "1"), mPrefs.getString(Constants.PREF_SIM3[16], "0")));
-                        MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                        MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                     }
 
                     try {
@@ -322,7 +322,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
                 break;
         }
-        MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+        MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
         if (MyApplication.isScreenOn(mContext)) {
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification(sim));
@@ -345,7 +345,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             ACRA.getErrorReporter().handleException(e);
         }
         if (mDataMap == null)
-            mDataMap = MyDatabaseHelper.readTrafficData(mDatabaseHelper);
+            mDataMap = MyDatabaseHelper.readTrafficData(mDbHelper);
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
@@ -360,7 +360,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mDataMap.put(Constants.SIM1TX, mTransmitted1);
                     mDataMap.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
                 }
-                MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                 break;
             case Constants.SIM2:
                 mReceived2 = DataFormat.getFormatLong(event.rx, event.rxv);
@@ -374,7 +374,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mDataMap.put(Constants.SIM2TX, mTransmitted2);
                     mDataMap.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
                 }
-                MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                 break;
             case Constants.SIM3:
                 mReceived3 = DataFormat.getFormatLong(event.rx, event.rxv);
@@ -388,7 +388,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mDataMap.put(Constants.SIM3TX, mTransmitted3);
                     mDataMap.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
                 }
-                MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                 break;
         }
         if (MyApplication.isScreenOn(mContext)) {
@@ -425,7 +425,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
-        mDataMap = MyDatabaseHelper.readTrafficData(mDatabaseHelper);
+        mDataMap = MyDatabaseHelper.readTrafficData(mDbHelper);
         if (mDataMap.get(Constants.LAST_DATE).equals("")) {
             DateTime dateTime = new DateTime();
             mDataMap.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
@@ -742,7 +742,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mResetRuleHasChanged = false;
                     }
 
-                    boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDatabaseHelper);
+                    boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
                     if (emptyDB) {
                         mDataMap.put(Constants.SIM1RX, 0L);
@@ -1006,7 +1006,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mResetRuleHasChanged = false;
                     }
 
-                    boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDatabaseHelper);
+                    boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
                     if (emptyDB) {
                         mDataMap.put(Constants.SIM1RX, 0L);
@@ -1270,7 +1270,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mResetRuleHasChanged = false;
                     }
 
-                    boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDatabaseHelper);
+                    boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
                     if (emptyDB) {
                         mDataMap.put(Constants.SIM1RX, 0L);
@@ -1490,7 +1490,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         final long MB = 1024 * 1024;
         if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
                 || emptyDB) {
-            String last = (String) MyDatabaseHelper.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
+            String last = (String) MyDatabaseHelper.readTrafficData(mDbHelper).get(Constants.LAST_DATE);
             DateTime dt_temp;
             if (last.equals(""))
                 dt_temp = new DateTime();
@@ -1508,10 +1508,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             default:
                 break;
             case 1:
-                MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                 break;
             case 2:
-                MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+                MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
                 mContinueOverLimit = false;
                 break;
         }
@@ -1796,9 +1796,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        MyDatabaseHelper.writeTrafficData(mDataMap, mDatabaseHelper);
+        MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        unregisterReceiver(connReceiver);
+        try {
+            unregisterReceiver(connReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         EventBus.getDefault().unregister(this);
     }
 }

@@ -472,8 +472,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        if (dataReceiver != null)
+        try {
             mContext.unregisterReceiver(dataReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

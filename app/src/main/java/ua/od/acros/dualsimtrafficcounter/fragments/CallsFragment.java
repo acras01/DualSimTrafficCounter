@@ -215,8 +215,11 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        if (callDataReceiver != null)
+        try {
             mContext.unregisterReceiver(callDataReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
