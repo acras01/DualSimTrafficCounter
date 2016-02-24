@@ -34,14 +34,14 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 
 public class CallsFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TextView SIM1, SIM2, SIM3, TOT1, TOT2, TOT3, TIP;
     private ContentValues mCalls;
     private Button bLim1, bLim2, bLim3;
-    private MyDatabase mDatabaseHelper;
+    private MyDatabaseHelper mDatabaseHelper;
     private SharedPreferences mPrefs;
     private int mSimQuantity;
     private OnFragmentInteractionListener mListener;
@@ -64,8 +64,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         setHasOptionsMenu(true);
         mContext = getActivity();
         mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
-        mDatabaseHelper = MyDatabase.getInstance(mContext);
-        mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+        mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
+        mCalls = MyDatabaseHelper.readCallsData(mDatabaseHelper);
         mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -164,7 +164,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim2.setOnClickListener(this);
         bLim3.setOnClickListener(this);
 
-        mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+        mCalls = MyDatabaseHelper.readCallsData(mDatabaseHelper);
         TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1)));
 
         long[] limit = setTotalText();
@@ -234,10 +234,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM1));
                 else {
-                    mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+                    mCalls = MyDatabaseHelper.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS1, 0L);
                     mCalls.put(Constants.CALLS1_EX, 0L);
-                    MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                    MyDatabaseHelper.writeCallsData(mCalls, mDatabaseHelper);
                 }
                 TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -245,10 +245,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM2));
                 else {
-                    mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+                    mCalls = MyDatabaseHelper.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS2, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);
-                    MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                    MyDatabaseHelper.writeCallsData(mCalls, mDatabaseHelper);
                 }
                 TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -256,10 +256,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM3));
                 else {
-                    mCalls = MyDatabase.readCallsData(mDatabaseHelper);
+                    mCalls = MyDatabaseHelper.readCallsData(mDatabaseHelper);
                     mCalls.put(Constants.CALLS3, 0L);
                     mCalls.put(Constants.CALLS3_EX, 0L);
-                    MyDatabase.writeCallsData(mCalls, mDatabaseHelper);
+                    MyDatabaseHelper.writeCallsData(mCalls, mDatabaseHelper);
                 }
                 TOT3.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;

@@ -23,7 +23,7 @@ import java.util.List;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
 
 public class WhiteListActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
@@ -32,7 +32,7 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
     private ArrayList<String> mNames, mNumbers, mList;
     private Context mContext = this;
     private int mKey;
-    private MyDatabase mDatabaseHelper;
+    private MyDatabaseHelper mDatabaseHelper;
     private String[] mOperatorNames = new String[3];
 
     @Override
@@ -42,9 +42,9 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
 
         ListView listView = (ListView) findViewById(R.id.listView);
 
-        mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        mList = MyDatabase.readWhiteList(mKey, mDatabaseHelper);
+        mList = MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
@@ -53,7 +53,7 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
         mNumbers = new ArrayList<>();
         mNames = new ArrayList<>();
         loadContactsFromDB(mContext);
-        ArrayList<String> extra = MyDatabase.readWhiteList(mKey, mDatabaseHelper);;
+        ArrayList<String> extra = MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);;
         for (Iterator<String> i = extra.iterator(); i.hasNext(); ) {
             if (mNumbers.contains(i.next())) {
                 i.remove();
@@ -140,7 +140,7 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            MyDatabase.writeWhiteList(mKey, mList, mDatabaseHelper);
+            MyDatabaseHelper.writeWhiteList(mKey, mList, mDatabaseHelper);
             return true;
         }
 

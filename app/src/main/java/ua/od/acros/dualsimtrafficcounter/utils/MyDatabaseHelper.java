@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyDatabase extends SQLiteOpenHelper {
+public class MyDatabaseHelper extends SQLiteOpenHelper {
 
 
     private static final String DATA_TABLE = "data";
@@ -29,29 +29,29 @@ public class MyDatabase extends SQLiteOpenHelper {
     private static final String BLACK_LIST_2 = "list2_b";
     private static final String BLACK_LIST_3 = "list3_b";
     private static SQLiteDatabase mSqLiteDatabase;
-    private static MyDatabase mInstance;
+    private static MyDatabaseHelper mInstance;
 
-    public static MyDatabase getInstance(Context context) {
+    public static MyDatabaseHelper getInstance(Context context) {
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
         // See this article for more information: http://bit.ly/6LRzfx
         if (mInstance == null) {
-            mInstance = new MyDatabase(context.getApplicationContext());
+            mInstance = new MyDatabaseHelper(context.getApplicationContext());
         }
         return mInstance;
     }
 
-    public MyDatabase(Context context) {
+    private MyDatabaseHelper(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
     }
 
-    public MyDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory,
-                      int version) {
+    private MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
+                            int version) {
         super(context, name, factory, version);
     }
 
-    public MyDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory,
-                      int version, DatabaseErrorHandler errorHandler) {
+    private MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
+                            int version, DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
     }
 
@@ -301,7 +301,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static ContentValues readTrafficData(MyDatabase db) {
+    public static ContentValues readTrafficData(MyDatabaseHelper db) {
         ContentValues mMap = new ContentValues();
         mSqLiteDatabase = db.getReadableDatabase();
         Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
@@ -369,7 +369,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         return mMap;
     }
 
-    public static void writeTrafficData(ContentValues mMap, MyDatabase db) {
+    public static void writeTrafficData(ContentValues mMap, MyDatabaseHelper db) {
         mSqLiteDatabase = db.getWritableDatabase();
         String filter = Constants.LAST_DATE + "='" + mMap.get(Constants.LAST_DATE) + "'";
         int id = mSqLiteDatabase.update(DATA_TABLE, mMap, filter, null);
@@ -378,7 +378,7 @@ public class MyDatabase extends SQLiteOpenHelper {
     }
 
 
-    public static boolean isEmpty(MyDatabase db) {
+    public static boolean isTrafficTableEmpty(MyDatabaseHelper db) {
         boolean result;
         mSqLiteDatabase = db.getReadableDatabase();
         Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
@@ -394,7 +394,20 @@ public class MyDatabase extends SQLiteOpenHelper {
         return result;
     }
 
-    public static Bundle getDataForDate(MyDatabase db, String date, int sim, SharedPreferences prefs) {
+    public static boolean isCallsTableEmpty(MyDatabaseHelper db) {
+        boolean result;
+        mSqLiteDatabase = db.getReadableDatabase();
+        Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.CALLS1,
+                Constants.CALLS1_EX, Constants.CALLS2, Constants.CALLS2_EX, Constants.CALLS3, Constants.CALLS3_EX,
+                Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3}, null, null, null, null, null);
+        result = cursor != null && cursor.getCount() == 0;
+        if (cursor != null) {
+            cursor.close();
+        }
+        return result;
+    }
+
+    public static Bundle getDataForDate(MyDatabaseHelper db, String date, int sim, SharedPreferences prefs) {
 
         Map<String, Object> mMap1 = new HashMap<>();
         Map<String, Object> mMap2 = new HashMap<>();
@@ -700,7 +713,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         return out;
     }
 
-    public static ContentValues readCallsData(MyDatabase dbHelper) {
+    public static ContentValues readCallsData(MyDatabaseHelper dbHelper) {
         ContentValues mMap = new ContentValues();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.CALLS1,
@@ -735,7 +748,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         return mMap;
     }
 
-    public static void writeCallsData(ContentValues mCalls, MyDatabase dbHelper) {
+    public static void writeCallsData(ContentValues mCalls, MyDatabaseHelper dbHelper) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String filter = Constants.LAST_DATE + "='" + mCalls.get(Constants.LAST_DATE) + "'";
         int id = mSqLiteDatabase.update(CALLS_TABLE, mCalls, filter, null);
@@ -743,7 +756,7 @@ public class MyDatabase extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
     }
 
-    public static void writeWhiteList(int sim, ArrayList<String> list, MyDatabase dbHelper) {
+    public static void writeWhiteList(int sim, ArrayList<String> list, MyDatabaseHelper dbHelper) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
@@ -767,7 +780,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static ArrayList<String> readWhiteList(int sim, MyDatabase dbHelper) {
+    public static ArrayList<String> readWhiteList(int sim, MyDatabaseHelper dbHelper) {
         ArrayList<String> list = new ArrayList<>();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
@@ -800,7 +813,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public static void writeBlackList(int sim, ArrayList<String> list, MyDatabase dbHelper) {
+    public static void writeBlackList(int sim, ArrayList<String> list, MyDatabaseHelper dbHelper) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
@@ -824,7 +837,7 @@ public class MyDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public static ArrayList<String> readBlackList(int sim, MyDatabase dbHelper) {
+    public static ArrayList<String> readBlackList(int sim, MyDatabaseHelper dbHelper) {
         ArrayList<String> list = new ArrayList<>();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";

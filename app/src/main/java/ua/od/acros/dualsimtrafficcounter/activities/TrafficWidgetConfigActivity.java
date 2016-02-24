@@ -36,7 +36,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.IconsList;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class TrafficWidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
@@ -367,8 +367,8 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                 mEdit.apply();
                 Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!MyDatabase.isEmpty(new MyDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-                    ContentValues dataMap = MyDatabase.readTrafficData(MyDatabase.getInstance(mContext));
+                if (!MyDatabaseHelper.isTrafficTableEmpty(MyDatabaseHelper.getInstance(mContext))) {
+                    ContentValues dataMap = MyDatabaseHelper.readTrafficData(MyDatabaseHelper.getInstance(mContext));
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);
                     intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));

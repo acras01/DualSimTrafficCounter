@@ -36,7 +36,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.IconsList;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class CallsWidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
@@ -320,8 +320,8 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                 mEdit.apply();
                 Intent intent = new Intent(Constants.CALLS_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!MyDatabase.isEmpty(new MyDatabase(mContext, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION))) {
-                    ContentValues dataMap = MyDatabase.readCallsData(MyDatabase.getInstance(mContext));
+                if (!MyDatabaseHelper.isCallsTableEmpty(MyDatabaseHelper.getInstance(mContext))) {
+                    ContentValues dataMap = MyDatabaseHelper.readCallsData(MyDatabaseHelper.getInstance(mContext));
                     intent.putExtra(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
                     intent.putExtra(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
                     intent.putExtra(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));

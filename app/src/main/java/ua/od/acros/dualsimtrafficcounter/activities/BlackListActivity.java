@@ -17,14 +17,14 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.BlackListAdapter;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabase;
+import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 
 public class BlackListActivity extends Activity {
 
     private ArrayList<String> mList;
     private Context mContext = this;
     private int mKey;
-    private MyDatabase mDatabaseHelper;
+    private MyDatabaseHelper mDatabaseHelper;
     private String[] mOperatorNames = new String[3];
 
     @Override
@@ -37,9 +37,9 @@ public class BlackListActivity extends Activity {
         mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
         mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
-        mDatabaseHelper = MyDatabase.getInstance(mContext);
+        mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        mList = MyDatabase.readBlackList(mKey, mDatabaseHelper);
+        mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
         setTitle(mOperatorNames[mKey]);
         listView.setAdapter(new BlackListAdapter(mContext, mList));
     }
@@ -67,7 +67,7 @@ public class BlackListActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            MyDatabase.writeBlackList(mKey, mList, mDatabaseHelper);
+            MyDatabaseHelper.writeBlackList(mKey, mList, mDatabaseHelper);
             return true;
         }
 
