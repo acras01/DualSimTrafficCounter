@@ -108,6 +108,5 @@ public class Constants {
     public static final String CALLS3_EX = "calls3_ex";
     public static final String TRAFFIC_TAG = "_traffic";
     public static final String CALLS_TAG = "_calls";
-    public static final String NEW_OUTGOING_CALL = "ua.od.acros.dualsimtrafficcounter.NEW_OUTGOING_CALL";
     public static final String ON_OFF = "on/off";
 }

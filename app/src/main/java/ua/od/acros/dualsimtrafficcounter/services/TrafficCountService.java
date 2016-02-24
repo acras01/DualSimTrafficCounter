@@ -30,12 +30,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -93,6 +92,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private static int mActiveSIM = Constants.DISABLED;
     private static int mLastActiveSIM = Constants.DISABLED;
     private DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+    private DateTimeFormatter fmtTime = DateTimeFormat.forPattern(Constants.TIME_FORMAT  + ":ss");
     private DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
     private DateTime mResetTime1;
     private DateTime mResetTime2;
@@ -143,19 +143,17 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mDataMap = MyDatabaseHelper.readTrafficData(mDatabaseHelper);
         if (mDataMap.get(Constants.LAST_DATE).equals("")) {
-            Calendar myCalendar = Calendar.getInstance();
-            SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-            SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-            mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-            mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+            DateTime dateTime = new DateTime();
+            mDataMap.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
+            mDataMap.put(Constants.LAST_DATE, dateTime.toString(fmtDate));
         }
 
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
 
-        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
         sendDataBroadcast(0L, 0L);
 
@@ -423,17 +421,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
-        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
         mDataMap = MyDatabaseHelper.readTrafficData(mDatabaseHelper);
         if (mDataMap.get(Constants.LAST_DATE).equals("")) {
-            Calendar myCalendar = Calendar.getInstance();
-            SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-            SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-            mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-            mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+            DateTime dateTime = new DateTime();
+            mDataMap.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
+            mDataMap.put(Constants.LAST_DATE, dateTime.toString(fmtDate));
         }
 
         mActiveSIM = Constants.DISABLED;
@@ -1489,18 +1485,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     }
 
     private void writeToDataBase(long diffrx, long difftx, boolean emptyDB, DateTime dt) {
-
-        Calendar myCalendar = Calendar.getInstance();
-        SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-        SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
+        DateTime dateTime = new DateTime();
         int choice = 0;
-        long MB = 1024 * 1024;
-        if ((diffrx + difftx > MB) || new SimpleDateFormat("ss", getResources().getConfiguration().locale).format(myCalendar.getTime()).equals("59")
+        final long MB = 1024 * 1024;
+        if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
                 || emptyDB) {
             String last = (String) MyDatabaseHelper.readTrafficData(mDatabaseHelper).get(Constants.LAST_DATE);
             DateTime dt_temp;
             if (last.equals(""))
-                dt_temp = new org.joda.time.DateTime();
+                dt_temp = new DateTime();
             else
                 dt_temp = fmtDate.parseDateTime(last);
             if (!DateUtils.isNextDayOrMonth(dt, "0") && !emptyDB
@@ -1509,8 +1502,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             else
                 choice = 2;
         }
-        mDataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-        mDataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+        mDataMap.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
+        mDataMap.put(Constants.LAST_DATE, dateTime.toString(fmtDate));
         switch (choice) {
             default:
                 break;
