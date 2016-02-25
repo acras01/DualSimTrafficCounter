@@ -431,6 +431,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             break;
                         case TelephonyManager.CALL_STATE_IDLE:
                             mIsOutgoing = false;
+                            mIsDialogShown = false;
                             break;
                         default:
                             break;
