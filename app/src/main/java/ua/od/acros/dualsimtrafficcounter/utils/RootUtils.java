@@ -52,7 +52,7 @@ public class RootUtils {
     public static boolean executeAsRoot(Context context, ArrayList<String> commands) {
         boolean result = false;
         try {
-            if (null != commands && commands.size() > 0) {
+            if (commands != null && commands.size() > 0) {
                 Process suProcess = Runtime.getRuntime().exec("su");
                 DataOutputStream os = new DataOutputStream(suProcess.getOutputStream());
                 // Execute commands that require root access
