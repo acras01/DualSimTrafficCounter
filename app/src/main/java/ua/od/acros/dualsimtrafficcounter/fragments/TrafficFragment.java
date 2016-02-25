@@ -23,8 +23,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.stericson.RootShell.RootShell;
-
 import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -43,6 +41,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.RootUtils;
 import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
@@ -252,7 +251,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             mService.setTitle(R.string.action_start);
             mService.setIcon(R.drawable.ic_action_enable);
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootShell.isAccessGiven()) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootUtils.canRunRootCommands(mContext)) {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {

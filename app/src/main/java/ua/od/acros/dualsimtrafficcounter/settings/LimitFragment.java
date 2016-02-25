@@ -15,8 +15,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
 
-import com.stericson.RootShell.RootShell;
-
 import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -28,6 +26,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.RootUtils;
 
 public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -122,7 +121,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootShell.isAccessGiven()) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !RootUtils.canRunRootCommands(mContext)) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             autoff1.setChecked(false);

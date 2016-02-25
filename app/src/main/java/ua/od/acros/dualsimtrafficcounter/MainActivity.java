@@ -23,8 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.stericson.RootShell.RootShell;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +45,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.RootUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             showDialog(FIRST_RUN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-                    !RootShell.isAccessGiven())
+                    !RootUtils.canRunRootCommands(mContext))
                 showDialog(ANDROID_5_0);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !MTKUtils.isMtkDevice())

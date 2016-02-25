@@ -140,6 +140,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
                 Toast.makeText(mContext, R.string.service_stop, Toast.LENGTH_LONG).show();
         } else
             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

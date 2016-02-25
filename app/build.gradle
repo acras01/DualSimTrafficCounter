@@ -45,5 +45,4 @@ dependencies {
     compile project(':acra')
     compile project(':ambilwarna')
     provided project(':XposedBridge')
-    compile project(':RootShell')
 }

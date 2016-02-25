@@ -95,7 +95,6 @@
     <orderEntry type="module" module-name="ambilwarna" exported="" />
     <orderEntry type="module" module-name="acra" exported="" />
     <orderEntry type="module" module-name="mediatek-compatibility" exported="" />
-    <orderEntry type="module" module-name="RootShell" exported="" />
     <orderEntry type="module" module-name="XposedBridge" exported="" />
     <orderEntry type="library" exported="" name="acra-unspecified" level="project" />
   </component>
