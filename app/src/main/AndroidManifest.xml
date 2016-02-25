@@ -155,6 +155,15 @@
         </receiver>
 
         <receiver
+            android:name=".receivers.ConnectivityChangeReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".widgets.TrafficInfoWidget"
             android:label="@string/info_widget_traffic" >
             <intent-filter>
