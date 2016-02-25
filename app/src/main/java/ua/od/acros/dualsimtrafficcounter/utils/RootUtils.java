@@ -26,15 +26,15 @@ public class RootUtils {
             if (currUid == null) {
                 result = false;
                 exitSu = false;
-                Toast.makeText(context, "Can't get root access or denied by user", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Can't get root access or denied by user", Toast.LENGTH_LONG).show();
             } else if (currUid.contains("uid=0")) {
                 result = true;
                 exitSu = true;
-                Toast.makeText(context, "Root access granted", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Root access granted", Toast.LENGTH_LONG).show();
             } else {
                 result = false;
                 exitSu = true;
-                Toast.makeText(context, "Root access rejected: " + currUid, Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Root access rejected: " + currUid, Toast.LENGTH_LONG).show();
             }
             if (exitSu) {
                 os.writeBytes("exit\n");
@@ -44,7 +44,7 @@ public class RootUtils {
             // Can't get root !
             // Probably broken pipe exception on trying to write to output stream (os) after su failed, meaning that the device is not rooted
             result = false;
-            Toast.makeText(context, "Root access rejected [" + e.getClass().getName() + "] : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Root access rejected [" + e.getClass().getName() + "] : " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return result;
     }
