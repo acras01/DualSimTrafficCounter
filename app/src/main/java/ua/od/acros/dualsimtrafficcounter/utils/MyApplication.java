@@ -26,6 +26,7 @@ public class MyApplication extends Application {
         super.onCreate();
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
+        mHasRoot = RootUtils.canRunRootCommands(getApplicationContext());
     }
 
     public static boolean isActivityVisible() {
@@ -41,6 +42,12 @@ public class MyApplication extends Application {
     }
 
     private static boolean mIsActivityVisible;
+
+    public static boolean hasRoot() {
+        return mHasRoot;
+    }
+
+    private static boolean mHasRoot;
 
     public static boolean isScreenOn(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
