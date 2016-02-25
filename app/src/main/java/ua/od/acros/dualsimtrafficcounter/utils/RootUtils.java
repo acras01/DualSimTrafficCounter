@@ -23,7 +23,7 @@ public class RootUtils {
             os.flush();
             String currUid = br.readLine();
             boolean exitSu;
-            if (null == currUid) {
+            if (currUid == null) {
                 result = false;
                 exitSu = false;
                 Toast.makeText(context, "Can't get root access or denied by user", Toast.LENGTH_LONG).show();
