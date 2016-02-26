@@ -673,18 +673,38 @@ public class MobileUtils {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
                                             for (int i = 0; i < simQuantity; i++) {
-                                                name.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
+                                                String nameCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                                if (!nameCurr.equals(""))
+                                                    name.add(i, nameCurr);
                                             }
                                             break;
                                         }
                                     }
                                 }
-                                if (name.size() > 0)
+                                if (name.size() == simQuantity)
                                     out = GET_NAME + " " + name.size();
+                                else {
+                                    for (Method m : cm) {
+                                        if (m.getName().equalsIgnoreCase(GET_NAME)) {
+                                            m.setAccessible(true);
+                                            if (m.getParameterTypes().length > 0) {
+                                                int i = 0;
+                                                while (name.size() < simQuantity) {
+                                                    String nameCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                                    if (!nameCurr.equals(""))
+                                                        name.add(i, nameCurr);
+                                                    i++;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (name.size() > 0)
+                                        out = GET_NAME + " " + name.size();
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
                         }
                         if (name.size() == 0) {
                             try {
@@ -799,9 +819,28 @@ public class MobileUtils {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
                                             for (int i = 0; i < simQuantity; i++) {
-                                                code.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
+                                                String nameCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                                if (!nameCurr.equals(""))
+                                                    code.add(i, nameCurr);
                                             }
                                             break;
+                                        }
+                                    }
+                                }
+                                if (code.size() < simQuantity) {
+                                    for (Method m : cm) {
+                                        if (m.getName().equalsIgnoreCase(GET_CODE)) {
+                                            m.setAccessible(true);
+                                            if (m.getParameterTypes().length > 0) {
+                                                int i = 0;
+                                                while (code.size() < simQuantity) {
+                                                    String nameCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                                    if (!nameCurr.equals(""))
+                                                        code.add(i, nameCurr);
+                                                    i++;
+                                                }
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -904,16 +943,36 @@ public class MobileUtils {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
                                             for (int i = 0; i < simQuantity; i++) {
-                                                imei.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                                String nameCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                                if (!nameCurr.equals(""))
+                                                    imei.add(i, nameCurr);
                                             }
                                             break;
+                                        }
+                                    }
+                                }
+                                if (imei.size() < simQuantity) {
+                                    for (Method m : cm) {
+                                        if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                                            m.setAccessible(true);
+                                            if (m.getParameterTypes().length > 0) {
+                                                int i = 0;
+                                                while (imei.size() < simQuantity) {
+                                                    String nameCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i);
+                                                    if (!nameCurr.equals(""))
+                                                        imei.add(i, nameCurr);
+                                                    i++;
+                                                }
+                                                break;
+                                            }
                                         }
                                     }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }if (imei.size() == 0) {
+                        }
+                        if (imei.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
                                 for (Method m : cm) {

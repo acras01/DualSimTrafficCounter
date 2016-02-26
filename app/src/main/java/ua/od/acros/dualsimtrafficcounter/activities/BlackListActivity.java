@@ -12,6 +12,7 @@ import android.widget.Toast;
 import org.acra.ACRA;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.BlackListAdapter;
@@ -25,6 +26,7 @@ public class BlackListActivity extends Activity {
     private Context mContext;
     private int mKey;
     private MyDatabaseHelper mDatabaseHelper;
+    private BlackListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +38,14 @@ public class BlackListActivity extends Activity {
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
+        mAdapter = new BlackListAdapter(mContext, mList);
 
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         setTitle(mOperatorNames[mKey]);
 
-        listView.setAdapter(new BlackListAdapter(mContext, mList));
+        listView.setAdapter(mAdapter);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,6 +71,12 @@ public class BlackListActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            ArrayList<String> blackList = mAdapter.getCheckedItems();
+            for (Iterator<String> i = mList.iterator(); i.hasNext(); ) {
+                if (blackList.contains(i.next())) {
+                    i.remove();
+                }
+            }
             MyDatabaseHelper.writeBlackList(mKey, mList, mDatabaseHelper);
             return true;
         }
