@@ -193,10 +193,10 @@ public class MobileUtils {
         }
     }
 
-    private static long activeSIM(Context context, NetworkInfo networkInfo){
+    private static int activeSIM(Context context, NetworkInfo networkInfo){
         String out = " ";
         mSubIds = new ArrayList<>();
-        long sim = Constants.DISABLED;
+        int sim = Constants.DISABLED;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             try {
                 Class<?> c = Class.forName("android.telephony.SubscriptionManager");
@@ -1166,7 +1166,7 @@ public class MobileUtils {
             if ((isNetworkTypeMobile(type)) && (typeName.contains("mobile")) && isConnected) {
                 mobileDataEnabled[0] = 2;
                 if (sim)
-                    mobileDataEnabled[1] = (int) activeSIM(context, mActiveNetworkInfo);
+                    mobileDataEnabled[1] = activeSIM(context, mActiveNetworkInfo);
                 else
                     mobileDataEnabled[1] = Constants.DISABLED;
             }
@@ -1200,7 +1200,7 @@ public class MobileUtils {
         if (!ON) {
             final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
-            mLastActiveSIM = (int) activeSIM(context, mActiveNetworkInfo);
+            mLastActiveSIM = activeSIM(context, mActiveNetworkInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) {
