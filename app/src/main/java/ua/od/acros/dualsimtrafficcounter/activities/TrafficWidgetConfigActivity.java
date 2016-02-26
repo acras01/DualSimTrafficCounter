@@ -740,7 +740,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         AmbilWarnaDialog dialog = null;
         switch (v.getId()) {
             case R.id.textColorPreview:
-                dialog = new AmbilWarnaDialog(mContext, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                dialog = new AmbilWarnaDialog(this, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], color);
@@ -753,7 +753,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                 });
                 break;
             case R.id.backColorPreview:
-                dialog = new AmbilWarnaDialog(mContext, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                dialog = new AmbilWarnaDialog(this, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], color);

@@ -541,7 +541,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
         AmbilWarnaDialog dialog = null;
         switch (v.getId()) {
             case R.id.textColorPreview:
-                dialog = new AmbilWarnaDialog(mContext, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                dialog = new AmbilWarnaDialog(this, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_CALLS[11], color);
@@ -554,7 +554,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                 });
                 break;
             case R.id.backColorPreview:
-                dialog = new AmbilWarnaDialog(mContext, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                dialog = new AmbilWarnaDialog(this, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_CALLS[13], color);
