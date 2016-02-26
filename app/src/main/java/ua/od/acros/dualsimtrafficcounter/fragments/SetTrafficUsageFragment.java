@@ -135,8 +135,11 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
             if (CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext)) {
+                String rx = "0";
+                if (!total.isChecked())
+                    rx = rxInput.getText().toString();
                 SetTrafficEvent event = new SetTrafficEvent(txInput.getText().toString(),
-                        rxInput.getText().toString(), mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
+                        rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
                 EventBus.getDefault().post(event);
                 getActivity().onBackPressed();
             } else
