@@ -74,7 +74,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mContext = getActivity().getApplicationContext();
+        if (mContext == null)
+            mContext = getActivity().getApplicationContext();
         EventBus.getDefault().register(this);
         mIsRunning = CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
@@ -319,7 +320,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
-        mContext = getActivity();
+        if (mContext == null)
+            mContext = getActivity().getApplicationContext();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             view = inflater.inflate(R.layout.traffic_fragment, container, false);
             RX1 = (TextView) view.findViewById(R.id.RX1);

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SetTrafficUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener,
         SetCallsDurationFragment.OnFragmentInteractionListener {
 
-    private static Context mContext;
+    private Context mContext;
     private SharedPreferences mPrefs;
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mContext = MainActivity.this;
+        mContext = getApplicationContext();
 
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showDialog(String key) {
         switch (key) {
             case FIRST_RUN:
-                new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.set_sim_number)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
                 break;
             case MTK:
-                new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.on_off_not_supported)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
                 break;
             case ANDROID_5_0:
-                new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.need_root)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
                 break;
             case EMAIL:
-                new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.send_email)
                         .setMessage(R.string.why_email)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -397,7 +397,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onDestroy() {
         super.onDestroy();
     }
-
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

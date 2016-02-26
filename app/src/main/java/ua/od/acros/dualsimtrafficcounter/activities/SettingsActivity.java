@@ -14,7 +14,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 public class SettingsActivity extends PreferenceActivity {
 
     private List<Header> mHeaders;
-    private static Context mContext;
 
     protected void onResume() {
         super.onResume();
@@ -30,8 +29,7 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     public void onBuildHeaders(List<Header> target) {
-        mContext = getApplicationContext();
-        if (mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
+        if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
                 .getBoolean(Constants.PREF_OTHER[25], false))
             loadHeadersFromResource(R.xml.headers_xposed, target);
         else

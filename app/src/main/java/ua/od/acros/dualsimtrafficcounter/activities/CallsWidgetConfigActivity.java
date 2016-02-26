@@ -72,7 +72,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
         mContext = getApplicationContext();
 
         if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
-            mContext.startService(new Intent(mContext, CallLoggerService.class));
+            startService(new Intent(mContext, CallLoggerService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);
 
@@ -220,7 +220,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
         logoSum3 = (TextView) findViewById(R.id.logoSum3);
 
         if (mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[6], false)) {
-            Picasso.with(mContext)
+            Picasso.with(this)
                     .load(new File(mPrefs.getString(Constants.PREF_WIDGET_CALLS[3], "")))
                     .resize(mDim, mDim)
                     .centerInside()
@@ -228,14 +228,14 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                     .into(logo1);
             logoSum1.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[3], "none"), "drawable", getApplicationContext().getPackageName()))
+            Picasso.with(this)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[3], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo1);
         if (mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[7], false)) {
-            Picasso.with(mContext)
+            Picasso.with(this)
                     .load(new File(mPrefs.getString(Constants.PREF_WIDGET_CALLS[4], "")))
                     .resize(mDim, mDim)
                     .centerInside()
@@ -243,14 +243,14 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                     .into(logo2);
             logoSum2.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[4], "none"), "drawable", getApplicationContext().getPackageName()))
+            Picasso.with(this)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[4], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo2);
         if (mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[8], false)) {
-            Picasso.with(mContext)
+            Picasso.with(this)
                     .load(new File(mPrefs.getString(Constants.PREF_WIDGET_CALLS[5], "")))
                     .resize(mDim, mDim)
                     .centerInside()
@@ -258,8 +258,8 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                     .into(logo3);
             logoSum3.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[5], "none"), "drawable", getApplicationContext().getPackageName()))
+            Picasso.with(this)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[5], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -373,14 +373,14 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
             }
             String opLogo;
             if (listitems[position].equals("auto"))
-                opLogo = MobileUtils.getLogoFromCode(getApplicationContext(), sim);
+                opLogo = MobileUtils.getLogoFromCode(mContext, sim);
             else
                 opLogo = listitems[position];
-            int resourceId = getApplicationContext().getResources().getIdentifier(opLogo, "drawable", getApplicationContext().getPackageName());
+            int resourceId = getResources().getIdentifier(opLogo, "drawable", mContext.getPackageName());
             if (logo.equals(Constants.PREF_WIDGET_CALLS[3])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[6], false);
                 mEdit.putString(Constants.PREF_WIDGET_CALLS[3], opLogo);
-                Picasso.with(mContext)
+                Picasso.with(this)
                         .load(resourceId)
                         .resize(mDim, mDim)
                         .centerInside()
@@ -390,7 +390,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
             } else if (logo.equals(Constants.PREF_WIDGET_CALLS[4])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[7], false);
                 mEdit.putString(Constants.PREF_WIDGET_CALLS[4], opLogo);
-                Picasso.with(mContext)
+                Picasso.with(this)
                         .load(resourceId)
                         .resize(mDim, mDim)
                         .centerInside()
@@ -400,7 +400,7 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
             } else if (logo.equals(Constants.PREF_WIDGET_CALLS[5])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[8], false);
                 mEdit.putString(Constants.PREF_WIDGET_CALLS[5], opLogo);
-                Picasso.with(mContext)
+                Picasso.with(this)
                         .load(resourceId)
                         .resize(mDim, mDim)
                         .centerInside()
@@ -426,9 +426,9 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                     Uri selectedImage = imageReturnedIntent.getData();
                     if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[5])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[8], true);
-                        String path = getRealPathFromURI(getApplicationContext(), selectedImage);
+                        String path = getRealPathFromURI(mContext, selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[5], path);
-                        Picasso.with(mContext)
+                        Picasso.with(this)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
                                 .centerInside()
@@ -437,9 +437,9 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[6])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[9], true);
-                        String path = getRealPathFromURI(getApplicationContext(), selectedImage);
+                        String path = getRealPathFromURI(mContext, selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[6], path);
-                        Picasso.with(mContext)
+                        Picasso.with(this)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
                                 .centerInside()
@@ -448,9 +448,9 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[7])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[10], true);
-                        String path = getRealPathFromURI(getApplicationContext(), selectedImage);
+                        String path = getRealPathFromURI(mContext, selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[7], path);
-                        Picasso.with(mContext)
+                        Picasso.with(this)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
                                 .centerInside()

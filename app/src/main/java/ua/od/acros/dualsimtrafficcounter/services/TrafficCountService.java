@@ -60,7 +60,7 @@ import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 public class TrafficCountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static Context mContext;
+    private Context mContext;
     private long mLastUpdateTime;
     private long mStartRX1 = 0;
     private long mStartTX1 = 0;

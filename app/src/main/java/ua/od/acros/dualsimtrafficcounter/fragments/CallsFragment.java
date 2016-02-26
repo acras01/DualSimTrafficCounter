@@ -62,7 +62,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mContext = getActivity().getApplicationContext();
+        if (mContext == null)
+            mContext = getActivity().getApplicationContext();
         mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
         mDbHelper = MyDatabaseHelper.getInstance(mContext);
         mCalls = MyDatabaseHelper.readCallsData(mDbHelper);
@@ -113,7 +114,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calls_fragment, container, false);
-        mContext = getActivity();
+        if (mContext == null)
+            mContext = getActivity().getApplicationContext();
         TOT1 = (TextView) view.findViewById(R.id.Tot1);
         TOT2 = (TextView) view.findViewById(R.id.Tot2);
         TOT3 = (TextView) view.findViewById(R.id.Tot3);

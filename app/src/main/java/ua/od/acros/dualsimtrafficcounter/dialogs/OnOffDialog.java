@@ -26,6 +26,7 @@ public class OnOffDialog extends DialogFragment {
 
     private int mSimChecked = Constants.NULL;
     private Button bOK;
+    private Context mContext;
 
     public static OnOffDialog newInstance() {
         return new OnOffDialog();
@@ -35,10 +36,11 @@ public class OnOffDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        mContext = getActivity().getApplicationContext();
         String[] mOperatorNames = new String[3];
-        mOperatorNames[0] = MobileUtils.getName(getActivity(), Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(getActivity(), Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(getActivity(), Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
+        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
+        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
 
         View view = View.inflate(getActivity(), R.layout.onoff_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
@@ -48,9 +50,9 @@ public class OnOffDialog extends DialogFragment {
         sim2rb.setText(mOperatorNames[1]);
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) {
-            int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+            int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             if (simQuantity == 1) {
                 sim2rb.setEnabled(false);
@@ -105,7 +107,7 @@ public class OnOffDialog extends DialogFragment {
                             dialog.dismiss();
                             EventBus.getDefault().post(new OnOffTrafficEvent(mSimChecked));
                         } else
-                            Toast.makeText(getActivity(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }
                 });
             }

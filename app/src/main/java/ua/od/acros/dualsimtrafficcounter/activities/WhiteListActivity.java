@@ -85,7 +85,7 @@ public class WhiteListActivity extends Activity implements View.OnClickListener,
         for (int i = 0; i < resultList.size(); i++) {
             result += String.valueOf(resultList.get(i)) + "\n";
         }
-        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
     }
 
     @Override

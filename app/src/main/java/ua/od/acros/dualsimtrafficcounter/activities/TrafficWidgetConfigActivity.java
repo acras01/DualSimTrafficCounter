@@ -61,18 +61,18 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
     private int mSimQuantity;
     private int mDim;
     private String mUserPickedImage;
-
-    private Context mContext;
     private boolean[] mSim;
     private CheckBox remain;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         mContext = getApplicationContext();
+
         if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext))
-            mContext.startService(new Intent(mContext, TrafficCountService.class));
+            startService(new Intent(this, TrafficCountService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);
 
@@ -271,7 +271,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
         logoSum3 = (TextView) findViewById(R.id.logoSum3);
 
         if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false)) {
-            Picasso.with(mContext)
+            Picasso.with(this)
                     .load(new File(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "")))
                     .resize(mDim, mDim)
                     .centerInside()
@@ -279,14 +279,14 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                     .into(logo1);
             logoSum1.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "none"), "drawable", getApplicationContext().getPackageName()))
+            Picasso.with(this)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[5], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo1);
         if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false)) {
-            Picasso.with(mContext)
+            Picasso.with(this)
                     .load(new File(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "")))
                     .resize(mDim, mDim)
                     .centerInside()
@@ -294,14 +294,14 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                     .into(logo2);
             logoSum2.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "none"), "drawable", getApplicationContext().getPackageName()))
+            Picasso.with(this)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[6], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo2);
         if (mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false)) {
-            Picasso.with(mContext)
+            Picasso.with(this)
                     .load(new File(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "")))
                     .resize(mDim, mDim)
                     .centerInside()
@@ -309,8 +309,8 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                     .into(logo3);
             logoSum3.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(mContext)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "none"), "drawable", getApplicationContext().getPackageName()))
+            Picasso.with(this)
+                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -533,14 +533,14 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             }
             String opLogo;
             if (listitems[position].equals("auto"))
-                opLogo = MobileUtils.getLogoFromCode(getApplicationContext(), sim);
+                opLogo = MobileUtils.getLogoFromCode(mContext, sim);
             else
                 opLogo = listitems[position];
-            int resourceId = getApplicationContext().getResources().getIdentifier(opLogo, "drawable", getApplicationContext().getPackageName());
+            int resourceId = getResources().getIdentifier(opLogo, "drawable", mContext.getPackageName());
             if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[5])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
                 mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], opLogo);
-                Picasso.with(mContext)
+                Picasso.with(this)
                         .load(resourceId)
                         .resize(mDim, mDim)
                         .centerInside()
@@ -550,7 +550,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             } else if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[6])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
                 mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], opLogo);
-                Picasso.with(mContext)
+                Picasso.with(this)
                         .load(resourceId)
                         .resize(mDim, mDim)
                         .centerInside()
@@ -560,7 +560,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
             } else if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[7])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
                 mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], opLogo);
-                Picasso.with(mContext)
+                Picasso.with(this)
                         .load(resourceId)
                         .resize(mDim, mDim)
                         .centerInside()
@@ -586,9 +586,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                     Uri selectedImage = imageReturnedIntent.getData();
                     if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[5])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], true);
-                        String path = getRealPathFromURI(getApplicationContext(), selectedImage);
+                        String path = getRealPathFromURI(mContext, selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], path);
-                        Picasso.with(mContext)
+                        Picasso.with(this)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
                                 .centerInside()
@@ -597,9 +597,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[6])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], true);
-                        String path = getRealPathFromURI(getApplicationContext(), selectedImage);
+                        String path = getRealPathFromURI(mContext, selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], path);
-                        Picasso.with(mContext)
+                        Picasso.with(this)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
                                 .centerInside()
@@ -608,9 +608,9 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsList.O
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[7])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], true);
-                        String path = getRealPathFromURI(getApplicationContext(), selectedImage);
+                        String path = getRealPathFromURI(mContext, selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], path);
-                        Picasso.with(mContext)
+                        Picasso.with(this)
                                 .load(new File(path))
                                 .resize(mDim, mDim)
                                 .centerInside()

@@ -36,12 +36,13 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        Context context = getActivity().getApplicationContext();
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         View view = View.inflate(getActivity(), R.layout.showsim_dialog, null);
         CheckBox sim1 = (CheckBox) view.findViewById(R.id.sim1);
         CheckBox sim2 = (CheckBox) view.findViewById(R.id.sim2);
         CheckBox sim3 = (CheckBox) view.findViewById(R.id.sim3);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getActivity())
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simQuantity == 1) {
             sim2.setEnabled(false);

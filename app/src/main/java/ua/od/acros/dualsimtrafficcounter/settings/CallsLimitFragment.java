@@ -27,14 +27,12 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
     private ListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
-    private int mSimQuantity;
-    private Context mContext;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mContext = getActivity().getApplicationContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Context context = getActivity().getApplicationContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.calls_settings);
@@ -64,14 +62,14 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        if (mSimQuantity == 1) {
+        if (simQuantity == 1) {
             getPreferenceScreen().removePreference(sim2);
             getPreferenceScreen().removePreference(sim3);
         }
-        if (mSimQuantity == 2) {
+        if (simQuantity == 2) {
             getPreferenceScreen().removePreference(sim3);
         }
         updateSummary();

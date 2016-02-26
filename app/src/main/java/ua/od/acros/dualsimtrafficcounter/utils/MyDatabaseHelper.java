@@ -35,7 +35,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         // don't accidentally leak an Activity's context.
         // See this article for more information: http://bit.ly/6LRzfx
         if (mInstance == null) {
-            mInstance = new MyDatabaseHelper(context.getApplicationContext());
+            mInstance = new MyDatabaseHelper(context);
         }
         return mInstance;
     }

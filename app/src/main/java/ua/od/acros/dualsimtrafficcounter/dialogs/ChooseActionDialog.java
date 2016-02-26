@@ -32,7 +32,7 @@ public class ChooseActionDialog extends Activity implements View.OnClickListener
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setContentView(R.layout.action_dialog);
         RadioButton change = (RadioButton)findViewById(R.id.actionchange);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(this)
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getApplicationContext())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if ((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) ||
                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) ||

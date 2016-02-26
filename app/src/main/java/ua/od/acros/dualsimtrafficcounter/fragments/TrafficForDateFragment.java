@@ -60,11 +60,11 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mDay = new DateTime().getDayOfMonth();
         mMonth = new DateTime().getMonthOfYear();
         mYear = new DateTime().getYear();
-        mContext = getActivity().getApplicationContext();
+        if (mContext == null)
+            mContext = getActivity().getApplicationContext();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -72,6 +72,8 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (mContext == null)
+            mContext = getActivity().getApplicationContext();
         View view = inflater.inflate(R.layout.traffic_for_date_fragment, container, false);
         pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.GONE);
@@ -276,7 +278,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setdate:
-                DatePickerDialog tpd = new DatePickerDialog(mContext, mCallBack, mYear, mMonth - 1, mDay);
+                DatePickerDialog tpd = new DatePickerDialog(getActivity(), mCallBack, mYear, mMonth - 1, mDay);
                 tpd.show();
                 break;
             case R.id.buttonOK:

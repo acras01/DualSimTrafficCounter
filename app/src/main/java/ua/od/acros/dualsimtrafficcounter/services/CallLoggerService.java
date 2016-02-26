@@ -47,7 +47,7 @@ import ua.od.acros.dualsimtrafficcounter.widgets.CallsInfoWidget;
 
 public class CallLoggerService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener{
 
-    private static Context mContext;
+    private Context mContext;
     private MyDatabaseHelper mDbHelper;
     private ContentValues mCalls;
     private DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
