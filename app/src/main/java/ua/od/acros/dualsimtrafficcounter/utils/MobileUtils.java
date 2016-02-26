@@ -543,11 +543,11 @@ public class MobileUtils {
                                         for (int i = 0; i < simQuantity; i++) {
                                             try {
                                                 subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                                break;
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
+                                        break;
                                     }
                                 }
                             }
@@ -703,11 +703,11 @@ public class MobileUtils {
                                             for (int i = 0; i < simQuantity; i++) {
                                                 try {
                                                     subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                                    break;
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                 }
@@ -846,11 +846,11 @@ public class MobileUtils {
                                             for (int i = 0; i < simQuantity; i++) {
                                                 try {
                                                     subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                                    break;
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                 }
@@ -969,11 +969,11 @@ public class MobileUtils {
                                             for (int i = 0; i < simQuantity; i++) {
                                                 try {
                                                     subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                                    break;
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
                                             }
+                                            break;
                                         }
                                     }
                                 }
