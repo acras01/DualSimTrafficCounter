@@ -34,12 +34,12 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.IconsList;
+import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
-public class CallsWidgetConfigActivity extends Activity implements IconsList.OnCompleteListener,
+public class CallsWidgetConfigActivity extends Activity implements IconsListFragment.OnCompleteListener,
         View.OnClickListener, CompoundButton.OnCheckedChangeListener, SetSizeDialog.TextSizeDialogListener,
         ShowSimDialog.ShowSimDialogClosedListener {
 
@@ -589,13 +589,13 @@ public class CallsWidgetConfigActivity extends Activity implements IconsList.OnC
         DialogFragment dialog = null;
         switch (view.getId()) {
             case R.id.logoPreview1:
-                dialog = IconsList.newInstance(Constants.PREF_WIDGET_CALLS[3]);
+                dialog = IconsListFragment.newInstance(Constants.PREF_WIDGET_CALLS[3]);
                 break;
             case R.id.logoPreview2:
-                dialog = IconsList.newInstance(Constants.PREF_WIDGET_CALLS[4]);
+                dialog = IconsListFragment.newInstance(Constants.PREF_WIDGET_CALLS[4]);
                 break;
             case R.id.logoPreview3:
-                dialog = IconsList.newInstance(Constants.PREF_WIDGET_CALLS[5]);
+                dialog = IconsListFragment.newInstance(Constants.PREF_WIDGET_CALLS[5]);
                 break;
             case R.id.simFontSize:
             case R.id.textSize:
