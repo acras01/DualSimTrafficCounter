@@ -46,6 +46,7 @@ public class MobileUtils {
     private static final String GET_DATA = "getDataState";
     private static final String GET_SUBID = "getSubIdBySlot";
     private static int mLastActiveSIM;
+    private static ArrayList<Long> mSubIds;
 
     public static int isMultiSim(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -107,14 +108,14 @@ public class MobileUtils {
                     try {
                         Method[] cm = mTelephonyClass.getDeclaredMethods();
                         for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                            if (m.getName().equalsIgnoreCase(GET_SUBID)) {
                                 m.setAccessible(true);
                                 m.getParameterTypes();
                                 if (m.getParameterTypes().length > 0) {
                                     for (int i = 0; i < 2; i++) {
-                                        String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
-                                        String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
-                                        if (idNext != null && !id.equals(idNext))
+                                        long id = (long) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
+                                        long idNext = (long) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
+                                        if (idNext != 0 && id != idNext)
                                             ret++;
                                     }
                                     break;
@@ -194,6 +195,7 @@ public class MobileUtils {
 
     private static long activeSIM(Context context, NetworkInfo networkInfo){
         String out = " ";
+        mSubIds = new ArrayList<>();
         long sim = Constants.DISABLED;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             try {
@@ -334,22 +336,13 @@ public class MobileUtils {
                             int state = Constants.DISABLED;
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
-                                long subId = 0;
-                                for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase(GET_SUBID)) {
-                                        m.setAccessible(true);
-                                        if (m.getParameterTypes().length > 0) {
-                                            subId = (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                            break;
-                                        }
-                                    }
-                                }
+                                mSubIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_DATA)) {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
                                         if (m.getParameterTypes().length > 0) {
-                                            state = (int) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), subId);
+                                            state = (int) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), mSubIds.get(i));
                                             break;
                                         }
                                     }
@@ -535,16 +528,15 @@ public class MobileUtils {
                             }
                         } else {
                             Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                             for (Method m : cm) {
                                 if (m.getName().equalsIgnoreCase(GET_CALL)) {
                                     m.setAccessible(true);
                                     if (m.getParameterTypes().length > 0) {
-                                        for (long subId : subIds) {
+                                        for (long subId : mSubIds) {
                                             try {
                                                 int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
                                                 if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                                                    sim = subIds.indexOf(subId);
+                                                    sim = mSubIds.indexOf(subId);
                                                     break;
                                                 }
                                             } catch (Exception e) {
@@ -704,12 +696,11 @@ public class MobileUtils {
                         if (name.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
-                                ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_NAME)) {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
-                                            for (long subId : subIds) {
+                                            for (long subId : mSubIds) {
                                                 String nameCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
                                                 if (!nameCurr.equals(""))
                                                     name.add(nameCurr);
@@ -832,12 +823,11 @@ public class MobileUtils {
                         if (code.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
-                                ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_CODE)) {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
-                                            for (long subId : subIds) {
+                                            for (long subId : mSubIds) {
                                                 String codeCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
                                                 if (!codeCurr.equals(""))
                                                     code.add(codeCurr);
@@ -940,12 +930,11 @@ public class MobileUtils {
                         if (imei.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
-                                ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_IMEI)) {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
-                                            for (long subId : subIds) {
+                                            for (long subId : mSubIds) {
                                                 String imeiCurr = (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
                                                 if (!imeiCurr.equals(""))
                                                     imei.add(imeiCurr);
