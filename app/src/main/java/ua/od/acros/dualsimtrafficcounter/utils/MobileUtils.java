@@ -535,22 +535,7 @@ public class MobileUtils {
                             }
                         } else {
                             Method[] cm = mTelephonyClass.getDeclaredMethods();
-                            ArrayList<Long> subIds = new ArrayList<>();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase(GET_SUBID)) {
-                                    m.setAccessible(true);
-                                    if (m.getParameterTypes().length > 0) {
-                                        for (int i = 0; i < simQuantity; i++) {
-                                            try {
-                                                subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
+                            ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                             for (Method m : cm) {
                                 if (m.getName().equalsIgnoreCase(GET_CALL)) {
                                     m.setAccessible(true);
@@ -626,6 +611,30 @@ public class MobileUtils {
                 return Constants.SIM1;
     }
 
+    private static ArrayList<Long> getSubIds(Method[] methods, int simQuantity, Context context, Class<?> telephony) {
+        ArrayList<Long> subIds = new ArrayList<>();
+        try {
+            for (Method m : methods) {
+                if (m.getName().equalsIgnoreCase(GET_SUBID)) {
+                    m.setAccessible(true);
+                    if (m.getParameterTypes().length > 0) {
+                        for (int i = 0; i < simQuantity; i++) {
+                            try {
+                                subIds.add(i, (long) m.invoke(telephony.getConstructor(Context.class).newInstance(context), i));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subIds;
+    }
+
     public static ArrayList<String> getOperatorNames(Context context) {
         String out = "";
         ArrayList<String> name = new ArrayList<>();
@@ -695,22 +704,7 @@ public class MobileUtils {
                         if (name.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
-                                ArrayList<Long> subIds = new ArrayList<>();
-                                for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase(GET_SUBID)) {
-                                        m.setAccessible(true);
-                                        if (m.getParameterTypes().length > 0) {
-                                            for (int i = 0; i < simQuantity; i++) {
-                                                try {
-                                                    subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
+                                ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_NAME)) {
                                         m.setAccessible(true);
@@ -838,22 +832,7 @@ public class MobileUtils {
                         if (code.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
-                                ArrayList<Long> subIds = new ArrayList<>();
-                                for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase(GET_SUBID)) {
-                                        m.setAccessible(true);
-                                        if (m.getParameterTypes().length > 0) {
-                                            for (int i = 0; i < simQuantity; i++) {
-                                                try {
-                                                    subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
+                                ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_CODE)) {
                                         m.setAccessible(true);
@@ -961,22 +940,7 @@ public class MobileUtils {
                         if (imei.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
-                                ArrayList<Long> subIds = new ArrayList<>();
-                                for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase(GET_SUBID)) {
-                                        m.setAccessible(true);
-                                        if (m.getParameterTypes().length > 0) {
-                                            for (int i = 0; i < simQuantity; i++) {
-                                                try {
-                                                    subIds.add(i, (long) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
+                                ArrayList<Long> subIds = getSubIds(cm, simQuantity, context, mTelephonyClass);
                                 for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase(GET_IMEI)) {
                                         m.setAccessible(true);
