@@ -83,7 +83,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                     if (imei.equals(id.get(i)))
                                         sim = i;
                                 }
-                                XposedBridge.log("Outgoing call answered: " + imei);
+                                XposedBridge.log("Outgoing call answered: " + sim);
                                 EventBus.getDefault().post(new ProcessCallEvent(sim));
                             }
                         }

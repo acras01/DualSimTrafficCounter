@@ -369,6 +369,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     private void startTask(Context context, String number) {
+        mIsOutgoing = false;
         final Context ctx = context;
         this.number[0] = number.replaceAll("[\\s\\-()]", "");
         //number[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
@@ -434,6 +435,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             mIsDialogShown = false;
                             break;
                         default:
+                            mIsOutgoing = false;
                             break;
                     }
             }
