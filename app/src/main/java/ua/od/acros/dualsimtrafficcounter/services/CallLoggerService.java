@@ -6,11 +6,13 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -32,8 +34,6 @@ import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
-import ua.od.acros.dualsimtrafficcounter.events.DurationCallEvent;
-import ua.od.acros.dualsimtrafficcounter.events.ProcessCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -70,6 +70,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private final String[] number = new String[1];
     private boolean mLimitHasChanged;
     private long[] mLimits = new long[3];
+    private BroadcastReceiver callAnsweredReceiver, callEndedReceiver;
 
     public CallLoggerService() {
     }
@@ -101,45 +102,203 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-    }
 
-    @Subscribe
-    public void onMessageEvent(DurationCallEvent event) {
-        if (mIsOutgoing) {
-            mIsDialogShown = false;
-            mIsOutgoing = false;
-            if (mCountTimer != null)
-                mCountTimer.cancel();
-            mVibrator.cancel();
-            int sim = event.sim;
-            long duration = event.duration;
-            Toast.makeText(mContext, mOperatorNames[sim] + ": " +
-                    DataFormat.formatCallDuration(mContext, duration), Toast.LENGTH_LONG).show();
-            DateTime now = new DateTime();
-            mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-            mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
-            switch (sim) {
-                case Constants.SIM1:
-                    mCalls.put(Constants.CALLS1_EX, duration + (long) mCalls.get(Constants.CALLS1_EX));
-                    if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
-                        duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                    mCalls.put(Constants.CALLS1, duration + (long) mCalls.get(Constants.CALLS1));
-                    break;
-                case Constants.SIM2:
-                    mCalls.put(Constants.CALLS2_EX, duration + (long) mCalls.get(Constants.CALLS2_EX));
-                    if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
-                        duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                    mCalls.put(Constants.CALLS2, duration + (long) mCalls.get(Constants.CALLS2));
-                    break;
-                case Constants.SIM3:
-                    mCalls.put(Constants.CALLS3_EX, duration + (long) mCalls.get(Constants.CALLS3_EX));
-                    if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
-                        duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                    mCalls.put(Constants.CALLS3, duration + (long) mCalls.get(Constants.CALLS3));
-                    break;
+        callAnsweredReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (mIsOutgoing) {
+                    //final String[] out = {"Call Starts\n"};
+                    mCalls = MyDatabaseHelper.readCallsData(mDbHelper);
+                    String lim, inter;
+                    long currentDuration = 0;
+                    int interval = 10;
+                    long limit = Long.MAX_VALUE;
+                    int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+                    DateTime now = new DateTime();
+                    DateTime dt;
+                    String lastDate = (String) mCalls.get(Constants.LAST_DATE);
+                    if (lastDate.equals(""))
+                        dt = now;
+                    else
+                        dt = fmtDate.parseDateTime(lastDate);
+                    String[] simPref;
+                    if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
+                        simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
+                                Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
+                        mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mCalls, mPrefs, simPref);
+                        if (mResetTime1 != null) {
+                            mIsResetNeeded1 = true;
+                            mPrefs.edit()
+                                    .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
+                                    .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
+                                    .apply();
+                        }
+                        if (mSimQuantity >= 2) {
+                            simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
+                                    Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+                            mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mCalls, mPrefs, simPref);
+                            if (mResetTime2 != null) {
+                                mIsResetNeeded2 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
+                                        .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                                        .apply();
+                            }
+                        }
+                        if (mSimQuantity == 3) {
+                            simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
+                                    Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+                            mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mCalls, mPrefs, simPref);
+                            if (mResetTime3 != null) {
+                                mIsResetNeeded3 = true;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
+                                        .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
+                                        .apply();
+                            }
+                        }
+                        mResetRuleHasChanged = false;
+                    }
+                    switch (sim) {
+                        case Constants.SIM1:
+                            if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
+                                mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
+                                mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+                                mCalls.put(Constants.CALLS1, 0L);
+                                mCalls.put(Constants.CALLS1_EX, 0L);
+                                MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                                mIsResetNeeded1 = false;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
+                                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
+                                        .apply();
+                            }
+                            currentDuration = (long) mCalls.get(Constants.CALLS1);
+                            lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
+                            inter = mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0");
+                            if (!inter.equals(""))
+                                interval = Integer.valueOf(inter) * Constants.SECOND;
+                            if (!lim.equals(""))
+                                limit = Long.valueOf(lim) * Constants.MINUTE;
+                            break;
+                        case Constants.SIM2:
+                            if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
+                                mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
+                                mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+                                mCalls.put(Constants.CALLS2, 0L);
+                                mCalls.put(Constants.CALLS3_EX, 0L);
+                                MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                                mIsResetNeeded2 = false;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
+                                        .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                                        .apply();
+                            }
+                            currentDuration = (long) mCalls.get(Constants.CALLS2);
+                            lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
+                            inter = mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0");
+                            if (!inter.equals(""))
+                                interval = Integer.valueOf(inter) * Constants.SECOND;
+                            if (!lim.equals(""))
+                                limit = Long.valueOf(lim) * Constants.MINUTE;
+                            break;
+                        case Constants.SIM3:
+                            if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
+                                mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
+                                mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+                                mCalls.put(Constants.CALLS3, 0L);
+                                mCalls.put(Constants.CALLS3_EX, 0L);
+                                MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                                mIsResetNeeded3 = false;
+                                mPrefs.edit()
+                                        .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
+                                        .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
+                                        .apply();
+                            }
+                            currentDuration = (long) mCalls.get(Constants.CALLS3);
+                            lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
+                            inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
+                            if (!inter.equals(""))
+                                interval = Integer.valueOf(inter) * Constants.SECOND;
+                            if (!lim.equals(""))
+                                limit = Long.valueOf(lim) * Constants.MINUTE;
+                            break;
+                    }
+                    long timeToVibrate;
+                    if (limit - currentDuration <= interval)
+                        timeToVibrate = 0;
+                    else
+                        timeToVibrate = limit - currentDuration - interval;
+                    //out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
+                    mCountTimer = new CountDownTimer(timeToVibrate, Constants.SECOND) {
+                        public void onTick(long millisUntilFinished) {
+                            //out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
+                        }
+
+                        public void onFinish() {
+                            if (mVibrator.hasVibrator())
+                                vibrate(mVibrator, Constants.SECOND, Constants.SECOND / 2);
+                            //out[0] += "Limit reached\n";
+                        }
+                    }.start();
+            /*try {
+                // to this path add a new directory path
+                File dir = new File(String.valueOf(mContext.getFilesDir()));
+                // create this directory if not already created
+                dir.mkdir();
+                // create the file in which we will write the contents
+                String fileName = "call_log.txt";
+                File file = new File(dir, fileName);
+                FileOutputStream os = new FileOutputStream(file, true);
+                os.write(out[0].getBytes());
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+                }
             }
-            MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
-            refreshWidgetAndNotification(mContext, sim, duration);
+        };
+        IntentFilter answer = new IntentFilter(Constants.OUTGOING_CALL_ANSWERED);
+        registerReceiver(callAnsweredReceiver, answer);
+
+        callEndedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (mIsOutgoing) {
+                    mIsDialogShown = false;
+                    mIsOutgoing = false;
+                    if (mCountTimer != null)
+                        mCountTimer.cancel();
+                    mVibrator.cancel();
+                    int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+                    long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
+                    Toast.makeText(context, mOperatorNames[sim] + ": " +
+                            DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
+                    DateTime now = new DateTime();
+                    mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
+                    mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+                    switch (sim) {
+                        case Constants.SIM1:
+                            mCalls.put(Constants.CALLS1_EX, duration + (long) mCalls.get(Constants.CALLS1_EX));
+                            if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
+                                duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
+                            mCalls.put(Constants.CALLS1, duration + (long) mCalls.get(Constants.CALLS1));
+                            break;
+                        case Constants.SIM2:
+                            mCalls.put(Constants.CALLS2_EX, duration + (long) mCalls.get(Constants.CALLS2_EX));
+                            if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
+                                duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
+                            mCalls.put(Constants.CALLS2, duration + (long) mCalls.get(Constants.CALLS2));
+                            break;
+                        case Constants.SIM3:
+                            mCalls.put(Constants.CALLS3_EX, duration + (long) mCalls.get(Constants.CALLS3_EX));
+                            if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
+                                duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
+                            mCalls.put(Constants.CALLS3, duration + (long) mCalls.get(Constants.CALLS3));
+                            break;
+                    }
+                    MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                    refreshWidgetAndNotification(context, sim, duration);
             /*String out = "Call Ends\n";
             try {
                 // to this path add a new directory path
@@ -155,161 +314,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
-        }
-    }
-
-    @Subscribe
-    public void onMessageEvent(ProcessCallEvent event) {
-        if (mIsOutgoing) {
-            //final String[] out = {"Call Starts\n"};
-            mCalls = MyDatabaseHelper.readCallsData(mDbHelper);
-            String lim, inter;
-            long currentDuration = 0;
-            int interval = 10;
-            long limit = Long.MAX_VALUE;
-            int sim = event.sim;
-            DateTime now = new DateTime();
-            DateTime dt;
-            String lastDate = (String) mCalls.get(Constants.LAST_DATE);
-            if (lastDate.equals(""))
-                dt = now;
-            else
-                dt = fmtDate.parseDateTime(lastDate);
-            String[] simPref;
-            if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
-                simPref = new String[] {Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
-                        Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
-                mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mCalls, mPrefs, simPref);
-                if (mResetTime1 != null) {
-                    mIsResetNeeded1 = true;
-                    mPrefs.edit()
-                            .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
-                            .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
-                            .apply();
                 }
-                if (mSimQuantity >= 2) {
-                    simPref = new String[] {Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
-                            Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
-                    mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mCalls, mPrefs, simPref);
-                    if (mResetTime2 != null) {
-                        mIsResetNeeded2 = true;
-                        mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
-                                .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
-                                .apply();
-                    }
-                }
-                if (mSimQuantity == 3) {
-                    simPref = new String[] {Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
-                            Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
-                    mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mCalls, mPrefs, simPref);
-                    if (mResetTime3 != null) {
-                        mIsResetNeeded3 = true;
-                        mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
-                                .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
-                                .apply();
-                    }
-                }
-                mResetRuleHasChanged = false;
             }
-            switch (sim) {
-                case Constants.SIM1:
-                    if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
-                        mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-                        mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
-                        mCalls.put(Constants.CALLS1, 0L);
-                        mCalls.put(Constants.CALLS1_EX, 0L);
-                        MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
-                        mIsResetNeeded1 = false;
-                        mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
-                                .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
-                                .apply();
-                    }
-                    currentDuration = (long) mCalls.get(Constants.CALLS1);
-                    lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
-                    inter = mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0");
-                    if (!inter.equals(""))
-                        interval = Integer.valueOf(inter) * Constants.SECOND;
-                    if (!lim.equals(""))
-                        limit = Long.valueOf(lim) * Constants.MINUTE;
-                    break;
-                case Constants.SIM2:
-                    if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
-                        mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-                        mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
-                        mCalls.put(Constants.CALLS2, 0L);
-                        mCalls.put(Constants.CALLS3_EX, 0L);
-                        MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
-                        mIsResetNeeded2 = false;
-                        mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
-                                .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
-                                .apply();
-                    }
-                    currentDuration = (long) mCalls.get(Constants.CALLS2);
-                    lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
-                    inter = mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0");
-                    if (!inter.equals(""))
-                        interval = Integer.valueOf(inter) * Constants.SECOND;
-                    if (!lim.equals(""))
-                        limit = Long.valueOf(lim) * Constants.MINUTE;
-                    break;
-                case Constants.SIM3:
-                    if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
-                        mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-                        mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
-                        mCalls.put(Constants.CALLS3, 0L);
-                        mCalls.put(Constants.CALLS3_EX, 0L);
-                        MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
-                        mIsResetNeeded3 = false;
-                        mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
-                                .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
-                                .apply();
-                    }
-                    currentDuration = (long) mCalls.get(Constants.CALLS3);
-                    lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
-                    inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
-                    if (!inter.equals(""))
-                        interval = Integer.valueOf(inter) * Constants.SECOND;
-                    if (!lim.equals(""))
-                        limit = Long.valueOf(lim) * Constants.MINUTE;
-                    break;
-            }
-            long timeToVibrate;
-            if (limit - currentDuration <= interval)
-                timeToVibrate = 0;
-            else
-                timeToVibrate = limit - currentDuration - interval;
-            //out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
-            mCountTimer = new android.os.CountDownTimer(timeToVibrate, Constants.SECOND) {
-                public void onTick(long millisUntilFinished) {
-                    //out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
-                }
-
-                public void onFinish() {
-                    if (mVibrator.hasVibrator())
-                        vibrate(mVibrator, Constants.SECOND, Constants.SECOND / 2);
-                    //out[0] += "Limit reached\n";
-                }
-            }.start();
-            /*try {
-                // to this path add a new directory path
-                File dir = new File(String.valueOf(mContext.getFilesDir()));
-                // create this directory if not already created
-                dir.mkdir();
-                // create the file in which we will write the contents
-                String fileName = "call_log.txt";
-                File file = new File(dir, fileName);
-                FileOutputStream os = new FileOutputStream(file, true);
-                os.write(out[0].getBytes());
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-        }
+        };
+        IntentFilter end = new IntentFilter(Constants.OUTGOING_CALL_ENDED);
+        registerReceiver(callEndedReceiver, end);
     }
 
     @Subscribe
@@ -547,6 +556,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         MyDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+        unregisterReceiver(callAnsweredReceiver);
+        unregisterReceiver(callEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().unregister(this);
     }

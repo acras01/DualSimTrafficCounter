@@ -2,10 +2,9 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.app.AndroidAppHelper;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.telephony.TelephonyManager;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +17,6 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import ua.od.acros.dualsimtrafficcounter.events.DurationCallEvent;
-import ua.od.acros.dualsimtrafficcounter.events.ProcessCallEvent;
 
 public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
@@ -84,7 +81,9 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                         sim = i;
                                 }
                                 XposedBridge.log("Outgoing call answered: " + sim);
-                                EventBus.getDefault().post(new ProcessCallEvent(sim));
+                                Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
+                                i.putExtra(Constants.SIM_ACTIVE, sim);
+                                mContext.sendBroadcast(i);
                             }
                         }
                     }
@@ -115,7 +114,10 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                 mPrePreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING")) {
                             long durationMillis = System.currentTimeMillis() - start[0];
                             XposedBridge.log(sim[0] + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                            EventBus.getDefault().post(new DurationCallEvent(sim[0], durationMillis));
+                            Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
+                            i.putExtra(Constants.SIM_ACTIVE, sim[0]);
+                            i.putExtra(Constants.CALL_DURATION, durationMillis);
+                            mContext.sendBroadcast(i);
                         }
                     }
                 });
@@ -142,7 +144,9 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                             sim[0] = MobileUtils.getSimId(mContext);
                                             start[0] = System.currentTimeMillis();
                                             XposedBridge.log("Outgoing call answered: " + sim[0]);
-                                            EventBus.getDefault().post(new ProcessCallEvent(sim[0]));
+                                            Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
+                                            i.putExtra(Constants.SIM_ACTIVE, sim[0]);
+                                            mContext.sendBroadcast(i);
                                         }
                                     }
                                 }
@@ -173,7 +177,10 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     }
                     long durationMillis = (long) XposedHelpers.callMethod(conn, "getDurationMillis");
                     XposedBridge.log(imei + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                    EventBus.getDefault().post(new DurationCallEvent(sim, durationMillis));
+                    Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
+                    i.putExtra(Constants.SIM_ACTIVE, sim);
+                    i.putExtra(Constants.CALL_DURATION, durationMillis);
+                    mContext.sendBroadcast(i);
                 }
             } catch (Throwable t) {
                 XposedBridge.log(t);
