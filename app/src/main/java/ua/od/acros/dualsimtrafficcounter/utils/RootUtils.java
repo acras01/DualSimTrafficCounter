@@ -12,29 +12,44 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class RootUtils {
-    private static Handler mHandler;
+    static class MyHandler extends Handler {
+        private final Context mContext;
+
+        MyHandler(Context context) {
+            mContext = context;
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.arg1) {
+                case 0:
+                    Toast.makeText(mContext, "Can't get root access or denied by user", Toast.LENGTH_LONG).show();
+                    break;
+                case 1:
+                    Toast.makeText(mContext, "Root access granted", Toast.LENGTH_LONG).show();
+                    break;
+                case 2:
+                    Toast.makeText(mContext, "Root access rejected for current UID", Toast.LENGTH_LONG).show();
+                    break;
+                case 3:
+                    Toast.makeText(mContext, "Probably, your device is not rooted", Toast.LENGTH_LONG).show();
+                    break;
+                case 4:
+                    Toast.makeText(mContext, "Error executing root action", Toast.LENGTH_LONG).show();
+                    break;
+                case 5:
+                    Toast.makeText(mContext, "Can't get root access", Toast.LENGTH_LONG).show();
+                    break;
+                case 6:
+                    Toast.makeText(mContext, "Error executing internal operation", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    }
 
     public static boolean canRunRootCommands(final Context context) {
         boolean result;
         Process suProcess;
-        mHandler = new Handler() {
-            public void handleMessage(Message msg) {
-                switch (msg.arg1) {
-                    case 0:
-                        Toast.makeText(context, "Can't get root access or denied by user", Toast.LENGTH_LONG).show();
-                        break;
-                    case 1:
-                        Toast.makeText(context, "Root access granted", Toast.LENGTH_LONG).show();
-                        break;
-                    case 2:
-                        Toast.makeText(context, "Root access rejected for current UID", Toast.LENGTH_LONG).show();
-                        break;
-                    case 3:
-                        Toast.makeText(context, "Probably, your device is not rooted", Toast.LENGTH_LONG).show();
-                        break;
-                }
-            }
-        };
+        MyHandler handler = new MyHandler(context);
         try {
             suProcess = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(suProcess.getOutputStream());
@@ -49,17 +64,17 @@ public class RootUtils {
                 result = false;
                 exitSu = false;
                 //0
-                mHandler.sendMessage(mHandler.obtainMessage(0));
+                handler.sendMessage(handler.obtainMessage(0));
             } else if (currUid.contains("uid=0")) {
                 result = true;
                 exitSu = true;
                 //1
-                mHandler.sendMessage(mHandler.obtainMessage(1));
+                handler.sendMessage(handler.obtainMessage(1));
             } else {
                 result = false;
                 exitSu = true;
                 //2
-                mHandler.sendMessage(mHandler.obtainMessage(2));
+                handler.sendMessage(handler.obtainMessage(2));
             }
             if (exitSu) {
                 os.writeBytes("exit\n");
@@ -70,13 +85,14 @@ public class RootUtils {
             // Probably broken pipe exception on trying to write to output stream (os) after su failed, meaning that the device is not rooted
             result = false;
             //3
-            mHandler.sendMessage(mHandler.obtainMessage(3));
+            handler.sendMessage(handler.obtainMessage(3));
         }
         return result;
     }
 
     public static boolean executeAsRoot(Context context, ArrayList<String> commands) {
         boolean result = false;
+        MyHandler handler = new MyHandler(context);
         try {
             if (commands != null && commands.size() > 0) {
                 Process suProcess = Runtime.getRuntime().exec("su");
@@ -92,15 +108,19 @@ public class RootUtils {
                     result = suProcess.waitFor() != 255;
                 }
                 catch (Exception ex) {
-                    Toast.makeText(context, "Error executing root action [" + ex.getClass().getName() + "] : " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                    //4
+                    handler.sendMessage(handler.obtainMessage(4));
                 }
             }
         } catch (IOException ex) {
-            Toast.makeText(context, "Can't get root access [" + ex.getClass().getName() + "] : " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            //5
+            handler.sendMessage(handler.obtainMessage(5));
         } catch (SecurityException ex) {
-            Toast.makeText(context, "Can't get root access [" + ex.getClass().getName() + "] : " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            //5
+            handler.sendMessage(handler.obtainMessage(5));
         } catch (Exception ex) {
-            Toast.makeText(context, "Error executing internal operation [" + ex.getClass().getName() + "] : " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            //6
+            handler.sendMessage(handler.obtainMessage(6));
         }
         return result;
     }
