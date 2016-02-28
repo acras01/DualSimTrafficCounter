@@ -18,6 +18,7 @@ public class RootUtils {
         MyHandler(Context context) {
             mContext = context;
         }
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.arg1) {
