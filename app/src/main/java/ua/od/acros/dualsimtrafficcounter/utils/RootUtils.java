@@ -1,6 +1,8 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -10,9 +12,29 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class RootUtils {
-    public static boolean canRunRootCommands(Context context) {
+    private static Handler mHandler;
+
+    public static boolean canRunRootCommands(final Context context) {
         boolean result;
         Process suProcess;
+        mHandler = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.arg1) {
+                    case 0:
+                        Toast.makeText(context, "Can't get root access or denied by user", Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        Toast.makeText(context, "Root access granted", Toast.LENGTH_LONG).show();
+                        break;
+                    case 2:
+                        Toast.makeText(context, "Root access rejected for current UID", Toast.LENGTH_LONG).show();
+                        break;
+                    case 3:
+                        Toast.makeText(context, "Probably, your device is not rooted", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        };
         try {
             suProcess = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(suProcess.getOutputStream());
@@ -26,15 +48,18 @@ public class RootUtils {
             if (currUid == null) {
                 result = false;
                 exitSu = false;
-                Toast.makeText(context, "Can't get root access or denied by user", Toast.LENGTH_LONG).show();
+                //0
+                mHandler.sendMessage(mHandler.obtainMessage(0));
             } else if (currUid.contains("uid=0")) {
                 result = true;
                 exitSu = true;
-                Toast.makeText(context, "Root access granted", Toast.LENGTH_LONG).show();
+                //1
+                mHandler.sendMessage(mHandler.obtainMessage(1));
             } else {
                 result = false;
                 exitSu = true;
-                Toast.makeText(context, "Root access rejected: " + currUid, Toast.LENGTH_LONG).show();
+                //2
+                mHandler.sendMessage(mHandler.obtainMessage(2));
             }
             if (exitSu) {
                 os.writeBytes("exit\n");
@@ -44,7 +69,8 @@ public class RootUtils {
             // Can't get root !
             // Probably broken pipe exception on trying to write to output stream (os) after su failed, meaning that the device is not rooted
             result = false;
-            Toast.makeText(context, "Root access rejected [" + e.getClass().getName() + "] : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            //3
+            mHandler.sendMessage(mHandler.obtainMessage(3));
         }
         return result;
     }
