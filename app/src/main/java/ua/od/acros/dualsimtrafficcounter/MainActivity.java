@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .beginTransaction()
                             .add(R.id.content_frame, mTest)
                             .commit();
-                    mNavigationView.getMenu().findItem(R.id.nav_test).setChecked(true);
+                    mNavigationView.setCheckedItem(R.id.nav_test);
                 }
             } else {
                 getSupportFragmentManager()
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .add(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
-                mNavigationView.getMenu().findItem(R.id.nav_traffic).setChecked(true);
+                mNavigationView.setCheckedItem(R.id.nav_traffic);
             }
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         } else if (action != null && action.equals("tap") && savedInstanceState == null) {
@@ -179,14 +179,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
-                mNavigationView.getMenu().findItem(R.id.nav_traffic).setChecked(true);
+                mNavigationView.setCheckedItem(R.id.nav_traffic);
             } else {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.content_frame, mCalls)
                         .addToBackStack(Constants.CALLS_TAG)
                         .commit();
-                mNavigationView.getMenu().findItem(R.id.nav_calls).setChecked(true);
+                mNavigationView.setCheckedItem(R.id.nav_calls);
             }
         } else {
             if (savedInstanceState == null) {
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .add(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
-                mNavigationView.getMenu().findItem(R.id.nav_traffic).setChecked(true);
+                mNavigationView.setCheckedItem(R.id.nav_traffic);
             }
         }
     }
@@ -205,12 +205,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (!mTraffic.isVisible())
+        } else if (!mTraffic.isVisible()) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_frame, mTraffic)
                     .commit();
-            else
+            mNavigationView.setCheckedItem(R.id.nav_traffic);
+        } else
                 finish();
 
     }
@@ -365,19 +366,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if (currentFragment instanceof CallsFragment)
+            if (currentFragment instanceof CallsFragment) {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .remove(currentFragment)
                         .replace(R.id.content_frame, mTraffic)
                         .commit();
+                mNavigationView.setCheckedItem(R.id.nav_traffic);
+            }
         }
-        if (mNeedsRestart && mTraffic.isVisible())
+        if (mNeedsRestart && mTraffic.isVisible()) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .detach(mTraffic)
                     .attach(mTraffic)
                     .commit();
+            mNavigationView.setCheckedItem(R.id.nav_traffic);
+        }
     }
 
     @Override
@@ -412,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        mNavigationView.getMenu().findItem(id).setChecked(true);
+        mNavigationView.setCheckedItem(id);
         Fragment newFragment = null;
         FragmentManager fm = getSupportFragmentManager();
         String tag = "";
