@@ -194,4 +194,5 @@
     <string name="service_stop">Service has been stopped. Please, start service first</string>
     <string name="show_rx_tx">Show received/transmitted on widget</string>
     <string name="show_used_left">Show used/left</string>
+    <string name="show_rx_tx_sum">RX/TX</string>
 </resources>

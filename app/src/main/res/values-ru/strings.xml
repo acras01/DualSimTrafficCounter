@@ -185,4 +185,7 @@
     <string name="show_remaining_calls_widget">Показывать остаток минут на виджете</string>
     <string name="show_remaining_widget">Показывать остаток трафика на виджете</string>
     <string name="service_stop">Сервис остановлен. Пожалуйста, сперва запустите сервис</string>
+    <string name="show_rx_tx">Показывать получено/отправлено на виджете</string>
+    <string name="show_used_left">Использ./Остаток</string>
+    <string name="show_rx_tx_sum">Пол./Отпр.</string>
 </resources>

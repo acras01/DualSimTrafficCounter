@@ -205,7 +205,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsListFr
         remainSum.setEnabled(!info.isChecked());
         rxtxSum = (TextView) findViewById(R.id.rx_tx_summary);
         if (rxtx.isChecked())
-            rxtxSum.setText(R.string.show_rx_tx);
+            rxtxSum.setText(R.string.show_rx_tx_sum);
         else
             rxtxSum.setText(R.string.show_used_left);
         rxtx.setEnabled(info.isChecked());
@@ -668,14 +668,17 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsListFr
                 break;
             case R.id.info:
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], isChecked);
-                if (isChecked) {
+                if (isChecked)
                     infoSum.setText(R.string.all);
-                    mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false);
-                } else
+                else
                     infoSum.setText(R.string.only_total);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], !isChecked);
+                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], isChecked);
                 remain.setEnabled(!isChecked);
+                remain.setChecked(!isChecked);
                 remainSum.setEnabled(!isChecked);
                 rxtx.setEnabled(isChecked);
+                rxtx.setChecked(isChecked);
                 rxtxSum.setEnabled(isChecked);
                 break;
             case R.id.speed:
@@ -750,7 +753,7 @@ public class TrafficWidgetConfigActivity extends Activity implements IconsListFr
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], !isChecked);
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], isChecked);
                 if (isChecked)
-                    rxtxSum.setText(R.string.show_rx_tx);
+                    rxtxSum.setText(R.string.show_rx_tx_sum);
                 else
                     rxtxSum.setText(R.string.show_used_left);
                 break;

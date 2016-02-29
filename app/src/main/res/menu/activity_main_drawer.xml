@@ -2,18 +2,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:title="@string/traffic">
+        <item android:id="@+id/nav_traffic_menu"
+            android:title="@string/traffic">
             <menu>
-                <item android:id="@+id/nav_traffic" android:title="@string/notification_title" />
-                <item android:id="@+id/nav_test" android:title="@string/action_show_test" />
-                <item android:id="@+id/nav_traf_for_date" android:title="@string/action_show_history" />
-                <item android:id="@+id/nav_set_usage" android:title="@string/action_set_usage" />
+                <item android:id="@+id/nav_traffic"
+                    android:title="@string/notification_title"
+                    android:checkable="true" />
+                <item android:id="@+id/nav_test"
+                    android:title="@string/action_show_test"
+                    android:checkable="true" />
+                <item android:id="@+id/nav_traf_for_date"
+                    android:title="@string/action_show_history"
+                    android:checkable="true" />
+                <item android:id="@+id/nav_set_usage"
+                    android:title="@string/action_set_usage"
+                    android:checkable="true" />
             </menu>
         </item>
-        <item android:id="@+id/nav_calls_menu" android:title="@string/calls">
+        <item android:id="@+id/nav_calls_menu"
+            android:title="@string/calls">
             <menu>
-                <item android:id="@+id/nav_calls" android:title="@string/calls_fragment" />
-                <item android:id="@+id/nav_set_duration" android:title="@string/action_set_duration" />
+                <item android:id="@+id/nav_calls"
+                    android:title="@string/calls_fragment"
+                    android:checkable="true"/>
+                <item android:id="@+id/nav_set_duration"
+                    android:title="@string/action_set_duration"
+                    android:checkable="true" />
             </menu>
         </item>
     </group>
