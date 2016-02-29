@@ -15,8 +15,8 @@ android {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 14
         targetSdkVersion 16
-        versionCode 46
-        versionName '1.4.6'
+        versionCode 47
+        versionName '1.4.7'
         signingConfig signingConfigs.acras
         generatedDensities = []
     }
