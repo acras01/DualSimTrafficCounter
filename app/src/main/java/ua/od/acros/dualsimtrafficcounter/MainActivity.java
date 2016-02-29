@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSetUsage, mCalls, mSetDuration;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
+    private NavigationView mNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +86,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         //Prepare Navigation View Menu
-        MenuItem mTestItem = navigationView.getMenu().findItem(R.id.nav_test);
+        MenuItem mTestItem = mNavigationView.getMenu().findItem(R.id.nav_test);
         if (MTKUtils.isMtkDevice() &&
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mTestItem.setVisible(true);
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mTestItem.setEnabled(false);
         }
 
-        mCallsItem = navigationView.getMenu().findItem(R.id.nav_calls_menu);
+        mCallsItem = mNavigationView.getMenu().findItem(R.id.nav_calls_menu);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
             mCallsItem.setVisible(true);
             mCallsItem.setEnabled(true);
@@ -109,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         //set Version in Navigation View Header
-        //View headerLayout = navigationView.findViewById(R.id.headerLayout);
-        View headerLayout = navigationView.getHeaderView(0);
+        //View headerLayout = mNavigationView.findViewById(R.id.headerLayout);
+        View headerLayout = mNavigationView.getHeaderView(0);
         TextView versionView = (TextView) headerLayout.findViewById(R.id.versioninfo);
         String version;
         try {
@@ -155,38 +156,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showDialog(MTK);
             if (MTKUtils.isMtkDevice() &&
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                if (savedInstanceState == null)
+                if (savedInstanceState == null) {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .add(R.id.content_frame, mTest)
                             .commit();
-            } else
+                    mNavigationView.getMenu().findItem(R.id.nav_test).setChecked(true);
+                }
+            } else {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
+                mNavigationView.getMenu().findItem(R.id.nav_traffic).setChecked(true);
+            }
             mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         } else if (action != null && action.equals("tap") && savedInstanceState == null) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true))
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
-            else
+                mNavigationView.getMenu().findItem(R.id.nav_traffic).setChecked(true);
+            } else {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.content_frame, mCalls)
                         .addToBackStack(Constants.CALLS_TAG)
                         .commit();
+                mNavigationView.getMenu().findItem(R.id.nav_calls).setChecked(true);
+            }
         } else {
-            if (savedInstanceState == null)
+            if (savedInstanceState == null) {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
+                mNavigationView.getMenu().findItem(R.id.nav_traffic).setChecked(true);
+            }
         }
     }
 
@@ -401,10 +411,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        mNavigationView.getMenu().findItem(id).setChecked(true);
         Fragment newFragment = null;
         FragmentManager fm = getSupportFragmentManager();
         String tag = "";
-        switch (item.getItemId()) {
+        switch (id) {
             case R.id.nav_traffic:
                 tag = Constants.TRAFFIC_TAG;
                 newFragment = mTraffic;
