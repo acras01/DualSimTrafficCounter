@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.os.PowerManager;
 
+import com.stericson.RootShell.RootShell;
+
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
@@ -26,7 +28,7 @@ public class MyApplication extends Application {
         super.onCreate();
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
-        mHasRoot = RootUtils.canRunRootCommands(getApplicationContext());
+        mHasRoot = RootShell.isAccessGiven();
     }
 
     public static boolean isActivityVisible() {

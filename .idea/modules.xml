@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DualSimTrafficCounter.iml" filepath="$PROJECT_DIR$/DualSimTrafficCounter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RootShell/RootShell.iml" filepath="$PROJECT_DIR$/RootShell/RootShell.iml" />
       <module fileurl="file://$PROJECT_DIR$/XposedBridge/XposedBridge.iml" filepath="$PROJECT_DIR$/XposedBridge/XposedBridge.iml" />
       <module fileurl="file://$PROJECT_DIR$/acra/acra.iml" filepath="$PROJECT_DIR$/acra/acra.iml" />
       <module fileurl="file://$PROJECT_DIR$/ambilwarna/ambilwarna.iml" filepath="$PROJECT_DIR$/ambilwarna/ambilwarna.iml" />

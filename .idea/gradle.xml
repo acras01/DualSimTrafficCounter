@@ -10,6 +10,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/RootShell" />
             <option value="$PROJECT_DIR$/XposedBridge" />
             <option value="$PROJECT_DIR$/acra" />
             <option value="$PROJECT_DIR$/ambilwarna" />

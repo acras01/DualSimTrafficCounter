@@ -36,8 +36,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.android.support:design:23.2.0'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile project(':joda-time-2.8.2')
     compile project(':mediatek-compatibility')
@@ -45,4 +45,5 @@ dependencies {
     compile project(':acra')
     compile project(':ambilwarna')
     provided project(':XposedBridge')
+    compile project(':RootShell')
 }
