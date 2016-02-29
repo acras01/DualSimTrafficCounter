@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+        drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         //set Version in Navigation View Header
+        //View headerLayout = navigationView.findViewById(R.id.headerLayout);
         View headerLayout = navigationView.getHeaderView(0);
         TextView versionView = (TextView) headerLayout.findViewById(R.id.versioninfo);
         String version;

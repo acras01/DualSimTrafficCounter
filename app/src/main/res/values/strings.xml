@@ -192,4 +192,6 @@
     <string name="show_remaining_widget" >Show remaining traffic on widget</string>
     <string name="show_remaining_calls_widget" >Show remaining call time on widget</string>
     <string name="service_stop">Service has been stopped. Please, start service first</string>
+    <string name="show_rx_tx">Show received/transmitted on widget</string>
+    <string name="show_used_left">Show used/left</string>
 </resources>

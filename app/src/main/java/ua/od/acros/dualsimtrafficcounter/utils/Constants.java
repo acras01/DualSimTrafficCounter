@@ -66,7 +66,8 @@ public class Constants {
             "user_pick1", "user_pick2", "user_pick3", //10
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
-            "showsim1","showsim2", "showsim3", "showdiv", "active", "day_night", "data_remain"}; //24
+            "showsim1","showsim2", "showsim3", "showdiv", "active", //22
+            "day_night", "data_remain", "rx_tx"}; //25
     public static final String[] PREF_WIDGET_CALLS = {"stub", "names", "icons", //2
             "logo1", "logo2", "logo3", //5
             "user_pick1", "user_pick2", "user_pick3", //8

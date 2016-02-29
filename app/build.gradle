@@ -18,6 +18,7 @@ android {
         versionCode 46
         versionName '1.4.6'
         signingConfig signingConfigs.acras
+        generatedDensities = []
     }
     buildTypes {
         release {
@@ -31,6 +32,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     productFlavors {
+    }
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
+    }
+    lintOptions {
+        disable 'MissingTranslation'
     }
 }
 
