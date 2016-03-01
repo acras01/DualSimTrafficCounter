@@ -26,8 +26,7 @@
                 android:layout_marginLeft="10dp"
                 android:checked="false"
                 android:layout_centerVertical="true"
-                android:layout_alignParentTop="true"
-                android:textColor="@android:color/primary_text_dark" />
+                android:layout_alignParentTop="true" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -46,8 +45,7 @@
                 android:layout_alignParentEnd="false"
                 android:layout_marginRight="10dp"
                 android:layout_alignLeft="@+id/checktotal"
-                android:layout_below="@+id/checktotal"
-                android:textColor="@android:color/primary_text_dark" />
+                android:layout_below="@+id/checktotal" />
 
             <LinearLayout
                 android:orientation="horizontal"
