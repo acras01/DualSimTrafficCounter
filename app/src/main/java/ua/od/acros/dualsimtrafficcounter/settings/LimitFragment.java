@@ -2,6 +2,7 @@ package ua.od.acros.dualsimtrafficcounter.settings;
 
 
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,11 +10,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.view.View;
 
 import java.util.Calendar;
 
@@ -42,6 +45,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
     private SharedPreferences mPrefs;
     private int mSimQuantity;
     private Context mContext;
+    private Toolbar mToolBar;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -60,9 +64,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.limit_settings);
 
-        Toolbar bar = SettingsActivity.getBar();
-        if (bar != null)
-            bar.setTitle(R.string.limit_title);
+        mToolBar = SettingsActivity.getBar();
+        if (mToolBar != null)
+            mToolBar.setTitle(R.string.limit_title);
 
         limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[1]);
         limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[1]);
@@ -193,6 +197,32 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 // simulate a click / call it!!
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
             }
+        }
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        super.onPreferenceTreeClick(preferenceScreen, preference);
+
+        // If the user has clicked on a preference screen, set up the screen
+        if (preference instanceof PreferenceScreen) {
+            setUpNestedScreen((PreferenceScreen) preference);
+        }
+
+        return false;
+    }
+
+    public void setUpNestedScreen(PreferenceScreen preferenceScreen) {
+        final Dialog dialog = preferenceScreen.getDialog();
+        if (mToolBar != null) {
+            mToolBar.setTitle(preferenceScreen.getTitle());
+            mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
         }
     }
 
