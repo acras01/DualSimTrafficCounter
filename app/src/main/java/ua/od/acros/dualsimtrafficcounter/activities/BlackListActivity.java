@@ -1,9 +1,11 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,12 +34,20 @@ public class BlackListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
 
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolBar);
-
-        ListView listView = (ListView) findViewById(R.id.listView);
+        SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (savedInstanceState == null) {
+            if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            else {
+                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                else
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            // Now recreate for it to take effect
+            recreate();
+        }
         mContext = getApplicationContext();
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
@@ -47,6 +57,13 @@ public class BlackListActivity extends AppCompatActivity {
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
+
+        setContentView(R.layout.activity_list);
+
+        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolBar);
+
+        ListView listView = (ListView) findViewById(R.id.listView);
         setTitle(mOperatorNames[mKey]);
 
         listView.setAdapter(mAdapter);

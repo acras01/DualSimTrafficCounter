@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -90,6 +91,18 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
 
         mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (icicle == null) {
+            if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            else {
+                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                else
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            // Now recreate for it to take effect
+            recreate();
+        }
         mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();

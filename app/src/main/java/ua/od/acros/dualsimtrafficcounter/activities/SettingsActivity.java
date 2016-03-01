@@ -2,9 +2,11 @@ package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +25,24 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private List<Header> mHeaders;
     private static Toolbar mToolBar;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (savedInstanceState == null) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            else {
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                else
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            // Now recreate for it to take effect
+            recreate();
+        }
         setTitle(R.string.action_settings);
         mToolBar = setToolBar();
         if (mToolBar != null) {
@@ -72,8 +87,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     public void onBuildHeaders(List<Header> target) {
-        if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
-                .getBoolean(Constants.PREF_OTHER[25], false))
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
             loadHeadersFromResource(R.xml.headers_xposed, target);
         else
             loadHeadersFromResource(R.xml.headers, target);

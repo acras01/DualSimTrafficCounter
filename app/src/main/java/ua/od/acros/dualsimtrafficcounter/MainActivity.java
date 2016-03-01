@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MenuItem mCallsItem;
     private NavigationView mNavigationView;
 
-    static {
+    /*static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.getBoolean(Constants.PREF_OTHER[28], true))
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +87,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
+
+        if (savedInstanceState == null) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            else {
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                else
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            // Now recreate for it to take effect
+            recreate();
+        }
 
         setContentView(R.layout.activity_main);
 
