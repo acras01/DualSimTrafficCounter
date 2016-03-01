@@ -132,6 +132,27 @@ public class MobileUtils {
                         try {
                             Method[] cm = mTelephonyClass.getDeclaredMethods();
                             for (Method m : cm) {
+                                if (m.getName().equalsIgnoreCase(GET_IMEI + "Ext")) {
+                                    m.setAccessible(true);
+                                    m.getParameterTypes();
+                                    if (m.getParameterTypes().length > 0) {
+                                        for (int i = 0; i < 2; i++) {
+                                            String id = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
+                                            String idNext = (String) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
+                                            if (idNext != null && !id.equals(idNext))
+                                                ret++;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    if (ret == 1)
+                        try {
+                            Method[] cm = mTelephonyClass.getDeclaredMethods();
+                            for (Method m : cm) {
                                 if (m.getName().equalsIgnoreCase(GET_IMEI)) {
                                     m.setAccessible(true);
                                     m.getParameterTypes();
@@ -368,6 +389,33 @@ public class MobileUtils {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
                                 for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_DATA + "Ext")) {
+                                        m.setAccessible(true);
+                                        m.getParameterTypes();
+                                        if (m.getParameterTypes().length > 0) {
+                                            state = (int) m.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
+                                            break;
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            if (state == TelephonyManager.DATA_CONNECTED
+                                    || state == TelephonyManager.DATA_CONNECTING
+                                    || state == TelephonyManager.DATA_SUSPENDED) {
+                                sim = i;
+                                out = "getDataStateExt " + sim;
+                                break;
+                            }
+                        }
+                    }
+                    if (sim == Constants.DISABLED) {
+                        for (int i = 0; i < simQuantity; i++) {
+                            int state = Constants.DISABLED;
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase("getITelephony")) {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
@@ -393,6 +441,7 @@ public class MobileUtils {
                             }
                         }
                     }
+
                     if (sim == Constants.DISABLED) {
                         for (int i = 0; i < simQuantity; i++) {
                             try {
@@ -544,6 +593,26 @@ public class MobileUtils {
                                                 }
                                             } catch (Exception e) {
                                                 e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (sim == Constants.DISABLED) {
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_CALL + "Ext")) {
+                                        m.setAccessible(true);
+                                        if (m.getParameterTypes().length > 0) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                try {
+                                                    int state = (int) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                                    if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                                                        sim = i;
+                                                        break;
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         }
                                     }
@@ -722,6 +791,26 @@ public class MobileUtils {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
                                 for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_NAME + "Ext")) {
+                                        m.setAccessible(true);
+                                        if (m.getParameterTypes().length > 0) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                name.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (name.size() > 0)
+                                    out = GET_NAME + "GeminiLong " + name.size();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (name.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
                                     if (m.getName().equalsIgnoreCase("from")) {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
@@ -823,6 +912,24 @@ public class MobileUtils {
                             }
                         }
                     } else {
+                        if (code.size() == 0) {
+                            try {
+                                Method[] cm = mTelephonyClass.getDeclaredMethods();
+                                for (Method m : cm) {
+                                    if (m.getName().equalsIgnoreCase(GET_CODE + "Ext")) {
+                                        m.setAccessible(true);
+                                        if (m.getParameterTypes().length > 0) {
+                                            for (int i = 0; i < simQuantity; i++) {
+                                                code.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                         if (code.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
@@ -954,11 +1061,11 @@ public class MobileUtils {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();
                                 for (Method m : cm) {
-                                    if (m.getName().equalsIgnoreCase(GET_IMEI)) {
+                                    if (m.getName().equalsIgnoreCase(GET_IMEI + "Ext")) {
                                         m.setAccessible(true);
                                         if (m.getParameterTypes().length > 0) {
                                             for (int i = 0; i < simQuantity; i++) {
-                                                imei.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), (long) i));
+                                                imei.add(i, (String) m.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
                                             }
                                             break;
                                         }
@@ -968,7 +1075,6 @@ public class MobileUtils {
                                 e.printStackTrace();
                             }
                         }
-
                         if (imei.size() == 0) {
                             try {
                                 Method[] cm = mTelephonyClass.getDeclaredMethods();

@@ -21,16 +21,13 @@
         android:layout_alignEnd="@+id/radioGroup"
         android:gravity="center_vertical"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp"
-        android:textColor="@android:color/primary_text_dark" />
+        android:layout_marginRight="10dp" />
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/radioGroup"
         android:layout_below="@+id/choosesim"
-        android:layout_alignRight="@+id/spinnertx"
-        android:layout_alignEnd="@+id/spinnertx"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp">

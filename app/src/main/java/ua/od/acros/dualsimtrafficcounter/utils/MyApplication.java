@@ -23,12 +23,20 @@ import ua.od.acros.dualsimtrafficcounter.R;
         resDialogOkToast = R.string.crash_toast_text)
 public class MyApplication extends Application {
 
+    private static Context mContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
-        mHasRoot = RootShell.isAccessGiven();
+        if (RootShell.isRootAvailable())
+            mHasRoot = RootShell.isAccessGiven();
+        mContext = getApplicationContext();
+    }
+
+    public static Context getAppContext() {
+        return  mContext;
     }
 
     public static boolean isActivityVisible() {

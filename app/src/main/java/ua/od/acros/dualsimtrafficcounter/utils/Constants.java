@@ -60,7 +60,7 @@ public class Constants {
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
             "status_icon", "auto_sim", "user_sim", "operator_logo", "info_status", //16
             "continue_overlimit", "action_chosen", "data_remain", "alt", "sim1", "sim2", //22
-            "sim3", "calls_stopped", "calllogger", "notification_tap", "calls_remain"}; //27
+            "sim3", "calls_stopped", "calllogger", "notification_tap", "calls_remain", "theme", "theme_auto"}; //29
     public static final String[] PREF_WIDGET_TRAFFIC = {"stub", "names", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10

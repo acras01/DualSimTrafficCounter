@@ -18,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SetTrafficUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener,
         SetCallsDurationFragment.OnFragmentInteractionListener {
 
-    private Context mContext;
-    private SharedPreferences mPrefs;
+    private static Context mContext;
+    private static SharedPreferences mPrefs;
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String EMAIL = "email";
@@ -65,6 +66,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
     private NavigationView mNavigationView;
+
+    static {
+        Context context = MyApplication.getAppContext();
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (prefs.getBoolean(Constants.PREF_OTHER[28], true))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+        else {
+            if (prefs.getBoolean(Constants.PREF_OTHER[27], false))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            else
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

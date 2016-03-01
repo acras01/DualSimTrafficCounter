@@ -16,8 +16,7 @@
             android:text="@string/data_dis"
             android:id="@+id/sim"
             android:layout_centerHorizontal="true"
-            android:gravity="top|center_horizontal"
-            android:textColor="@android:color/primary_text_dark" />
+            android:gravity="top|center_horizontal" />
 
         <HorizontalScrollView
             android:layout_width="wrap_content"

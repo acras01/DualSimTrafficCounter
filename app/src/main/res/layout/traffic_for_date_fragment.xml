@@ -21,8 +21,7 @@
         android:layout_alignEnd="@+id/radioGroup"
         android:gravity="center_vertical"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp"
-        android:textColor="@android:color/primary_text_dark" />
+        android:layout_marginRight="10dp" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -37,22 +36,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim1RB"
-            android:text="SIM1"
-            android:textColor="@android:color/primary_text_dark" />
+            android:text="SIM1" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim2RB"
-            android:text="SIM2"
-            android:textColor="@android:color/primary_text_dark" />
+            android:text="SIM2" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim3RB"
-            android:text="SIM3"
-            android:textColor="@android:color/primary_text_dark" />
+            android:text="SIM3" />
 
     </RadioGroup>
 
@@ -89,8 +85,7 @@
                 android:id="@+id/day"
                 android:layout_column="2"
                 android:gravity="center_vertical|center"
-                android:width="100dp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:width="100dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,8 +94,7 @@
                 android:id="@+id/night"
                 android:layout_column="3"
                 android:gravity="center_vertical|center"
-                android:width="100dp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:width="100dp" />
 
         </TableRow>
 
@@ -114,7 +108,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="@android:color/primary_text_dark"
                 android:text="@string/transmitted"
                 android:id="@+id/txText"
                 android:width="80dp"
@@ -129,8 +122,7 @@
                 android:id="@+id/tx"
                 android:gravity="center_vertical|center"
                 android:layout_column="2"
-                android:width="100dp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:width="100dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -140,8 +132,7 @@
                 android:id="@+id/txnight"
                 android:gravity="center_vertical|center"
                 android:layout_column="3"
-                android:width="100dp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:width="100dp" />
 
         </TableRow>
 
@@ -155,7 +146,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="@android:color/primary_text_dark"
                 android:text="@string/received"
                 android:id="@+id/rxText"
                 android:layout_column="1"
@@ -170,8 +160,7 @@
                 android:id="@+id/rx"
                 android:layout_column="2"
                 android:gravity="center_vertical|center"
-                android:width="100dp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:width="100dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -181,8 +170,7 @@
                 android:id="@+id/rxnight"
                 android:width="100dp"
                 android:layout_column="3"
-                android:gravity="center_vertical|center"
-                android:textColor="@android:color/primary_text_dark" />
+                android:gravity="center_vertical|center" />
 
         </TableRow>
 
@@ -200,8 +188,7 @@
                 android:layout_column="1"
                 android:gravity="left|center_vertical"
                 android:width="80dp"
-                android:textSize="14sp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -210,8 +197,7 @@
                 android:id="@+id/total"
                 android:layout_column="2"
                 android:gravity="center_vertical|center"
-                android:width="100dp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:width="100dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -220,8 +206,7 @@
                 android:id="@+id/totalnight"
                 android:layout_column="3"
                 android:gravity="center_vertical|center"
-                android:width="100dp"
-                android:textColor="@android:color/primary_text_dark" />
+                android:width="100dp" />
 
         </TableRow>
 

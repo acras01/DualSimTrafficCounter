@@ -1,17 +1,19 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
-import android.preference.PreferenceActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
 import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.preferences.AppCompatPreferenceActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private List<Header> mHeaders;
 
@@ -36,6 +38,9 @@ public class SettingsActivity extends PreferenceActivity {
             loadHeadersFromResource(R.xml.headers, target);
         setTitle(R.string.action_settings);
         mHeaders = target;
+        getLayoutInflater().inflate(R.layout.toolbar, (ViewGroup)findViewById(android.R.id.content));
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     public void setListAdapter(ListAdapter adapter) {
