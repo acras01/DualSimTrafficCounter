@@ -7,6 +7,7 @@ import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.v7.widget.Toolbar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -32,9 +33,9 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
 
         addPreferencesFromResource(R.xml.operator_settings);
 
-        android.support.v7.app.ActionBar actionbar = SettingsActivity.getBar();
-        if (actionbar != null)
-            actionbar.setTitle(R.string.name_title);
+        Toolbar bar = SettingsActivity.getBar();
+        if (bar != null)
+            bar.setTitle(R.string.name_title);
 
         name1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[6]);
         name2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[6]);

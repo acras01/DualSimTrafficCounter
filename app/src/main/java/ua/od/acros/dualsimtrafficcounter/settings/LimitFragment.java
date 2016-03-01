@@ -12,6 +12,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 
 import java.util.Calendar;
@@ -59,9 +60,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.limit_settings);
 
-        android.support.v7.app.ActionBar actionbar = SettingsActivity.getBar();
-        if (actionbar != null)
-            actionbar.setTitle(R.string.limit_title);
+        Toolbar bar = SettingsActivity.getBar();
+        if (bar != null)
+            bar.setTitle(R.string.limit_title);
 
         limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[1]);
         limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[1]);

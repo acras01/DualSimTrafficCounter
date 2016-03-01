@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.widget.Switch;
 
@@ -31,20 +32,16 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.notification);
 
-        android.support.v7.app.ActionBar actionbar = SettingsActivity.getBar();
+        Toolbar bar = SettingsActivity.getBar();
         Switch actionBarSwitch = new Switch(mContext);
-        if (actionbar != null) {
-            actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-                    ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionbar.setCustomView(actionBarSwitch, new android.support.v7.app.ActionBar.LayoutParams(
+        if (bar != null) {
+            bar.addView(actionBarSwitch, new android.support.v7.app.ActionBar.LayoutParams(
                     ActionBar.LayoutParams.WRAP_CONTENT,
                     ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
                     | Gravity.RIGHT));
-            actionbar.setTitle(R.string.use_notification_title);
+            bar.setTitle(R.string.use_notification_title);
         }
-
         mSoundEnabler = new SoundEnabler(mContext, actionBarSwitch);
-
         updateSettings();
     }
 

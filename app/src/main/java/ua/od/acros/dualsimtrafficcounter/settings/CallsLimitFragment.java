@@ -9,6 +9,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -37,9 +38,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
 
         addPreferencesFromResource(R.xml.calls_settings);
 
-        android.support.v7.app.ActionBar actionbar = SettingsActivity.getBar();
-        if (actionbar != null)
-            actionbar.setTitle(R.string.limit_title);
+        Toolbar bar = SettingsActivity.getBar();
+        if (bar != null)
+            bar.setTitle(R.string.limit_title);
 
         limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[1]);
         limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[1]);

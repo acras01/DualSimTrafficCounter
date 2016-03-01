@@ -19,7 +19,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private List<Header> mHeaders;
-    private static android.support.v7.app.ActionBar mActionBar;
+    private static Toolbar mToolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +35,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         toolbarContainer.addView(content);
         root.addView(toolbarContainer);
 
-        Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.settings_toolbar);
-        if (toolbar != null) {
-            toolbar.setTitle(getTitle());
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.settings_toolbar);
+        if (mToolBar != null) {
+            mToolBar.setTitle(getTitle());
+            mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     finish();
                 }
             });
         }
-        setSupportActionBar(toolbar);
-        mActionBar = getSupportActionBar();
     }
 
-    public static android.support.v7.app.ActionBar getBar() {
-        return mActionBar;
+    public static Toolbar getBar() {
+        return mToolBar;
     }
 
     protected void onResume() {
