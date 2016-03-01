@@ -2,6 +2,22 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="theme_auto"
+        android:title="@string/use_auto_theme"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off"
+        android:defaultValue="true"
+        android:disableDependentsState="true"/>
+
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="theme"
+        android:title="@string/use_day_theme"
+        android:defaultValue="true"
+        android:summaryOn="@string/day_theme"
+        android:summaryOff="@string/night_theme"
+        android:dependency="theme_auto"/>
+
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
         android:key="calllogger"
         android:title="@string/use_call_logger"
         android:summaryOn="@string/on"

@@ -195,4 +195,8 @@
     <string name="show_rx_tx">Show received/transmitted on widget</string>
     <string name="show_used_left">Show used/left</string>
     <string name="show_rx_tx_sum">RX/TX</string>
+    <string name="use_auto_theme">Use auto day/night theme switching</string>
+    <string name="use_day_theme">Use day theme</string>
+    <string name="day_theme">Day</string>
+    <string name="night_theme">Night</string>
 </resources>
