@@ -1,7 +1,10 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +29,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onCreate(savedInstanceState);
 
         setTitle(R.string.action_settings);
-
-        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-        View content = root.getChildAt(0);
-        LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
-
-        root.removeAllViews();
-        toolbarContainer.addView(content);
-        root.addView(toolbarContainer);
-
-        mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.settings_toolbar);
+        mToolBar = setToolBar();
         if (mToolBar != null) {
             mToolBar.setTitle(getTitle());
             mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
@@ -50,6 +44,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public static Toolbar getBar() {
         return mToolBar;
+    }
+
+    private Toolbar setToolBar() {
+        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
+        View content = root.getChildAt(0);
+        LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
+
+        root.removeAllViews();
+        toolbarContainer.addView(content);
+        root.addView(toolbarContainer);
+
+        return (Toolbar) toolbarContainer.findViewById(R.id.settings_toolbar);
     }
 
     protected void onResume() {
@@ -83,5 +89,33 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 mHeaders.add((Header) adapter.getItem(i));
         }
         super.setListAdapter(new MyPrefsHeaderAdapter(this, mHeaders));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        super.onPreferenceTreeClick(preferenceScreen, preference);
+
+        // If the user has clicked on a preference screen, set up the screen
+        if (preference instanceof PreferenceScreen) {
+            setUpNestedScreen((PreferenceScreen) preference);
+        }
+
+        return false;
+    }
+
+    public void setUpNestedScreen(PreferenceScreen preferenceScreen) {
+        final Dialog dialog = preferenceScreen.getDialog();
+        Toolbar toolbar = setToolBar();
+        if (toolbar != null) {
+            toolbar.setTitle(preferenceScreen.getTitle());
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+        }
     }
 }
