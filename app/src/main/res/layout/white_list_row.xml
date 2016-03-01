@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Contact name"
+        android:textColor="?android:attr/textColorPrimary"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Contact number"
+        android:textColor="?android:attr/textColorPrimary"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -38,5 +40,6 @@
         android:layout_centerVertical="true"
         android:clickable="false"
         android:focusable="false"
+        android:textColor="?android:attr/textColorPrimary"
         android:focusableInTouchMode="false" />
 </RelativeLayout>

@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
@@ -12,6 +11,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,15 +32,15 @@ import java.io.File;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
+import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
-public class CallsWidgetConfigActivity extends Activity implements IconsListFragment.OnCompleteListener,
+public class CallsWidgetConfigActivity extends AppCompatActivity implements IconsListFragment.OnCompleteListener,
         View.OnClickListener, CompoundButton.OnCheckedChangeListener, SetSizeDialog.TextSizeDialogListener,
         ShowSimDialog.ShowSimDialogClosedListener {
 
@@ -126,6 +127,8 @@ public class CallsWidgetConfigActivity extends Activity implements IconsListFrag
         setResult(RESULT_CANCELED, mResultValueIntent);
 
         setContentView(R.layout.calls_info_widget_configure);
+        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolBar);
 
         CheckBox names = (CheckBox) findViewById(R.id.names);
         names.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true));

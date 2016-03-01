@@ -1,9 +1,10 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -20,7 +21,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 
-public class BlackListActivity extends Activity {
+public class BlackListActivity extends AppCompatActivity {
 
     private ArrayList<String> mList;
     private Context mContext;
@@ -31,7 +32,10 @@ public class BlackListActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_black_list);
+        setContentView(R.layout.activity_list);
+
+        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolBar);
 
         ListView listView = (ListView) findViewById(R.id.listView);
         mContext = getApplicationContext();

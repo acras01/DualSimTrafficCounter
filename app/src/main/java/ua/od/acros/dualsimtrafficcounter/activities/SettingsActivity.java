@@ -1,8 +1,11 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
 import java.util.ArrayList;
@@ -16,6 +19,33 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private List<Header> mHeaders;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setTitle(R.string.action_settings);
+
+        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
+        View content = root.getChildAt(0);
+        LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
+
+        root.removeAllViews();
+        toolbarContainer.addView(content);
+        root.addView(toolbarContainer);
+
+        Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.settings_toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getTitle());
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+    }
 
     protected void onResume() {
         super.onResume();
@@ -36,11 +66,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             loadHeadersFromResource(R.xml.headers_xposed, target);
         else
             loadHeadersFromResource(R.xml.headers, target);
-        setTitle(R.string.action_settings);
         mHeaders = target;
-        getLayoutInflater().inflate(R.layout.toolbar, (ViewGroup)findViewById(android.R.id.content));
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
     }
 
     public void setListAdapter(ListAdapter adapter) {

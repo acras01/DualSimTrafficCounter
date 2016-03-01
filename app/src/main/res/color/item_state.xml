@@ -3,5 +3,5 @@
     <item android:state_pressed="true" android:color="@color/colorPrimary" />
     <item android:state_activated="true" android:color="@color/colorPrimary" />
     <!-- This is the default text color -->
-    <item android:color="@android:color/white" />
+    <item android:color="?android:attr/textColorPrimary" />
 </selector>
