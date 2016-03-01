@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.text.InputFilter;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
@@ -35,7 +35,7 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.other_settings);
 
-        ActionBar actionbar = getActivity().getActionBar();
+        android.support.v7.app.ActionBar actionbar = SettingsActivity.getBar();
         if (actionbar != null)
             actionbar.setTitle(R.string.other_title);
 

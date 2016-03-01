@@ -19,6 +19,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private List<Header> mHeaders;
+    private static android.support.v7.app.ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
         }
+        setSupportActionBar(toolbar);
+        mActionBar = getSupportActionBar();
+    }
+
+    public static android.support.v7.app.ActionBar getBar() {
+        return mActionBar;
     }
 
     protected void onResume() {

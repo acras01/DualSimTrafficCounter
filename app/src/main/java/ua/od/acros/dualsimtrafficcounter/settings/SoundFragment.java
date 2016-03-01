@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.widget.Switch;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.SoundEnabler;
 
@@ -30,12 +31,12 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.notification);
 
-        ActionBar actionbar = getActivity().getActionBar();
+        android.support.v7.app.ActionBar actionbar = SettingsActivity.getBar();
         Switch actionBarSwitch = new Switch(mContext);
         if (actionbar != null) {
             actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionbar.setCustomView(actionBarSwitch, new ActionBar.LayoutParams(
+            actionbar.setCustomView(actionBarSwitch, new android.support.v7.app.ActionBar.LayoutParams(
                     ActionBar.LayoutParams.WRAP_CONTENT,
                     ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
                     | Gravity.RIGHT));
