@@ -802,7 +802,7 @@ public class MobileUtils {
                                     }
                                 }
                                 if (name.size() > 0)
-                                    out = GET_NAME + "GeminiLong " + name.size();
+                                    out = GET_NAME + "Ext " + name.size();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

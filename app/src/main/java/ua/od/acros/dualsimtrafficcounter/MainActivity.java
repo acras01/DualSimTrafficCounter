@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 //Operator Names
                                 ArrayList<String> names = MobileUtils.getOperatorNames(mContext);
                                 fileName = "name_log.txt";
-                                content += "\n" + "Operator mNames " + names.toString() + "\n";
+                                content += "\n" + "Operator names " + names.toString() + "\n";
                                 file = new File(dir, fileName);
                                 try {
                                     uris.add(Uri.fromFile(file));
