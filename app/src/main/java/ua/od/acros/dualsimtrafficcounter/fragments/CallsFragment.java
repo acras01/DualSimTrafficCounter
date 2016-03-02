@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -170,20 +173,27 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1)));
 
         long[] limit = setTotalText();
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+        TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{
+                android.R.attr.textColorPrimary});
+        int primaryColor = arr.getColor(0, -1);
         if ((long) mCalls.get(Constants.CALLS1) >= limit[0])
             TOT1.setTextColor(Color.RED);
         else
-            TOT1.setTextColor(Color.WHITE);
+            TOT1.setTextColor(primaryColor);
         TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2)));
         if ((long) mCalls.get(Constants.CALLS2) >= limit[1])
             TOT2.setTextColor(Color.RED);
         else
-            TOT2.setTextColor(Color.WHITE);
+            TOT2.setTextColor(primaryColor);
         TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3)));
         if ((long) mCalls.get(Constants.CALLS3) >= limit[2])
             TOT3.setTextColor(Color.RED);
         else
-            TOT3.setTextColor(Color.WHITE);
+            TOT3.setTextColor(primaryColor);
+        arr.recycle();
 
         SIM1.setText(MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
         SIM2.setText(MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
