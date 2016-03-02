@@ -2,7 +2,6 @@ package ua.od.acros.dualsimtrafficcounter.settings;
 
 
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -10,18 +9,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
-import android.view.View;
 
 import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
@@ -64,9 +60,9 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.limit_settings);
 
-        mToolBar = SettingsActivity.getBar();
+        /*mToolBar = SettingsActivity.getBar();
         if (mToolBar != null)
-            mToolBar.setTitle(R.string.limit_title);
+            mToolBar.setTitle(R.string.limit_title);*/
 
         limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[1]);
         limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[1]);
@@ -200,7 +196,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
         }
     }
 
-    @Override
+    /*@Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         super.onPreferenceTreeClick(preferenceScreen, preference);
 
@@ -224,7 +220,7 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
                 }
             });
         }
-    }
+    }*/
 
     private void updateSummary() {
         if (limit1 != null)

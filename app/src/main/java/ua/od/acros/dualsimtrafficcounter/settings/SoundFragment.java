@@ -9,12 +9,10 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.widget.Switch;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.SoundEnabler;
 
@@ -32,14 +30,16 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.notification);
 
-        Toolbar bar = SettingsActivity.getBar();
+        ActionBar actionbar = getActivity().getActionBar();
         Switch actionBarSwitch = new Switch(mContext);
-        if (bar != null) {
-            bar.addView(actionBarSwitch, new android.support.v7.app.ActionBar.LayoutParams(
+        if (actionbar != null) {
+            actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+                    ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionbar.setCustomView(actionBarSwitch, new ActionBar.LayoutParams(
                     ActionBar.LayoutParams.WRAP_CONTENT,
                     ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
                     | Gravity.RIGHT));
-            bar.setTitle(R.string.use_notification_title);
+            actionbar.setTitle(R.string.use_notification_title);
         }
         mSoundEnabler = new SoundEnabler(mContext, actionBarSwitch);
         updateSettings();

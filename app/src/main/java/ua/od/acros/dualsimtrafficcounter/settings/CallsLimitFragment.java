@@ -1,22 +1,18 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
-import android.view.View;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -42,9 +38,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
 
         addPreferencesFromResource(R.xml.calls_settings);
 
-        mToolBar = SettingsActivity.getBar();
+        /*mToolBar = SettingsActivity.getBar();
         if (mToolBar != null)
-            mToolBar.setTitle(R.string.limit_title);
+            mToolBar.setTitle(R.string.limit_title);*/
 
         limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[1]);
         limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[1]);
@@ -112,7 +108,7 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         }
     }
 
-    @Override
+    /*@Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         super.onPreferenceTreeClick(preferenceScreen, preference);
 
@@ -136,7 +132,7 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
                 }
             });
         }
-    }
+    }*/
 
     private void updateSummary() {
         if (limit1 != null)

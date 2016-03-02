@@ -67,17 +67,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MenuItem mCallsItem;
     private NavigationView mNavigationView;
 
-    /*static {
+    static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (prefs.getBoolean(Constants.PREF_OTHER[28], true))
+        if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
         else {
-            if (prefs.getBoolean(Constants.PREF_OTHER[27], false))
+            if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
-    }*/
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

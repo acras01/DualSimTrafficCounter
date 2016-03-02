@@ -1,90 +1,51 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatCallback;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.preference.PreferenceActivity;
 import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.preferences.AppCompatPreferenceActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 
-public class SettingsActivity extends AppCompatPreferenceActivity implements AppCompatCallback {
+public class SettingsActivity extends PreferenceActivity {
 
     private List<Header> mHeaders;
-    private static Toolbar mToolBar;
-    private SharedPreferences mPrefs;
 
     @Override
-    public void onSupportActionModeStarted(ActionMode mode) {
-        //let's leave this empty, for now
-    }
-
-    @Override
-    public void onSupportActionModeFinished(ActionMode mode) {
-        // let's leave this empty, for now
-    }
-
-    @Nullable
-    @Override
-    public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
-        return null;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-        /*AppCompatDelegate delegate = getDelegate();
-
-        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (savedInstanceState == null) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
-                delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-            else {
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
-                    delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                else
-                    delegate.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    public void onCreate(Bundle savedInstanceState) {
+        if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
+                .getBoolean(Constants.PREF_OTHER[29], true)) {
+            int currentNightMode = getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            switch (currentNightMode) {
+                case Configuration.UI_MODE_NIGHT_NO:
+                    // Night mode is not active, we're in day time
+                    setTheme(R.style.AppTheme_AppBarOverlay_Light);
+                    break;
+                case Configuration.UI_MODE_NIGHT_YES:
+                    // Night mode is active, we're at night!
+                    setTheme(R.style.AppTheme_AppBarOverlay);
+                    break;
+                case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    // We don't know what mode we're in, assume notnight
+                    setTheme(R.style.AppTheme_AppBarOverlay_Light);
+                    break;
             }
-            // Now recreate for it to take effect
-            recreate();
-        }*/
-        setTitle(R.string.action_settings);
-        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-        View content = root.getChildAt(0);
-        LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
-
-        root.removeAllViews();
-        toolbarContainer.addView(content);
-        root.addView(toolbarContainer);
-        mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.settings_toolbar);
-        if (mToolBar != null) {
-            mToolBar.setTitle(getTitle());
-            mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+        } else {
+            if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
+                    .getBoolean(Constants.PREF_OTHER[28], false))
+                setTheme(R.style.AppTheme_AppBarOverlay_Light);
+            else
+                setTheme(R.style.AppTheme_AppBarOverlay);
         }
-    }
 
-    public static Toolbar getBar() {
-        return mToolBar;
+        super.onCreate(savedInstanceState);
     }
 
     protected void onResume() {
@@ -101,11 +62,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements App
     }
 
     public void onBuildHeaders(List<Header> target) {
-        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
+        if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
+                .getBoolean(Constants.PREF_OTHER[25], false))
             loadHeadersFromResource(R.xml.headers_xposed, target);
         else
             loadHeadersFromResource(R.xml.headers, target);
+        setTitle(R.string.action_settings);
         mHeaders = target;
     }
 

@@ -6,11 +6,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
@@ -36,9 +34,9 @@ public class OtherFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.other_settings);
 
-        Toolbar bar = SettingsActivity.getBar();
+        /*Toolbar bar = SettingsActivity.getBar();
         if (bar != null)
-            bar.setTitle(R.string.other_title);
+            bar.setTitle(R.string.other_title);*/
 
         timer = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[8]);
         timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});

@@ -1,19 +1,15 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -37,9 +33,9 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
 
         addPreferencesFromResource(R.xml.operator_settings);
 
-        mToolBar = SettingsActivity.getBar();
+        /*mToolBar = SettingsActivity.getBar();
         if (mToolBar != null)
-            mToolBar.setTitle(R.string.name_title);
+            mToolBar.setTitle(R.string.name_title);*/
 
         name1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[6]);
         name2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[6]);
@@ -71,7 +67,7 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
         updateSummary();
     }
 
-    @Override
+    /*@Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         super.onPreferenceTreeClick(preferenceScreen, preference);
 
@@ -95,7 +91,7 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
                 }
             });
         }
-    }
+    }*/
 
     private void updateSummary() {
         if (auto1 != null && !auto1.isChecked())

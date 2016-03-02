@@ -63,7 +63,7 @@
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/action_settings"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.AppBarOverlay" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
