@@ -188,4 +188,8 @@
     <string name="show_rx_tx">Показывать получено/отправлено на виджете</string>
     <string name="show_used_left">Использ./Остаток</string>
     <string name="show_rx_tx_sum">Пол./Отпр.</string>
+    <string name="day_theme">День</string>
+    <string name="night_theme">Ночь</string>
+    <string name="use_auto_theme">Использовать автоматическую смену днвной/ночной тем</string>
+    <string name="use_day_theme">Использовать дневную тему</string>
 </resources>

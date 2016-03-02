@@ -188,4 +188,8 @@
     <string name="show_used_left">Використ./Залишок</string>
     <string name="show_rx_tx">Відображати отримано/відправлено на віджеті</string>
     <string name="show_rx_tx_sum">Отр./Відпр.</string>
+    <string name="day_theme">День</string>
+    <string name="night_theme">Ніч</string>
+    <string name="use_auto_theme">Використовувати автоматичну зміну денної/нічної тем</string>
+    <string name="use_day_theme">Використовувати денну тему</string>
 </resources>
