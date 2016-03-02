@@ -46,7 +46,7 @@ import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
-import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
+import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
@@ -242,7 +242,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
                 case Constants.LIMIT_ACTION:
                     Intent i = new Intent(mContext, SettingsActivity.class);
-                    i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
+                    i.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, TrafficLimitFragment.class.getName());
                     i.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     i.putExtra(Constants.SIM_ACTIVE, sim);
@@ -1709,7 +1709,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM2OverLimit) ||
                 (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM3OverLimit)) {
             notificationIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-            notificationIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
+            notificationIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, TrafficLimitFragment.class.getName());
             notificationIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
             notificationIntent.putExtra(Constants.SIM_ACTIVE, alertID);
         } else {

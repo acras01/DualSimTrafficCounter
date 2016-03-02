@@ -88,7 +88,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
-                edit.putBoolean(Constants.PREF_WIDGET_CALLS[1], true); //Show names
+                edit.putBoolean(Constants.PREF_WIDGET_CALLS[1], true); //Show mNames
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[2], true); //Show icons
                 edit.putString(Constants.PREF_WIDGET_CALLS[3], "none"); //SIM1 icon
                 edit.putString(Constants.PREF_WIDGET_CALLS[4], "none"); //SIM2 icon

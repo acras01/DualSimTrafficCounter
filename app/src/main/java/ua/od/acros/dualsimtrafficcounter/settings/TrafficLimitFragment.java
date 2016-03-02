@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 
+import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -28,7 +29,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
-public class LimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class TrafficLimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private EditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
             round1, round2, round3, round1N, round2N, round3N,
@@ -60,9 +61,10 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
 
         addPreferencesFromResource(R.xml.limit_settings);
 
-        /*mToolBar = SettingsActivity.getBar();
-        if (mToolBar != null)
-            mToolBar.setTitle(R.string.limit_title);*/
+        ActionBar actionbar = getActivity().getActionBar();
+        if (actionbar != null) {
+            actionbar.setTitle(R.string.limit_title);
+        }
 
         limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[1]);
         limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[1]);
@@ -195,32 +197,6 @@ public class LimitFragment extends PreferenceFragment implements SharedPreferenc
             }
         }
     }
-
-    /*@Override
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        super.onPreferenceTreeClick(preferenceScreen, preference);
-
-        // If the user has clicked on a preference screen, set up the screen
-        if (preference instanceof PreferenceScreen) {
-            setUpNestedScreen((PreferenceScreen) preference);
-        }
-
-        return false;
-    }
-
-    public void setUpNestedScreen(PreferenceScreen preferenceScreen) {
-        final Dialog dialog = preferenceScreen.getDialog();
-        if (mToolBar != null) {
-            mToolBar.setTitle(preferenceScreen.getTitle());
-            mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-        }
-    }*/
 
     private void updateSummary() {
         if (limit1 != null)

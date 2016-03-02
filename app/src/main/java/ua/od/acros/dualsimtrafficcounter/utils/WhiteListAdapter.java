@@ -1,88 +1,87 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
-import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
-public class WhiteListAdapter extends BaseAdapter {
+public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.ViewHolder> {
 
 
-    public ArrayList<String> names, numbers, list;
-    public LayoutInflater inflater;
+    public ArrayList<String> mNames, mNumbers, mList;
 
-    public WhiteListAdapter(Context context, ArrayList<String> names,
-                            ArrayList<String> numbers, ArrayList<String> list) {
-        super();
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.names = names;
-        this.numbers = numbers;
+    public WhiteListAdapter(ArrayList<String> names, ArrayList<String> numbers, ArrayList<String> list) {
+        this.mNames = names;
+        this.mNumbers = numbers;
         if (list != null)
-            this.list = list;
+            this.mList = list;
+    }
+
+    private void toggleChecked(String number) {
+        if (mList.contains(number))
+            mList.remove(number);
+        else
+            mList.add(number);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public CheckBox checkBox;
+        public TextView txtViewName;
+        public TextView txtViewNumber;
+
+        public ViewHolder(View v) {
+            super(v);
+            checkBox = (CheckBox) v.findViewById(R.id.checkBox);;
+            txtViewName = (TextView) v.findViewById(R.id.name);;
+            txtViewNumber = (TextView) v.findViewById(R.id.number);;
+        }
     }
 
     @Override
-    public boolean isEnabled(int position) {
-        return true;
+    public WhiteListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // create a new view
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.white_list_row, parent, false);
+
+        // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
+        ViewHolder viewHolder = new ViewHolder(v);
+        final CheckBox checkBox = viewHolder.checkBox;
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String number = (String) buttonView.getText();
+                toggleChecked(number);
+            }
+        });
+        return viewHolder;
     }
 
-    public void toggleChecked(int position) {
-        if (list.contains(numbers.get(position)))
-            list.remove(numbers.get(position));
-        else
-            list.add(numbers.get(position));
-        notifyDataSetChanged();
+    @Override
+    public void onBindViewHolder(WhiteListAdapter.ViewHolder holder, int position) {
+        holder.checkBox.setChecked(mList.contains(mNumbers.get(position)));
+        holder.txtViewName.setText(mNames.get(position));
+        holder.txtViewNumber.setText(mNumbers.get(position));
     }
 
     public ArrayList<String> getCheckedItems(){
-        return list;
-    }
-
-    public static class ViewHolder {
-        CheckBox checkBox;
-        TextView txtViewName;
-        TextView txtViewNumber;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        ViewHolder holder;
-        if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.white_list_row, null);
-            holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-            holder.txtViewName = (TextView) convertView.findViewById(R.id.name);
-            holder.txtViewNumber = (TextView) convertView.findViewById(R.id.number);
-            convertView.setTag(holder);
-        }
-        else
-            holder=(ViewHolder)convertView.getTag();
-
-        holder.checkBox.setChecked(list.contains(numbers.get(position)));
-        holder.txtViewName.setText(names.get(position));
-        holder.txtViewNumber.setText(numbers.get(position));
-
-        return convertView;
+        return mList;
     }
 
     // кол-во элементов
     @Override
-    public int getCount() {
-        return numbers.size();
+    public int getItemCount() {
+        return mNumbers.size();
     }
 
     // элемент по позиции
-    @Override
     public Object getItem(int position) {
-        return numbers.get(position);
+        return mNumbers.get(position);
     }
 
     // id по позиции

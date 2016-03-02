@@ -122,7 +122,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show names
+                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show mNames
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);//Show full/short info
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);//Show speed
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);//Show sim icons

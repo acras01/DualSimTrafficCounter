@@ -107,7 +107,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();
         if (mPrefs.getAll().size() == 0) {
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show names
+            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show mNames
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);//Show full/short info
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);//Show speed
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);//Show sim icons

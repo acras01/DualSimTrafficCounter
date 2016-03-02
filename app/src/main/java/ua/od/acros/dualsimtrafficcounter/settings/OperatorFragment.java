@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -33,9 +34,10 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
 
         addPreferencesFromResource(R.xml.operator_settings);
 
-        /*mToolBar = SettingsActivity.getBar();
-        if (mToolBar != null)
-            mToolBar.setTitle(R.string.name_title);*/
+        ActionBar actionbar = getActivity().getActionBar();
+        if (actionbar != null) {
+            actionbar.setTitle(R.string.name_title);
+        }
 
         name1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[6]);
         name2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[6]);
@@ -66,32 +68,6 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
 
         updateSummary();
     }
-
-    /*@Override
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        super.onPreferenceTreeClick(preferenceScreen, preference);
-
-        // If the user has clicked on a preference screen, set up the screen
-        if (preference instanceof PreferenceScreen) {
-            setUpNestedScreen((PreferenceScreen) preference);
-        }
-
-        return false;
-    }
-
-    public void setUpNestedScreen(PreferenceScreen preferenceScreen) {
-        final Dialog dialog = preferenceScreen.getDialog();
-        if (mToolBar != null) {
-            mToolBar.setTitle(preferenceScreen.getTitle());
-            mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-        }
-    }*/
 
     private void updateSummary() {
         if (auto1 != null && !auto1.isChecked())

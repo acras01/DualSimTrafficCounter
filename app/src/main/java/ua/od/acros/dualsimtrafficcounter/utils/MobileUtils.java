@@ -1648,10 +1648,10 @@ public class MobileUtils {
 
     public static String getFullNumber(Context context, String number) {
         String countryCode = getCountryZipCode(context);
-        return number.replaceAll("[^0-9\\+]", "")        //remove all the non numbers (brackets dashes spaces etc.) except the + signs
+        return number.replaceAll("[^0-9\\+]", "")        //remove all the non mNumbers (brackets dashes spaces etc.) except the + signs
                     .replaceAll("(^[1-9].+)", countryCode + "$1")         //if the number is starting with no zero and +, its a local number. prepend cc
                     .replaceAll("(.)(\\++)(.)", "$1$3")         //if there are left out +'s in the middle by mistake, remove them
-                    .replaceAll("(^0{2}|^\\+)(.+)", "$2")       //make 00XXX... numbers and +XXXXX.. numbers into XXXX...
+                    .replaceAll("(^0{2}|^\\+)(.+)", "$2")       //make 00XXX... mNumbers and +XXXXX.. mNumbers into XXXX...
                     .replaceAll("^0([1-9])", countryCode + "$1");
     }
 

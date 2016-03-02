@@ -6,10 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.acra.ACRA;
@@ -52,21 +53,24 @@ public class BlackListActivity extends AppCompatActivity {
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
-        mAdapter = new BlackListAdapter(mContext, mList);
+        mAdapter = new BlackListAdapter(mList);
 
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_recyclerview);
 
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        ListView listView = (ListView) findViewById(R.id.listView);
-        setTitle(mOperatorNames[mKey]);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(mAdapter);
 
-        listView.setAdapter(mAdapter);
+        setTitle(mOperatorNames[mKey]);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

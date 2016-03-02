@@ -11,7 +11,7 @@
 
     <header
         android:id="@+id/limit_settings"
-        android:fragment="ua.od.acros.dualsimtrafficcounter.settings.LimitFragment"
+        android:fragment="ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment"
         android:summary="@string/limit_summary"
         android:title="@string/limit_title">
     </header>

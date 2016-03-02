@@ -107,7 +107,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = mPrefs.edit();
         if (mPrefs.getAll().size() == 0) {
-            mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[1], true); //Show names
+            mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[1], true); //Show mNames
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[2], true); //Show icons
             mEdit.putString(Constants.PREF_WIDGET_CALLS[3], "none"); //SIM1 icon
             mEdit.putString(Constants.PREF_WIDGET_CALLS[4], "none"); //SIM2 icon

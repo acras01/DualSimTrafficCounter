@@ -9,19 +9,17 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.acra.ACRA;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -29,10 +27,9 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
 
-public class WhiteListActivity extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
+public class WhiteListActivity extends AppCompatActivity {
 
-    private WhiteListAdapter mArrayAdapter;
+    private WhiteListAdapter mAdapter;
     private ArrayList<String> mNames, mNumbers, mList;
     private Context mContext = this;
     private int mKey;
@@ -73,44 +70,29 @@ public class WhiteListActivity extends AppCompatActivity implements View.OnClick
             mNames.add(getString(R.string.unknown));
             i.remove();
         }
-        mArrayAdapter = new WhiteListAdapter(mContext, mNames, mNumbers, mList);
+        mAdapter = new WhiteListAdapter(mNames, mNumbers, mList);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_recyclerview);
 
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(mAdapter);
 
         setTitle(mOperatorNames[mKey]);
-
-        listView.setAdapter(mArrayAdapter);
-        listView.setOnItemSelectedListener(this);
-        listView.setOnItemClickListener(this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList("list", mArrayAdapter.getCheckedItems());
-    }
-
-    @Override
-    public void onClick(View v) {
-        String result = "";
-        List<String> resultList = mArrayAdapter.getCheckedItems();
-        for (int i = 0; i < resultList.size(); i++) {
-            result += String.valueOf(resultList.get(i)) + "\n";
-        }
-        Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mArrayAdapter.toggleChecked(position);
+        outState.putStringArrayList("mList", mAdapter.getCheckedItems());
     }
 
     private void loadContactsFromDB(Context context) {
@@ -127,16 +109,6 @@ public class WhiteListActivity extends AppCompatActivity implements View.OnClick
             }
             cursor.close();
         }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        mArrayAdapter.toggleChecked(position);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,7 +134,7 @@ public class WhiteListActivity extends AppCompatActivity implements View.OnClick
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            MyDatabaseHelper.writeWhiteList(mKey, mList, mDatabaseHelper);
+            MyDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDatabaseHelper);
             return true;
         }
 

@@ -1,11 +1,10 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
-import android.content.Context;
 import android.graphics.Paint;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
@@ -13,41 +12,38 @@ import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
-public class BlackListAdapter  extends BaseAdapter {
-
+public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.ViewHolder> {
 
     private ArrayList<String> mList, mChecked;
-    private LayoutInflater inflater;
 
-    public BlackListAdapter(Context context, ArrayList<String> list) {
-        super();
+    // класс view holder-а с помощью которого мы получаем ссылку на каждый элемент
+    // отдельного пункта списка
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // наш пункт состоит только из одного TextView
+        public CheckBox checkBox;
+
+        public ViewHolder(View v) {
+            super(v);
+            checkBox = (CheckBox) v.findViewById(R.id.checkBox);
+        }
+    }
+
+    // Конструктор
+    public BlackListAdapter(ArrayList<String> list) {
+        this.mList = list;
         this.mChecked = new ArrayList<>();
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (list != null)
-            this.mList = list;
     }
 
+    // Создает новые views (вызывается layout manager-ом)
     @Override
-    public boolean isEnabled(int position) {
-        return true;
-    }
+    public BlackListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // create a new view
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.black_list_row, parent, false);
 
-    public ArrayList<String> getCheckedItems(){
-        return mChecked;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final CheckBox checkBox;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.black_list_row, null);
-            checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-            convertView.setTag(checkBox);
-        } else
-            checkBox = (CheckBox) convertView.getTag();
-
-        checkBox.setText(mList.get(position));
-
+        // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
+        ViewHolder viewHolder = new ViewHolder(v);
+        final CheckBox checkBox = viewHolder.checkBox;
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 String number = (String) buttonView.getText();
@@ -62,18 +58,27 @@ public class BlackListAdapter  extends BaseAdapter {
                 }
             }
         });
-
-        return convertView;
+        return viewHolder;
     }
 
-    // кол-во элементов
+    // Заменяет контент отдельного view (вызывается layout manager-ом)
     @Override
-    public int getCount() {
+    public void onBindViewHolder(BlackListAdapter.ViewHolder holder, int position) {
+        holder.checkBox.setText(mList.get(position));
+    }
+
+    // Возвращает размер данных (вызывается layout manager-ом)
+    @Override
+    public int getItemCount() {
         return mList.size();
     }
 
+
+    public ArrayList<String> getCheckedItems(){
+        return mChecked;
+    }
+
     // элемент по позиции
-    @Override
     public Object getItem(int position) {
         return mList.get(position);
     }

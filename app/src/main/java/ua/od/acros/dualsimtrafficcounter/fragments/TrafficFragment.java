@@ -34,7 +34,7 @@ import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
-import ua.od.acros.dualsimtrafficcounter.settings.LimitFragment;
+import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
@@ -682,7 +682,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             case R.id.limit2:
             case R.id.limit3:
                 Intent intent = new Intent(mContext, SettingsActivity.class);
-                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, LimitFragment.class.getName());
+                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, TrafficLimitFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
                 intent.putExtra(Constants.SIM_ACTIVE, v.getId());
                 startActivity(intent);
