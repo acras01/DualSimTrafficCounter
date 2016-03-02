@@ -231,15 +231,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (!mTraffic.isVisible()) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content_frame, mTraffic)
-                    .commit();
-            mNavigationView.setCheckedItem(R.id.nav_traffic);
-        } else
+        } else {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            if (fragment instanceof TrafficFragment)
                 finish();
-
+            else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, mTraffic)
+                        .commit();
+                mNavigationView.setCheckedItem(R.id.nav_traffic);
+            }
+        }
     }
 
     public void showDialog(String key) {
