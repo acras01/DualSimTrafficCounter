@@ -23,7 +23,9 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
+import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -448,13 +450,63 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         Calendar clndr = Calendar.getInstance();
 
+        //Set reset time
+        if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10])) {
+            Intent i1Reset = new Intent(mContext, ResetReceiver.class);
+            i1Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
+            i1Reset.setAction(Constants.RESET_ACTION);
+            final int SIM1_RESET = 501;
+            PendingIntent pi1Reset = PendingIntent.getBroadcast(mContext, SIM1_RESET, i1Reset, 0);
+            am.cancel(pi1Reset);
+            clndr.setTimeInMillis(System.currentTimeMillis());
+            if (sharedPreferences.getString(Constants.PREF_SIM1[3], "0").equals("1"))
+                clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[10], "1")));
+            clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[9], "00:00").split(":")[0]));
+            clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[9], "00:00").split(":")[1]));
+            clndr.set(Calendar.SECOND, 0);
+            clndr.set(Calendar.MILLISECOND, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(sharedPreferences, Constants.SIM1), pi1Reset);
+        }
+        if (key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10])) {
+            Intent i2Reset = new Intent(mContext, ResetReceiver.class);
+            i2Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
+            i2Reset.setAction(Constants.RESET_ACTION);
+            final int SIM2_RESET = 502;
+            PendingIntent p21Reset = PendingIntent.getBroadcast(mContext, SIM2_RESET, i2Reset, 0);
+            am.cancel(p21Reset);
+            clndr.setTimeInMillis(System.currentTimeMillis());
+            if (sharedPreferences.getString(Constants.PREF_SIM2[3], "0").equals("1"))
+                clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[10], "1")));
+            clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[9], "00:00").split(":")[0]));
+            clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[9], "00:00").split(":")[1]));
+            clndr.set(Calendar.SECOND, 0);
+            clndr.set(Calendar.MILLISECOND, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(sharedPreferences, Constants.SIM2), p21Reset);
+        }
+        if (key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10])) {
+            Intent i3Reset = new Intent(mContext, ResetReceiver.class);
+            i3Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
+            i3Reset.setAction(Constants.RESET_ACTION);
+            final int SIM3_RESET = 503;
+            PendingIntent pi3Reset = PendingIntent.getBroadcast(mContext, SIM3_RESET, i3Reset, 0);
+            am.cancel(pi3Reset);
+            clndr.setTimeInMillis(System.currentTimeMillis());
+            if (sharedPreferences.getString(Constants.PREF_SIM3[3], "0").equals("1"))
+                clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[10], "1")));
+            clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[9], "00:00").split(":")[0]));
+            clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[9], "00:00").split(":")[1]));
+            clndr.set(Calendar.SECOND, 0);
+            clndr.set(Calendar.MILLISECOND, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(sharedPreferences, Constants.SIM3), pi3Reset);
+        }
+
         //Scheduled ON/OFF
         if (key.equals(Constants.PREF_SIM1[11]) || key.equals(Constants.PREF_SIM1[12]) || key.equals(Constants.PREF_SIM1[13])) {
             Intent i1Off = new Intent(mContext, OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1Off.putExtra(Constants.ON_OFF, false);
             i1Off.setAction(Constants.ALARM_ACTION);
-            int SIM1_OFF = 100;
+            final int SIM1_OFF = 100;
             PendingIntent pi1Off = PendingIntent.getBroadcast(mContext, SIM1_OFF, i1Off, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("1")) {
@@ -472,7 +524,7 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
             i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1On.putExtra(Constants.ON_OFF, true);
             i1On.setAction(Constants.ALARM_ACTION);
-            int SIM1_ON = 101;
+            final int SIM1_ON = 101;
             PendingIntent pi1On = PendingIntent.getBroadcast(mContext, SIM1_ON, i1On, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("2")) {
@@ -491,7 +543,7 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
             i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2Off.putExtra(Constants.ON_OFF, false);
             i2Off.setAction(Constants.ALARM_ACTION);
-            int SIM2_OFF = 110;
+            final int SIM2_OFF = 110;
             PendingIntent pi2Off = PendingIntent.getBroadcast(mContext, SIM2_OFF, i2Off, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("1")) {
@@ -509,7 +561,7 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
             i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2On.putExtra(Constants.ON_OFF, true);
             i2On.setAction(Constants.ALARM_ACTION);
-            int SIM2_ON = 111;
+            final int SIM2_ON = 111;
             PendingIntent pi2On = PendingIntent.getBroadcast(mContext, SIM2_ON, i2On, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("2")) {
@@ -528,7 +580,7 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
             i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3Off.putExtra(Constants.ON_OFF, false);
             i3Off.setAction(Constants.ALARM_ACTION);
-            int SIM3_OFF = 120;
+            final int SIM3_OFF = 120;
             PendingIntent pi3Off = PendingIntent.getBroadcast(mContext, SIM3_OFF, i3Off, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("1")) {
@@ -546,7 +598,7 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
             i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3On.putExtra(Constants.ON_OFF, true);
             i3On.setAction(Constants.ALARM_ACTION);
-            int SIM3_ON = 121;
+            final int SIM3_ON = 121;
             PendingIntent pi3On = PendingIntent.getBroadcast(mContext, SIM3_ON, i3On, 0);
             if (sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("2")) {

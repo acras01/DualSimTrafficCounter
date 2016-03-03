@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import android.app.AlarmManager;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 
@@ -23,7 +24,7 @@ public class DateUtils {
         }
     }
 
-    public static DateTime getResetTime(int sim, ContentValues contentValues, SharedPreferences preferences, String[] simPref) {
+    public static DateTime getResetDate(int sim, ContentValues contentValues, SharedPreferences preferences, String[] simPref) {
         DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
         DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
         DateTime now = new DateTime().withTimeAtStartOfDay();
@@ -105,5 +106,75 @@ public class DateUtils {
             } else
                 return null;
         }
+    }
+
+    public static DateTime setResetDate(SharedPreferences preferences, String[] simPref) {
+        DateTime now;
+        String time = preferences.getString(simPref[1], "00:00");
+        now = new DateTime()
+                .withHourOfDay(Integer.valueOf(time.split(":")[0]))
+                .withMinuteOfHour(Integer.valueOf(time.split(":")[1]));
+        int delta;
+        switch (preferences.getString(simPref[0], "")) {
+            case "0":
+                delta = 1;
+                return now.plusDays(delta);
+            case "1":
+                delta = Integer.parseInt(preferences.getString(simPref[2], "1"));
+                if (delta >= now.getDayOfMonth())
+                    return now.withDayOfMonth(delta);
+                else
+                    return now.plusMonths(1).withDayOfMonth(delta);
+            case "2":
+                delta = Integer.parseInt(preferences.getString(simPref[2], "1"));
+                return now.plusDays(delta);
+        }
+        return null;
+    }
+
+    public static long getInterval(SharedPreferences sharedPreferences, int sim) {
+        long interval;
+        DateTime now = new DateTime().withTimeAtStartOfDay();
+        String[] pref = new String[27];
+        switch (sim) {
+            case Constants.SIM1:
+                pref = Constants.PREF_SIM1;
+                break;
+            case Constants.SIM2:
+                pref = Constants.PREF_SIM2;
+                break;
+            case Constants.SIM3:
+                pref = Constants.PREF_SIM3;
+                break;
+        }
+        switch (sharedPreferences.getString(pref[3], "")) {
+            default:
+            case "0":
+                interval = AlarmManager.INTERVAL_DAY;
+                break;
+            case "1":
+                switch (now.getMonthOfYear()) {
+                    case 2:
+                        if (now.year().isLeap())
+                            interval = 29;
+                        else
+                            interval = 28;
+                        break;
+                    case 4:
+                    case 6:
+                    case 9:
+                    case 11:
+                        interval = 30;
+                        break;
+                    default:
+                        interval = 31;
+                }
+                interval *= AlarmManager.INTERVAL_DAY;
+                break;
+            case "2":
+                interval = Integer.parseInt(sharedPreferences.getString(pref[10], "1")) * AlarmManager.INTERVAL_DAY;
+                break;
+        }
+        return interval;
     }
 }

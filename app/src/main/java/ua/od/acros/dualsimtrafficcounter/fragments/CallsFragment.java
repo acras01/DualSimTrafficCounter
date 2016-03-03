@@ -37,6 +37,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 
 public class CallsFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -240,6 +241,13 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
         toolBar.setSubtitle(R.string.calls_fragment);
         setButtonLimitText();
+        MyApplication.activityResumed();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MyApplication.activityPaused();
     }
 
     @Override

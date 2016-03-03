@@ -435,6 +435,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         MyNotification.setIdNeedsChange(true);
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
+
+        //Check if needs to reset
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.RESET_ACTION))
+            EventBus.getDefault().post(new ClearTrafficEvent(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)));
         // schedule task
         timerStart(Constants.COUNT);
 
@@ -493,10 +497,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mContinueOverLimit = false;
             mHasActionChosen = false;
         }
-        if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
+        /*if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
                 key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))
-            mResetRuleHasChanged = true;
+            mResetRuleHasChanged = true;*/
         if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[4]) ||
                 key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[4]) ||
                 key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4]))
@@ -699,11 +703,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsNight1 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         mIsNight1 = false;
-                    String[] simPref;
+
+                    /*String[] simPref;
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
                         simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
                                 Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
-                        mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mDataMap, mPrefs, simPref);
+                        mResetTime1 = DateUtils.getResetDate(Constants.SIM1, mDataMap, mPrefs, simPref);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
@@ -714,7 +719,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mSimQuantity >= 2) {
                             simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
                                     Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
-                            mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mDataMap, mPrefs, simPref);
+                            mResetTime2 = DateUtils.getResetDate(Constants.SIM2, mDataMap, mPrefs, simPref);
                             if (mResetTime2 != null) {
                                 mIsResetNeeded2 = true;
                                 mPrefs.edit()
@@ -726,7 +731,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mSimQuantity == 3) {
                             simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
                                     Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
-                            mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mDataMap, mPrefs, simPref);
+                            mResetTime3 = DateUtils.getResetDate(Constants.SIM3, mDataMap, mPrefs, simPref);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
                                 mPrefs.edit()
@@ -736,7 +741,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                         }
                         mResetRuleHasChanged = false;
-                    }
+                    }*/
 
                     boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
@@ -963,11 +968,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsNight2 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         mIsNight2 = false;
-                    String[] simPref;
+
+                    /*String[] simPref;
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
                         simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
                                 Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
-                        mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mDataMap, mPrefs, simPref);
+                        mResetTime1 = DateUtils.getResetDate(Constants.SIM1, mDataMap, mPrefs, simPref);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
@@ -978,7 +984,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mSimQuantity >= 2) {
                             simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
                                     Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
-                            mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mDataMap, mPrefs, simPref);
+                            mResetTime2 = DateUtils.getResetDate(Constants.SIM2, mDataMap, mPrefs, simPref);
                             if (mResetTime2 != null) {
                                 mIsResetNeeded2 = true;
                                 mPrefs.edit()
@@ -990,7 +996,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mSimQuantity == 3) {
                             simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
                                     Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
-                            mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mDataMap, mPrefs, simPref);
+                            mResetTime3 = DateUtils.getResetDate(Constants.SIM3, mDataMap, mPrefs, simPref);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
                                 mPrefs.edit()
@@ -1000,7 +1006,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                         }
                         mResetRuleHasChanged = false;
-                    }
+                    }*/
 
                     boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
@@ -1227,11 +1233,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsNight3 = DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, fmtDateTime.parseDateTime(timeOFF)) <= 0;
                     } else
                         mIsNight3 = false;
-                    String[] simPref;
+
+                    /*String[] simPref;
                     if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
                         simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
                                 Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
-                        mResetTime1 = DateUtils.getResetTime(Constants.SIM1, mDataMap, mPrefs, simPref);
+                        mResetTime1 = DateUtils.getResetDate(Constants.SIM1, mDataMap, mPrefs, simPref);
                         if (mResetTime1 != null) {
                             mIsResetNeeded1 = true;
                             mPrefs.edit()
@@ -1242,7 +1249,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mSimQuantity >= 2) {
                             simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
                                     Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
-                            mResetTime2 = DateUtils.getResetTime(Constants.SIM2, mDataMap, mPrefs, simPref);
+                            mResetTime2 = DateUtils.getResetDate(Constants.SIM2, mDataMap, mPrefs, simPref);
                             if (mResetTime2 != null) {
                                 mIsResetNeeded2 = true;
                                 mPrefs.edit()
@@ -1254,7 +1261,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mSimQuantity == 3) {
                             simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
                                     Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
-                            mResetTime3 = DateUtils.getResetTime(Constants.SIM3, mDataMap, mPrefs, simPref);
+                            mResetTime3 = DateUtils.getResetDate(Constants.SIM3, mDataMap, mPrefs, simPref);
                             if (mResetTime3 != null) {
                                 mIsResetNeeded3 = true;
                                 mPrefs.edit()
@@ -1264,7 +1271,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                         }
                         mResetRuleHasChanged = false;
-                    }
+                    }*/
 
                     boolean emptyDB = MyDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 

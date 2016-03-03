@@ -2,7 +2,10 @@ package ua.od.acros.dualsimtrafficcounter.settings;
 
 
 import android.app.ActionBar;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -10,13 +13,16 @@ import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+
+import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
+import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -28,13 +34,13 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
     private ListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
-    private Toolbar mToolBar;
+    private Context mContext;
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Context context = getActivity().getApplicationContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mContext = getActivity().getApplicationContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.calls_settings);
@@ -66,7 +72,7 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
-        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
+        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (simQuantity == 1) {
@@ -201,5 +207,59 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
+
+        AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        Calendar clndr = Calendar.getInstance();
+
+        //Set reset time
+        if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5])) {
+            Intent i1Reset = new Intent(mContext, ResetReceiver.class);
+            i1Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
+            i1Reset.setAction(Constants.RESET_ACTION_CALLS);
+            final int SIM1_RESET = 601;
+            PendingIntent pi1Reset = PendingIntent.getBroadcast(mContext, SIM1_RESET, i1Reset, 0);
+            am.cancel(pi1Reset);
+            clndr.setTimeInMillis(System.currentTimeMillis());
+            if (sharedPreferences.getString(Constants.PREF_SIM1_CALLS[2], "0").equals("1"))
+                clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1_CALLS[5], "1")));
+            clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1_CALLS[4], "00:00").split(":")[0]));
+            clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1_CALLS[4], "00:00").split(":")[1]));
+            clndr.set(Calendar.SECOND, 0);
+            clndr.set(Calendar.MILLISECOND, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(sharedPreferences, Constants.SIM1), pi1Reset);
+        }
+        if (key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5])) {
+            Intent i2Reset = new Intent(mContext, ResetReceiver.class);
+            i2Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
+            i2Reset.setAction(Constants.RESET_ACTION_CALLS);
+            final int SIM2_RESET = 602;
+            PendingIntent p21Reset = PendingIntent.getBroadcast(mContext, SIM2_RESET, i2Reset, 0);
+            am.cancel(p21Reset);
+            clndr.setTimeInMillis(System.currentTimeMillis());
+            if (sharedPreferences.getString(Constants.PREF_SIM2_CALLS[2], "0").equals("1"))
+                clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2_CALLS[5], "1")));
+            clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2_CALLS[4], "00:00").split(":")[0]));
+            clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2_CALLS[4], "00:00").split(":")[1]));
+            clndr.set(Calendar.SECOND, 0);
+            clndr.set(Calendar.MILLISECOND, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(sharedPreferences, Constants.SIM2), p21Reset);
+        }
+        if (key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5])) {
+            Intent i3Reset = new Intent(mContext, ResetReceiver.class);
+            i3Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
+            i3Reset.setAction(Constants.RESET_ACTION_CALLS);
+            final int SIM3_RESET = 603;
+            PendingIntent pi3Reset = PendingIntent.getBroadcast(mContext, SIM3_RESET, i3Reset, 0);
+            am.cancel(pi3Reset);
+            clndr.setTimeInMillis(System.currentTimeMillis());
+            if (sharedPreferences.getString(Constants.PREF_SIM3[3], "0").equals("1"))
+                clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3_CALLS[10], "1")));
+            clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3_CALLS[9], "00:00").split(":")[0]));
+            clndr.set(Calendar.MINUTE, Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3_CALLS[9], "00:00").split(":")[1]));
+            clndr.set(Calendar.SECOND, 0);
+            clndr.set(Calendar.MILLISECOND, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(sharedPreferences, Constants.SIM3), pi3Reset);
+        }
+
     }
 }

@@ -112,4 +112,6 @@ public class Constants {
     public static final String ON_OFF = "on/off";
     public static final String OUTGOING_CALL_ANSWERED = "ua.od.acros.dualsimtrafficcounter.CALL_ANSWERED";
     public static final String OUTGOING_CALL_ENDED = "ua.od.acros.dualsimtrafficcounter.CALL_ENDED";
+    public static final String RESET_ACTION = "ua.od.acros.dualsimtrafficcounter.RESET";
+    public static final String RESET_ACTION_CALLS = "ua.od.acros.dualsimtrafficcounter.RESET_CALLS";
 }

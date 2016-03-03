@@ -66,6 +66,7 @@ public class MyNotification extends Notification {
             mPriorityChanged = false;
             b.setPriority(prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN);
         }
+        b.setContentText(traffic);
         return new NotificationCompat.BigTextStyle(b).bigText(bigText).build();
     }
 
