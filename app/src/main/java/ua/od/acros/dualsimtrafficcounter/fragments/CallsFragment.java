@@ -80,6 +80,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
                 long[] limit = setTotalText();
+                TypedValue typedValue = new TypedValue();
+                Resources.Theme theme = getActivity().getTheme();
+                theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+                TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{
+                        android.R.attr.textColorPrimary});
+                int primaryColor = arr.getColor(0, -1);
                 try {
                     switch (sim) {
                         case Constants.SIM1:
@@ -87,27 +93,28 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                             if (duration >= limit[0])
                                 TOT1.setTextColor(Color.RED);
                             else
-                                TOT1.setTextColor(Color.WHITE);
+                                TOT1.setTextColor(primaryColor);
                             break;
                         case Constants.SIM2:
                             TOT2.setText(DataFormat.formatCallDuration(mContext, duration));
                             if (duration >= limit[1])
                                 TOT2.setTextColor(Color.RED);
                             else
-                                TOT2.setTextColor(Color.WHITE);
+                                TOT2.setTextColor(primaryColor);
                             break;
                         case Constants.SIM3:
                             TOT3.setText(DataFormat.formatCallDuration(mContext, duration));
                             if (duration >= limit[2])
                                 TOT3.setTextColor(Color.RED);
                             else
-                                TOT3.setTextColor(Color.WHITE);
+                                TOT3.setTextColor(primaryColor);
                             break;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     ACRA.getErrorReporter().handleException(e);
                 }
+                arr.recycle();
             }
         };
         IntentFilter callDataFilter = new IntentFilter(Constants.CALLS_BROADCAST_ACTION);
