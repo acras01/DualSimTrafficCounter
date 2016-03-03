@@ -21,8 +21,7 @@ public class SettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
                 .getBoolean(Constants.PREF_OTHER[29], true)) {
-            int currentNightMode = getResources().getConfiguration().uiMode
-                    & Configuration.UI_MODE_NIGHT_MASK;
+            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
             switch (currentNightMode) {
                 case Configuration.UI_MODE_NIGHT_NO:
                     // Night mode is not active, we're in day time

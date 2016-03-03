@@ -24,13 +24,6 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
             this.mList = list;
     }
 
-    private void toggleChecked(String number) {
-        if (mList.contains(number))
-            mList.remove(number);
-        else
-            mList.add(number);
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public CheckBox checkBox;
         public TextView txtViewName;
@@ -55,8 +48,14 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         final CheckBox checkBox = viewHolder.checkBox;
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String number = (String) buttonView.getText();
-                toggleChecked(number);
+                String number = (String) buttonView.getContentDescription();
+                if (isChecked) {
+                    if (!mList.contains(number))
+                        mList.add(number);
+                } else {
+                    if (mList.contains(number))
+                        mList.remove(number);
+                }
             }
         });
         return viewHolder;
@@ -65,6 +64,8 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
     @Override
     public void onBindViewHolder(WhiteListAdapter.ViewHolder holder, int position) {
         holder.checkBox.setChecked(mList.contains(mNumbers.get(position)));
+        holder.checkBox.setContentDescription(mNumbers.get(position));
+        //holder.checkBox.setText(mNumbers.get(position));
         holder.txtViewName.setText(mNames.get(position));
         holder.txtViewNumber.setText(mNumbers.get(position));
     }

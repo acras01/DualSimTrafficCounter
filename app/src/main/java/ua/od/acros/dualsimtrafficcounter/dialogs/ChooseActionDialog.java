@@ -1,9 +1,9 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -19,7 +19,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
-public class ChooseActionDialog extends Activity implements View.OnClickListener {
+public class ChooseActionDialog extends AppCompatActivity implements View.OnClickListener {
 
     private String mAction = "";
     private int mSimID;
