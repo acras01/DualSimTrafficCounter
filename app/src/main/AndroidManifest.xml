@@ -45,9 +45,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <data android:scheme="default"
+                    android:host="acras" />
             </intent-filter>
         </activity>
         <activity
@@ -62,7 +65,7 @@
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/action_settings"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -181,15 +184,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/calls_info_widget" />
-        </receiver>
-        <receiver
-            android:name=".receivers.ResetReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="ua.od.acros.dualsimtrafficcounter.RESET" />
-                <action android:name="ua.od.acros.dualsimtrafficcounter.RESET_CALLS" />
-            </intent-filter>
         </receiver>
 
     </application>

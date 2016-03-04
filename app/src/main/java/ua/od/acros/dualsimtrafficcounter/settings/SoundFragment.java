@@ -6,20 +6,23 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.Gravity;
 import android.widget.Switch;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.SoundEnabler;
 
-public class SoundFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SoundFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private SoundEnabler mSoundEnabler;
     private Context mContext;
+    private Switch actionBarSwitch;
+
+    @Override
+    public void onCreatePreferences(Bundle bundle, String s) {
+
+    }
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -31,7 +34,7 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
         addPreferencesFromResource(R.xml.notification);
 
         ActionBar actionbar = getActivity().getActionBar();
-        Switch actionBarSwitch = new Switch(mContext);
+        actionBarSwitch = new Switch(mContext);
         if (actionbar != null) {
             actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -41,16 +44,15 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
                     | Gravity.RIGHT));
             actionbar.setTitle(R.string.use_notification_title);
         }
-        mSoundEnabler = new SoundEnabler(mContext, actionBarSwitch);
+
         updateSettings();
     }
 
     protected void updateSettings() {
-        boolean available = mSoundEnabler.isSwitchOn();
         int count = getPreferenceScreen().getPreferenceCount();
         for (int i = 0; i < count; ++i) {
-            Preference pref = getPreferenceScreen().getPreference(i);
-            pref.setEnabled(available);
+            android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);
+            pref.setEnabled(actionBarSwitch.isChecked());
             if (pref.getKey().equals(Constants.PREF_OTHER[1]))
                 pref.setSummary(RingtoneManager.getRingtone(mContext,
                         Uri.parse(pref.getSharedPreferences().getString(Constants.PREF_OTHER[1], getResources().getString(R.string.not_set))))
@@ -60,13 +62,11 @@ public class SoundFragment extends PreferenceFragment implements SharedPreferenc
 
     public void onResume() {
         super.onResume();
-        mSoundEnabler.resume();
         updateSettings();
     }
 
     public void onPause() {
         super.onPause();
-        mSoundEnabler.pause();
     }
 
     @Override

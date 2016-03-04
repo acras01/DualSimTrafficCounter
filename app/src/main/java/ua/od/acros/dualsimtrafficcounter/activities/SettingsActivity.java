@@ -1,83 +1,77 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
-import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.widget.ListAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.settings.SettingsFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MyPrefsHeaderAdapter;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends AppCompatActivity {
 
-    private List<Header> mHeaders;
+    private SharedPreferences mPrefs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
-                .getBoolean(Constants.PREF_OTHER[29], true)) {
-            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            switch (currentNightMode) {
-                case Configuration.UI_MODE_NIGHT_NO:
-                    // Night mode is not active, we're in day time
-                    setTheme(R.style.AppTheme_AppBarOverlay_Light);
-                    break;
-                case Configuration.UI_MODE_NIGHT_YES:
-                    // Night mode is active, we're at night!
-                    setTheme(R.style.AppTheme_AppBarOverlay);
-                    break;
-                case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    // We don't know what mode we're in, assume notnight
-                    setTheme(R.style.AppTheme_AppBarOverlay_Light);
-                    break;
+        super.onCreate(savedInstanceState);
+        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (savedInstanceState == null) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
+                getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            else {
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                else
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
-        } else {
-            if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
-                    .getBoolean(Constants.PREF_OTHER[28], false))
-                setTheme(R.style.AppTheme_AppBarOverlay_Light);
-            else
-                setTheme(R.style.AppTheme_AppBarOverlay);
+            // Now recreate for it to take effect
+            recreate();
+        }
+        setContentView(R.layout.activity_settings);
+        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolBar);
+        android.support.v7.app.ActionBar bar = getSupportActionBar();
+        if (bar != null) {
+            bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        super.onCreate(savedInstanceState);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new SettingsFragment())
+                .commit();
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
-        if (getListAdapter() instanceof MyPrefsHeaderAdapter)
-            ((MyPrefsHeaderAdapter) getListAdapter()).resume();
-        invalidateHeaders();
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
-        if (getListAdapter() instanceof MyPrefsHeaderAdapter)
-            ((MyPrefsHeaderAdapter) getListAdapter()).pause();
     }
 
-    public void onBuildHeaders(List<Header> target) {
-        if (getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
-                .getBoolean(Constants.PREF_OTHER[25], false))
-            loadHeadersFromResource(R.xml.headers_xposed, target);
-        else
-            loadHeadersFromResource(R.xml.headers, target);
-        setTitle(R.string.action_settings);
-        mHeaders = target;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
     }
 
-    public void setListAdapter(ListAdapter adapter) {
-        int i, count;
-        if (mHeaders == null) {
-            mHeaders = new ArrayList<>();
-            count = adapter.getCount();
-            for (i = 0; i < count; ++i)
-                mHeaders.add((Header) adapter.getItem(i));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
         }
-        super.setListAdapter(new MyPrefsHeaderAdapter(this, mHeaders));
+        return super.onOptionsItemSelected(item);
     }
 }

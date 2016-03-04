@@ -14,7 +14,6 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
 
@@ -34,97 +33,6 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Calendar clndr = Calendar.getInstance();
-
-        //Set reset time
-        Intent i1Reset = new Intent(context, ResetReceiver.class);
-        i1Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
-        i1Reset.setAction(Constants.RESET_ACTION);
-        final int SIM1_RESET = 501;
-        PendingIntent pi1Reset = PendingIntent.getBroadcast(context, SIM1_RESET, i1Reset, 0);
-        am.cancel(pi1Reset);
-        clndr.setTimeInMillis(System.currentTimeMillis());
-        if (prefs.getString(Constants.PREF_SIM1[3], "0").equals("1"))
-            clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(prefs.getString(Constants.PREF_SIM1[10], "1")));
-        clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM1[9], "00:00").split(":")[0]));
-        clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM1[9], "00:00").split(":")[1]));
-        clndr.set(Calendar.SECOND, 0);
-        clndr.set(Calendar.MILLISECOND, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(prefs, Constants.SIM1), pi1Reset);
-
-        Intent i2Reset = new Intent(context, ResetReceiver.class);
-        i2Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
-        i2Reset.setAction(Constants.RESET_ACTION);
-        final int SIM2_RESET = 502;
-        PendingIntent p21Reset = PendingIntent.getBroadcast(context, SIM2_RESET, i2Reset, 0);
-        am.cancel(p21Reset);
-        clndr.setTimeInMillis(System.currentTimeMillis());
-        if (prefs.getString(Constants.PREF_SIM2[3], "0").equals("1"))
-            clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(prefs.getString(Constants.PREF_SIM2[10], "1")));
-        clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM2[9], "00:00").split(":")[0]));
-        clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM2[9], "00:00").split(":")[1]));
-        clndr.set(Calendar.SECOND, 0);
-        clndr.set(Calendar.MILLISECOND, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(prefs, Constants.SIM2), p21Reset);
-
-        Intent i3Reset = new Intent(context, ResetReceiver.class);
-        i3Reset.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
-        i3Reset.setAction(Constants.RESET_ACTION);
-        final int SIM3_RESET = 503;
-        PendingIntent pi3Reset = PendingIntent.getBroadcast(context, SIM3_RESET, i3Reset, 0);
-        am.cancel(pi3Reset);
-        clndr.setTimeInMillis(System.currentTimeMillis());
-        if (prefs.getString(Constants.PREF_SIM3[3], "0").equals("1"))
-            clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(prefs.getString(Constants.PREF_SIM3[10], "1")));
-        clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM3[9], "00:00").split(":")[0]));
-        clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM3[9], "00:00").split(":")[1]));
-        clndr.set(Calendar.SECOND, 0);
-        clndr.set(Calendar.MILLISECOND, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(prefs, Constants.SIM3), pi3Reset);
-
-        Intent i1ResetCalls = new Intent(context, ResetReceiver.class);
-        i1ResetCalls.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
-        i1ResetCalls.setAction(Constants.RESET_ACTION_CALLS);
-        final int SIM1_RESET_CALLS = 601;
-        PendingIntent pi1ResetCalls = PendingIntent.getBroadcast(context, SIM1_RESET_CALLS, i1ResetCalls, 0);
-        am.cancel(pi1ResetCalls);
-        clndr.setTimeInMillis(System.currentTimeMillis());
-        if (prefs.getString(Constants.PREF_SIM1_CALLS[2], "0").equals("1"))
-            clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(prefs.getString(Constants.PREF_SIM1_CALLS[5], "1")));
-        clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM1_CALLS[4], "00:00").split(":")[0]));
-        clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM1_CALLS[4], "00:00").split(":")[1]));
-        clndr.set(Calendar.SECOND, 0);
-        clndr.set(Calendar.MILLISECOND, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(prefs, Constants.SIM1), pi1ResetCalls);
-
-        Intent i2ResetCalls = new Intent(context, ResetReceiver.class);
-        i2ResetCalls.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
-        i2ResetCalls.setAction(Constants.RESET_ACTION_CALLS);
-        final int SIM2_RESET_CALLS = 602;
-        PendingIntent pi2ResetCalls = PendingIntent.getBroadcast(context, SIM2_RESET_CALLS, i2ResetCalls, 0);
-        am.cancel(pi2ResetCalls);
-        clndr.setTimeInMillis(System.currentTimeMillis());
-        if (prefs.getString(Constants.PREF_SIM2_CALLS[2], "0").equals("1"))
-            clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(prefs.getString(Constants.PREF_SIM2_CALLS[5], "1")));
-        clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM2_CALLS[4], "00:00").split(":")[0]));
-        clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM2_CALLS[4], "00:00").split(":")[1]));
-        clndr.set(Calendar.SECOND, 0);
-        clndr.set(Calendar.MILLISECOND, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(prefs, Constants.SIM2), pi2ResetCalls);
-
-        Intent i3ResetCalls = new Intent(context, ResetReceiver.class);
-        i3ResetCalls.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
-        i3ResetCalls.setAction(Constants.RESET_ACTION_CALLS);
-        final int SIM3_RESET_CALLS = 603;
-        PendingIntent pi3ResetCalls = PendingIntent.getBroadcast(context, SIM3_RESET_CALLS, i3ResetCalls, 0);
-        am.cancel(pi3ResetCalls);
-        clndr.setTimeInMillis(System.currentTimeMillis());
-        if (prefs.getString(Constants.PREF_SIM3_CALLS[2], "0").equals("1"))
-            clndr.set(Calendar.DAY_OF_MONTH, Integer.valueOf(prefs.getString(Constants.PREF_SIM3_CALLS[5], "1")));
-        clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM3_CALLS[4], "00:00").split(":")[0]));
-        clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM3_CALLS[4], "00:00").split(":")[1]));
-        clndr.set(Calendar.SECOND, 0);
-        clndr.set(Calendar.MILLISECOND, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), DateUtils.getInterval(prefs, Constants.SIM3), pi3ResetCalls);
 
         //Scheduled ON/OFF
         if (!prefs.getString(Constants.PREF_SIM1[11], "0").equals("3") || !prefs.getString(Constants.PREF_SIM2[11], "0").equals("3")

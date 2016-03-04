@@ -25,6 +25,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -33,11 +34,11 @@ import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
-import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
@@ -296,7 +297,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     private void startTask(Context context, String number) {
-        /*DateTime now = new DateTime();
+        DateTime now = new DateTime();
         DateTime dt;
         String lastDate = (String) mCalls.get(Constants.LAST_DATE);
         if (lastDate.equals(""))
@@ -376,7 +377,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
                     .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
                     .apply();
-        }*/
+        }
 
         mIsOutgoing = false;
         final Context ctx = context;
@@ -466,10 +467,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        /*if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
+        if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5]))
-            mResetRuleHasChanged = true;*/
+            mResetRuleHasChanged = true;
         if (key.equals(Constants.PREF_SIM1_CALLS[1]) || key.equals(Constants.PREF_SIM2_CALLS[1]) || key.equals(Constants.PREF_SIM3_CALLS[1]))
             mLimitHasChanged = true;
         if (key.equals(Constants.PREF_OTHER[5]) && sharedPreferences.getBoolean(key, false)) {
@@ -508,9 +509,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             i.putExtra(Constants.WIDGET_IDS, ids);
             sendBroadcast(i);
         }
-        //Check if needs to reset
-        if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.RESET_ACTION_CALLS))
-            EventBus.getDefault().post(new ClearTrafficEvent(intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED)));
+
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
             startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         return START_STICKY;
