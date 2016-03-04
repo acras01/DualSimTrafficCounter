@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <CheckBox
+    <android.support.v7.widget.AppCompatCheckBox
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/checkBox"
@@ -13,4 +13,5 @@
         android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true" />
+
 </RelativeLayout>

@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/show_names"
@@ -77,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/show_remaining_calls_widget"
@@ -134,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/show_icons"
@@ -369,7 +369,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/use_background"
@@ -424,7 +424,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/use_divider"
