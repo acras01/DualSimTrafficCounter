@@ -13,7 +13,7 @@
             android:summaryOff="@string/off"
             android:disableDependentsState="true" />
 
-        <EditTextPreference
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
             android:key="name1"
             android:inputType="text"
             android:title="@string/name_text"
@@ -34,7 +34,7 @@
             android:summaryOff="@string/off"
             android:disableDependentsState="true" />
 
-        <EditTextPreference
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
             android:key="name2"
             android:inputType="text"
             android:title="@string/name_text"
@@ -55,7 +55,7 @@
             android:summaryOff="@string/off"
             android:disableDependentsState="true" />
 
-        <EditTextPreference
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
             android:key="name3"
             android:inputType="text"
             android:title="@string/name_text"

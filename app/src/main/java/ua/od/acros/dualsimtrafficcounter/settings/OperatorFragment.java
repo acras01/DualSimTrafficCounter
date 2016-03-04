@@ -1,32 +1,28 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 
-public class OperatorFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class OperatorFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TwoLineCheckPreference auto1, auto2, auto3, showLogo;
-    private EditTextPreference name1, name2, name3;
+    private TwoLineEditTextPreference name1, name2, name3;
     private TwoLineListPreference logo1, logo2, logo3;
     private SharedPreferences mPrefs;
-    private Toolbar mToolBar;
 
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onCreatePreferences(Bundle bundle, String s) {
 
         Context context = getActivity().getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -34,23 +30,22 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
 
         addPreferencesFromResource(R.xml.operator_settings);
 
-        ActionBar actionbar = getActivity().getActionBar();
-        if (actionbar != null) {
-            actionbar.setTitle(R.string.name_title);
-        }
-
-        name1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[6]);
-        name2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[6]);
-        name3 = (EditTextPreference) findPreference(Constants.PREF_SIM3[6]);
-        auto1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[5]);
-        auto2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[5]);
-        auto3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[5]);
         showLogo = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[15]);
+
+        name1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[6]);
+        auto1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[5]);
         logo1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1[23]);
+
+        auto2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[5]);
+        name2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[6]);
         logo2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2[23]);
+
+        auto3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[5]);
+        name3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[6]);
+
         logo3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[23]);
-        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
-        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
+        android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim2");
+        android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim3");
 
         int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -97,6 +92,8 @@ public class OperatorFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onResume() {
         super.onResume();
+        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
+        toolBar.setTitle(R.string.name_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 

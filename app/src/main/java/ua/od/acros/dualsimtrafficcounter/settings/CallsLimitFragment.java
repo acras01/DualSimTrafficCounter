@@ -1,36 +1,30 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.text.InputFilter;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
-public class CallsLimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class CallsLimitFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private EditTextPreference limit1, limit2, limit3,
-            day1, day2, day3;
-    private TwoLineEditTextPreference round1, round2, round3;
-    private ListPreference period1, period2, period3, opValue1, opValue2, opValue3;
+    private TwoLineEditTextPreference limit1, limit2, limit3,
+            day1, day2, day3, round1, round2, round3;
+    private TwoLineListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
     private Context mContext;
 
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onCreatePreferences(Bundle bundle, String s) {
 
         mContext = getActivity().getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -38,32 +32,27 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
 
         addPreferencesFromResource(R.xml.calls_settings);
 
-        ActionBar actionbar = getActivity().getActionBar();
-        if (actionbar != null) {
-            actionbar.setTitle(R.string.calls_limit_title);
-        }
-
-        limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[1]);
-        limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[1]);
-        limit3 = (EditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[1]);
-        period1 = (ListPreference) findPreference(Constants.PREF_SIM1_CALLS[2]);
-        period2 = (ListPreference) findPreference(Constants.PREF_SIM2_CALLS[2]);
-        period3 = (ListPreference) findPreference(Constants.PREF_SIM3_CALLS[2]);
+        limit1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[1]);
+        limit2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[1]);
+        limit3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[1]);
+        period1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1_CALLS[2]);
+        period2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2_CALLS[2]);
+        period3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3_CALLS[2]);
         round1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[3]);
         round2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[3]);
         round3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[3]);
         time1 = (TimePreference) findPreference(Constants.PREF_SIM1_CALLS[4]);
         time2 = (TimePreference) findPreference(Constants.PREF_SIM2_CALLS[4]);
         time3 = (TimePreference) findPreference(Constants.PREF_SIM3_CALLS[4]);
-        day1 = (EditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[5]);
-        day2 = (EditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[5]);
-        day3 = (EditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[5]);
-        opValue1 = (ListPreference) findPreference(Constants.PREF_SIM1_CALLS[6]);
-        opValue2 = (ListPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
-        opValue3 = (ListPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
+        day1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1_CALLS[5]);
+        day2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2_CALLS[5]);
+        day3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3_CALLS[5]);
+        opValue1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1_CALLS[6]);
+        opValue2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
+        opValue3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
 
-        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
-        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
+        android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
+        android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
         int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -77,9 +66,9 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
         }
         updateSummary();
 
-        day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
+        /*day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
-        day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
+        day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});*/
 
 
         int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
@@ -101,11 +90,11 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
                     break;
             }
             // the position of your item inside the preference screen above
-            if (!key.equals("")) {
+            /*if (!key.equals("")) {
                 int pos = getPreferenceScreen().findPreference(key).getOrder();
                 // simulate a click / call it!!
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
-            }
+            }*/
         }
     }
 
@@ -188,6 +177,8 @@ public class CallsLimitFragment extends PreferenceFragment implements SharedPref
     @Override
     public void onResume() {
         super.onResume();
+        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
+        toolBar.setTitle(R.string.calls_limit_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 

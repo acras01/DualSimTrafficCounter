@@ -1,7 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 
-import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,11 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
@@ -41,11 +43,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-    }
-
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
         mContext = getActivity().getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -59,11 +56,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
         // end
 
         addPreferencesFromResource(R.xml.limit_settings);
-
-        ActionBar actionbar = getActivity().getActionBar();
-        if (actionbar != null) {
-            actionbar.setTitle(R.string.limit_title);
-        }
 
         limit1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[1]);
         limit2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[1]);
@@ -194,6 +186,23 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
                 // simulate a click / call it!!
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
             }*/
+        }
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        DialogFragment dialogFragment = null;
+        if (preference instanceof TimePreference) {
+            dialogFragment = new TimePreferenceDialog();
+            Bundle bundle = new Bundle(1);
+            bundle.putString("key", preference.getKey());
+            dialogFragment.setArguments(bundle);
+        }
+        if (dialogFragment != null) {
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(this.getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else {
+            super.onDisplayPreferenceDialog(preference);
         }
     }
 
@@ -432,6 +441,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
     @Override
     public void onResume() {
         super.onResume();
+        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
+        toolBar.setTitle(R.string.limit_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 

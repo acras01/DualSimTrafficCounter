@@ -8,13 +8,13 @@
         <PreferenceCategory
             android:title="@string/limit_settings" >
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_limit1"
                 android:inputType="numberDecimal"
                 android:title="@string/limit"
                 android:summary="" />
 
-            <ListPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
                 android:entryValues="@array/measure_calls_values"
@@ -34,7 +34,7 @@
                 android:dialogLayout="@layout/time_preference"
                 android:title="@string/time_of_end"/>
 
-            <ListPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/period"
                 android:entryValues="@array/period_values"
@@ -42,7 +42,7 @@
                 android:summary=""
                 android:title="@string/period_value" />
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_day1"
                 android:inputType="number"
                 android:defaultValue="1"
@@ -82,13 +82,13 @@
         <PreferenceCategory
             android:title="@string/limit_settings" >
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_limit2"
                 android:inputType="numberDecimal"
                 android:title="@string/limit"
                 android:summary="" />
 
-            <ListPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
                 android:entryValues="@array/measure_calls_values"
@@ -108,7 +108,7 @@
                 android:dialogLayout="@layout/time_preference"
                 android:title="@string/time_of_end"/>
 
-            <ListPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/period"
                 android:entryValues="@array/period_values"
@@ -116,7 +116,7 @@
                 android:summary=""
                 android:title="@string/period_value" />
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_day2"
                 android:inputType="number"
                 android:defaultValue="1"
@@ -156,13 +156,13 @@
         <PreferenceCategory
             android:title="@string/limit_settings" >
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_limit3"
                 android:inputType="numberDecimal"
                 android:title="@string/limit"
                 android:summary="" />
 
-            <ListPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
                 android:entryValues="@array/measure_calls_values"
@@ -182,7 +182,7 @@
                 android:dialogLayout="@layout/time_preference"
                 android:title="@string/time_of_end"/>
 
-            <ListPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/period"
                 android:entryValues="@array/period_values"
@@ -190,7 +190,7 @@
                 android:summary=""
                 android:title="@string/period_value" />
 
-            <EditTextPreference
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
                 android:key="calls_day3"
                 android:inputType="number"
                 android:defaultValue="1"
