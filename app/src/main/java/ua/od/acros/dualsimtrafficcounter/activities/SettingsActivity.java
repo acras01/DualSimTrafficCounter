@@ -15,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsFragment;
+import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
@@ -45,7 +47,26 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         mActionBar = getSupportActionBar();
         if (mActionBar != null)
             mActionBar.setDisplayHomeAsUpEnabled(true);
-        getSupportFragmentManager().beginTransaction()
+        if (getIntent().getStringExtra("show") != null)
+            switch (getIntent().getStringExtra("show")) {
+                case Constants.TRAFFIC_TAG:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, new TrafficLimitFragment())
+                        .commit();
+                    break;
+                case Constants.CALLS_TAG:
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, new CallsLimitFragment())
+                            .commit();
+                    break;
+                default:
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, new SettingsFragment())
+                            .commit();
+                    break;
+            }
+        else
+            getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new SettingsFragment())
                 .commit();
     }
