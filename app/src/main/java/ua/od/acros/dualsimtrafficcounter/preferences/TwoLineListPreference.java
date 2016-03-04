@@ -3,12 +3,11 @@ package ua.od.acros.dualsimtrafficcounter.preferences;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.preference.ListPreference;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
 
-public class TwoLineListPreference extends ListPreference {
+public class TwoLineListPreference extends android.support.v7.preference.ListPreference {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TwoLineListPreference(Context ctx, AttributeSet attrs, int defStyle) {
@@ -24,10 +23,10 @@ public class TwoLineListPreference extends ListPreference {
     }
 
     @Override
-    protected void onBindView(View view) {
-        super.onBindView(view);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
 
-        TextView textView = (TextView) view.findViewById(android.R.id.title);
+        TextView textView = (TextView) holder.findViewById(android.R.id.title);
         if (textView != null) {
             textView.setSingleLine(false);
         }

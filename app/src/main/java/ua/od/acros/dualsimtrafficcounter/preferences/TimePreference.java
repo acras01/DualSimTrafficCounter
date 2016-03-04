@@ -3,14 +3,16 @@ package ua.od.acros.dualsimtrafficcounter.preferences;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
-public class TimePreference extends DialogPreference {
+public class TimePreference extends android.support.v7.preference.DialogPreference {
     private int mLastHour = 0;
     private int mLastMinute = 0;
     private TimePicker mPicker = null;
@@ -42,9 +44,9 @@ public class TimePreference extends DialogPreference {
     }*/
 
     @Override
-    protected void onBindDialogView(View v) {
-        super.onBindDialogView(v);
-        mPicker = (TimePicker) v.findViewById(R.id.prefTimePicker);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        mPicker = (TimePicker) holder.findViewById(R.id.prefTimePicker);
         mPicker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             mPicker.setHour(mLastHour);

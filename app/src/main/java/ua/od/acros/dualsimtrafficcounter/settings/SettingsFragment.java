@@ -46,7 +46,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.notif_tv:
+            case R.id.notif_sum:
 
+        }
     }
 
     @Override

@@ -8,41 +8,40 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
-import android.text.InputFilter;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
-public class TrafficLimitFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class TrafficLimitFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private EditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
+    private TwoLineEditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
             round1, round2, round3, round1N, round2N, round3N,
             day1, day2, day3,
             opLimit1, opLimit2, opLimit3;
-    private ListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3, value1N, value2N, value3N;
+    private TwoLineListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3, value1N, value2N, value3N;
     private TwoLineCheckPreference prefer1, prefer2, prefer3;
     private TwoLineListPreference everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
     private SharedPreferences mPrefs;
     private int mSimQuantity;
     private Context mContext;
-    private Toolbar mToolBar;
+
+    @Override
+    public void onCreatePreferences(Bundle bundle, String s) {
+
+    }
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -66,18 +65,18 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
             actionbar.setTitle(R.string.limit_title);
         }
 
-        limit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[1]);
-        limit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[1]);
-        limit3 = (EditTextPreference) findPreference(Constants.PREF_SIM3[1]);
-        value1 = (ListPreference) findPreference(Constants.PREF_SIM1[2]);
-        value2 = (ListPreference) findPreference(Constants.PREF_SIM2[2]);
-        value3 = (ListPreference) findPreference(Constants.PREF_SIM3[2]);
-        period1 = (ListPreference) findPreference(Constants.PREF_SIM1[3]);
-        period2 = (ListPreference) findPreference(Constants.PREF_SIM2[3]);
-        period3 = (ListPreference) findPreference(Constants.PREF_SIM3[3]);
-        round1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[4]);
-        round2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[4]);
-        round3 = (EditTextPreference) findPreference(Constants.PREF_SIM3[4]);
+        limit1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[1]);
+        limit2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[1]);
+        limit3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[1]);
+        value1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1[2]);
+        value2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2[2]);
+        value3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[2]);
+        period1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1[3]);
+        period2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2[3]);
+        period3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[3]);
+        round1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[4]);
+        round2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[4]);
+        round3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[4]);
         TwoLineCheckPreference autoff1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[7]);
         TwoLineCheckPreference autoff2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[7]);
         TwoLineCheckPreference autoff3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[7]);
@@ -88,9 +87,9 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
         time2 = (TimePreference) findPreference(Constants.PREF_SIM2[9]);
         time3 = (TimePreference) findPreference(Constants.PREF_SIM3[9]);
         TwoLineCheckPreference changeSIM = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[10]);
-        day1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[10]);
-        day2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[10]);
-        day3 = (EditTextPreference) findPreference(Constants.PREF_SIM3[10]);
+        day1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[10]);
+        day2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[10]);
+        day3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[10]);
         everyday1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1[11]);
         everyday2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2[11]);
         everyday3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[11]);
@@ -100,31 +99,31 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
         tOff1 = (TimePreference) findPreference(Constants.PREF_SIM1[12]);
         tOff2 = (TimePreference) findPreference(Constants.PREF_SIM2[12]);
         tOff3 = (TimePreference) findPreference(Constants.PREF_SIM3[12]);
-        opLimit1 = (EditTextPreference) findPreference(Constants.PREF_SIM1[15]);
-        opLimit2 = (EditTextPreference) findPreference(Constants.PREF_SIM2[15]);
-        opLimit3 = (EditTextPreference) findPreference(Constants.PREF_SIM3[15]);
-        opValue1 = (ListPreference) findPreference(Constants.PREF_SIM1[16]);
-        opValue2 = (ListPreference) findPreference(Constants.PREF_SIM2[16]);
-        opValue3 = (ListPreference) findPreference(Constants.PREF_SIM3[16]);
+        opLimit1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[15]);
+        opLimit2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[15]);
+        opLimit3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[15]);
+        opValue1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1[16]);
+        opValue2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2[16]);
+        opValue3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[16]);
         //night
-        limit1N = (EditTextPreference) findPreference(Constants.PREF_SIM1[18]);
-        limit2N = (EditTextPreference) findPreference(Constants.PREF_SIM2[18]);
-        limit3N = (EditTextPreference) findPreference(Constants.PREF_SIM3[18]);
-        value1N = (ListPreference) findPreference(Constants.PREF_SIM1[19]);
-        value2N = (ListPreference) findPreference(Constants.PREF_SIM2[19]);
-        value3N = (ListPreference) findPreference(Constants.PREF_SIM3[19]);
+        limit1N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[18]);
+        limit2N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[18]);
+        limit3N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[18]);
+        value1N = (TwoLineListPreference) findPreference(Constants.PREF_SIM1[19]);
+        value2N = (TwoLineListPreference) findPreference(Constants.PREF_SIM2[19]);
+        value3N = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[19]);
         tOn1N = (TimePreference) findPreference(Constants.PREF_SIM1[20]);
         tOn2N = (TimePreference) findPreference(Constants.PREF_SIM2[20]);
         tOn3N = (TimePreference) findPreference(Constants.PREF_SIM3[20]);
         tOff1N = (TimePreference) findPreference(Constants.PREF_SIM1[21]);
         tOff2N = (TimePreference) findPreference(Constants.PREF_SIM2[21]);
         tOff3N = (TimePreference) findPreference(Constants.PREF_SIM3[21]);
-        round1N = (EditTextPreference) findPreference(Constants.PREF_SIM1[22]);
-        round2N = (EditTextPreference) findPreference(Constants.PREF_SIM2[22]);
-        round3N = (EditTextPreference) findPreference(Constants.PREF_SIM3[22]);
+        round1N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[22]);
+        round2N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[22]);
+        round3N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[22]);
 
-        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
-        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
+        android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim2");
+        android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim3");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
@@ -166,9 +165,9 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
         }
         updateSummary();
 
-        day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
+        /*day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
-        day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
+        day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});*/
 
 
         int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
@@ -190,11 +189,11 @@ public class TrafficLimitFragment extends PreferenceFragment implements SharedPr
                     break;
             }
             // the position of your item inside the preference screen above
-            if (!key.equals("")) {
+            /*if (!key.equals("")) {
                 int pos = getPreferenceScreen().findPreference(key).getOrder();
                 // simulate a click / call it!!
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
-            }
+            }*/
         }
     }
 
