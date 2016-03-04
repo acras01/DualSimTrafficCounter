@@ -162,7 +162,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
         day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});*/
 
 
-        int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+        /*int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         if (sim != Constants.DISABLED) {
             String key = "";
             // the preference screen your item is in must be known
@@ -181,19 +181,19 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
                     break;
             }
             // the position of your item inside the preference screen above
-            /*if (!key.equals("")) {
+            if (!key.equals("")) {
                 int pos = getPreferenceScreen().findPreference(key).getOrder();
                 // simulate a click / call it!!
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
-            }*/
-        }
+            }
+        }*/
     }
 
     @Override
     public void onDisplayPreferenceDialog(Preference preference) {
         DialogFragment dialogFragment = null;
         if (preference instanceof TimePreference) {
-            dialogFragment = new TimePreferenceDialog();
+            dialogFragment = TimePreferenceDialog.newInstance(preference);
             Bundle bundle = new Bundle(1);
             bundle.putString("key", preference.getKey());
             dialogFragment.setArguments(bundle);

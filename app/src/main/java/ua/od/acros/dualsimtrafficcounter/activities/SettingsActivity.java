@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -20,6 +21,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
     private SharedPreferences mPrefs;
+    private ActionBar mActionBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,10 +42,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         setContentView(R.layout.activity_settings);
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
-        android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
+        mActionBar = getSupportActionBar();
+        if (mActionBar != null)
             mActionBar.setDisplayHomeAsUpEnabled(true);
-        }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new SettingsFragment())
                 .commit();
@@ -96,6 +97,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     public void replaceFragments(Class fragmentClass) {
         invalidateOptionsMenu();
+        if (mActionBar != null)
+            mActionBar.setDisplayShowCustomEnabled(false);
         Fragment fragment = null;
         try {
             fragment = (Fragment) fragmentClass.newInstance();

@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
@@ -71,7 +74,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
         day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});*/
 
 
-        int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+        /*int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         if (sim != Constants.DISABLED) {
             String key = "";
             // the preference screen your item is in must be known
@@ -94,7 +97,24 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
                 int pos = getPreferenceScreen().findPreference(key).getOrder();
                 // simulate a click / call it!!
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
-            }*/
+            }
+        }*/
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        DialogFragment dialogFragment = null;
+        if (preference instanceof TimePreference) {
+            dialogFragment = TimePreferenceDialog.newInstance(preference);
+            Bundle bundle = new Bundle(1);
+            bundle.putString("key", preference.getKey());
+            dialogFragment.setArguments(bundle);
+        }
+        if (dialogFragment != null) {
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(this.getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else {
+            super.onDisplayPreferenceDialog(preference);
         }
     }
 

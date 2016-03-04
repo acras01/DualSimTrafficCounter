@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.preference.DialogPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceDialogFragmentCompat;
@@ -10,36 +11,38 @@ import android.widget.TimePicker;
 
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 
-public class TimePreferenceDialog extends PreferenceDialogFragmentCompat implements DialogPreference.TargetFragment
-{
+public class TimePreferenceDialog extends PreferenceDialogFragmentCompat implements DialogPreference.TargetFragment {
     TimePicker mTimePicker = null;
 
+    public static TimePreferenceDialog newInstance(Preference preference) {
+        TimePreferenceDialog fragment = new TimePreferenceDialog();
+        Bundle bundle = new Bundle(1);
+        bundle.putString("key", preference.getKey());
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
-    protected View onCreateDialogView(Context context)
-    {
+    protected View onCreateDialogView(Context context) {
         mTimePicker = new TimePicker(context);
         return (mTimePicker);
     }
 
     @Override
-    protected void onBindDialogView(View v)
-    {
+    protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
         if (!DateFormat.is24HourFormat(getContext()))
             mTimePicker.setIs24HourView(false);
         else
             mTimePicker.setIs24HourView(true);
-
         TimePreference pref = (TimePreference) getPreference();
         mTimePicker.setCurrentHour(pref.hour);
         mTimePicker.setCurrentMinute(pref.minute);
     }
 
     @Override
-    public void onDialogClosed(boolean positiveResult)
-    {
-        if (positiveResult)
-        {
+    public void onDialogClosed(boolean positiveResult) {
+        if (positiveResult) {
             TimePreference pref = (TimePreference) getPreference();
             pref.hour = mTimePicker.getCurrentHour();
             pref.minute = mTimePicker.getCurrentMinute();
@@ -50,8 +53,7 @@ public class TimePreferenceDialog extends PreferenceDialogFragmentCompat impleme
     }
 
     @Override
-    public Preference findPreference(CharSequence charSequence)
-    {
+    public Preference findPreference(CharSequence charSequence) {
         return getPreference();
     }
 }

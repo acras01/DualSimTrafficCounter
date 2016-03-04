@@ -98,7 +98,6 @@ public class SoundFragment extends PreferenceFragmentCompat implements CompoundB
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
-
             String existingValue = getRingtonePreferenceValue();
             if (existingValue != null) {
                 if (existingValue.length() == 0) {
