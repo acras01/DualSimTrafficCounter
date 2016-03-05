@@ -586,7 +586,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
             case "day2":
             case "day3":
                 String input = o.toString();
-                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) <= 31);
+                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 31);
             default:
                 Toast.makeText(mContext, R.string.check_input, Toast.LENGTH_LONG).show();
                 return false;

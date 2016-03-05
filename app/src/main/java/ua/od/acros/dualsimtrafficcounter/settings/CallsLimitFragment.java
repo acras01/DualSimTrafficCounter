@@ -226,7 +226,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
             case "calls_day2":
             case "calls_day3":
                 String input = o.toString();
-                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) <= 31);
+                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 31);
             default:
                 Toast.makeText(mContext, R.string.check_input, Toast.LENGTH_LONG).show();
                 return false;
