@@ -26,12 +26,11 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
     private TwoLineListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
-    private Context mContext;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        mContext = getActivity().getApplicationContext();
+        Context mContext = getActivity().getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
@@ -228,7 +227,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
                 String input = o.toString();
                 return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 31);
             default:
-                Toast.makeText(mContext, R.string.check_input, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.check_input, Toast.LENGTH_LONG).show();
                 return false;
         }
     }

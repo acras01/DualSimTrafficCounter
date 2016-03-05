@@ -104,7 +104,7 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
             case "user_sim":
                 return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 3);
             default:
-                Toast.makeText(mContext, R.string.check_input, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.check_input, Toast.LENGTH_LONG).show();
                 return false;
         }
     }
