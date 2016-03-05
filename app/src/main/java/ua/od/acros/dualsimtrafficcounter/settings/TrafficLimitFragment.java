@@ -26,7 +26,8 @@ import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
-public class TrafficLimitFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class TrafficLimitFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener,
+        Preference.OnPreferenceChangeListener {
 
     private TwoLineEditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
             round1, round2, round3, round1N, round2N, round3N,
@@ -155,7 +156,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
         if (mSimQuantity == 2) {
             getPreferenceScreen().removePreference(sim3);
         }
+
         updateSummary();
+
+        day1.setOnPreferenceChangeListener(this);
+        day2.setOnPreferenceChangeListener(this);
+        day3.setOnPreferenceChangeListener(this);
 
         /*day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
@@ -569,6 +575,19 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
                 am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             } else
                 am.cancel(pi3On);
+        }
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object o) {
+        switch (preference.getKey()) {
+            case "day1":
+            case "day2":
+            case "day3":
+                String input = o.toString();
+                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) >= 31);
+            default:
+                return false;
         }
     }
 }

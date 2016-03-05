@@ -17,7 +17,8 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
-public class CallsLimitFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class CallsLimitFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener,
+        Preference.OnPreferenceChangeListener {
 
     private TwoLineEditTextPreference limit1, limit2, limit3,
             day1, day2, day3, round1, round2, round3;
@@ -68,6 +69,10 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
             getPreferenceScreen().removePreference(sim3);
         }
         updateSummary();
+
+        day1.setOnPreferenceChangeListener(this);
+        day2.setOnPreferenceChangeListener(this);
+        day3.setOnPreferenceChangeListener(this);
 
         /*day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
@@ -211,5 +216,18 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object o) {
+        switch (preference.getKey()) {
+            case "calls_day1":
+            case "calls_day2":
+            case "calls_day3":
+                String input = o.toString();
+                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) >= 31);
+            default:
+                return false;
+        }
     }
 }

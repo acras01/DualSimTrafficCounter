@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -16,8 +17,8 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 
-public class OtherFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+public class OtherFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener,
+        Preference.OnPreferenceChangeListener {
 
     private TwoLineEditTextPreference timer, simQuantity;
 
@@ -89,5 +90,17 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
             }
         }
         updateSummary();
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object o) {
+        switch (preference.getKey()) {
+            case "watchdog_timer":
+            case "user_sim":
+                String input = o.toString();
+                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) >= 31);
+            default:
+                return false;
+        }
     }
 }
