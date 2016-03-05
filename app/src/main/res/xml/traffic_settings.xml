@@ -10,7 +10,7 @@
 
     <PreferenceScreen
         android:title="@string/sim1_limit"
-        android:key="sim1" >
+        android:key="traff_sim1" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="prefer1"
@@ -176,7 +176,7 @@
 
     <PreferenceScreen
         android:title="@string/sim2_limit"
-        android:key="sim2" >
+        android:key="traff_sim2" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="prefer2"
@@ -342,7 +342,7 @@
 
     <PreferenceScreen
         android:title="@string/sim3_limit"
-        android:key="sim3" >
+        android:key="traff_sim3" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="prefer3"

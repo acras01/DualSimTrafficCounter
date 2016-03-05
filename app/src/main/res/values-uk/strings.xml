@@ -192,4 +192,5 @@
     <string name="night_theme">Ніч</string>
     <string name="use_auto_theme">Використовувати автоматичну зміну денної/нічної тем</string>
     <string name="use_day_theme">Використовувати денну тему</string>
+    <string name="check_input">Вказано невірне значення</string>
 </resources>

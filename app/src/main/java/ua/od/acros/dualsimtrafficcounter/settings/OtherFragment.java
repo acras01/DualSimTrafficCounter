@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
@@ -100,6 +101,7 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
                 String input = o.toString();
                 return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) >= 31);
             default:
+                Toast.makeText(mContext, R.string.check_input, Toast.LENGTH_LONG).show();
                 return false;
         }
     }

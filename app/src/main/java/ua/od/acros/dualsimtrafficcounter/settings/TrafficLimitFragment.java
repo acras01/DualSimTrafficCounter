@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -56,7 +57,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
                 .apply();
         // end
 
-        addPreferencesFromResource(R.xml.limit_settings);
+        addPreferencesFromResource(R.xml.traffic_settings);
 
         limit1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[1]);
         limit2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[1]);
@@ -115,8 +116,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
         round2N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[22]);
         round3N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[22]);
 
-        android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim2");
-        android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim3");
+        android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
+        android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
@@ -587,6 +588,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
                 String input = o.toString();
                 return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) >= 31);
             default:
+                Toast.makeText(mContext, R.string.check_input, Toast.LENGTH_LONG).show();
                 return false;
         }
     }

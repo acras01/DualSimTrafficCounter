@@ -199,4 +199,5 @@
     <string name="use_day_theme">Use day theme</string>
     <string name="day_theme">Day</string>
     <string name="night_theme">Night</string>
+    <string name="check_input">Check your input</string>
 </resources>

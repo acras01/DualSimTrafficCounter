@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
+import ua.od.acros.dualsimtrafficcounter.settings.OperatorFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -24,6 +25,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     private SharedPreferences mPrefs;
     private ActionBar mActionBar;
+    private String mTag;
+    private PreferenceFragmentCompat mFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,26 +97,26 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == android.R.id.home) {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if (fragment instanceof SettingsFragment)
-                finish();
-            else
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, new SettingsFragment())
-                        .commit();
-        }
+        if (id == android.R.id.home)
+            onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if (fragment instanceof SettingsFragment)
-                finish();
-            else
-                replaceFragments(SettingsFragment.class);
+        if (mTag != null && mTag.contains("sim")) {
+            mTag = "";
+            if (mFragment instanceof TrafficLimitFragment)
+                replaceFragments(TrafficLimitFragment.class);
+            else if (mFragment instanceof CallsLimitFragment)
+                replaceFragments(CallsLimitFragment.class);
+            else if (mFragment instanceof OperatorFragment)
+                replaceFragments(OperatorFragment.class);
+        } else if (fragment instanceof SettingsFragment)
+            finish();
+        else
+            replaceFragments(SettingsFragment.class);
     }
 
     public void replaceFragments(Class fragmentClass) {
@@ -135,6 +138,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     @Override
     public boolean onPreferenceStartScreen(PreferenceFragmentCompat preferenceFragmentCompat, PreferenceScreen preferenceScreen) {
+        mTag = preferenceScreen.getKey();
+        mFragment = preferenceFragmentCompat;
         preferenceFragmentCompat.setPreferenceScreen(preferenceScreen);
         return true;
     }
