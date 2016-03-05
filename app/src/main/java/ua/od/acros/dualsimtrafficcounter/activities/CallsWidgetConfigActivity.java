@@ -1,6 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -632,7 +632,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 break;
         }
         if (dialog != null) {
-            dialog.show(getFragmentManager(), "dialog");
+            dialog.show(getSupportFragmentManager(), "dialog");
         }
     }
 

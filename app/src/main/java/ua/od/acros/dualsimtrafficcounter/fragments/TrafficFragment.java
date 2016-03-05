@@ -1,6 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -311,7 +311,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 break;
         }
         if (dialog != null)
-            dialog.show(getActivity().getFragmentManager(), "dialog");
+            dialog.show(getActivity().getSupportFragmentManager(), "dialog");
     }
 
     @Override
