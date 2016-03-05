@@ -97,11 +97,12 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object o) {
+        String input = o.toString();
         switch (preference.getKey()) {
             case "watchdog_timer":
+                return input.matches("[0-9]+") && Integer.valueOf(input) >= 1;
             case "user_sim":
-                String input = o.toString();
-                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) >= 31);
+                return input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 || Integer.valueOf(input) <= 3);
             default:
                 Toast.makeText(mContext, R.string.check_input, Toast.LENGTH_LONG).show();
                 return false;
