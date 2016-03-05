@@ -36,8 +36,10 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
         addPreferencesFromResource(R.xml.other_settings);
 
         timer = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[8]);
+        timer.setOnPreferenceChangeListener(this);
         //timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
         simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
+        simQuantity.setOnPreferenceChangeListener(this);
         //simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
         if (!XposedUtils.isPackageExisted(mContext, XPOSED)) {
