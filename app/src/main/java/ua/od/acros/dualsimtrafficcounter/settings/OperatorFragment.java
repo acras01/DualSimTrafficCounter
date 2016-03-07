@@ -44,6 +44,7 @@ public class OperatorFragment extends PreferenceFragmentCompat implements Shared
         name3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[6]);
 
         logo3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[23]);
+
         android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("sim3");
 

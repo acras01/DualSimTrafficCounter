@@ -8,9 +8,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
@@ -55,8 +57,9 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
         opValue2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
         opValue3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
 
-        android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
-        android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
+
+        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
+        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
         int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -104,6 +107,11 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
             }
         }*/
+
+        if (getArguments() != null) {
+            String sim = getArguments().getString("sim");
+            SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
+        }
     }
 
     @Override

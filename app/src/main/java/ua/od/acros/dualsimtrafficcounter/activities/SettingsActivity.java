@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -23,15 +22,14 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
-    private SharedPreferences mPrefs;
     private ActionBar mActionBar;
-    private String mTag;
-    private PreferenceFragmentCompat mFragment;
+    private static String mTag;
+    private static PreferenceFragmentCompat mFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (savedInstanceState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -50,25 +48,26 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         mActionBar = getSupportActionBar();
         if (mActionBar != null)
             mActionBar.setDisplayHomeAsUpEnabled(true);
-        if (getIntent().getStringExtra("show") != null)
+        if (getIntent().getStringExtra("show") != null) {
+            PreferenceFragmentCompat fragment = null;
+            String sim = getIntent().getStringExtra("sim");
             switch (getIntent().getStringExtra("show")) {
                 case Constants.TRAFFIC_TAG:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, new TrafficLimitFragment())
-                        .commit();
+                    fragment = new TrafficLimitFragment();
                     break;
                 case Constants.CALLS_TAG:
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, new CallsLimitFragment())
-                            .commit();
-                    break;
-                default:
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, new SettingsFragment())
-                            .commit();
+                    fragment = new CallsLimitFragment();
                     break;
             }
-        else
+            if (fragment != null) {
+                Bundle args = new Bundle();
+                args.putString("sim", sim);
+                fragment.setArguments(args);
+                getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, fragment)
+                        .commit();
+            }
+        } else
             getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new SettingsFragment())
                 .commit();
@@ -130,17 +129,20 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             e.printStackTrace();
         }
         // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 .commit();
     }
 
     @Override
     public boolean onPreferenceStartScreen(PreferenceFragmentCompat preferenceFragmentCompat, PreferenceScreen preferenceScreen) {
+        openPreferenceScreen(preferenceFragmentCompat, preferenceScreen);
+        return true;
+    }
+
+    public static void openPreferenceScreen(PreferenceFragmentCompat preferenceFragmentCompat, PreferenceScreen preferenceScreen) {
         mTag = preferenceScreen.getKey();
         mFragment = preferenceFragmentCompat;
         preferenceFragmentCompat.setPreferenceScreen(preferenceScreen);
-        return true;
     }
 }

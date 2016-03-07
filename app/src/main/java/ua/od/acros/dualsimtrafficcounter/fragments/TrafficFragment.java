@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
-import android.support.v4.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -681,6 +681,19 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             case R.id.limit3:
                 Intent intent = new Intent(mContext, SettingsActivity.class);
                 intent.putExtra("show", Constants.TRAFFIC_TAG);
+                String sim = "";
+                switch (v.getId()) {
+                    case R.id.limit1:
+                        sim = "traff_sim1";
+                        break;
+                    case R.id.limit2:
+                        sim = "traff_sim2";
+                        break;
+                    case R.id.limit3:
+                        sim = "traff_sim3";
+                        break;
+                }
+                intent.putExtra("sim", sim);
                 startActivity(intent);
                 break;
         }

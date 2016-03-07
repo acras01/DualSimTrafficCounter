@@ -296,6 +296,19 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             case R.id.limit3_calls:
                 Intent intent = new Intent(mContext, SettingsActivity.class);
                 intent.putExtra("show", Constants.CALLS_TAG);
+                String sim = "";
+                switch (v.getId()) {
+                    case R.id.limit1_calls:
+                        sim = "calls_sim1";
+                        break;
+                    case R.id.limit2_calls:
+                        sim = "calls_sim2";
+                        break;
+                    case R.id.limit3_calls:
+                        sim = "calls_sim3";
+                        break;
+                }
+                intent.putExtra("sim", sim);
                 startActivity(intent);
                 break;
         }

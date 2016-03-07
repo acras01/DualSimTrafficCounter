@@ -77,6 +77,7 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        updateSummary();
         if (key.equals(Constants.PREF_OTHER[25])) {
             if (!sharedPreferences.getBoolean(key, false)) {
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
@@ -92,7 +93,6 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
                         .apply();
             }
         }
-        updateSummary();
     }
 
     @Override

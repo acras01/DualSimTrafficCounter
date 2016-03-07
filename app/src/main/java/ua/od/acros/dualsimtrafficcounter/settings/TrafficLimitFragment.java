@@ -11,11 +11,13 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
@@ -48,14 +50,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
         mContext = getActivity().getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-
-        //remove in next release
-        mPrefs.edit()
-                .remove(Constants.PREF_SIM1[11])
-                .remove(Constants.PREF_SIM2[11])
-                .remove(Constants.PREF_SIM3[11])
-                .apply();
-        // end
 
         addPreferencesFromResource(R.xml.traffic_settings);
 
@@ -116,8 +110,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
         round2N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[22]);
         round3N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[22]);
 
-        android.support.v7.preference.PreferenceScreen sim2 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
-        android.support.v7.preference.PreferenceScreen sim3 = (android.support.v7.preference.PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
+        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
+        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
@@ -194,6 +189,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
                 getPreferenceScreen().onItemClick(null, null, pos, 0);
             }
         }*/
+
+        if (getArguments() != null) {
+            String sim = getArguments().getString("sim");
+            SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
+        }
     }
 
     @Override
@@ -462,9 +462,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
+
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         Calendar clndr = Calendar.getInstance();
-
         //Scheduled ON/OFF
         if (key.equals(Constants.PREF_SIM1[11]) || key.equals(Constants.PREF_SIM1[12]) || key.equals(Constants.PREF_SIM1[13])) {
             Intent i1Off = new Intent(mContext, OnOffReceiver.class);
