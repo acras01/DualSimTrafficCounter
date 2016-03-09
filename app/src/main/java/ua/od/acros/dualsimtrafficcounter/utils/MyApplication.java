@@ -1,7 +1,11 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.PowerManager;
 
 import com.stericson.RootShell.RootShell;
@@ -10,6 +14,10 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
@@ -24,14 +32,16 @@ import ua.od.acros.dualsimtrafficcounter.R;
 public class MyApplication extends Application {
 
     private static Context mContext;
+    private static Boolean mIsMtkDevice = null;
+    private static Boolean mHasGeminiSupport = null;
+    private static Boolean mHasRoot = null;
+    private static boolean mIsActivityVisible;
 
     @Override
     public void onCreate() {
         super.onCreate();
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
-        if (RootShell.isRootAvailable())
-            mHasRoot = RootShell.isAccessGiven();
         mContext = getApplicationContext();
     }
 
@@ -51,19 +61,65 @@ public class MyApplication extends Application {
         mIsActivityVisible = false;
     }
 
-    private static boolean mIsActivityVisible;
-
-    public static boolean hasRoot() {
-        return mHasRoot;
-    }
-
-    private static boolean mHasRoot;
-
     public static boolean isScreenOn(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
             return pm.isInteractive();
         else
             return pm.isScreenOn();
+    }
+
+    public static boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
+        try {
+            ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName()))
+                    return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public static boolean isPackageExisted(Context context, String targetPackage){
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    // Supported MTK devices
+    private static final Set<String> MTK_DEVICES = new HashSet<>(Arrays.asList(
+            new String[]{
+                    // Single-core SoC
+                    "mt6575",
+                    // Dual-core SoC
+                    "mt6572",
+                    "mt6577",
+                    "mt8377",
+                    // Quad-core SoC
+                    "mt6582",
+                    "mt6589",
+                    "mt8389",
+                    // Octa-core SoC
+                    "mt6592"
+            }
+    ));
+
+    public static boolean isMtkDevice() {
+        if (mIsMtkDevice != null)
+            return mIsMtkDevice;
+        mIsMtkDevice = MTK_DEVICES.contains(Build.HARDWARE.toLowerCase());
+        return mIsMtkDevice;
+    }
+
+    public static boolean hasRoot() {
+        if (mHasRoot != null)
+            return mHasRoot;
+        mHasRoot = RootShell.isRootAvailable() && RootShell.isAccessGiven();
+        return mHasRoot;
     }
 }

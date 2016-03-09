@@ -31,7 +31,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -66,7 +65,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         setHasOptionsMenu(true);
         if (mContext == null)
             mContext = getActivity().getApplicationContext();
-        mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
+        mIsRunning = MyApplication.isMyServiceRunning(CallLoggerService.class, mContext);
         mDbHelper = MyDatabaseHelper.getInstance(mContext);
         mCalls = MyDatabaseHelper.readCallsData(mDbHelper);
         mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -259,7 +258,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonClear1:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+                if (MyApplication.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM1));
                 else {
                     mCalls = MyDatabaseHelper.readCallsData(mDbHelper);
@@ -270,7 +269,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear2:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+                if (MyApplication.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM2));
                 else {
                     mCalls = MyDatabaseHelper.readCallsData(mDbHelper);
@@ -281,7 +280,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear3:
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+                if (MyApplication.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM3));
                 else {
                     mCalls = MyDatabaseHelper.readCallsData(mDbHelper);
@@ -348,7 +347,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     TIP.setText(getResources().getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
-                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
+                    mIsRunning = MyApplication.isMyServiceRunning(CallLoggerService.class, mContext);
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], true).apply();
                 }
                 else {
@@ -356,7 +355,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     TIP.setText(getResources().getString(R.string.tip_calls));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
-                    mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
+                    mIsRunning = MyApplication.isMyServiceRunning(CallLoggerService.class, mContext);
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
                 }
                 break;
@@ -436,6 +435,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
             SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
         if (key.equals(Constants.PREF_OTHER[25]))
-            mIsRunning = CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext);
+            mIsRunning = MyApplication.isMyServiceRunning(CallLoggerService.class, mContext);
     }
 }

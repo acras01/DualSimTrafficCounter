@@ -18,9 +18,8 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
 
 public class OtherFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -47,7 +46,7 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
         simQuantity.setOnPreferenceChangeListener(this);
         //simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
-        if (!XposedUtils.isPackageExisted(mContext, XPOSED)) {
+        if (!MyApplication.isPackageExisted(mContext, XPOSED)) {
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
             getPreferenceScreen().getSharedPreferences().edit()
@@ -91,7 +90,7 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
             final int RESET = 1981;
             PendingIntent piReset = PendingIntent.getBroadcast(mContext, RESET, iReset, 0);
             if (!sharedPreferences.getBoolean(key, false)) {
-                if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
+                if (MyApplication.isMyServiceRunning(CallLoggerService.class, mContext)) {
                     mContext.stopService(new Intent(mContext, CallLoggerService.class));
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_OTHER[24], true)

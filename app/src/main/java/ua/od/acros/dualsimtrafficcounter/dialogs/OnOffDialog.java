@@ -19,8 +19,8 @@ import org.greenrobot.eventbus.EventBus;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
 public class OnOffDialog extends DialogFragment {
 
@@ -51,7 +51,7 @@ public class OnOffDialog extends DialogFragment {
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MTKUtils.isMtkDevice()) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MyApplication.isMtkDevice()) {
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             if (simQuantity == 1) {

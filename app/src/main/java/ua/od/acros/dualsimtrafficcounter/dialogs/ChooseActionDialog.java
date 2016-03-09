@@ -16,7 +16,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
@@ -48,7 +47,7 @@ public class ChooseActionDialog extends AppCompatActivity implements View.OnClic
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getApplicationContext())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if ((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice()) ||
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.isMtkDevice()) ||
                 android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP)
             change.setEnabled(false);
         if (prefs.getBoolean(Constants.PREF_OTHER[10], true) || simQuantity == 1)

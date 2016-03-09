@@ -25,7 +25,6 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
@@ -130,7 +129,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
             everyday3.setEnabled(false);
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MTKUtils.isMtkDevice())) {
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.isMtkDevice())) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));

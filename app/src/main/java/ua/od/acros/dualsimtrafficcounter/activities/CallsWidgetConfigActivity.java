@@ -35,9 +35,9 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
 import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -73,7 +73,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
 
         mContext = getApplicationContext();
 
-        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext))
+        if (!MyApplication.isMyServiceRunning(CallLoggerService.class, mContext))
             startService(new Intent(mContext, CallLoggerService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);

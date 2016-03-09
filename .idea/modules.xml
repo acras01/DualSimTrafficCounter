@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/ambilwarna/ambilwarna.iml" filepath="$PROJECT_DIR$/ambilwarna/ambilwarna.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/joda-time-2.8.2/joda-time-2.8.2.iml" filepath="$PROJECT_DIR$/joda-time-2.8.2/joda-time-2.8.2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mediatek-compatibility/mediatek-compatibility.iml" filepath="$PROJECT_DIR$/mediatek-compatibility/mediatek-compatibility.iml" />
     </modules>
   </component>
 </project>

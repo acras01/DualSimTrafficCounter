@@ -21,9 +21,9 @@ import org.greenrobot.eventbus.EventBus;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
 public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnCheckedChangeListener,
         AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -116,7 +116,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public void onClick(View view) {
         if (mSimChecked != Constants.DISABLED && !duration.getText().toString().equals("")) {
-            if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
+            if (MyApplication.isMyServiceRunning(CallLoggerService.class, mContext)) {
                 SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
                 EventBus.getDefault().post(event);
                 getActivity().onBackPressed();

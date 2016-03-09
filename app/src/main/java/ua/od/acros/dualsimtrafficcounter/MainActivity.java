@@ -42,12 +42,9 @@ import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
-import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MTKUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.XposedUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
@@ -116,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Prepare Navigation View Menu
         MenuItem mTestItem = mNavigationView.getMenu().findItem(R.id.nav_test);
-        if (MTKUtils.isMtkDevice() &&
+        if (MyApplication.isMtkDevice() &&
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mTestItem.setVisible(true);
             mTestItem.setEnabled(true);
@@ -156,17 +153,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MobileUtils.getTelephonyManagerMethods(mContext);
 
-        if (!CheckServiceRunning.isMyServiceRunning(WatchDogService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+        if (!MyApplication.isMyServiceRunning(WatchDogService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             startService(new Intent(mContext, WatchDogService.class));
-        if (!CheckServiceRunning.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
+        if (!MyApplication.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
-        if (!XposedUtils.isPackageExisted(mContext, XPOSED)) {
+        if (!MyApplication.isPackageExisted(mContext, XPOSED)) {
             mPrefs.edit()
                     .putBoolean(Constants.PREF_OTHER[24], true)
                     .putBoolean(Constants.PREF_OTHER[25], false)
                     .apply();
         }
-        if (!CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
+        if (!MyApplication.isMyServiceRunning(CallLoggerService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
         String action = getIntent().getAction();
@@ -177,9 +174,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     !MyApplication.hasRoot())
                 showDialog(ANDROID_5_0);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
-                    !MTKUtils.isMtkDevice())
+                    !MyApplication.isMtkDevice())
                 showDialog(MTK);
-            if (MTKUtils.isMtkDevice() &&
+            if (MyApplication.isMtkDevice() &&
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 if (savedInstanceState == null) {
                     getSupportFragmentManager()
