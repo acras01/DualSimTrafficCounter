@@ -33,7 +33,6 @@ public class MyApplication extends Application {
 
     private static Context mContext;
     private static Boolean mIsMtkDevice = null;
-    private static Boolean mHasGeminiSupport = null;
     private static Boolean mHasRoot = null;
     private static boolean mIsActivityVisible;
 
