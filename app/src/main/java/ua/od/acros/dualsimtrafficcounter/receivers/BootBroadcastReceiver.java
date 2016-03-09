@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
 
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
@@ -32,8 +32,15 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             context.startService(new Intent(context, WatchDogService.class));
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Calendar clndr = Calendar.getInstance();
-
+        DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
+        //Calls reset
+        if (prefs.getBoolean(Constants.PREF_OTHER[25], true)) {
+            Intent iReset = new Intent(context, ResetReceiver.class);
+            iReset.setAction(Constants.RESET_ACTION);
+            final int RESET = 1981;
+            PendingIntent piReset = PendingIntent.getBroadcast(context, RESET, iReset, 0);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
+        }
         //Scheduled ON/OFF
         if (!prefs.getString(Constants.PREF_SIM1[11], "0").equals("3") || !prefs.getString(Constants.PREF_SIM2[11], "0").equals("3")
                 || !prefs.getString(Constants.PREF_SIM3[11], "0").equals("3")) {
@@ -43,14 +50,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                 i1Off.putExtra(Constants.ON_OFF, false);
                 i1Off.setAction(Constants.ALARM_ACTION);
-                int SIM1_OFF = 100;
+                final int SIM1_OFF = 100;
                 PendingIntent pi1Off = PendingIntent.getBroadcast(context, SIM1_OFF, i1Off, 0);
-                clndr.setTimeInMillis(System.currentTimeMillis());
-                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]));
-                clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]));
-                clndr.set(Calendar.SECOND, 0);
-                clndr.set(Calendar.MILLISECOND, 0);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
+                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]));
+                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]));
+                alarmTime.secondOfMinute().setCopy(0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             }
             if (prefs.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     prefs.getString(Constants.PREF_SIM1[11], "0").equals("2")) {
@@ -58,14 +63,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                 i1On.putExtra(Constants.ON_OFF, true);
                 i1On.setAction(Constants.ALARM_ACTION);
-                int SIM1_ON = 101;
+                final int SIM1_ON = 101;
                 PendingIntent pi1On = PendingIntent.getBroadcast(context, SIM1_ON, i1On, 0);
-                clndr.setTimeInMillis(System.currentTimeMillis());
-                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]));
-                clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]));
-                clndr.set(Calendar.SECOND, 0);
-                clndr.set(Calendar.MILLISECOND, 0);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi1On);
+                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]));
+                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]));
+                alarmTime.secondOfMinute().setCopy(0);;
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1On);
             }
             if (prefs.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     prefs.getString(Constants.PREF_SIM2[11], "0").equals("1")) {
@@ -73,15 +76,13 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                 i2Off.putExtra(Constants.ON_OFF, false);
                 i2Off.setAction(Constants.ALARM_ACTION);
-                int SIM2_OFF = 110;
+                final int SIM2_OFF = 110;
                 PendingIntent pi2Off = PendingIntent.getBroadcast(context, SIM2_OFF, i2Off, 0);
                 am.cancel(pi2Off);
-                clndr.setTimeInMillis(System.currentTimeMillis());
-                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]));
-                clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]));
-                clndr.set(Calendar.SECOND, 0);
-                clndr.set(Calendar.MILLISECOND, 0);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
+                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]));
+                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]));
+                alarmTime.secondOfMinute().setCopy(0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             }
             if (prefs.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     prefs.getString(Constants.PREF_SIM2[11], "0").equals("2")) {
@@ -89,14 +90,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                 i2On.putExtra(Constants.ON_OFF, true);
                 i2On.setAction(Constants.ALARM_ACTION);
-                int SIM2_ON = 111;
+                final int SIM2_ON = 111;
                 PendingIntent pi2On = PendingIntent.getBroadcast(context, SIM2_ON, i2On, 0);
-                clndr.setTimeInMillis(System.currentTimeMillis());
-                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]));
-                clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]));
-                clndr.set(Calendar.SECOND, 0);
-                clndr.set(Calendar.MILLISECOND, 0);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi2On);
+                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]));
+                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]));
+                alarmTime.secondOfMinute().setCopy(0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2On);
             }
             if (prefs.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     prefs.getString(Constants.PREF_SIM3[11], "0").equals("1")) {
@@ -104,14 +103,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
                 i3Off.putExtra(Constants.ON_OFF, false);
                 i3Off.setAction(Constants.ALARM_ACTION);
-                int SIM3_OFF = 120;
+                final int SIM3_OFF = 120;
                 PendingIntent pi3Off = PendingIntent.getBroadcast(context, SIM3_OFF, i3Off, 0);
-                clndr.setTimeInMillis(System.currentTimeMillis());
-                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]));
-                clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]));
-                clndr.set(Calendar.SECOND, 0);
-                clndr.set(Calendar.MILLISECOND, 0);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
+                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]));
+                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]));
+                alarmTime.secondOfMinute().setCopy(0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             }
             if (prefs.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     prefs.getString(Constants.PREF_SIM3[11], "0").equals("2")) {
@@ -119,14 +116,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
                 i3On.putExtra(Constants.ON_OFF, true);
                 i3On.setAction(Constants.ALARM_ACTION);
-                int SIM3_ON = 121;
+                final int SIM3_ON = 121;
                 PendingIntent pi3On = PendingIntent.getBroadcast(context, SIM3_ON, i3On, 0);
-                clndr.setTimeInMillis(System.currentTimeMillis());
-                clndr.set(Calendar.HOUR_OF_DAY, Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]));
-                clndr.set(Calendar.MINUTE, Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]));
-                clndr.set(Calendar.SECOND, 0);
-                clndr.set(Calendar.MILLISECOND, 0);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, clndr.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi3On);
+                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]));
+                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]));
+                alarmTime.secondOfMinute().setCopy(0);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             }
         }
     }

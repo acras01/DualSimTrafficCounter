@@ -786,7 +786,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2) {
@@ -810,7 +810,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3) {
@@ -834,7 +834,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM3);
                         }
                     } else {
@@ -1023,7 +1023,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2) {
@@ -1038,7 +1038,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3) {
@@ -1062,7 +1062,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM3);
                         }
                     } else {
@@ -1251,7 +1251,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mResetTime1.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM1[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2) {
@@ -1275,7 +1275,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mResetTime2.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM2[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3) {
@@ -1290,7 +1290,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .apply();
-                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mResetTime3.toString(fmtDateTime)).apply();
+                            mPrefs.edit().putString(Constants.PREF_SIM3[24], mNowDate.toString(fmtDateTime)).apply();
                             pushResetNotification(Constants.SIM3);
                         }
                     } else {

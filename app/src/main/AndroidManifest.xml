@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ua.od.acros.dualsimtrafficcounter"
-    android:installLocation="internalOnly" >
+    android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -26,7 +26,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
@@ -43,7 +43,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -56,13 +56,12 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:process=":error_report"
-            android:theme="@style/AppTheme.Dialog" >
-        </activity>
+            android:theme="@style/AppTheme.Dialog"></activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/action_settings"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -71,13 +70,12 @@
             android:name=".dialogs.ChooseActionDialog"
             android:label="@string/attention"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.Dialog" >
-        </activity>
+            android:theme="@style/AppTheme.Dialog"></activity>
         <activity
             android:name=".activities.TrafficWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/widget_title"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -86,19 +84,17 @@
             android:name=".activities.WhiteListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_white_list"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activities.BlackListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_black_list"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activities.CallsWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/widget_title"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -107,23 +103,20 @@
         <service
             android:name=".services.TrafficCountService"
             android:enabled="true"
-            android:exported="false" >
-        </service>
+            android:exported="false"></service>
         <service
             android:name=".services.WatchDogService"
             android:enabled="true"
-            android:exported="false" >
-        </service>
+            android:exported="false"></service>
         <service
             android:name=".services.CallLoggerService"
             android:enabled="true"
-            android:exported="false" >
-        </service>
+            android:exported="false"></service>
 
         <receiver
             android:name=".receivers.BootBroadcastReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -131,7 +124,7 @@
         <receiver
             android:name=".receivers.OnOffReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="ua.od.acros.dualsimtrafficcounter.ALARM" />
             </intent-filter>
@@ -139,7 +132,7 @@
         <receiver
             android:name=".receivers.OutgoingCallReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
@@ -147,14 +140,14 @@
         <receiver
             android:name=".receivers.ConnectivityChangeReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".widgets.TrafficInfoWidget"
-            android:label="@string/info_widget_traffic" >
+            android:label="@string/info_widget_traffic">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
@@ -169,7 +162,7 @@
         </receiver>
         <receiver
             android:name=".widgets.CallsInfoWidget"
-            android:label="@string/info_widget_calls" >
+            android:label="@string/info_widget_calls">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
@@ -181,6 +174,14 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/calls_info_widget" />
+        </receiver>
+        <receiver
+            android:name=".receivers.ResetReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="ua.od.acros.dualsimtrafficcounter.RESET" />
+            </intent-filter>
         </receiver>
     </application>
 

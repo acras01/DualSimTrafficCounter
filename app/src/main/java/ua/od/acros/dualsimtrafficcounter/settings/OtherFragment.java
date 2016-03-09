@@ -1,5 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,9 +11,12 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
+import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.CheckServiceRunning;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -79,18 +84,27 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateSummary();
         if (key.equals(Constants.PREF_OTHER[25])) {
+            AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+            DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
+            Intent iReset = new Intent(mContext, ResetReceiver.class);
+            iReset.setAction(Constants.RESET_ACTION);
+            final int RESET = 1981;
+            PendingIntent piReset = PendingIntent.getBroadcast(mContext, RESET, iReset, 0);
             if (!sharedPreferences.getBoolean(key, false)) {
                 if (CheckServiceRunning.isMyServiceRunning(CallLoggerService.class, mContext)) {
                     mContext.stopService(new Intent(mContext, CallLoggerService.class));
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_OTHER[24], true)
                             .apply();
+                    am.cancel(piReset);
                 }
             } else {
                 mContext.startService(new Intent(mContext, CallLoggerService.class));
                 sharedPreferences.edit()
                         .putBoolean(Constants.PREF_OTHER[24], false)
                         .apply();
+                am.cancel(piReset);
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
             }
         }
     }

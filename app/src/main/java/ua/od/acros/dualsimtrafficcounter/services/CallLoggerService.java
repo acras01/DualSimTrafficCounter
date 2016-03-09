@@ -297,50 +297,16 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     private void startTask(Context context, String number) {
-        DateTime now = new DateTime();
-        DateTime dt;
-        String lastDate = (String) mCalls.get(Constants.LAST_DATE);
-        if (lastDate.equals(""))
-            dt = now;
-        else
-            dt = fmtDate.parseDateTime(lastDate);
-        String[] simPref;
-        if (DateTimeComparator.getDateOnlyInstance().compare(now, dt) > 0 || mResetRuleHasChanged) {
-            simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
-                    Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
-            mResetTime1 = DateUtils.getResetDate(Constants.SIM1, mCalls, mPrefs, simPref);
-            if (mResetTime1 != null) {
-                mIsResetNeeded1 = true;
-                mPrefs.edit()
-                        .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
-                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
-                        .apply();
-            }
-            if (mSimQuantity >= 2) {
-                simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
-                        Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
-                mResetTime2 = DateUtils.getResetDate(Constants.SIM2, mCalls, mPrefs, simPref);
-                if (mResetTime2 != null) {
-                    mIsResetNeeded2 = true;
-                    mPrefs.edit()
-                            .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
-                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
-                            .apply();
-                }
-            }
-            if (mSimQuantity == 3) {
-                simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
-                        Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
-                mResetTime3 = DateUtils.getResetDate(Constants.SIM3, mCalls, mPrefs, simPref);
-                if (mResetTime3 != null) {
-                    mIsResetNeeded3 = true;
-                    mPrefs.edit()
-                            .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
-                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
-                            .apply();
-                }
-            }
-            mResetRuleHasChanged = false;
+        DateTime now = DateTime.now();
+        mResetTime1 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(fmtDateTime)));
+        mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1_CALLS[9], true);
+        if (mSimQuantity >= 2) {
+            mResetTime2 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[8], now.toString(fmtDateTime)));
+            mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2_CALLS[9], true);
+        }
+        if (mSimQuantity == 3) {
+            mResetTime3 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM3_CALLS[8], now.toString(fmtDateTime)));
+            mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3_CALLS[9], true);
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
             mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
@@ -351,7 +317,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mIsResetNeeded1 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
-                    .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
+                    .putString(Constants.PREF_SIM1_CALLS[8], now.toString(fmtDateTime))
                     .apply();
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
@@ -363,7 +329,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mIsResetNeeded2 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
-                    .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                    .putString(Constants.PREF_SIM2_CALLS[8], now.toString(fmtDateTime))
                     .apply();
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
@@ -375,10 +341,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mIsResetNeeded3 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
-                    .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
+                    .putString(Constants.PREF_SIM3_CALLS[8], now.toString(fmtDateTime))
                     .apply();
         }
-
         mIsOutgoing = false;
         final Context ctx = context;
         this.number[0] = number.replaceAll("[\\s\\-()]", "");
@@ -469,8 +434,42 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
-                key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5]))
-            mResetRuleHasChanged = true;
+                key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5])) {
+            String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
+                    Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
+            int simQuantity = sharedPreferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                    : Integer.valueOf(sharedPreferences.getString(Constants.PREF_OTHER[14], "1"));
+            DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
+            DateTime mResetTime1 = DateUtils.setResetDate(sharedPreferences, simPref);
+            if (mResetTime1 != null) {
+                sharedPreferences.edit()
+                        .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
+                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
+                        .apply();
+            }
+            if (simQuantity >= 2) {
+                simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
+                        Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+                DateTime mResetTime2 = DateUtils.setResetDate(sharedPreferences, simPref);
+                if (mResetTime2 != null) {
+                    sharedPreferences.edit()
+                            .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
+                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                            .apply();
+                }
+            }
+            if (simQuantity == 3) {
+                simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
+                        Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+                DateTime mResetTime3 = DateUtils.setResetDate(sharedPreferences, simPref);
+                if (mResetTime3 != null) {
+                    sharedPreferences.edit()
+                            .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
+                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
+                            .apply();
+                }
+            }
+        }
         if (key.equals(Constants.PREF_SIM1_CALLS[1]) || key.equals(Constants.PREF_SIM2_CALLS[1]) || key.equals(Constants.PREF_SIM3_CALLS[1]))
             mLimitHasChanged = true;
         if (key.equals(Constants.PREF_OTHER[5]) && sharedPreferences.getBoolean(key, false)) {
