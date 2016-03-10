@@ -54,7 +54,11 @@ public class MobileUtils {
     public static int isMultiSim(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
-            return sm.getActiveSubscriptionInfoList().size();
+            List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+            if (sl != null)
+                return sl.size();
+            else
+                return 0;
         } else {
             int ret = 1;
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -257,13 +261,14 @@ public class MobileUtils {
             if (sim == Constants.DISABLED) {
                 SubscriptionManager sm = SubscriptionManager.from(context);
                 List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-                for (int i = 0; i < sl.size(); i++) {
-                    if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), networkInfo.getExtraInfo())) {
-                        sim = sl.get(i).getSimSlotIndex();
-                        out = "getNetworkFromApnsFile " + sim;
-                        break;
+                if (sl != null)
+                    for (int i = 0; i < sl.size(); i++) {
+                        if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), networkInfo.getExtraInfo())) {
+                            sim = sl.get(i).getSimSlotIndex();
+                            out = "getNetworkFromApnsFile " + sim;
+                            break;
+                        }
                     }
-                }
             }
             if (sim == Constants.DISABLED) {
                 try {
@@ -705,9 +710,10 @@ public class MobileUtils {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
             List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-            for (SubscriptionInfo si : sl) {
-                name.add((String) si.getCarrierName());
-            }
+            if (sl != null)
+                for (SubscriptionInfo si : sl) {
+                    name.add((String) si.getCarrierName());
+                }
             if (name.size() > 0)
                 out = "Subscription " + name.size();
         } else {
@@ -858,9 +864,10 @@ public class MobileUtils {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
             List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-            for (SubscriptionInfo si : sl) {
-                code.add(String.valueOf(si.getMcc()) + String.valueOf(si.getMnc()));
-            }
+            if (sl != null)
+                for (SubscriptionInfo si : sl) {
+                    code.add(String.valueOf(si.getMcc()) + String.valueOf(si.getMnc()));
+                }
         } else {
             SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
@@ -1202,12 +1209,13 @@ public class MobileUtils {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
                 List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-                for (SubscriptionInfo si : sl) {
-                    if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                        cmd = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + state;
-                        break;
+                if (sl != null)
+                    for (SubscriptionInfo si : sl) {
+                        if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
+                            cmd = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + state;
+                            break;
+                        }
                     }
-                }
             } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
                 // Android 5.0 (API 21) only.
                 if (transactionCode != null && transactionCode.length() > 0)

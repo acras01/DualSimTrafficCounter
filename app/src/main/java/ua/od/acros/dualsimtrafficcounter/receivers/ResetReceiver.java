@@ -29,33 +29,39 @@ public class ResetReceiver extends BroadcastReceiver {
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
-        DateTime mResetTime1 = DateUtils.setResetDate(prefs, simPref);
-        if (mResetTime1 != null) {
-            prefs.edit()
-                    .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
-                    .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
-                    .apply();
-        }
-        if (simQuantity >= 2) {
-            simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
-                    Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
-            DateTime mResetTime2 = DateUtils.setResetDate(prefs, simPref);
-            if (mResetTime2 != null) {
+        if (!prefs.getBoolean(Constants.PREF_SIM1_CALLS[9], false)) {
+            DateTime mResetTime1 = DateUtils.setResetDate(prefs, simPref);
+            if (mResetTime1 != null) {
                 prefs.edit()
-                        .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
-                        .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                        .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
+                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
                         .apply();
             }
         }
+        if (simQuantity >= 2) {
+            if (!prefs.getBoolean(Constants.PREF_SIM2_CALLS[9], false)) {
+                simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
+                        Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+                DateTime mResetTime2 = DateUtils.setResetDate(prefs, simPref);
+                if (mResetTime2 != null) {
+                    prefs.edit()
+                            .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
+                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                            .apply();
+                }
+            }
+        }
         if (simQuantity == 3) {
-            simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
-                    Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
-            DateTime mResetTime3 = DateUtils.setResetDate(prefs, simPref);
-            if (mResetTime3 != null) {
-                prefs.edit()
-                        .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
-                        .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
-                        .apply();
+            if (!prefs.getBoolean(Constants.PREF_SIM3_CALLS[9], false)) {
+                simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
+                        Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+                DateTime mResetTime3 = DateUtils.setResetDate(prefs, simPref);
+                if (mResetTime3 != null) {
+                    prefs.edit()
+                            .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
+                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
+                            .apply();
+                }
             }
         }
         if (wl.isHeld())
