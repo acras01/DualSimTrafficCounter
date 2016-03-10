@@ -65,7 +65,7 @@
         android:layout_margin="5dp"
         android:textColor="?android:attr/textColorPrimary" />
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,6 +92,6 @@
             android:id="@+id/buttonOK"
             android:layout_weight=".5"
             style="?android:attr/buttonBarButtonStyle" />
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </RelativeLayout>

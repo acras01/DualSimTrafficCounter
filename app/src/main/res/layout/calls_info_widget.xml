@@ -12,7 +12,7 @@
         android:scaleType="fitXY" >
     </ImageView>
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -210,6 +210,6 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </RelativeLayout>
