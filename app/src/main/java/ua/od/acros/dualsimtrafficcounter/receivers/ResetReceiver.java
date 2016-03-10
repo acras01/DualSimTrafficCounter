@@ -25,7 +25,7 @@ public class ResetReceiver extends BroadcastReceiver {
         wl.acquire();
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
-                Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
+                Constants.PREF_SIM1_CALLS[5]};
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
@@ -41,7 +41,7 @@ public class ResetReceiver extends BroadcastReceiver {
         if (simQuantity >= 2) {
             if (!prefs.getBoolean(Constants.PREF_SIM2_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
-                        Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+                        Constants.PREF_SIM2_CALLS[5]};
                 DateTime mResetTime2 = DateUtils.setResetDate(prefs, simPref);
                 if (mResetTime2 != null) {
                     prefs.edit()
@@ -54,7 +54,7 @@ public class ResetReceiver extends BroadcastReceiver {
         if (simQuantity == 3) {
             if (!prefs.getBoolean(Constants.PREF_SIM3_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
-                        Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+                        Constants.PREF_SIM3_CALLS[5]};
                 DateTime mResetTime3 = DateUtils.setResetDate(prefs, simPref);
                 if (mResetTime3 != null) {
                     prefs.edit()
