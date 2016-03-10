@@ -14,7 +14,7 @@
         android:layout_height="fill_parent"
         android:id="@+id/scrollView" >
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -529,7 +529,7 @@
                     android:layout_below="@+id/dividertv" />
             </RelativeLayout>
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
     </ScrollView>
 

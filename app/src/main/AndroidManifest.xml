@@ -56,7 +56,8 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:process=":error_report"
-            android:theme="@style/AppTheme.Dialog"></activity>
+            android:theme="@style/AppTheme.Dialog">
+        </activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="keyboardHidden|screenSize"
@@ -70,7 +71,9 @@
             android:name=".dialogs.ChooseActionDialog"
             android:label="@string/attention"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.Dialog"></activity>
+            android:theme="@style/AppTheme.Dialog">
+
+        </activity>
         <activity
             android:name=".activities.TrafficWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
@@ -84,12 +87,14 @@
             android:name=".activities.WhiteListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_white_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".activities.BlackListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_black_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".activities.CallsWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
@@ -103,15 +108,18 @@
         <service
             android:name=".services.TrafficCountService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false">
+        </service>
         <service
             android:name=".services.WatchDogService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false">
+        </service>
         <service
             android:name=".services.CallLoggerService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false">
+        </service>
 
         <receiver
             android:name=".receivers.BootBroadcastReceiver"
