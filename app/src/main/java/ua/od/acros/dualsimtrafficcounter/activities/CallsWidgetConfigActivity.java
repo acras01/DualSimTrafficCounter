@@ -616,13 +616,13 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             case R.id.simFontSize:
             case R.id.textSize:
             case R.id.textSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_CALLS[10],Constants.TEXT_SIZE),
+                dialog = SetSizeDialog.newInstance(textSizeSum.getText().toString(),
                         KEY_TEXT, Constants.CALLS_TAG);
                 break;
             case R.id.simLogoSize:
             case R.id.iconSize:
             case R.id.iconSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE),
+                dialog = SetSizeDialog.newInstance(iconsSizeSum.getText().toString(),
                         KEY_ICON, Constants.CALLS_TAG);
                 break;
             case R.id.showSim:

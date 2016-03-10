@@ -193,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 mNavigationView.setCheckedItem(R.id.nav_traffic);
             }
-            mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
         } else if (action != null && action.equals("tap") && savedInstanceState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
                 getSupportFragmentManager()
@@ -244,43 +243,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showDialog(String key) {
         switch (key) {
             case FIRST_RUN:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.set_sim_number)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
                             }
                         })
                         .show();
                 break;
             case MTK:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.on_off_not_supported)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
                             }
                         })
                         .show();
                 break;
             case ANDROID_5_0:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.need_root)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
                             }
                         })
                         .show();
                 break;
             case EMAIL:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
                         .setTitle(R.string.send_email)
                         .setMessage(R.string.why_email)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

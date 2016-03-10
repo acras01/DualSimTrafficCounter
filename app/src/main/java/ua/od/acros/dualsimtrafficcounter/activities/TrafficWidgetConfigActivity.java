@@ -483,25 +483,25 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             case R.id.simFontSize:
             case R.id.textSize:
             case R.id.textSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE),
+                dialog = SetSizeDialog.newInstance(textSizeSum.getText().toString(),
                         KEY_TEXT, Constants.TRAFFIC_TAG);
                 break;
             case R.id.simLogoSize:
             case R.id.iconSize:
             case R.id.iconSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE),
+                dialog = SetSizeDialog.newInstance(iconsSizeSum.getText().toString(),
                         KEY_ICON, Constants.TRAFFIC_TAG);
                 break;
             case R.id.speedFontSize:
             case R.id.speedTextSize:
             case R.id.speedTextSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE),
+                dialog = SetSizeDialog.newInstance(speedTextSum.getText().toString(),
                         KEY_TEXT_S, Constants.TRAFFIC_TAG);
                 break;
             case R.id.speedArrowsSize:
             case R.id.speedIconsSize:
             case R.id.speedIconsSizeSum:
-                dialog = SetSizeDialog.newInstance(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE),
+                dialog = SetSizeDialog.newInstance(speedIconsSum.getText().toString(),
                         KEY_ICON_S, Constants.TRAFFIC_TAG);
                 break;
             case R.id.showSim:
