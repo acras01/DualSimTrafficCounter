@@ -77,7 +77,7 @@
         <activity
             android:name=".activities.TrafficWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/widget_title"
+            android:label="@string/info_widget_traffic"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -98,7 +98,7 @@
         <activity
             android:name=".activities.CallsWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/widget_title"
+            android:label="@string/info_widget_calls"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
