@@ -22,7 +22,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
-    private ActionBar mActionBar;
+    private static ActionBar mActionBar;
     private static String mTag;
     private static PreferenceFragmentCompat mFragment;
 
@@ -122,8 +122,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
 
     public void replaceFragments(Class fragmentClass) {
         invalidateOptionsMenu();
-        if (mActionBar != null)
+        if (mActionBar != null) {
             mActionBar.setDisplayShowCustomEnabled(false);
+            mActionBar.setSubtitle("");
+        }
         Fragment fragment = null;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -146,5 +148,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         mTag = preferenceScreen.getKey();
         mFragment = preferenceFragmentCompat;
         preferenceFragmentCompat.setPreferenceScreen(preferenceScreen);
+        mActionBar.setSubtitle(preferenceScreen.getTitle());
     }
 }
