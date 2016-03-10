@@ -70,7 +70,7 @@ public class BlackListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
 
-        setTitle(mOperatorNames[mKey]);
+        setTitle(mOperatorNames[mKey] + ": " + getString(R.string.black_list));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
