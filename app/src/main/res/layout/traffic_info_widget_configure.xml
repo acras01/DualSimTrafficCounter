@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ua.od.acros.dualsimtrafficcounter.activities.TrafficWidgetConfigActivity"
@@ -40,7 +39,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/activesim"
                     android:checked="true"
-                    android:textColor="?android:attr/textColorPrimary"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true" />
 
@@ -75,8 +73,6 @@
                     android:text="@string/choose_sim"
                     android:id="@+id/simChoose"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:clickable="false"
@@ -270,8 +266,6 @@
                     android:text="@string/text_size"
                     android:id="@+id/textSize"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:clickable="false"
@@ -284,7 +278,7 @@
                     android:text="None"
                     android:id="@+id/textSizeSum"
                     android:layout_below="@+id/textSize"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:clickable="false"
                     android:textColor="?android:attr/textColorPrimary" />
 
@@ -347,8 +341,6 @@
                     android:text="@string/icon_size"
                     android:id="@+id/iconSize"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:clickable="false"
@@ -361,7 +353,7 @@
                     android:text="None"
                     android:id="@+id/iconSizeSum"
                     android:layout_below="@+id/iconSize"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:clickable="false"
                     android:textColor="?android:attr/textColorPrimary" />
 
@@ -384,11 +376,10 @@
                     android:text="@string/operator_logo_1"
                     android:id="@+id/logoText1"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/logoPreview1" />
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -399,8 +390,7 @@
                     android:maxWidth="@dimen/logo_size"
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentEnd="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -409,8 +399,9 @@
                     android:text="None"
                     android:id="@+id/logoSum1"
                     android:layout_below="@+id/logoText1"
-                    android:layout_alignParentLeft="true"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:layout_alignParentStart="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/logoPreview1"/>
 
             </RelativeLayout>
 
@@ -431,8 +422,7 @@
                     android:text="@string/operator_logo_2"
                     android:id="@+id/logoText2"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/logoPreview2"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:textColor="?android:attr/textColorPrimary" />
@@ -446,8 +436,7 @@
                     android:maxWidth="@dimen/logo_size"
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentEnd="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -455,8 +444,9 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="None"
                     android:id="@+id/logoSum2"
+                    android:layout_toLeftOf="@+id/logoPreview2"
                     android:layout_below="@+id/logoText2"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
@@ -478,8 +468,7 @@
                     android:text="@string/operator_logo_3"
                     android:id="@+id/logoText3"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/logoPreview3"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:textColor="?android:attr/textColorPrimary" />
@@ -493,8 +482,7 @@
                     android:maxWidth="@dimen/logo_size"
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentEnd="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -503,7 +491,8 @@
                     android:text="None"
                     android:id="@+id/logoSum3"
                     android:layout_below="@+id/logoText3"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/logoPreview3"
                     android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
@@ -564,8 +553,6 @@
                     android:text="@string/text_size"
                     android:id="@+id/speedTextSize"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:clickable="false"
@@ -578,7 +565,7 @@
                     android:text="None"
                     android:id="@+id/speedTextSizeSum"
                     android:layout_below="@+id/speedTextSize"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:clickable="false"
                     android:textColor="?android:attr/textColorPrimary" />
 
@@ -602,8 +589,6 @@
                     android:text="@string/icon_size"
                     android:id="@+id/speedIconsSize"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:clickable="false"
@@ -616,7 +601,7 @@
                     android:text="None"
                     android:id="@+id/speedIconsSizeSum"
                     android:layout_below="@+id/speedIconsSize"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:clickable="false"
                     android:textColor="?android:attr/textColorPrimary" />
 
@@ -640,12 +625,11 @@
                     android:text="@string/text_color"
                     android:id="@+id/textColor"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:layout_centerVertical="true"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/textColorPreview" />
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -657,7 +641,6 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:src="@android:drawable/ic_menu_preferences" />
 
             </RelativeLayout>
@@ -718,12 +701,11 @@
                     android:text="@string/background_color"
                     android:id="@+id/backgroundColor"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:layout_centerVertical="true"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/backColorPreview"/>
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -735,7 +717,6 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:src="@android:drawable/ic_menu_preferences" />
 
             </RelativeLayout>
