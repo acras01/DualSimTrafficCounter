@@ -84,7 +84,8 @@ public class WhiteListActivity extends AppCompatActivity {
         if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setDefaultDisplayHomeAsUpEnabled(true);
-            bar.setTitle(mOperatorNames[mKey] + ": " + getString(R.string.white_list));
+            bar.setSubtitle(mOperatorNames[mKey]);
+            bar.setTitle(getString(R.string.white_list));
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
