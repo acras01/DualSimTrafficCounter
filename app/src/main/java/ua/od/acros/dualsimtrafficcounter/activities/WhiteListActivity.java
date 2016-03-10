@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
@@ -79,14 +80,17 @@ public class WhiteListActivity extends AppCompatActivity {
 
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
-
+        ActionBar bar = getSupportActionBar();
+        if (bar != null) {
+            bar.setDisplayHomeAsUpEnabled(true);
+            bar.setDefaultDisplayHomeAsUpEnabled(true);
+            bar.setTitle(mOperatorNames[mKey] + ": " + getString(R.string.white_list));
+        }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
-
-        setTitle(mOperatorNames[mKey] + ": " + getString(R.string.white_list));
     }
 
     @Override
@@ -119,9 +123,11 @@ public class WhiteListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         try {
-            if (item.getItemId() == R.id.save) {
-                new SaveTask().execute();
-                finish();
+            switch (item.getItemId()) {
+                case R.id.save:
+                    new SaveTask().execute();
+                default:
+                    finish();
             }
         } catch (Exception e) {
             e.printStackTrace();

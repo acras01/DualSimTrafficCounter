@@ -46,8 +46,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         mActionBar = getSupportActionBar();
-        if (mActionBar != null)
+        if (mActionBar != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setDefaultDisplayHomeAsUpEnabled(true);
+        }
         if (getIntent().getStringExtra("show") != null) {
             PreferenceFragmentCompat fragment = null;
             String sim = getIntent().getStringExtra("sim");
