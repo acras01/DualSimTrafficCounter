@@ -52,7 +52,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
             speedTextSum, speedIconsSum, showSimSum, divSum, activesum, daynightSum, remainSum, rxtxSum;
-    private RelativeLayout simLogoL, speedFontL, speedArrowsL, showSimL, backColorL, logoL1, logoL2, logoL3;
+    private RelativeLayout simLogoL, speedFontL, speedArrowsL, showSimL, backColorL, logoL1, logoL2, logoL3,
+            remainL, rxtxL;
     private SharedPreferences mPrefs;
     private SharedPreferences.Editor mEdit;
     private int mTextColor, mBackColor;
@@ -168,10 +169,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         daynight.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false));
         remain = (CheckBox) findViewById(R.id.remain_data);
         remain.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false));
-        remain.setEnabled(!info.isChecked());
         rxtx = (CheckBox) findViewById(R.id.rx_tx);
         rxtx.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true));
-        rxtx.setEnabled(info.isChecked());
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -218,25 +217,23 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             remainSum.setText(R.string.remain);
         else
             remainSum.setText(R.string.used);
-        remainSum.setEnabled(!info.isChecked());
         rxtxSum = (TextView) findViewById(R.id.rx_tx_summary);
         if (rxtx.isChecked())
             rxtxSum.setText(R.string.show_rx_tx_sum);
         else
             rxtxSum.setText(R.string.show_used_left);
-        rxtx.setEnabled(info.isChecked());
 
         logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
         logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
         logoL3 = (RelativeLayout) findViewById(R.id.logoLayout3);
-
         RelativeLayout simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
         simLogoL = (RelativeLayout) findViewById(R.id.simLogoSize);
         speedFontL = (RelativeLayout) findViewById(R.id.speedFontSize);
         speedArrowsL = (RelativeLayout) findViewById(R.id.speedArrowsSize);
         showSimL = (RelativeLayout) findViewById(R.id.showSim);
         backColorL = (RelativeLayout) findViewById(R.id.backColorLayout);
-
+        remainL = (RelativeLayout) findViewById(R.id.remainlayout);
+        rxtxL = (RelativeLayout) findViewById(R.id.rxtxlayout);
 
         onOff(logoL1, icons.isChecked());
         onOff(logoL2, mSimQuantity >= 2 && icons.isChecked());
@@ -245,6 +242,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         onOff(speedArrowsL, speed.isChecked());
         onOff(showSimL, !active.isChecked());
         onOff(backColorL, back.isChecked());
+        onOff(rxtxL, info.isChecked());
+        onOff(remainL, !info.isChecked());
 
         textSizeSum = (TextView) findViewById(R.id.textSizeSum);
         textSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE));
@@ -690,12 +689,10 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                     infoSum.setText(R.string.only_total);
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], !isChecked);
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], isChecked);
-                remain.setEnabled(!isChecked);
+                onOff(remainL, !isChecked);
                 remain.setChecked(!isChecked);
-                remainSum.setEnabled(!isChecked);
-                rxtx.setEnabled(isChecked);
                 rxtx.setChecked(isChecked);
-                rxtxSum.setEnabled(isChecked);
+                onOff(rxtxL, isChecked);
                 break;
             case R.id.speed:
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], isChecked);
@@ -830,7 +827,6 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         if (dialog != null)
             dialog.show();
     }
-
 
     @Override
     protected void onDestroy() {

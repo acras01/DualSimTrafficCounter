@@ -1,12 +1,10 @@
 <resources>
-
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
-    </style>
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
         <item name="preferenceTheme">@style/AppTheme.PreferenceThemeOverlay</item>
     </style>
     <style name="AppTheme.NoActionBar">
@@ -17,23 +15,29 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:actionBarStyle">@style/AppTheme.ActionBarStyle</item>
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
     </style>
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light" >
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:actionBarStyle">@style/AppTheme.ActionBarStyle</item>
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
     </style>
-    <style name="AppTheme.ActionBarStyle" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.TitleTextStyle</item>
+    <style name="AppTheme.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.TitleText</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
-    <style name="AppTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <style name="AppTheme.ActionBar.TitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/widget_text</item>
     </style>
     <style name="AppTheme.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
         <item name="android:textAppearanceLarge">?android:attr/textAppearanceMedium</item>
     </style>
-
+    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert" >
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.DayNight.Dialog" />
 </resources>

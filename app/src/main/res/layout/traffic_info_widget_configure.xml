@@ -20,21 +20,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/only_active"
-                android:id="@+id/activesim"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/activesimlayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/activesim_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/only_active"
+                    android:id="@+id/activsimtv"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/activesim" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/activesim"
+                    android:checked="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/on"
+                    android:id="@+id/activesim_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/activsimtv"
+                    android:layout_toLeftOf="@+id/activesim" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -49,13 +74,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/choose_sim"
                     android:id="@+id/simChoose"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -65,7 +90,8 @@
                     android:id="@+id/simChooseSum"
                     android:layout_below="@+id/simChoose"
                     android:layout_alignParentLeft="true"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
@@ -73,85 +99,162 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_names"
-                android:id="@+id/names"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/nameslayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/names_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_names"
+                    android:id="@+id/namestv"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/names" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/names"
+                    android:checked="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/on"
+                    android:id="@+id/names_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/namestv"
+                    android:layout_toLeftOf="@+id/names" />
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_full_text_on_widget"
-                android:id="@+id/info"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/infolayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/all"
-                android:id="@+id/info_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_full_text_on_widget"
+                    android:id="@+id/infotv"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/info" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/info"
+                    android:checked="true"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/all"
+                    android:id="@+id/info_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_below="@+id/infotv"
+                    android:layout_toLeftOf="@+id/info"
+                    android:layout_alignParentStart="true" />
+
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_rx_tx"
-                android:id="@+id/rx_tx"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="false" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rxtxlayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/used"
-                android:id="@+id/rx_tx_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_rx_tx"
+                    android:id="@+id/rx_txtv"
+                    android:layout_toLeftOf="@+id/rx_tx"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rx_tx"
+                    android:checked="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/used"
+                    android:id="@+id/rx_tx_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/rx_tx"
+                    android:layout_below="@+id/rx_txtv"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_remaining_widget"
-                android:id="@+id/remain_data"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="false" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/remainlayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/used"
-                android:id="@+id/remain_data_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_remaining_widget"
+                    android:id="@+id/remaintv"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/remain_data"
+                    android:layout_alignParentStart="true" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/remain_data"
+                    android:checked="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/used"
+                    android:id="@+id/remain_data_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_below="@+id/remaintv"
+                    android:layout_toLeftOf="@+id/remain_data"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -166,13 +269,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/text_size"
                     android:id="@+id/textSize"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -182,7 +285,8 @@
                     android:id="@+id/textSizeSum"
                     android:layout_below="@+id/textSize"
                     android:layout_alignParentLeft="true"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
@@ -190,25 +294,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_icons"
-                android:id="@+id/icons"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/iconslayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/icons_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_icons"
+                    android:id="@+id/iconstv"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/icons" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/icons"
+                    android:checked="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/on"
+                    android:id="@+id/icons_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/icons"
+                    android:layout_below="@+id/iconstv" />
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -223,13 +346,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/icon_size"
                     android:id="@+id/iconSize"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -239,13 +362,14 @@
                     android:id="@+id/iconSizeSum"
                     android:layout_below="@+id/iconSize"
                     android:layout_alignParentLeft="true"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -259,12 +383,12 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/operator_logo_1"
                     android:id="@+id/logoText1"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -285,13 +409,14 @@
                     android:text="None"
                     android:id="@+id/logoSum1"
                     android:layout_below="@+id/logoText1"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -305,12 +430,12 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/operator_logo_2"
                     android:id="@+id/logoText2"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -331,13 +456,14 @@
                     android:text="None"
                     android:id="@+id/logoSum2"
                     android:layout_below="@+id/logoText2"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -351,12 +477,12 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/operator_logo_3"
                     android:id="@+id/logoText3"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -377,7 +503,8 @@
                     android:text="None"
                     android:id="@+id/logoSum3"
                     android:layout_below="@+id/logoText3"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
@@ -385,25 +512,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_speed"
-                android:id="@+id/speed"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/speedlayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/speed_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_speed"
+                    android:id="@+id/speedtv"
+                    android:layout_alignRight="@+id/speed"
+                    android:layout_alignParentStart="true"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/speed"
+                    android:checked="true"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/on"
+                    android:id="@+id/speed_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignRight="@+id/speed"
+                    android:layout_below="@+id/speedtv"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -418,13 +563,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/text_size"
                     android:id="@+id/speedTextSize"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -434,13 +579,14 @@
                     android:id="@+id/speedTextSizeSum"
                     android:layout_below="@+id/speedTextSize"
                     android:layout_alignParentLeft="true"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp" />
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -455,13 +601,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/icon_size"
                     android:id="@+id/speedIconsSize"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -471,7 +617,8 @@
                     android:id="@+id/speedIconsSizeSum"
                     android:layout_below="@+id/speedIconsSize"
                     android:layout_alignParentLeft="true"
-                    android:clickable="false" />
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorPrimary" />
 
             </RelativeLayout>
 
@@ -492,13 +639,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/text_color"
                     android:id="@+id/textColor"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:layout_centerVertical="true" />
+                    android:layout_centerVertical="true"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -519,21 +666,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/use_background"
-                android:id="@+id/useBack"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/backlayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/back_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/use_background"
+                    android:id="@+id/backtv"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/useBack"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/useBack"
+                    android:checked="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/on"
+                    android:id="@+id/back_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/useBack"
+                    android:layout_below="@+id/backtv" />
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -547,13 +717,13 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/background_color"
                     android:id="@+id/backgroundColor"
-                    android:textSize="16sp"
                     android:layout_gravity="left|center_vertical"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
-                    android:layout_centerVertical="true" />
+                    android:layout_centerVertical="true"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <ImageView
                     android:layout_width="@dimen/logo_size"
@@ -574,41 +744,79 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/use_divider"
-                android:id="@+id/divider"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/dividerlayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/divider_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/use_divider"
+                    android:id="@+id/dividertv"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/divider" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/divider"
+                    android:checked="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/on"
+                    android:id="@+id/divider_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/divider"
+                    android:layout_below="@+id/dividertv"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/show_daynight_icons"
-                android:id="@+id/daynight_icons"
-                android:button="@null"
-                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-                android:checked="true" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/daynightlayout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/on"
-                android:id="@+id/daynight_icons_summary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_daynight_icons"
+                    android:id="@+id/daynighttv"
+                    android:layout_toLeftOf="@+id/daynight_icons"
+                    android:layout_alignParentStart="true"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/daynight_icons"
+                    android:checked="true"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/on"
+                    android:id="@+id/daynight_icons_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/daynight_icons"
+                    android:layout_below="@+id/daynighttv"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
 
 
         </LinearLayout>

@@ -21,7 +21,8 @@
         android:layout_alignEnd="@+id/radioGroup"
         android:gravity="center_vertical"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:textColor="?android:attr/textColorPrimary" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -36,19 +37,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim1RB"
-            android:text="SIM1" />
+            android:text="SIM1"
+            android:textColor="?android:attr/textColorPrimary" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim2RB"
-            android:text="SIM2" />
+            android:text="SIM2"
+            android:textColor="?android:attr/textColorPrimary" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim3RB"
-            android:text="SIM3" />
+            android:text="SIM3"
+            android:textColor="?android:attr/textColorPrimary" />
 
     </RadioGroup>
 
@@ -85,7 +89,8 @@
                 android:id="@+id/day"
                 android:layout_column="2"
                 android:gravity="center_vertical|center"
-                android:width="100dp" />
+                android:width="100dp"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -94,7 +99,8 @@
                 android:id="@+id/night"
                 android:layout_column="3"
                 android:gravity="center_vertical|center"
-                android:width="100dp" />
+                android:width="100dp"
+                android:textColor="?android:attr/textColorPrimary" />
 
         </TableRow>
 
@@ -112,7 +118,8 @@
                 android:id="@+id/txText"
                 android:width="80dp"
                 android:layout_column="1"
-                android:gravity="left|center_vertical" />
+                android:gravity="left|center_vertical"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -122,7 +129,8 @@
                 android:id="@+id/tx"
                 android:gravity="center_vertical|center"
                 android:layout_column="2"
-                android:width="100dp" />
+                android:width="100dp"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -132,7 +140,8 @@
                 android:id="@+id/txnight"
                 android:gravity="center_vertical|center"
                 android:layout_column="3"
-                android:width="100dp" />
+                android:width="100dp"
+                android:textColor="?android:attr/textColorPrimary" />
 
         </TableRow>
 
@@ -150,7 +159,8 @@
                 android:id="@+id/rxText"
                 android:layout_column="1"
                 android:width="80dp"
-                android:gravity="left|center_vertical" />
+                android:gravity="left|center_vertical"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -160,7 +170,8 @@
                 android:id="@+id/rx"
                 android:layout_column="2"
                 android:gravity="center_vertical|center"
-                android:width="100dp" />
+                android:width="100dp"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -170,7 +181,8 @@
                 android:id="@+id/rxnight"
                 android:width="100dp"
                 android:layout_column="3"
-                android:gravity="center_vertical|center" />
+                android:gravity="center_vertical|center"
+                android:textColor="?android:attr/textColorPrimary" />
 
         </TableRow>
 
@@ -188,7 +200,8 @@
                 android:layout_column="1"
                 android:gravity="left|center_vertical"
                 android:width="80dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -197,7 +210,8 @@
                 android:id="@+id/total"
                 android:layout_column="2"
                 android:gravity="center_vertical|center"
-                android:width="100dp" />
+                android:width="100dp"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -206,7 +220,8 @@
                 android:id="@+id/totalnight"
                 android:layout_column="3"
                 android:gravity="center_vertical|center"
-                android:width="100dp" />
+                android:width="100dp"
+                android:textColor="?android:attr/textColorPrimary" />
 
         </TableRow>
 

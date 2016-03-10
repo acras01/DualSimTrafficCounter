@@ -12,7 +12,8 @@
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/switchForActionBar"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="5dp"
+        android:textColor="?android:attr/textColorPrimary" />
 
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/switchForActionBar"

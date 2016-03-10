@@ -40,7 +40,8 @@
                         android:gravity="center|fill_vertical"
                         android:width="300dp"
                         android:textSize="14sp"
-                        android:visibility="visible" />
+                        android:visibility="visible"
+                        android:textColor="?android:attr/textColorPrimary" />
                 </TableRow>
 
                 <TableRow
@@ -57,7 +58,8 @@
                         android:layout_column="0"
                         android:gravity="left|center_vertical"
                         android:visibility="visible"
-                        android:width="125dp"/>
+                        android:width="125dp"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -67,7 +69,8 @@
                         android:layout_column="1"
                         android:gravity="center_vertical|center"
                         android:width="300dp"
-                        android:visibility="visible" />
+                        android:visibility="visible"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -104,7 +107,8 @@
                         android:layout_column="0"
                         android:gravity="left|center_vertical"
                         android:visibility="visible"
-                        android:width="125dp"/>
+                        android:width="125dp"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -114,7 +118,8 @@
                         android:layout_column="1"
                         android:gravity="center_vertical|center"
                         android:width="300dp"
-                        android:visibility="visible" />
+                        android:visibility="visible"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -151,7 +156,8 @@
                         android:layout_column="0"
                         android:gravity="left|center_vertical"
                         android:visibility="visible"
-                        android:width="125dp" />
+                        android:width="125dp"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -161,7 +167,8 @@
                         android:layout_column="1"
                         android:gravity="center_vertical|center"
                         android:width="300dp"
-                        android:visibility="visible" />
+                        android:visibility="visible"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -202,7 +209,8 @@
             android:layout_marginTop="25dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:textColor="?android:attr/textColorPrimary" />
 
     </RelativeLayout>
 

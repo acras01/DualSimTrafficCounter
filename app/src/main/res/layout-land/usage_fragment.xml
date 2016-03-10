@@ -26,7 +26,8 @@
                 android:layout_marginLeft="10dp"
                 android:checked="false"
                 android:layout_centerVertical="true"
-                android:layout_alignParentTop="true" />
+                android:layout_alignParentTop="true"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -45,7 +46,8 @@
                 android:layout_alignParentEnd="false"
                 android:layout_marginRight="10dp"
                 android:layout_alignLeft="@+id/checktotal"
-                android:layout_below="@+id/checktotal" />
+                android:layout_below="@+id/checktotal"
+                android:textColor="?android:attr/textColorPrimary" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -64,19 +66,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/sim1RB"
-                        android:text="SIM1" />
+                        android:text="SIM1"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/sim2RB"
-                        android:text="SIM2" />
+                        android:text="SIM2"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/sim3RB"
-                        android:text="SIM3" />
+                        android:text="SIM3"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                 </RadioGroup>
 

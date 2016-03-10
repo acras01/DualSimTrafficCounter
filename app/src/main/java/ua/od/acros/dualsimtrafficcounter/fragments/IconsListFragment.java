@@ -1,22 +1,22 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
 import android.app.Activity;
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.ListViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class IconsListFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 
     private String[] mListItems;
-    private ListView lv;
+    private ListViewCompat lv;
     private String mLogo;
 
     private OnCompleteListener mListener;
@@ -42,7 +42,7 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mListItems = getResources().getStringArray(R.array.icons);
         View view = inflater.inflate(R.layout.icons_list_layout, container, false);
-        lv = (ListView) view.findViewById(R.id.list);
+        lv = (ListViewCompat) view.findViewById(R.id.list);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return view;
     }

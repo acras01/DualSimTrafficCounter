@@ -66,7 +66,7 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
         sim2.setChecked(mSim[1]);
         sim3.setChecked(mSim[2]);
 
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppTheme_AlertDialog)
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
