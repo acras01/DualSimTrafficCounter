@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.os.PowerManager;
 
 import org.acra.ACRA;
+import org.joda.time.DateTime;
 
-import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -22,12 +25,15 @@ public class OnOffReceiver extends BroadcastReceiver {
 
         try {
             int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-            if (intent.getBooleanExtra(Constants.ON_OFF, true) && TrafficCountService.getLastActiveSIM() == sim &&
-                    MobileUtils.getMobileDataInfo(context, false)[0] == 0)
-                MobileUtils.toggleMobileDataConnection(true, context, sim);
-            else if (!intent.getBooleanExtra(Constants.ON_OFF, true) && TrafficCountService.getActiveSIM() == sim &&
-                    MobileUtils.getMobileDataInfo(context, false)[0] == 2)
-                MobileUtils.toggleMobileDataConnection(false, context, Constants.DISABLED);
+            boolean action = intent.getBooleanExtra(Constants.ON_OFF, true);
+            MobileUtils.toggleMobileDataConnection(action, context, sim);
+            File dir = new File(String.valueOf(context.getFilesDir()));
+            String fileName = "onoff.txt";
+            File file = new File(dir, fileName);
+            FileOutputStream os = new FileOutputStream(file);
+            String out = DateTime.now().toString() + " " + sim + " " + action;
+            os.write(out.getBytes());
+            os.close();
         } catch (Exception e) {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);

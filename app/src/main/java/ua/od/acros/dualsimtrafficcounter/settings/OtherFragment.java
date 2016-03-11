@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -29,6 +30,7 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
 
     private static final String XPOSED = "de.robv.android.xposed.installer";
     private Context mContext;
+    private boolean mIsAttached;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -53,7 +55,8 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
                     .putBoolean(Constants.PREF_OTHER[24], true)
                     .apply();
         }
-        updateSummary();
+        if (mIsAttached)
+            updateSummary();
     }
 
     private void updateSummary() {
@@ -61,6 +64,18 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
             timer.setSummary(String.format(getResources().getString(R.string.minutes), timer.getText()));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mIsAttached = true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mIsAttached = false;
     }
 
     @Override
@@ -81,7 +96,8 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        updateSummary();
+        if (mIsAttached)
+            updateSummary();
         if (key.equals(Constants.PREF_OTHER[25])) {
             AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
             DateTime alarmTime = new DateTime().withTimeAtStartOfDay();

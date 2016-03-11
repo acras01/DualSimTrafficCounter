@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ public class OperatorFragment extends PreferenceFragmentCompat implements Shared
     private TwoLineEditTextPreference name1, name2, name3;
     private TwoLineListPreference logo1, logo2, logo3;
     private SharedPreferences mPrefs;
+    private boolean mIsAttached;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -61,8 +63,8 @@ public class OperatorFragment extends PreferenceFragmentCompat implements Shared
             getPreferenceScreen().removePreference(sim3);
             logo3.setEnabled(false);
         }
-
-        updateSummary();
+        if (mIsAttached)
+            updateSummary();
     }
 
     private void updateSummary() {
@@ -91,6 +93,18 @@ public class OperatorFragment extends PreferenceFragmentCompat implements Shared
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mIsAttached = true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mIsAttached = false;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
@@ -106,6 +120,7 @@ public class OperatorFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        updateSummary();
+        if (mIsAttached)
+            updateSummary();
     }
 }

@@ -491,8 +491,6 @@ public class MobileUtils {
         try {
             // to this path add a new directory path
             File dir = new File(String.valueOf(context.getFilesDir()));
-            // create this directory if not already created
-            dir.mkdir();
             // create the file in which we will write the contents
             String fileName = "sim_log.txt";
             File file = new File(dir, fileName);
@@ -843,10 +841,7 @@ public class MobileUtils {
             }
         }
         try {
-            // to this path add a new directory path
             File dir = new File(String.valueOf(context.getFilesDir()));
-            // create this directory if not already created
-            dir.mkdir();
             // create the file in which we will write the contents
             String fileName = "name_log.txt";
             File file = new File(dir, fileName);
@@ -1197,7 +1192,6 @@ public class MobileUtils {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static void setMobileNetworkFromLollipop(final Context context, int sim) throws Exception {
-        ArrayList<String> cmdList = new ArrayList<>();
         String cmd = null;
         int state;
         try {
@@ -1666,10 +1660,7 @@ public class MobileUtils {
     public static void getTelephonyManagerMethods(Context context) {
         String out = " ";
         try {
-            // to this path add a new directory path
             File dir = new File(String.valueOf(context.getFilesDir()));
-            // create this directory if not already created
-            dir.mkdir();
             // create the file in which we will write the contents
             String fileName = "telephony.txt";
             File file = new File(dir, fileName);

@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
     private TwoLineListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
+    private boolean mIsAttached = false;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -71,7 +73,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
         if (simQuantity == 2) {
             getPreferenceScreen().removePreference(sim3);
         }
-        updateSummary();
+        if (mIsAttached)
+            updateSummary();
 
         day1.setOnPreferenceChangeListener(this);
         day2.setOnPreferenceChangeListener(this);
@@ -222,8 +225,21 @@ public class CallsLimitFragment extends PreferenceFragmentCompat implements Shar
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mIsAttached = true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mIsAttached = false;
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        updateSummary();
+        if (mIsAttached)
+            updateSummary();
     }
 
     @Override

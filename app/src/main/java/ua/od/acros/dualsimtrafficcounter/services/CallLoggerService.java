@@ -58,11 +58,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private int mSimQuantity;
     private CountDownTimer mCountTimer;
     private Vibrator mVibrator;
-    private boolean mResetRuleHasChanged = false;
     private boolean mIsResetNeeded3 = false;
     private boolean mIsResetNeeded2 = false;
-    private boolean mIsResetNeeded1 = false;
-    private DateTime mResetTime1;
     private DateTime mResetTime2;
     private DateTime mResetTime3;
     private boolean mIsOutgoing = false;
@@ -298,8 +295,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     private void startTask(Context context, String number) {
         DateTime now = DateTime.now();
-        mResetTime1 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(fmtDateTime)));
-        mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1_CALLS[9], true);
+        DateTime mResetTime1 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(fmtDateTime)));
+        boolean mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1_CALLS[9], true);
         if (mSimQuantity >= 2) {
             mResetTime2 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[8], now.toString(fmtDateTime)));
             mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2_CALLS[9], true);
