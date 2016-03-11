@@ -1,11 +1,11 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.graphics.Paint;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -22,12 +22,12 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     // отдельного пункта списка
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // наш пункт состоит только из одного TextView
-        public CheckBox checkBox;
+        public AppCompatCheckBox checkBox;
         public TextView textView;
 
         public ViewHolder(View v) {
             super(v);
-            checkBox = (CheckBox) v.findViewById(R.id.checkBox);
+            checkBox = (AppCompatCheckBox) v.findViewById(R.id.checkBox);
             textView = (TextView) v.findViewById(R.id.textView);
         }
     }
@@ -66,12 +66,12 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     public void onBindViewHolder(BlackListAdapter.ViewHolder holder, int position) {
         holder.textView.setText(mList.get(position).getNumber());
         boolean checked = mList.get(position).isChecked();
+        holder.checkBox.setTag(mList.get(position));
         holder.checkBox.setChecked(checked);
         if (checked)
             holder.textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         else
             holder.textView.setPaintFlags(0);
-        holder.checkBox.setTag(mList.get(position));
     }
 
     // Возвращает размер данных (вызывается layout manager-ом)

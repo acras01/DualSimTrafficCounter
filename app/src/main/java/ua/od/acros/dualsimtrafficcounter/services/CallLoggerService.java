@@ -375,7 +375,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             final ArrayList<String> blackList = MyDatabaseHelper.readBlackList(sim, mDbHelper);
                             if (!whiteList.contains(CallLoggerService.this.number[0]) && !blackList.contains(CallLoggerService.this.number[0]) && !mIsDialogShown) {
                                 mIsDialogShown = true;
-                                Dialog dialog = new AlertDialog.Builder(ctx)
+                                Dialog dialog = new AlertDialog.Builder(ctx, R.style.AppTheme_AlertDialog)
                                         .setTitle(CallLoggerService.this.number[0])
                                         .setMessage(R.string.is_out_of_home_network)
                                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -393,6 +393,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                                 mIsOutgoing = false;
                                                 whiteList.add(CallLoggerService.this.number[0]);
                                                 MyDatabaseHelper.writeWhiteList(sim, whiteList, mDbHelper);
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                mIsOutgoing = false;
                                                 dialog.dismiss();
                                             }
                                         })

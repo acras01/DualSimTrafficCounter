@@ -21,18 +21,19 @@ import org.acra.ACRA;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
+import ua.od.acros.dualsimtrafficcounter.utils.WhiteListItem;
 
 public class WhiteListActivity extends AppCompatActivity {
 
     private WhiteListAdapter mAdapter;
-    private ArrayList<String> mNames;
-    private ArrayList<String> mNumbers;
+    private List<WhiteListItem> mItems;
     private Context mContext = this;
     private int mKey;
     private MyDatabaseHelper mDatabaseHelper;
@@ -57,21 +58,20 @@ public class WhiteListActivity extends AppCompatActivity {
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         ArrayList<String> list = MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
-        mNumbers = new ArrayList<>();
-        mNames = new ArrayList<>();
-        loadContactsFromDB(mContext);
-        ArrayList<String> extra = MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);;
-        for (Iterator<String> i = extra.iterator(); i.hasNext(); ) {
-            if (mNumbers.contains(i.next())) {
+        mItems = loadContactsFromDB(mContext, list);
+        List<String> numbers = new ArrayList<>();
+        for (WhiteListItem item : mItems)
+            numbers.add(item.getNumber());
+        for (Iterator<String> i = list.iterator(); i.hasNext(); ) {
+            if (numbers.contains(i.next())) {
                 i.remove();
             }
         }
-        for (Iterator<String> i = extra.iterator(); i.hasNext(); ) {
-            mNumbers.add(i.next());
-            mNames.add(getString(R.string.unknown));
+        for (Iterator<String> i = list.iterator(); i.hasNext(); ) {
+            mItems.add(new WhiteListItem(getString(R.string.unknown), i.next(), true));
             i.remove();
         }
-        mAdapter = new WhiteListAdapter(mNames, mNumbers, list);
+        mAdapter = new WhiteListAdapter(mItems);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -94,7 +94,8 @@ public class WhiteListActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void loadContactsFromDB(Context context) {
+    private List<WhiteListItem> loadContactsFromDB(Context context, ArrayList<String> list) {
+        List<WhiteListItem> whiteList = new ArrayList<>();
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         Cursor cursor = context.getContentResolver().query(uri, new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME}, null, null,
@@ -102,12 +103,14 @@ public class WhiteListActivity extends AppCompatActivity {
         if (cursor != null) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                mNumbers.add(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[\\s\\-()]", ""));
-                mNames.add(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[\\s\\-()]", "");
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                whiteList.add(new WhiteListItem(name, number, list.contains(number)));
                 cursor.moveToNext();
             }
             cursor.close();
         }
+        return whiteList;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

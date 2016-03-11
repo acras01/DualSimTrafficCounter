@@ -1,39 +1,38 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.ViewHolder> {
 
 
-    public ArrayList<String> mNames, mNumbers, mList;
+    public List<WhiteListItem> mList;
 
-    public WhiteListAdapter(ArrayList<String> names, ArrayList<String> numbers, ArrayList<String> list) {
-        this.mNames = names;
-        this.mNumbers = numbers;
+    public WhiteListAdapter(List<WhiteListItem> list) {
         if (list != null)
             this.mList = list;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public CheckBox checkBox;
+        public AppCompatCheckBox checkBox;
         public TextView txtViewName;
         public TextView txtViewNumber;
 
         public ViewHolder(View v) {
             super(v);
-            checkBox = (CheckBox) v.findViewById(R.id.checkBox);;
-            txtViewName = (TextView) v.findViewById(R.id.name);;
-            txtViewNumber = (TextView) v.findViewById(R.id.number);;
+            checkBox = (AppCompatCheckBox) v.findViewById(R.id.checkBox);
+            txtViewName = (TextView) v.findViewById(R.id.name);
+            txtViewNumber = (TextView) v.findViewById(R.id.number);
         }
     }
 
@@ -45,17 +44,10 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
 
         // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
         ViewHolder viewHolder = new ViewHolder(v);
-        final CheckBox checkBox = viewHolder.checkBox;
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String number = (String) buttonView.getTag();
-                if (isChecked) {
-                    if (!mList.contains(number))
-                        mList.add(number);
-                } else {
-                    if (mList.contains(number))
-                        mList.remove(number);
-                }
+                WhiteListItem item = (WhiteListItem) buttonView.getTag();
+                item.setChecked(isChecked);
             }
         });
         return viewHolder;
@@ -63,26 +55,32 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
 
     @Override
     public void onBindViewHolder(WhiteListAdapter.ViewHolder holder, int position) {
-        holder.checkBox.setChecked(mList.contains(mNumbers.get(position)));
-        //holder.checkBox.setContentDescription(mNumbers.get(position));
-        holder.checkBox.setTag(mNumbers.get(position));
-        holder.txtViewName.setText(mNames.get(position));
-        holder.txtViewNumber.setText(mNumbers.get(position));
+        holder.txtViewName.setText(mList.get(position).getName());
+        holder.txtViewNumber.setText(mList.get(position).getNumber());
+        holder.checkBox.setTag(mList.get(position));
+        holder.checkBox.setChecked(mList.get(position).isChecked());
     }
 
     public ArrayList<String> getCheckedItems(){
-        return mList;
+        ArrayList<String> list = new ArrayList<>();
+        for (WhiteListItem item : mList)
+            if (item.isChecked())
+                list.add(item.getNumber());
+        return list;
     }
 
     // кол-во элементов
     @Override
     public int getItemCount() {
-        return mNumbers.size();
+        if (mList != null)
+            return mList.size();
+        else
+            return 0;
     }
 
     // элемент по позиции
     public Object getItem(int position) {
-        return mNumbers.get(position);
+        return mList.get(position);
     }
 
     // id по позиции
