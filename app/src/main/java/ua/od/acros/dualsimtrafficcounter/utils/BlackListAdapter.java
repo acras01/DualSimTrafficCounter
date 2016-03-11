@@ -10,12 +10,13 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.ViewHolder> {
 
-    private ArrayList<String> mList, mChecked;
+    private List<BlackListItem> mList;
 
     // класс view holder-а с помощью которого мы получаем ссылку на каждый элемент
     // отдельного пункта списка
@@ -32,9 +33,8 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     }
 
     // Конструктор
-    public BlackListAdapter(ArrayList<String> list) {
+    public BlackListAdapter(List<BlackListItem> list) {
         this.mList = list;
-        this.mChecked = new ArrayList<>();
     }
 
     // Создает новые views (вызывается layout manager-ом)
@@ -49,16 +49,13 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         final TextView textView = viewHolder.textView;
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String number = (String) buttonView.getContentDescription();
-                if (isChecked) {
-                    if (!mChecked.contains(number))
-                        mChecked.add(number);
+                BlackListItem item = (BlackListItem) buttonView.getTag();
+                item.setChecked(isChecked);
+                if (isChecked)
                     textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-                } else {
-                    if (mChecked.contains(number))
-                        mChecked.remove(number);
+                else
                     textView.setPaintFlags(0);
-                }
+
             }
         });
         return viewHolder;
@@ -67,19 +64,32 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     // Заменяет контент отдельного view (вызывается layout manager-ом)
     @Override
     public void onBindViewHolder(BlackListAdapter.ViewHolder holder, int position) {
-        holder.textView.setText(mList.get(position));
-        holder.checkBox.setContentDescription(mList.get(position));
+        holder.textView.setText(mList.get(position).getNumber());
+        boolean checked = mList.get(position).isChecked();
+        holder.checkBox.setChecked(checked);
+        if (checked)
+            holder.textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        else
+            holder.textView.setPaintFlags(0);
+        holder.checkBox.setTag(mList.get(position));
     }
 
     // Возвращает размер данных (вызывается layout manager-ом)
     @Override
     public int getItemCount() {
-        return mList.size();
+        if (mList != null)
+            return mList.size();
+        else
+            return 0;
     }
 
 
     public ArrayList<String> getCheckedItems(){
-        return mChecked;
+        ArrayList<String> list = new ArrayList<>();
+        for (BlackListItem item : mList)
+        if (item.isChecked())
+            list.add(item.getNumber());
+        return list;
     }
 
     // элемент по позиции

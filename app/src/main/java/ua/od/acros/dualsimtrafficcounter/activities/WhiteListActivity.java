@@ -31,7 +31,8 @@ import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
 public class WhiteListActivity extends AppCompatActivity {
 
     private WhiteListAdapter mAdapter;
-    private ArrayList<String> mNames, mNumbers, mList;
+    private ArrayList<String> mNames;
+    private ArrayList<String> mNumbers;
     private Context mContext = this;
     private int mKey;
     private MyDatabaseHelper mDatabaseHelper;
@@ -39,7 +40,6 @@ public class WhiteListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
@@ -56,7 +56,7 @@ public class WhiteListActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        mList = MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
+        ArrayList<String> list = MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
         mNumbers = new ArrayList<>();
         mNames = new ArrayList<>();
         loadContactsFromDB(mContext);
@@ -71,7 +71,7 @@ public class WhiteListActivity extends AppCompatActivity {
             mNames.add(getString(R.string.unknown));
             i.remove();
         }
-        mAdapter = new WhiteListAdapter(mNames, mNumbers, mList);
+        mAdapter = new WhiteListAdapter(mNames, mNumbers, list);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -92,12 +92,6 @@ public class WhiteListActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArrayList("mList", mAdapter.getCheckedItems());
     }
 
     private void loadContactsFromDB(Context context) {

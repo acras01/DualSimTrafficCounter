@@ -18,25 +18,26 @@ import org.acra.ACRA;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.BlackListAdapter;
+import ua.od.acros.dualsimtrafficcounter.utils.BlackListItem;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 
 public class BlackListActivity extends AppCompatActivity {
 
-    private ArrayList<String> mList;
     private Context mContext;
     private int mKey;
     private MyDatabaseHelper mDatabaseHelper;
     private BlackListAdapter mAdapter;
+    private ArrayList<String> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
@@ -54,14 +55,14 @@ public class BlackListActivity extends AppCompatActivity {
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
-        mAdapter = new BlackListAdapter(mList);
-
+        List<BlackListItem> mBlackList = new ArrayList<>();
+        for (String number : mList)
+            mBlackList.add(new BlackListItem(number, false));
+        mAdapter = new BlackListAdapter(mBlackList);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
-
         setContentView(R.layout.activity_recyclerview);
-
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         ActionBar bar = getSupportActionBar();
@@ -103,9 +104,9 @@ public class BlackListActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            ArrayList<String> blackList = mAdapter.getCheckedItems();
+            ArrayList<String> list = mAdapter.getCheckedItems();
             for (Iterator<String> i = mList.iterator(); i.hasNext(); ) {
-                if (blackList.contains(i.next())) {
+                if (list.contains(i.next())) {
                     i.remove();
                 }
             }
