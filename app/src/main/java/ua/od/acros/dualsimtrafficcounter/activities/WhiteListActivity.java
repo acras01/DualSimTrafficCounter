@@ -57,17 +57,17 @@ public class WhiteListActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        ArrayList<String> list = MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
-        mItems = loadContactsFromDB(mContext, list);
+        ArrayList<String> whiteList= MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
+        mItems = loadContactsFromDB(mContext, whiteList);
         List<String> numbers = new ArrayList<>();
         for (WhiteListItem item : mItems)
             numbers.add(item.getNumber());
-        for (Iterator<String> i = list.iterator(); i.hasNext(); ) {
+        for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
             if (numbers.contains(i.next())) {
                 i.remove();
             }
         }
-        for (Iterator<String> i = list.iterator(); i.hasNext(); ) {
+        for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
             mItems.add(new WhiteListItem(getString(R.string.unknown), i.next(), true));
             i.remove();
         }

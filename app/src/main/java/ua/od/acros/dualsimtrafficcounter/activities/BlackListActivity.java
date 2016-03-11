@@ -55,10 +55,10 @@ public class BlackListActivity extends AppCompatActivity {
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
-        List<BlackListItem> mBlackList = new ArrayList<>();
+        List<BlackListItem> blackList = new ArrayList<>();
         for (String number : mList)
-            mBlackList.add(new BlackListItem(number, false));
-        mAdapter = new BlackListAdapter(mBlackList);
+            blackList.add(new BlackListItem(number, false));
+        mAdapter = new BlackListAdapter(blackList);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
