@@ -30,8 +30,8 @@ public class OnOffReceiver extends BroadcastReceiver {
             File dir = new File(String.valueOf(context.getFilesDir()));
             String fileName = "onoff.txt";
             File file = new File(dir, fileName);
-            FileOutputStream os = new FileOutputStream(file);
-            String out = DateTime.now().toString() + " " + sim + " " + action;
+            FileOutputStream os = new FileOutputStream(file, true);
+            String out = DateTime.now().toLocalDateTime().toString() + " " + sim + " " + action + "\n";
             os.write(out.getBytes());
             os.close();
         } catch (Exception e) {
