@@ -194,10 +194,13 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     else
                         text = DataFormat.formatData(context, lim);
                 } else {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false))
-                        text = DataFormat.formatData(context, isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
-                                (lim - bundle.getLong(Constants.TOTAL1, 0)));
-                    else
+                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                        long tot = isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
+                                (lim - bundle.getLong(Constants.TOTAL1, 0));
+                        if (tot < 0)
+                            tot = 0;
+                        text = DataFormat.formatData(context, tot);
+                    } else
                         text = "-" + DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                                 bundle.getLong(Constants.TOTAL1, 0));
                 }
@@ -337,10 +340,13 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     else
                         text = DataFormat.formatData(context, lim);
                 } else {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false))
-                        text = DataFormat.formatData(context, isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
-                                (lim - bundle.getLong(Constants.TOTAL2, 0)));
-                    else
+                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                        long tot = isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
+                                (lim - bundle.getLong(Constants.TOTAL2, 0));
+                        if (tot < 0)
+                            tot = 0;
+                        text = DataFormat.formatData(context, tot);
+                    } else
                         text = "-" + DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                                 bundle.getLong(Constants.TOTAL2, 0));
                 }
@@ -480,10 +486,13 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     else
                         text = DataFormat.formatData(context, lim);
                 } else {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false))
-                        text = DataFormat.formatData(context, isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
-                                (lim - bundle.getLong(Constants.TOTAL3, 0)));
-                    else
+                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                        long tot = isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
+                                (lim - bundle.getLong(Constants.TOTAL3, 0));
+                        if (tot < 0)
+                            tot = 0;
+                        text = DataFormat.formatData(context, tot);
+                    } else
                         text = "-" + DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                                 bundle.getLong(Constants.TOTAL3, 0));
                 }

@@ -1414,7 +1414,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 .setLargeIcon(bm)
                 .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText(text);
-        nm.notify(simid + 100, builder.build());
+        nm.notify(simid + 1977, builder.build());
     }
 
     private void writeToDataBase(long diffrx, long difftx, boolean emptyDB, DateTime dt) {
@@ -1492,10 +1492,18 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mLimitHasChanged = false;
             }
             tot1 = mIsNight1 ? mLimits[0] - (long) mDataMap.get(Constants.TOTAL1_N) : mLimits[0] - (long) mDataMap.get(Constants.TOTAL1);
-            if (mSimQuantity >= 2)
+            if (tot1 < 0)
+                tot1 = 0;
+            if (mSimQuantity >= 2) {
                 tot2 = mIsNight2 ? mLimits[1] - (long) mDataMap.get(Constants.TOTAL2_N) : mLimits[1] - (long) mDataMap.get(Constants.TOTAL2);
-            if (mSimQuantity == 3)
+                if (tot2 < 0)
+                    tot2 = 0;
+            }
+            if (mSimQuantity == 3) {
                 tot3 = mIsNight3 ? mLimits[2] - (long) mDataMap.get(Constants.TOTAL3_N) : mLimits[2] - (long) mDataMap.get(Constants.TOTAL3);
+                if (tot3 < 0)
+                    tot3 = 0;
+            }
         } else {
             tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
             tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);

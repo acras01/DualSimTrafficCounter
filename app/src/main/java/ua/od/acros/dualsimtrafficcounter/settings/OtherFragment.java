@@ -9,21 +9,23 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import android.text.InputFilter;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
 
-public class OtherFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener,
+public class OtherFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
 
     private TwoLineEditTextPreference timer, simQuantity;
@@ -43,10 +45,10 @@ public class OtherFragment extends PreferenceFragmentCompat implements SharedPre
 
         timer = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[8]);
         timer.setOnPreferenceChangeListener(this);
-        //timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
+        timer.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
         simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.setOnPreferenceChangeListener(this);
-        //simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
+        simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
         if (!MyApplication.isPackageExisted(mContext, XPOSED)) {
             callLogger.setChecked(false);

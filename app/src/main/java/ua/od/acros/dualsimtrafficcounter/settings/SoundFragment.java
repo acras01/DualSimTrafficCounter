@@ -12,7 +12,6 @@ import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +20,10 @@ import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
-public class SoundFragment extends PreferenceFragmentCompat implements CompoundButton.OnCheckedChangeListener {
+public class SoundFragment extends PreferenceFragmentCompatFix implements CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_CODE_ALERT_RINGTONE = 142;
     private Context mContext;

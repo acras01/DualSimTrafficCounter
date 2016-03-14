@@ -11,8 +11,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
+import android.text.InputFilter;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
@@ -20,16 +20,18 @@ import org.joda.time.DateTime;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
+import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
-public class TrafficLimitFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener,
+public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
 
     private TwoLineEditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
@@ -161,9 +163,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompat implements Sh
         day2.setOnPreferenceChangeListener(this);
         day3.setOnPreferenceChangeListener(this);
 
-        /*day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
+        day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
-        day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});*/
+        day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
 
 
         /*int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
