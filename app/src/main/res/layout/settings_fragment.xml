@@ -12,31 +12,38 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:orientation="horizontal"
                 android:id="@+id/notif_layout"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/use_notification_title"
-                    android:id="@+id/notif_tv"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
-                    android:layout_toLeftOf="@+id/notif_sw"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:id="@+id/notif_touch_layout">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/use_notification_summary"
-                    android:id="@+id/notif_sum"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/notif_tv"
-                    android:layout_alignParentStart="true"
-                    android:layout_toLeftOf="@+id/notif_sw"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/use_notification_title"
+                        android:id="@+id/notif_tv"
+                        android:layout_alignParentStart="true"
+                        android:textColor="?android:attr/textColorPrimary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/use_notification_summary"
+                        android:id="@+id/notif_sum"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/notif_tv"
+                        android:layout_alignParentStart="true"
+                        android:textColor="?android:attr/textColorPrimary" />
+                </RelativeLayout>
 
                 <android.support.v7.widget.SwitchCompat
                     android:layout_width="wrap_content"
@@ -52,7 +59,8 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/traff_layout"
-                android:layout_marginLeft="5dp">
+                android:layout_marginLeft="5dp"
+                android:background="?android:attr/selectableItemBackground">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -80,7 +88,8 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/calls_layout"
-                android:layout_marginLeft="5dp">
+                android:layout_marginLeft="5dp"
+                android:background="?android:attr/selectableItemBackground">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -108,7 +117,8 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/operator_layout"
-                android:layout_marginLeft="5dp">
+                android:layout_marginLeft="5dp"
+                android:background="?android:attr/selectableItemBackground">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -136,7 +146,8 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/other_layout"
-                android:layout_marginLeft="5dp">
+                android:layout_marginLeft="5dp"
+                android:background="?android:attr/selectableItemBackground">
 
                 <TextView
                     android:layout_width="wrap_content"

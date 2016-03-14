@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -19,13 +18,13 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener, Switch.OnCheckedChangeListener {
 
-    private Context mContext;
     private SharedPreferences mPrefs;
+    private SwitchCompat mNotifSwitch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity().getApplicationContext();
+        Context mContext = getActivity().getApplicationContext();
         mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
@@ -36,17 +35,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         RelativeLayout calls = (RelativeLayout) view.findViewById(R.id.calls_layout);
         if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
             calls.setVisibility(View.GONE);
-        TextView notif = (TextView) view.findViewById(R.id.notif_tv);
-        TextView notifSum = (TextView) view.findViewById(R.id.notif_sum);
-        SwitchCompat notifSw = (SwitchCompat) view.findViewById(R.id.notif_sw);
-        notifSw.setChecked(mPrefs.getBoolean(Constants.PREF_OTHER[3], true));
-        notif.setOnClickListener(this);
-        notifSum.setOnClickListener(this);
+        mNotifSwitch = (SwitchCompat) view.findViewById(R.id.notif_sw);
+        mNotifSwitch.setChecked(mPrefs.getBoolean(Constants.PREF_OTHER[3], true));
+        view.findViewById(R.id.notif_touch_layout).setOnClickListener(this);
         view.findViewById(R.id.traff_layout).setOnClickListener(this);
         view.findViewById(R.id.calls_layout).setOnClickListener(this);
         view.findViewById(R.id.operator_layout).setOnClickListener(this);
         view.findViewById(R.id.other_layout).setOnClickListener(this);
-        notifSw.setOnCheckedChangeListener(this);
+        mNotifSwitch.setOnCheckedChangeListener(this);
         return view;
     }
 
@@ -61,8 +57,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.notif_tv:
-            case R.id.notif_sum:
+            case R.id.notif_touch_layout:
+                mNotifSwitch.setChecked(true);
                 ((SettingsActivity) getActivity()).replaceFragments(SoundFragment.class);
                 break;
             case R.id.traff_layout:
