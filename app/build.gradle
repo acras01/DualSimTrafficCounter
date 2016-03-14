@@ -9,14 +9,14 @@ android {
             storePassword 'fpfhjdfbhbyf12091977'
         }
     }
-    compileSdkVersion 'android-N'
-    buildToolsVersion '24.0.0 rc1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 14
         targetSdkVersion 16
-        versionCode 49
-        versionName '1.4.9'
+        versionCode 50
+        versionName '1.5.0'
         signingConfig signingConfigs.acras
         vectorDrawables.useSupportLibrary = true
     }
@@ -40,10 +40,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:24.0.0-alpha1'
-    compile 'com.android.support:recyclerview-v7:24.0.0-alpha1'
-    compile 'com.android.support:preference-v7:24.0.0-alpha1'
-    compile 'com.android.support:design:24.0.0-alpha1'
+    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.android.support:recyclerview-v7:23.2.0'
+    compile 'com.android.support:preference-v7:23.2.0'
+    compile 'com.android.support:design:23.2.0'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile project(':joda-time-2.8.2')
     compile 'com.squareup.picasso:picasso:2.5.2'
