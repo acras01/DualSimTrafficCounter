@@ -74,11 +74,11 @@ public class Constants {
             "icon_size", "size", "text_color", "useback", //12
             "background_color", "showdiv", "showsim1","showsim2", "showsim3", "calls_remain"}; //18
     public static final String[] PREF_SIM1_CALLS = {"calls_stub", "calls_limit1", "calls_period1", "calls_round1", //3
-            "calls_time1", "calls_day1", "calls_op_value1", "calls_period1", "calls_reset1", "calls_needs_reset1", "calls_lasrreset1"}; //10
+            "calls_time1", "calls_day1", "calls_op_value1", "calls_period1", "calls_reset1", "calls_needs_reset1", "calls_lastreset1"}; //10
     public static final String[] PREF_SIM2_CALLS = {"calls_stub", "calls_limit2", "calls_period2", "calls_round2", //3
-            "calls_time2", "calls_day2", "calls_op_value2", "calls_period2", "calls_reset2", "calls_needs_reset2", "calls_lasrreset2"}; //10
+            "calls_time2", "calls_day2", "calls_op_value2", "calls_period2", "calls_reset2", "calls_needs_reset2", "calls_lastreset2"}; //10
     public static final String[] PREF_SIM3_CALLS = {"calls_stub", "calls_limit3", "calls_period3", "calls_round3", //3
-            "calls_time3", "calls_day3", "calls_op_value3", "calls_period3", "calls_reset3", "calls_needs_reset3", "calls_lasrreset3"}; //10
+            "calls_time3", "calls_day3", "calls_op_value3", "calls_period3", "calls_reset3", "calls_needs_reset3", "calls_lastreset3"}; //10
     public static final int STARTED_ID = 101;
     public static final int SIM1 = 0;
     public static final int SIM2 = 1;
