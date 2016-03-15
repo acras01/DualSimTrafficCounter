@@ -39,6 +39,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             iReset.setAction(Constants.RESET_ACTION);
             final int RESET = 1981;
             PendingIntent piReset = PendingIntent.getBroadcast(context, RESET, iReset, 0);
+            if (alarmTime.getMillis() < System.currentTimeMillis())
+                alarmTime.plusDays(1);
             am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
         }
         //Scheduled ON/OFF
@@ -55,6 +57,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]));
                 alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]));
                 alarmTime.secondOfMinute().setCopy(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             }
             if (prefs.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
@@ -67,7 +71,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 PendingIntent pi1On = PendingIntent.getBroadcast(context, SIM1_ON, i1On, 0);
                 alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]));
                 alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]));
-                alarmTime.secondOfMinute().setCopy(0);;
+                alarmTime.secondOfMinute().setCopy(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1On);
             }
             if (prefs.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
@@ -82,6 +88,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]));
                 alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]));
                 alarmTime.secondOfMinute().setCopy(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             }
             if (prefs.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
@@ -95,6 +103,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]));
                 alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]));
                 alarmTime.secondOfMinute().setCopy(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2On);
             }
             if (prefs.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
@@ -108,6 +118,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]));
                 alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]));
                 alarmTime.secondOfMinute().setCopy(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             }
             if (prefs.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
@@ -121,6 +133,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]));
                 alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]));
                 alarmTime.secondOfMinute().setCopy(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             }
         }

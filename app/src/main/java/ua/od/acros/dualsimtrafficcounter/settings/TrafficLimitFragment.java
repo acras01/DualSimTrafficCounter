@@ -167,33 +167,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
 
-
-        /*int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-        if (sim != Constants.DISABLED) {
-            String key = "";
-            // the preference screen your item is in must be known
-            switch (sim) {
-                case R.id.limit1:
-                case Constants.SIM1:
-                    key = "sim1";
-                    break;
-                case R.id.limit2:
-                case Constants.SIM2:
-                    key = "sim2";
-                    break;
-                case R.id.limit3:
-                case Constants.SIM3:
-                    key = "sim3";
-                    break;
-            }
-            // the position of your item inside the preference screen above
-            if (!key.equals("")) {
-                int pos = getPreferenceScreen().findPreference(key).getOrder();
-                // simulate a click / call it!!
-                getPreferenceScreen().onItemClick(null, null, pos, 0);
-            }
-        }*/
-
         if (getArguments() != null) {
             String sim = getArguments().getString("sim");
             SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
@@ -496,6 +469,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             } else
                 am.cancel(pi1Off);
@@ -511,7 +486,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 am.cancel(pi1On);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]))
-                        .withSecondOfMinute(0);;
+                        .withSecondOfMinute(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1On);
             } else
                 am.cancel(pi1On);
@@ -529,6 +506,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             } else
                 am.cancel(pi2Off);
@@ -545,6 +524,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2On);
             } else
                 am.cancel(pi2On);
@@ -562,6 +543,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             } else
                 am.cancel(pi3Off);
@@ -578,6 +561,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
+                if (alarmTime.getMillis() < System.currentTimeMillis())
+                    alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             } else
                 am.cancel(pi3On);
@@ -594,6 +579,27 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 if (input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 31))
                     return true;
                 break;
+            case "limit1":
+            case "round1":
+            case "op_limit1":
+            case "limitnight1":
+            case "nightround1":
+            case "limit2":
+            case "round2":
+            case "op_limit2":
+            case "limitnight2":
+            case "nightround2":
+            case "limit3":
+            case "round3":
+            case "op_limit3":
+            case "limitnight3":
+            case "nightround3":
+                try {
+                    float out = Float.parseFloat(o.toString());
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
         Toast.makeText(getActivity(), R.string.check_input, Toast.LENGTH_LONG).show();
         return false;

@@ -84,34 +84,6 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
 
         day1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
-        day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
-
-
-        /*int sim = getActivity().getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-        if (sim != Constants.DISABLED) {
-            String key = "";
-            // the preference screen your item is in must be known
-            switch (sim) {
-                case R.id.limit1_calls:
-                case Constants.SIM1:
-                    key = "calls_sim1";
-                    break;
-                case R.id.limit2_calls:
-                case Constants.SIM2:
-                    key = "calls_sim2";
-                    break;
-                case R.id.limit3_calls:
-                case Constants.SIM3:
-                    key = "calls_sim3";
-                    break;
-            }
-            // the position of your item inside the preference screen above
-            /*if (!key.equals("")) {
-                int pos = getPreferenceScreen().findPreference(key).getOrder();
-                // simulate a click / call it!!
-                getPreferenceScreen().onItemClick(null, null, pos, 0);
-            }
-        }*/
 
         if (getArguments() != null) {
             String sim = getArguments().getString("sim");
