@@ -100,17 +100,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private SharedPreferences mPrefs;
     private boolean mResetRuleHasChanged;
     private String[] mOperatorNames = new String[3];
-    private static boolean mHasActionChosen;
+    private boolean mHasActionChosen;
     private long[] mLimits = new long[3];
     private boolean mLimitHasChanged = false;
     private DateTime mLastDate, mNowDate;
 
 
     public TrafficCountService() {
-    }
-
-    public static void setIsActionChosen(boolean mIsActionChosen) {
-        TrafficCountService.mHasActionChosen = mIsActionChosen;
     }
 
     @Override
@@ -208,6 +204,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     @Subscribe
     public void onMessageEvent(ActionTrafficEvent event) {
+        mHasActionChosen = true;
         int sim = event.sim;
         try {
             switch (event.action) {
@@ -448,7 +445,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void timerStart(int task) {
         TimerTask tTask = null;
-        mHasActionChosen = false;
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
@@ -783,6 +779,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mDataMap.put(Constants.TOTAL1_N, 0L);
                             rx = tx = mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .apply();
@@ -807,6 +804,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .apply();
@@ -831,6 +829,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .apply();
@@ -876,7 +875,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && MyApplication.hasRoot()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MyApplication.isMtkDevice()))
                             startCheck(mActiveSIM);
-                        else if (!ChooseActionDialog.isShown()) {
+                        else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                             dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -897,7 +896,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-                        writeToDataBase(diffrx, difftx, emptyDB, mLastDate);
+                        writeToDataBase(diffrx, difftx, emptyDB);
                         if (MyApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                             nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM1));
@@ -1021,6 +1020,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .apply();
@@ -1036,6 +1036,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mDataMap.put(Constants.TOTAL2_N, 0L);
                             rx = tx = mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .apply();
@@ -1060,6 +1061,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .apply();
@@ -1105,7 +1107,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && MyApplication.hasRoot()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MyApplication.isMtkDevice()))
                             startCheck(mActiveSIM);
-                        else if (!ChooseActionDialog.isShown()) {
+                        else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                             dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1126,7 +1128,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-                        writeToDataBase(diffrx, difftx, emptyDB, mLastDate);
+                        writeToDataBase(diffrx, difftx, emptyDB);
                         if (MyApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                             nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM2));
@@ -1250,6 +1252,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .apply();
@@ -1274,6 +1277,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             }
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .apply();
@@ -1289,6 +1293,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mDataMap.put(Constants.TOTAL3_N, 0L);
                             rx = tx = mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
+                            mContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .apply();
@@ -1334,7 +1339,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && MyApplication.hasRoot()) ||
                                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && MyApplication.isMtkDevice()))
                             startCheck(mActiveSIM);
-                        else if (!ChooseActionDialog.isShown()) {
+                        else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                             dialogIntent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1343,7 +1348,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if (!mIsSIM3OverLimit) {
-
                         if (!mIsNight3) {
                             mDataMap.put(Constants.SIM3RX, rx);
                             mDataMap.put(Constants.SIM3TX, tx);
@@ -1355,7 +1359,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                         mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
                         mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-                        writeToDataBase(diffrx, difftx, emptyDB, mLastDate);
+                        writeToDataBase(diffrx, difftx, emptyDB);
                         if (MyApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                             nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM3));
@@ -1417,36 +1421,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         nm.notify(simid + 1977, builder.build());
     }
 
-    private void writeToDataBase(long diffrx, long difftx, boolean emptyDB, DateTime dt) {
+    private void writeToDataBase(long diffrx, long difftx, boolean emptyDB) {
         DateTime dateTime = new DateTime();
-        int choice = 0;
         final long MB = 1024 * 1024;
         if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
                 || emptyDB) {
-            String last = (String) MyDatabaseHelper.readTrafficData(mDbHelper).get(Constants.LAST_DATE);
-            DateTime dt_temp;
-            if (last.equals(""))
-                dt_temp = new DateTime();
-            else
-                dt_temp = fmtDate.parseDateTime(last);
-            if (!DateUtils.isNextDayOrMonth(dt, "0") && !emptyDB
-                    && !DateUtils.isNextDayOrMonth(dt_temp, "0"))
-                choice = 1;
-            else
-                choice = 2;
-        }
-        mDataMap.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
-        mDataMap.put(Constants.LAST_DATE, dateTime.toString(fmtDate));
-        switch (choice) {
-            default:
-                break;
-            case 1:
-                MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
-                break;
-            case 2:
-                MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
-                mContinueOverLimit = false;
-                break;
+            mDataMap.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
+            mDataMap.put(Constants.LAST_DATE, dateTime.toString(fmtDate));
+            MyDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
         }
     }
 
@@ -1622,7 +1604,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, alertID);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (!ChooseActionDialog.isShown())
+            if (!ChooseActionDialog.isActive())
                 mContext.startActivity(dialogIntent);
         } else if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM2OverLimit)
             choice = true;
@@ -1666,7 +1648,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false) && mPrefs.getBoolean(Constants.PREF_OTHER[2], false))
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[2], false))
             builder.setDefaults(Notification.DEFAULT_VIBRATE);
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
         String opName;
@@ -1695,7 +1677,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 .setContentTitle(txt)
                 .setContentText(opName + ": " + getString(R.string.over_limit))
                 .build();
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[4], false) && !mPrefs.getString(Constants.PREF_OTHER[1], "").equals("")) {
+        if (!mPrefs.getString(Constants.PREF_OTHER[1], "").equals("")) {
             n.sound = Uri.parse(mPrefs.getString(Constants.PREF_OTHER[1], ""));
             n.flags = Notification.FLAG_ONLY_ALERT_ONCE;
         }

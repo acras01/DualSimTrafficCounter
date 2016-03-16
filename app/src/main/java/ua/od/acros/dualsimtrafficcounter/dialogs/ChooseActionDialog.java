@@ -14,7 +14,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
-import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
@@ -23,12 +22,12 @@ public class ChooseActionDialog extends AppCompatActivity implements View.OnClic
 
     private String mAction = "";
     private int mSimID;
-    private static boolean mIsShown;
+    private static boolean mIsActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIsShown = true;
+        mIsActive = true;
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
@@ -94,30 +93,29 @@ public class ChooseActionDialog extends AppCompatActivity implements View.OnClic
                 action = Constants.OFF_ACTION;
                 break;
         }
-        TrafficCountService.setIsActionChosen(true);
         EventBus.getDefault().post(new ActionTrafficEvent(sim, action));
         finish();
     }
 
-    public static boolean isShown() {
-        return mIsShown;
+    public static boolean isActive() {
+        return mIsActive;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mIsShown = true;
+        mIsActive = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mIsShown = false;
+        mIsActive = false;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mIsShown = false;
+        mIsActive = false;
     }
 }
