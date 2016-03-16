@@ -79,13 +79,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private boolean mSIM1ContinueOverLimit;
     private boolean mSIM2ContinueOverLimit;
     private boolean mSIM3ContinueOverLimit;
-    private boolean mIsResetNeeded3 = false;
-    private boolean mIsResetNeeded2 = false;
-    private boolean mIsResetNeeded1 = false;
+    private boolean mIsResetNeeded3;
+    private boolean mIsResetNeeded2;
+    private boolean mIsResetNeeded1;
     private static boolean mIsNight1 = false;
     private static boolean mIsNight2 = false;
     private static boolean mIsNight3 = false;
-    private int mSimQuantity = 0;
+    private int mSimQuantity;
     private int mPriority;
     private static int mActiveSIM = Constants.DISABLED;
     private static int mLastActiveSIM = Constants.DISABLED;
