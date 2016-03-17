@@ -73,7 +73,7 @@ public class MyNotification extends Notification {
     private static int getOperatorLogoID(Context context, int sim) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
-            String[] pref = new String[27];
+            String[] pref = new String[Constants.PREF_SIM1.length];
             switch (sim) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;

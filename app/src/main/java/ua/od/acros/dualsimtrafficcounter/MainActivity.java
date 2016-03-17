@@ -437,6 +437,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         mNavigationView.setCheckedItem(id);
+        item.setChecked(true);
         Fragment newFragment = null;
         FragmentManager fm = getSupportFragmentManager();
         String tag = "";

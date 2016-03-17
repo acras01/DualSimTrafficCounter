@@ -238,9 +238,9 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                     radioGroup.getChildAt(i).setEnabled(true);
             }
             bSetDate.setEnabled(true);
-            if (result != null) {
+            if (result != null && mSimChecked != Constants.NULL) {
                 SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-                String[] prefsConst = new String[27];
+                String[] prefsConst = new String[Constants.PREF_SIM1.length];
                 switch (mSimChecked) {
                     case Constants.SIM1:
                         prefsConst = Constants.PREF_SIM1;

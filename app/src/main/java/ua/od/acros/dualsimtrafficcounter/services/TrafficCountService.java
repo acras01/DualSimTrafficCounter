@@ -1406,7 +1406,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         String text = "";
         int id;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
-            String[] pref = new String[27];
+            String[] pref = new String[Constants.PREF_SIM1.length];
             switch (simid) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;
