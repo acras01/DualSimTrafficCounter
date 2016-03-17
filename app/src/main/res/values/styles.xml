@@ -12,15 +12,9 @@
         <item name="windowNoTitle">true</item>
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
     </style>
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Light" >
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
     </style>
     <style name="AppTheme.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
@@ -38,6 +32,13 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowTitleStyle">@style/AppTheme.Dialog.Title</item>
     </style>
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.DayNight.Dialog" />
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.DayNight.Dialog" >
+        <item name="android:windowTitleStyle">@style/AppTheme.Dialog.Title</item>
+    </style>
+    <style name="AppTheme.Dialog.Title">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+    </style>
 </resources>
