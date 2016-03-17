@@ -16,9 +16,9 @@ import ua.od.acros.dualsimtrafficcounter.R;
 public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.ViewHolder> {
 
 
-    public List<WhiteListItem> mList;
+    public List<ListItem> mList;
 
-    public WhiteListAdapter(List<WhiteListItem> list) {
+    public WhiteListAdapter(List<ListItem> list) {
         if (list != null)
             this.mList = list;
     }
@@ -46,7 +46,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         ViewHolder viewHolder = new ViewHolder(v);
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                WhiteListItem item = (WhiteListItem) buttonView.getTag();
+                ListItem item = (ListItem) buttonView.getTag();
                 item.setChecked(isChecked);
             }
         });
@@ -63,7 +63,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
 
     public ArrayList<String> getCheckedItems(){
         ArrayList<String> list = new ArrayList<>();
-        for (WhiteListItem item : mList)
+        for (ListItem item : mList)
             if (item.isChecked())
                 list.add(item.getNumber());
         return list;

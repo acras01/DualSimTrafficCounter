@@ -16,7 +16,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 
 public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.ViewHolder> {
 
-    private List<BlackListItem> mList;
+    private List<ListItem> mList;
 
     // класс view holder-а с помощью которого мы получаем ссылку на каждый элемент
     // отдельного пункта списка
@@ -33,7 +33,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     }
 
     // Конструктор
-    public BlackListAdapter(List<BlackListItem> list) {
+    public BlackListAdapter(List<ListItem> list) {
         this.mList = list;
     }
 
@@ -49,7 +49,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         final TextView textView = viewHolder.textView;
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                BlackListItem item = (BlackListItem) buttonView.getTag();
+                ListItem item = (ListItem) buttonView.getTag();
                 item.setChecked(isChecked);
                 if (isChecked)
                     textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
@@ -86,7 +86,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
 
     public ArrayList<String> getCheckedItems(){
         ArrayList<String> list = new ArrayList<>();
-        for (BlackListItem item : mList)
+        for (ListItem item : mList)
         if (item.isChecked())
             list.add(item.getNumber());
         return list;

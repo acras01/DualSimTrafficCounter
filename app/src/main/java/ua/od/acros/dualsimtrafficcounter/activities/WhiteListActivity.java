@@ -28,12 +28,12 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
-import ua.od.acros.dualsimtrafficcounter.utils.WhiteListItem;
+import ua.od.acros.dualsimtrafficcounter.utils.ListItem;
 
 public class WhiteListActivity extends AppCompatActivity {
 
     private WhiteListAdapter mAdapter;
-    private List<WhiteListItem> mItems;
+    private List<ListItem> mItems;
     private Context mContext = this;
     private int mKey;
     private MyDatabaseHelper mDatabaseHelper;
@@ -60,7 +60,7 @@ public class WhiteListActivity extends AppCompatActivity {
         ArrayList<String> whiteList= MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
         mItems = loadContactsFromDB(mContext, whiteList);
         List<String> numbers = new ArrayList<>();
-        for (WhiteListItem item : mItems)
+        for (ListItem item : mItems)
             numbers.add(item.getNumber());
         for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
             if (numbers.contains(i.next())) {
@@ -68,7 +68,7 @@ public class WhiteListActivity extends AppCompatActivity {
             }
         }
         for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
-            mItems.add(new WhiteListItem(getString(R.string.unknown), i.next(), true));
+            mItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
             i.remove();
         }
         mAdapter = new WhiteListAdapter(mItems);
@@ -94,8 +94,8 @@ public class WhiteListActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private List<WhiteListItem> loadContactsFromDB(Context context, ArrayList<String> list) {
-        List<WhiteListItem> whiteList = new ArrayList<>();
+    private List<ListItem> loadContactsFromDB(Context context, ArrayList<String> list) {
+        List<ListItem> whiteList = new ArrayList<>();
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         Cursor cursor = context.getContentResolver().query(uri, new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME}, null, null,
@@ -105,7 +105,7 @@ public class WhiteListActivity extends AppCompatActivity {
             while (!cursor.isAfterLast()) {
                 String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[\\s\\-()]", "");
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                whiteList.add(new WhiteListItem(name, number, list.contains(number)));
+                whiteList.add(new ListItem(name, number, list.contains(number)));
                 cursor.moveToNext();
             }
             cursor.close();

@@ -22,8 +22,8 @@ import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.BlackListAdapter;
-import ua.od.acros.dualsimtrafficcounter.utils.BlackListItem;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.ListItem;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
 
@@ -55,9 +55,9 @@ public class BlackListActivity extends AppCompatActivity {
         mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
-        List<BlackListItem> blackList = new ArrayList<>();
+        List<ListItem> blackList = new ArrayList<>();
         for (String number : mList)
-            blackList.add(new BlackListItem(number, false));
+            blackList.add(new ListItem(number, false));
         mAdapter = new BlackListAdapter(blackList);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
