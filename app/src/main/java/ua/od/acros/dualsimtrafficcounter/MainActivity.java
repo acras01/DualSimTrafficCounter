@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showDialog(String key) {
         switch (key) {
             case FIRST_RUN:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.set_sim_number)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
                 break;
             case MTK:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.on_off_not_supported)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
                 break;
             case ANDROID_5_0:
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.need_root)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
                 break;
             case EMAIL:
-                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
+                new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
                         .setTitle(R.string.send_email)
                         .setMessage(R.string.why_email)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
