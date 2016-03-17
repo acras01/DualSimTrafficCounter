@@ -119,7 +119,7 @@
     <string name="set_date">Натисніть для вибору дати</string>
     <string name="action_show_history">Трафік за обрану дату</string>
     <string name="traffic_data">Трафік за %1$s</string>
-    <string name="date_incorrect_or_data_missing">Введено невірну дату або дані відсутні</string>
+    <string name="date_incorrect_or_data_missing">Введено невірні дані або записи за вказану дату відсутні</string>
     <string name="choose_date">Інша дата</string>
     <string name="everyday_onoff">Щоденне перемикання</string>
     <string name="limit_settings">Ліміти</string>

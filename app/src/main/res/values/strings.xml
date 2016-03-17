@@ -122,7 +122,7 @@
     <string name="show_daynight_icons">Show day/night icons if night tariff is used</string>
     <string name="action_show_history">Show traffic for date</string>
     <string name="set_date">Click to choose date</string>
-    <string name="date_incorrect_or_data_missing">Date you\'ve entered is incorrect or data is missing</string>
+    <string name="date_incorrect_or_data_missing">Data you\'ve entered is incorrect or related info is missing</string>
     <string name="traffic_data">Traffic data for %1$s</string>
     <string name="choose_date">Another date</string>
     <string name="operator_round">Round traffic</string>
