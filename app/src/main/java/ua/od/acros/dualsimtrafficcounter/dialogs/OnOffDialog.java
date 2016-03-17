@@ -1,6 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
@@ -85,7 +85,7 @@ public class OnOffDialog extends DialogFragment {
             }
         });
 
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppTheme_AlertDialog)
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

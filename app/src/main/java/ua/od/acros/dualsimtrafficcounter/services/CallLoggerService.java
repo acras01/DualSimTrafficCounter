@@ -1,6 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.services;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -375,7 +375,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             final ArrayList<String> blackList = MyDatabaseHelper.readBlackList(sim, mDbHelper);
                             if (!whiteList.contains(CallLoggerService.this.number[0]) && !blackList.contains(CallLoggerService.this.number[0]) && !mIsDialogShown) {
                                 mIsDialogShown = true;
-                                Dialog dialog = new AlertDialog.Builder(ctx, R.style.AppTheme_AlertDialog)
+                                Dialog dialog = new AlertDialog.Builder(ctx)
                                         .setTitle(CallLoggerService.this.number[0])
                                         .setMessage(R.string.is_out_of_home_network)
                                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

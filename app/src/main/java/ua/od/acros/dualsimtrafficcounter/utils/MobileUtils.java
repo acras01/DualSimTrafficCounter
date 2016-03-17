@@ -1191,12 +1191,12 @@ public class MobileUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static void setMobileNetworkFromLollipop(final Context context, int sim) throws Exception {
+    private static void setMobileNetworkFromLollipop(final Context context, int sim, boolean on) throws Exception {
         String cmd = null;
         int state;
         try {
             // Get the current state of the mobile network.
-            state = getMobileDataInfo(context, false)[0] == 2 ? 0 : 1;
+            state = on ? 1 : 0;
             // Get the value of the "TRANSACTION_setDataEnabled" field.
             String transactionCode = getTransactionCode(context);
             // Android 5.1+ (API 22) and later.
@@ -1312,7 +1312,7 @@ public class MobileUtils {
             NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
             mLastActiveSIM = activeSIM(context, mActiveNetworkInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, mLastActiveSIM);
+                setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !MyApplication.isMtkDevice()) {
                 setMobileDataEnabled(context, false);
             } else {
@@ -1323,7 +1323,7 @@ public class MobileUtils {
         }
         if (ON && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, mLastActiveSIM);
+                setMobileNetworkFromLollipop(context, mLastActiveSIM, true);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
@@ -1351,7 +1351,7 @@ public class MobileUtils {
             }
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, sim);
+                setMobileNetworkFromLollipop(context, sim, true);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {

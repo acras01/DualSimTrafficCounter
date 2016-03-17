@@ -7,7 +7,6 @@ import android.os.Parcelable;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
-
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.R;
 
@@ -20,8 +19,8 @@ public class AmbilWarnaPreference extends Preference {
 
 		final TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.AmbilWarnaPreference);
 		supportsAlpha = ta.getBoolean(R.styleable.AmbilWarnaPreference_supportsAlpha, false);
-
 		setWidgetLayoutResource(R.layout.ambilwarna_pref_widget);
+		ta.recycle();
 	}
 
 	@Override protected void onBindView(View view) {

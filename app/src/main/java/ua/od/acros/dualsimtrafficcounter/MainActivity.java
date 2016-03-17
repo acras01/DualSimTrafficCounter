@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -26,8 +26,6 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -169,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String action = getIntent().getAction();
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_OTHER[9], false)
+                    .apply();
             showDialog(FIRST_RUN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
                     !MyApplication.hasRoot())
@@ -243,40 +244,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showDialog(String key) {
         switch (key) {
             case FIRST_RUN:
-                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.set_sim_number)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
                             }
                         })
                         .show();
                 break;
             case MTK:
-                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.on_off_not_supported)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
                             }
                         })
                         .show();
                 break;
             case ANDROID_5_0:
-                new AlertDialog.Builder(this, R.style.AppTheme_AlertDialog)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.attention)
                         .setMessage(R.string.need_root)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                mPrefs.edit().putBoolean(Constants.PREF_OTHER[9], false).apply();
                             }
                         })
                         .show();
@@ -313,9 +311,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         is.close();
                                         content += sb.toString();
                                     }
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 //Active SIM
@@ -338,9 +334,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         is.close();
                                         content += sb.toString();
                                     }
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 //Operator Names
@@ -363,9 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         is.close();
                                         content += sb.toString();
                                     }
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 emailIntent.putExtra(Intent.EXTRA_TEXT, content);
