@@ -18,16 +18,16 @@
         <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
     </style>
     <style name="AppTheme.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.TitleText</item>
+        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.Title</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
-    <style name="AppTheme.ActionBar.TitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <style name="AppTheme.ActionBar.Title" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/widget_text</item>
     </style>
     <style name="AppTheme.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
         <item name="android:textAppearanceLarge">?android:attr/textAppearanceMedium</item>
     </style>
-    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert" >
+    <style name="AppTheme.Dialog.Alert" parent="Theme.AppCompat.DayNight.Dialog.Alert" >
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
