@@ -104,9 +104,8 @@ public class OnOffDialog extends DialogFragment {
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                AppCompatButton bCancel = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                textColor[0] = bCancel.getTextColors();
                 bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                textColor[0] = bOK.getTextColors();
                 bOK.setEnabled(false);
                 bOK.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 bOK.setOnClickListener(new View.OnClickListener() {

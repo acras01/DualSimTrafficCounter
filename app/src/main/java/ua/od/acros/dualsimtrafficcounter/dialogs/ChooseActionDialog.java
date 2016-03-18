@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -95,9 +94,8 @@ public class ChooseActionDialog extends AppCompatActivity {
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                AppCompatButton bCancel = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                textColor[0] = bCancel.getTextColors();
                 bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                textColor[0] = bOK.getTextColors();
                 bOK.setEnabled(false);
                 bOK.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 bOK.setOnClickListener(new View.OnClickListener() {
