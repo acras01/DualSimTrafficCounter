@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="action_exit" type="id">Exit app</item>
-    <item name="action_start" type="id">action_start</item>
-</resources>
