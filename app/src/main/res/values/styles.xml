@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>​
         <item name="preferenceTheme">@style/AppTheme.PreferenceThemeOverlay</item>
+        <item name="android:alertDialogStyle">@style/AppTheme.Dialog</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

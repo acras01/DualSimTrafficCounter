@@ -3,10 +3,12 @@ package ua.od.acros.dualsimtrafficcounter.dialogs;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -56,9 +58,12 @@ public class ChooseActionDialog extends AppCompatActivity {
             change.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        final ColorStateList[] textColor = {ColorStateList.valueOf(getResources().getColor(R.color.colorAccent))};
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                bOK.setEnabled(true);
+                bOK.setTextColor(textColor[0]);
                 switch (checkedId) {
                     case R.id.actionmobiledata:
                         mAction = Constants.SETTINGS_ACTION;
@@ -73,11 +78,9 @@ public class ChooseActionDialog extends AppCompatActivity {
                         mAction = Constants.CONTINUE_ACTION;
                         break;
                 }
-                bOK.setEnabled(true);
-                bOK.setTextColor(getResources().getColor(R.color.colorAccent));
             }
         });
-        dialog = new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
+        dialog = new AlertDialog.Builder(this)
                 .setView(view)
                 .setTitle(R.string.attention)
                 .setPositiveButton(android.R.string.ok, null)
@@ -92,6 +95,8 @@ public class ChooseActionDialog extends AppCompatActivity {
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
+                AppCompatButton bCancel = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                textColor[0] = bCancel.getTextColors();
                 bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 bOK.setEnabled(false);
                 bOK.setTextColor(getResources().getColor(R.color.colorPrimaryDark));

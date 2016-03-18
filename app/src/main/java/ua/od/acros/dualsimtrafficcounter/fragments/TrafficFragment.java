@@ -202,14 +202,19 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     @Subscribe
     public void onMessageEvent(TipTrafficEvent event) {
-        if (isVisible()) {
-            try {
-                TIP.setText(getString(R.string.count_stopped_tip));
-            } catch (Exception e) {
-                e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isVisible()) {
+                    try {
+                        TIP.setText(getString(R.string.count_stopped_tip));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ACRA.getErrorReporter().handleException(e);
+                    }
+                }
             }
-        }
+        });
     }
 
     @Override

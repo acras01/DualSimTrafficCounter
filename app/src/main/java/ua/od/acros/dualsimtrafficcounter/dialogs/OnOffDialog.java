@@ -1,15 +1,16 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
-import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
-import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -25,8 +26,9 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 public class OnOffDialog extends DialogFragment {
 
     private int mSimChecked = Constants.NULL;
-    private Button bOK;
+    private AppCompatButton bOK;
     private Context mContext;
+
 
     public static OnOffDialog newInstance() {
         return new OnOffDialog();
@@ -65,11 +67,12 @@ public class OnOffDialog extends DialogFragment {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
         }
+        final ColorStateList[] textColor = {ColorStateList.valueOf(getResources().getColor(R.color.colorAccent))};
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 bOK.setEnabled(true);
-                bOK.setTextColor(getResources().getColor(R.color.colorAccent));
+                bOK.setTextColor(textColor[0]);
                 switch (checkedId) {
                     case R.id.sim1RB:
                         mSimChecked = Constants.SIM1;
@@ -87,7 +90,7 @@ public class OnOffDialog extends DialogFragment {
             }
         });
 
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppTheme_Dialog)
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .setTitle(R.string.choose_sim)
                 .setPositiveButton(android.R.string.ok, null)
@@ -101,7 +104,9 @@ public class OnOffDialog extends DialogFragment {
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                AppCompatButton bCancel = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                textColor[0] = bCancel.getTextColors();
+                bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 bOK.setEnabled(false);
                 bOK.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 bOK.setOnClickListener(new View.OnClickListener() {
