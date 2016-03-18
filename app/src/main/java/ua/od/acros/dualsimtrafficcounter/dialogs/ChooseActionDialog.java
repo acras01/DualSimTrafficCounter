@@ -1,8 +1,10 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
@@ -18,11 +20,13 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
 
-public class ChooseActionDialog extends AppCompatActivity implements View.OnClickListener {
+public class ChooseActionDialog extends AppCompatActivity {
 
     private String mAction = "";
     private int mSimID;
     private static boolean mIsActive;
+    private Button bOK;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,23 +45,17 @@ public class ChooseActionDialog extends AppCompatActivity implements View.OnClic
             // Now recreate for it to take effect
             recreate();
         }
-        setContentView(R.layout.action_dialog);
-        RadioButton change = (RadioButton)findViewById(R.id.actionchange);
+        View view = View.inflate(this, R.layout.action_dialog, null);
+        RadioButton change = (RadioButton) view.findViewById(R.id.actionchange);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(getApplicationContext())
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if ((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) ||
+        if (((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) ||
                 (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.isMtkDevice()) ||
-                android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP)
-            change.setEnabled(false);
-        if (prefs.getBoolean(Constants.PREF_OTHER[10], true) || simQuantity == 1)
+                android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) ||
+                prefs.getBoolean(Constants.PREF_OTHER[10], true) || simQuantity == 1)
             change.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-        final Button bOK = (Button)findViewById(R.id.buttonOK);
-        bOK.setEnabled(false);
-        Button bCancel = (Button)findViewById(R.id.buttonCancel);
-        bOK.setOnClickListener(this);
-        bCancel.setOnClickListener(this);
-        RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -78,23 +76,35 @@ public class ChooseActionDialog extends AppCompatActivity implements View.OnClic
                 bOK.setEnabled(true);
             }
         });
-    }
+        dialog = new AlertDialog.Builder(this, R.style.AppTheme_Dialog)
+                .setView(view)
+                .setTitle(R.string.attention)
+                .setPositiveButton(android.R.string.ok, null)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        EventBus.getDefault().post(new ActionTrafficEvent(mSimID, Constants.OFF_ACTION));
+                        finish();
+                    }
+                })
+                .create();
 
-    @Override
-    public void onClick(View v) {
-        int sim = Constants.DISABLED;
-        String action = "";
-        switch (v.getId()) {
-            case R.id.buttonOK:
-                sim = mSimID;
-                action = mAction;
-                break;
-            case R.id.buttonCancel:
-                action = Constants.OFF_ACTION;
-                break;
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bOK.setEnabled(false);
+                bOK.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EventBus.getDefault().post(new ActionTrafficEvent(mSimID, mAction));
+                        finish();
+                    }
+                });
+            }
+        });
+        if(!this.isFinishing()){
+            dialog.show();
         }
-        EventBus.getDefault().post(new ActionTrafficEvent(sim, action));
-        finish();
     }
 
     public static boolean isActive() {
@@ -117,5 +127,7 @@ public class ChooseActionDialog extends AppCompatActivity implements View.OnClic
     protected void onDestroy() {
         super.onDestroy();
         mIsActive = false;
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 }

@@ -78,7 +78,6 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
                 .create();
 
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);

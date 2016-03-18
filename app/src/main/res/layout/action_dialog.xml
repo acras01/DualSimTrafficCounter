@@ -64,38 +64,4 @@
 
     </RadioGroup>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="0dp"
-        android:background="?android:attr/dividerVertical" />
-
-    <android.support.v7.widget.LinearLayoutCompat
-        android:layout_alignLeft="@+id/radioGroup"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/radioGroup"
-        android:layout_alignParentLeft="true"
-        android:weightSum="1"
-        style="?android:attr/buttonBarStyle">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@android:string/cancel"
-            android:id="@+id/buttonCancel"
-            android:layout_weight=".5"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@android:string/ok"
-            android:id="@+id/buttonOK"
-            android:layout_weight=".5"
-            style="?android:attr/buttonBarButtonStyle" />
-
-    </android.support.v7.widget.LinearLayoutCompat>
-
 </RelativeLayout>

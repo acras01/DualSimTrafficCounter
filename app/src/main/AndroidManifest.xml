@@ -71,7 +71,7 @@
             android:name=".dialogs.ChooseActionDialog"
             android:label="@string/attention"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.Dialog">
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
         </activity>
         <activity
             android:name=".activities.TrafficWidgetConfigActivity"

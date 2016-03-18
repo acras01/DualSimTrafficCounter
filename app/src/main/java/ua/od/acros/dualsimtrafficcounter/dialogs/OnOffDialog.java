@@ -65,7 +65,6 @@ public class OnOffDialog extends DialogFragment {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
         }
-        bOK.setEnabled(false);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -99,10 +98,10 @@ public class OnOffDialog extends DialogFragment {
                 .create();
 
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bOK.setEnabled(false);
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
