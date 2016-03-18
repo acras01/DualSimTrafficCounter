@@ -502,15 +502,18 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if ((key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2])) && mActiveSIM == Constants.SIM1 && mSIM1ContinueOverLimit) {
+        if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[3])
+                || key.equals(Constants.PREF_SIM1[4]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10])) {
             mSIM1ContinueOverLimit = false;
             mHasActionChosen = false;
         }
-        if ((key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2])) && mActiveSIM == Constants.SIM2 && mSIM2ContinueOverLimit) {
+        if (key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[3])
+                || key.equals(Constants.PREF_SIM2[4]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]))  {
             mSIM2ContinueOverLimit = false;
             mHasActionChosen = false;
         }
-        if ((key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2])) && mActiveSIM == Constants.SIM3 && mSIM3ContinueOverLimit) {
+        if (key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[3])
+                || key.equals(Constants.PREF_SIM3[4]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))  {
             mSIM3ContinueOverLimit = false;
             mHasActionChosen = false;
         }
