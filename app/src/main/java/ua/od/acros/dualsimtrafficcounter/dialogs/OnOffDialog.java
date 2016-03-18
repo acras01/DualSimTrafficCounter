@@ -69,6 +69,7 @@ public class OnOffDialog extends DialogFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 bOK.setEnabled(true);
+                bOK.setTextColor(getResources().getColor(R.color.colorAccent));
                 switch (checkedId) {
                     case R.id.sim1RB:
                         mSimChecked = Constants.SIM1;
@@ -102,6 +103,7 @@ public class OnOffDialog extends DialogFragment {
             public void onShow(DialogInterface dialogInterface) {
                 bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 bOK.setEnabled(false);
+                bOK.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
