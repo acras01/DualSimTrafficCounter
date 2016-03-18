@@ -68,6 +68,7 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppTheme_Dialog)
                 .setView(view)
+                .setTitle(R.string.choose_sim)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

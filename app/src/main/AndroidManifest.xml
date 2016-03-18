@@ -72,7 +72,6 @@
             android:label="@string/attention"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Dialog">
-
         </activity>
         <activity
             android:name=".activities.TrafficWidgetConfigActivity"

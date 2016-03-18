@@ -107,7 +107,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private boolean mLimitHasChanged = false;
     private DateTime mLastDate, mNowDate;
 
-
     public TrafficCountService() {
     }
 

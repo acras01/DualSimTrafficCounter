@@ -165,7 +165,7 @@
     <string name="calls_limit_summary">Outgoing calls limits settings</string>
     <string name="calls_limit_title">Calls limits</string>
     <string name="minutes">%1$sm</string>
-    <string name="traffic_rest">%1$s (left) - %2$s</string>
+    <string name="traffic_rest">%1$s (left): %2$s</string>
     <string name="is_out_of_home_network">Are you calling outside of your home network?</string>
     <string name="no">No</string>
     <string name="send_email">Send email to developer</string>

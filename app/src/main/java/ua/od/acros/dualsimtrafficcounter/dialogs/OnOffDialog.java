@@ -65,9 +65,11 @@ public class OnOffDialog extends DialogFragment {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
         }
+        bOK.setEnabled(false);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                bOK.setEnabled(true);
                 switch (checkedId) {
                     case R.id.sim1RB:
                         mSimChecked = Constants.SIM1;
@@ -87,6 +89,7 @@ public class OnOffDialog extends DialogFragment {
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppTheme_Dialog)
                 .setView(view)
+                .setTitle(R.string.choose_sim)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

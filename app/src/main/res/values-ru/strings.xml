@@ -160,7 +160,7 @@
     <string name="calls_limit_summary">Настройка ограничения исходящих вызовов</string>
     <string name="minutes">%1$sмин</string>
     <string name="tip_calls">Отображаемая длительность вызовов не является точной, а округлена в соответствии с интервалом тарификации</string>
-    <string name="traffic_rest">%1$s (остаток) - %2$s</string>
+    <string name="traffic_rest">%1$s (остаток): %2$s</string>
     <string name="body">Методы класса TelephonyManager</string>
     <string name="choose_client">Выберите клиента для отправки сообщения</string>
     <string name="is_out_of_home_network">Абонент, которому Вы звоните, обслуживается другим оператором?</string>
