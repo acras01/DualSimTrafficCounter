@@ -5,8 +5,8 @@ import android.content.res.TypedArray;
 import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
 
-public class TimePreference extends DialogPreference
-{
+public class TimePreference extends DialogPreference {
+
     public int hour = 0;
     public int minute = 0;
 
