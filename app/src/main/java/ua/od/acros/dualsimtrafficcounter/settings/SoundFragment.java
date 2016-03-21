@@ -13,13 +13,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.widget.SwitchCompat;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
-import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
@@ -37,7 +35,6 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mEnabled = mPrefs.getBoolean(Constants.PREF_OTHER[3], true);
         addPreferencesFromResource(R.xml.notification_settings);
-        setHasOptionsMenu(true);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -56,16 +53,6 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
         updateSettings();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                ((SettingsActivity) getActivity()).replaceFragments(SettingsFragment.class);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     protected void updateSettings() {
         int count = getPreferenceScreen().getPreferenceCount();
         for (int i = 0; i < count; ++i) {
@@ -76,7 +63,6 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
                 pref.setSummary(ringtone.getTitle(mContext));
             }
         }
-        getActivity().invalidateOptionsMenu();
     }
 
     @Override

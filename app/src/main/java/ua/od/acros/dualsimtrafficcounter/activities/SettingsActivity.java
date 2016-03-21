@@ -121,7 +121,6 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     }
 
     public void replaceFragments(Class fragmentClass) {
-        invalidateOptionsMenu();
         if (mActionBar != null) {
             mActionBar.setDisplayShowCustomEnabled(false);
             mActionBar.setSubtitle("");
