@@ -37,8 +37,8 @@ import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class TrafficWidgetConfigActivity extends AppCompatActivity implements IconsListFragment.OnCompleteListener,
@@ -74,7 +74,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
 
         mContext = getApplicationContext();
 
-        if (!MyApplication.isMyServiceRunning(TrafficCountService.class, mContext))
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext))
             startService(new Intent(this, TrafficCountService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);
@@ -394,8 +394,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 mEdit.apply();
                 Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!MyDatabaseHelper.isTrafficTableEmpty(MyDatabaseHelper.getInstance(mContext))) {
-                    ContentValues dataMap = MyDatabaseHelper.readTrafficData(MyDatabaseHelper.getInstance(mContext));
+                if (!CustomDatabaseHelper.isTrafficTableEmpty(CustomDatabaseHelper.getInstance(mContext))) {
+                    ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(mContext));
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);
                     intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));

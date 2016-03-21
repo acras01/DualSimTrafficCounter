@@ -37,8 +37,8 @@ import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class CallsWidgetConfigActivity extends AppCompatActivity implements IconsListFragment.OnCompleteListener,
@@ -73,7 +73,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
 
         mContext = getApplicationContext();
 
-        if (!MyApplication.isMyServiceRunning(CallLoggerService.class, mContext))
+        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext))
             startService(new Intent(mContext, CallLoggerService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);
@@ -338,8 +338,8 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 mEdit.apply();
                 Intent intent = new Intent(Constants.CALLS_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!MyDatabaseHelper.isCallsTableEmpty(MyDatabaseHelper.getInstance(mContext))) {
-                    ContentValues dataMap = MyDatabaseHelper.readCallsData(MyDatabaseHelper.getInstance(mContext));
+                if (!CustomDatabaseHelper.isCallsTableEmpty(CustomDatabaseHelper.getInstance(mContext))) {
+                    ContentValues dataMap = CustomDatabaseHelper.readCallsData(CustomDatabaseHelper.getInstance(mContext));
                     intent.putExtra(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
                     intent.putExtra(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
                     intent.putExtra(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));

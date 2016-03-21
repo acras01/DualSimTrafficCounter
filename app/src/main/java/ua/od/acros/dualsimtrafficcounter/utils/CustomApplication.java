@@ -29,7 +29,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
         mode = ReportingInteractionMode.DIALOG,
         resDialogText = R.string.crash_toast_text,
         resDialogOkToast = R.string.crash_toast_text)
-public class MyApplication extends Application {
+public class CustomApplication extends Application {
 
     private static Context mContext;
     private static Boolean mIsMtkDevice = null;

@@ -25,7 +25,7 @@ import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 
 public class SetTrafficUsageFragment extends Fragment implements CompoundButton.OnCheckedChangeListener,
         RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -134,7 +134,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
-            if (MyApplication.isMyServiceRunning(TrafficCountService.class, mContext)) {
+            if (CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext)) {
                 String rx = "0";
                 if (!total.isChecked())
                     rx = rxInput.getText().toString();

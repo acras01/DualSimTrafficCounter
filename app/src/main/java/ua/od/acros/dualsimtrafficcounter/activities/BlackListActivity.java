@@ -25,13 +25,13 @@ import ua.od.acros.dualsimtrafficcounter.utils.BlackListAdapter;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.ListItem;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 
 public class BlackListActivity extends AppCompatActivity {
 
     private Context mContext;
     private int mKey;
-    private MyDatabaseHelper mDatabaseHelper;
+    private CustomDatabaseHelper mDatabaseHelper;
     private BlackListAdapter mAdapter;
     private ArrayList<String> mList;
 
@@ -52,9 +52,9 @@ public class BlackListActivity extends AppCompatActivity {
             recreate();
         }
         mContext = getApplicationContext();
-        mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
+        mDatabaseHelper = CustomDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        mList = MyDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
+        mList = CustomDatabaseHelper.readBlackList(mKey, mDatabaseHelper);
         List<ListItem> blackList = new ArrayList<>();
         for (String number : mList)
             blackList.add(new ListItem(number, false));
@@ -110,7 +110,7 @@ public class BlackListActivity extends AppCompatActivity {
                     i.remove();
                 }
             }
-            MyDatabaseHelper.writeBlackList(mKey, mList, mDatabaseHelper);
+            CustomDatabaseHelper.writeBlackList(mKey, mList, mDatabaseHelper);
             return true;
         }
 

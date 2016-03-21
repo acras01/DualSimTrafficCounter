@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 
 public class WatchDogService extends Service{
 
     private SharedPreferences mPrefs;
     private Context mContext;
-    private MyDatabaseHelper mDbHelper;
+    private CustomDatabaseHelper mDbHelper;
     private Timer mTimer;
     private boolean mIsFirstRun;
 
@@ -44,7 +44,7 @@ public class WatchDogService extends Service{
         super.onCreate();
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mContext = getApplicationContext();
-        mDbHelper = MyDatabaseHelper.getInstance(mContext);
+        mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         // cancel if already existed
         if (mTimer != null) {
             mTimer.cancel();
@@ -87,7 +87,7 @@ public class WatchDogService extends Service{
                 }
                 mIsFirstRun = false;
             }
-            ContentValues dataMap = MyDatabaseHelper.readTrafficData(mDbHelper);
+            ContentValues dataMap = CustomDatabaseHelper.readTrafficData(mDbHelper);
             if (dataMap.get(Constants.LAST_DATE).equals("")) {
                 Calendar myCalendar = Calendar.getInstance();
                 SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);

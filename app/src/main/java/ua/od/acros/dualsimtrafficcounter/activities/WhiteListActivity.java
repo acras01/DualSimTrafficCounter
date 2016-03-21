@@ -26,7 +26,7 @@ import java.util.List;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
 import ua.od.acros.dualsimtrafficcounter.utils.ListItem;
 
@@ -36,7 +36,7 @@ public class WhiteListActivity extends AppCompatActivity {
     private List<ListItem> mItems;
     private Context mContext = this;
     private int mKey;
-    private MyDatabaseHelper mDatabaseHelper;
+    private CustomDatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +55,9 @@ public class WhiteListActivity extends AppCompatActivity {
             recreate();
         }
         mContext = getApplicationContext();
-        mDatabaseHelper = MyDatabaseHelper.getInstance(mContext);
+        mDatabaseHelper = CustomDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        ArrayList<String> whiteList= MyDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
+        ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
         mItems = loadContactsFromDB(mContext, whiteList);
         List<String> numbers = new ArrayList<>();
         for (ListItem item : mItems)
@@ -138,7 +138,7 @@ public class WhiteListActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            MyDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDatabaseHelper);
+            CustomDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDatabaseHelper);
             return true;
         }
 

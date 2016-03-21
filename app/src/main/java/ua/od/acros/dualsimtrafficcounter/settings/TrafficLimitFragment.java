@@ -29,7 +29,7 @@ import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 
 public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
@@ -116,7 +116,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.hasRoot()) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             autoff1.setChecked(false);
@@ -133,7 +133,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             everyday3.setEnabled(false);
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !MyApplication.isMtkDevice())) {
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isMtkDevice())) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));

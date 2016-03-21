@@ -13,7 +13,7 @@ import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 
-public class MyNotification extends Notification {
+public class CustomNotification extends Notification {
 
     private static String mTraffic = "", mCalls = "";
     private static NotificationCompat.Builder mBuilder;

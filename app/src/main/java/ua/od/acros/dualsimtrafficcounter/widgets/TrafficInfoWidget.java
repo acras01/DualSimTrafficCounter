@@ -26,7 +26,7 @@ import ua.od.acros.dualsimtrafficcounter.activities.TrafficWidgetConfigActivity;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 
 public class TrafficInfoWidget extends AppWidgetProvider {
 
@@ -34,8 +34,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
         super.onUpdate(context, widgetManager, widgetId);
         Bundle bundle = new Bundle();
-        if (!MyDatabaseHelper.isTrafficTableEmpty(MyDatabaseHelper.getInstance(context))) {
-            ContentValues dataMap = MyDatabaseHelper.readTrafficData(MyDatabaseHelper.getInstance(context));
+        if (!CustomDatabaseHelper.isTrafficTableEmpty(CustomDatabaseHelper.getInstance(context))) {
+            ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(context));
             bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
             bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
             bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
@@ -95,7 +95,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
 
         if (bundle.size() == 0) {
-            ContentValues dataMap = MyDatabaseHelper.readTrafficData(MyDatabaseHelper.getInstance(context));
+            ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(context));
             bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
             bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
             bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));

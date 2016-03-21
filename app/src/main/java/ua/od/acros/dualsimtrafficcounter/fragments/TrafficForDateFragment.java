@@ -30,7 +30,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MyDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 
 
 public class TrafficForDateFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
@@ -223,7 +223,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             if (isCancelled())
                 return null;
             else
-                return MyDatabaseHelper.getDataForDate(MyDatabaseHelper.getInstance(mContext),
+                return CustomDatabaseHelper.getDataForDate(CustomDatabaseHelper.getInstance(mContext),
                         date, params[3], mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
         }
 

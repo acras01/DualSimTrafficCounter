@@ -54,7 +54,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
             final Class<?> classCallNotifier = XposedHelpers.findClass(CLASS_CALL_NOTIFIER, loadPackageParam.classLoader);
             final Class<? extends Enum> enumPhoneState = (Class<? extends Enum>) Class.forName(ENUM_PHONE_STATE);
             final Class<? extends Enum> enumCallState = (Class<? extends Enum>) Class.forName(ENUM_CALL_STATE);
-            if (MyApplication.isMtkDevice()) {
+            if (CustomApplication.isMtkDevice()) {
                 XposedHelpers.findAndHookMethod(classCallNotifier, "onDisconnect",
                         CLASS_ASYNC_RESULT, int.class, onDisconnectHook);
             } else {
