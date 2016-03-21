@@ -50,7 +50,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
     private final int KEY_ICON = 1;
     private int mDim;
     private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private SharedPreferences mPrefs;
     private int mSimQuantity;
     private SharedPreferences.Editor mEdit;
     private Context mContext;
@@ -89,7 +88,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             finish();
         }
 
-        mPrefs = getSharedPreferences(String.valueOf(mWidgetID) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (icicle == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
@@ -104,9 +103,9 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             recreate();
         }
         mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-        mEdit = mPrefs.edit();
-        if (mPrefs.getAll().size() == 0) {
+                : Integer.valueOf(prefsWidget.getString(Constants.PREF_OTHER[14], "1"));
+        mEdit = prefsWidget.edit();
+        if (prefsWidget.getAll().size() == 0) {
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[1], true); //Show mNames
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[2], true); //Show icons
             mEdit.putString(Constants.PREF_WIDGET_CALLS[3], "none"); //SIM1 icon
@@ -122,17 +121,23 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             mEdit.putInt(Constants.PREF_WIDGET_CALLS[13], Color.TRANSPARENT); //Background color
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[14], true); //Show divider
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[15], true); //Show SIM1
-            mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[16], true); //Show SIM2
-            mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
+            if (mSimQuantity >= 2)
+                mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[16], true); //Show SIM2
+            else
+                mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[16], false);
+            if (mSimQuantity == 3)
+                mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
+            else
+                mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], false);
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
             mEdit.apply();
         }
 
-        mSim = new boolean[]{mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true),
-                mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true), mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)};
+        mSim = new boolean[]{prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[15], true),
+                prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[16], true), prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)};
 
-        mTextColor = mPrefs.getInt(Constants.PREF_WIDGET_CALLS[11], Color.WHITE);
-        mBackColor = mPrefs.getInt(Constants.PREF_WIDGET_CALLS[13], Color.TRANSPARENT);
+        mTextColor = prefsWidget.getInt(Constants.PREF_WIDGET_CALLS[11], Color.WHITE);
+        mBackColor = prefsWidget.getInt(Constants.PREF_WIDGET_CALLS[13], Color.TRANSPARENT);
 
         mResultValueIntent = new Intent();
         mResultValueIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mWidgetID);
@@ -144,15 +149,15 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         setSupportActionBar(toolBar);
 
         CheckBox names = (CheckBox) findViewById(R.id.names);
-        names.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true));
+        names.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[1], true));
         CheckBox icons = (CheckBox) findViewById(R.id.icons);
-        icons.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true));
+        icons.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[2], true));
         CheckBox back = (CheckBox) findViewById(R.id.useBack);
-        back.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[12], true));
+        back.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[12], true));
         CheckBox div = (CheckBox) findViewById(R.id.divider);
-        div.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[14], true));
+        div.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[14], true));
         CheckBox remain = (CheckBox) findViewById(R.id.remain_calls);
-        remain.setChecked(mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false));
+        remain.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[18], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -190,7 +195,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         RelativeLayout showSimL = (RelativeLayout) findViewById(R.id.showSim);
         backColorL = (RelativeLayout) findViewById(R.id.backColorLayout);
 
-
         onOff(logoL1, icons.isChecked());
         onOff(logoL2, mSimQuantity >= 2 && icons.isChecked());
         onOff(logoL3, mSimQuantity == 3 && icons.isChecked());
@@ -198,14 +202,14 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
 
         showSimSum = (TextView) findViewById(R.id.simChooseSum);
         String sum = "";
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true))
+        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[15], true))
             sum = "SIM1";
-        if (mSimQuantity >= 2 && mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true))
+        if (mSimQuantity >= 2 && prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[16], true))
             if (sum.equals(""))
                 sum = "SIM2";
             else
                 sum += ", SIM2";
-        if (mSimQuantity == 3 && mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true))
+        if (mSimQuantity == 3 && prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[17], true))
             if (sum.equals(""))
                 sum = "SIM3";
             else
@@ -213,10 +217,10 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         showSimSum.setText(sum);
 
         textSizeSum = (TextView) findViewById(R.id.textSizeSum);
-        textSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET_CALLS[10], Constants.TEXT_SIZE));
+        textSizeSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[10], Constants.TEXT_SIZE));
 
         iconsSizeSum = (TextView) findViewById(R.id.iconSizeSum);
-        iconsSizeSum.setText(mPrefs.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE));
+        iconsSizeSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE));
 
         names.setOnCheckedChangeListener(this);
         icons.setOnCheckedChangeListener(this);
@@ -235,9 +239,9 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         logoSum2 = (TextView) findViewById(R.id.logoSum2);
         logoSum3 = (TextView) findViewById(R.id.logoSum3);
 
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[6], false)) {
+        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[6], false)) {
             Picasso.with(this)
-                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET_CALLS[3], "")))
+                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[3], "")))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -245,14 +249,14 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             logoSum1.setText(getResources().getString(R.string.userpick));
         } else
             Picasso.with(this)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[3], "none"), "drawable", mContext.getPackageName()))
+                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[3], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo1);
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[7], false)) {
+        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[7], false)) {
             Picasso.with(this)
-                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET_CALLS[4], "")))
+                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[4], "")))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -260,14 +264,14 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             logoSum2.setText(getResources().getString(R.string.userpick));
         } else
             Picasso.with(this)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[4], "none"), "drawable", mContext.getPackageName()))
+                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[4], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
                     .into(logo2);
-        if (mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[8], false)) {
+        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[8], false)) {
             Picasso.with(this)
-                    .load(new File(mPrefs.getString(Constants.PREF_WIDGET_CALLS[5], "")))
+                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[5], "")))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -275,7 +279,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             logoSum3.setText(getResources().getString(R.string.userpick));
         } else
             Picasso.with(this)
-                    .load(getResources().getIdentifier(mPrefs.getString(Constants.PREF_WIDGET_CALLS[5], "none"), "drawable", mContext.getPackageName()))
+                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[5], "none"), "drawable", mContext.getPackageName()))
                     .resize(mDim, mDim)
                     .centerInside()
                     .error(R.drawable.none)
@@ -284,11 +288,11 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         String[] listitems = getResources().getStringArray(R.array.icons_values);
         String[] list = getResources().getStringArray(R.array.icons);
         for (int i = 0; i < list.length; i++) {
-            if (!mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[6], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET_CALLS[3], "none")))
+            if (!prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[6], false) && listitems[i].equals(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[3], "none")))
                 logoSum1.setText(list[i]);
-            if (!mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[7], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET_CALLS[4], "none")))
+            if (!prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[7], false) && listitems[i].equals(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[4], "none")))
                 logoSum2.setText(list[i]);
-            if (!mPrefs.getBoolean(Constants.PREF_WIDGET_CALLS[8], false) && listitems[i].equals(mPrefs.getString(Constants.PREF_WIDGET_CALLS[5], "none")))
+            if (!prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[8], false) && listitems[i].equals(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[5], "none")))
                 logoSum3.setText(list[i]);
         }
 
