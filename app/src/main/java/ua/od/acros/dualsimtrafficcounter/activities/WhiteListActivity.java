@@ -15,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.acra.ACRA;
@@ -26,17 +28,19 @@ import java.util.List;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
-import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
 import ua.od.acros.dualsimtrafficcounter.utils.ListItem;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
 
 public class WhiteListActivity extends AppCompatActivity {
 
-    private WhiteListAdapter mAdapter;
+
     private Context mContext = this;
     private int mKey;
     private CustomDatabaseHelper mDbHelper;
+    private ProgressBar pb;
+    private WhiteListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,27 +61,12 @@ public class WhiteListActivity extends AppCompatActivity {
         mContext = CustomApplication.getAppContext();
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper);
-        List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);
-        List<String> numbers = new ArrayList<>();
-        for (ListItem item : listItems)
-            numbers.add(item.getNumber());
-        for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
-            if (numbers.contains(i.next())) {
-                i.remove();
-            }
-        }
-        for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
-            listItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
-            i.remove();
-        }
-        mAdapter = new WhiteListAdapter(listItems);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
-
         setContentView(R.layout.activity_recyclerview);
-
+        pb = (ProgressBar) findViewById(R.id.progressBar);
+        pb.setVisibility(View.GONE);
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         ActionBar bar = getSupportActionBar();
@@ -91,7 +80,7 @@ public class WhiteListActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(mAdapter);
+        new LoadContactsTask(recyclerView).execute();
     }
 
     private List<ListItem> loadContactsFromDB(Context context, ArrayList<String> list) {
@@ -146,6 +135,49 @@ public class WhiteListActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class LoadContactsTask extends AsyncTask<Void, Void, WhiteListAdapter> {
+
+        RecyclerView rv;
+
+        LoadContactsTask(RecyclerView rv) {
+            this.rv = rv;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pb.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected WhiteListAdapter doInBackground(Void... params) {
+            ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper);
+            List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);
+            List<String> numbers = new ArrayList<>();
+            for (ListItem item : listItems)
+                numbers.add(item.getNumber());
+            for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
+                if (numbers.contains(i.next())) {
+                    i.remove();
+                }
+            }
+            for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
+                listItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
+                i.remove();
+            }
+            return new WhiteListAdapter(listItems);
+        }
+
+        @Override
+        protected void onPostExecute(WhiteListAdapter result) {
+            pb.setVisibility(View.GONE);
+            if (result != null) {
+                mAdapter = result;
+                rv.setAdapter(mAdapter);
+            }
         }
     }
 }
