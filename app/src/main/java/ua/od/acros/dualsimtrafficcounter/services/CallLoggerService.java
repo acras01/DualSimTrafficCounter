@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.services;
 
-import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -17,6 +16,7 @@ import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.WindowManager;
@@ -37,12 +37,12 @@ import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
-import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
+import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.widgets.CallsInfoWidget;
 
 public class CallLoggerService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener{
@@ -157,20 +157,20 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             //out[0] += "Limit reached\n";
                         }
                     }.start();
-            /*try {
-                // to this path add a new directory path
-                File dir = new File(String.valueOf(mContext.getFilesDir()));
-                // create this directory if not already created
-                dir.mkdir();
-                // create the file in which we will write the contents
-                String fileName = "call_log.txt";
-                File file = new File(dir, fileName);
-                FileOutputStream os = new FileOutputStream(file, true);
-                os.write(out[0].getBytes());
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+                    /*try {
+                        // to this path add a new directory path
+                        File dir = new File(String.valueOf(mContext.getFilesDir()));
+                        // create this directory if not already created
+                        dir.mkdir();
+                        // create the file in which we will write the contents
+                        String fileName = "call_log.txt";
+                        File file = new File(dir, fileName);
+                        FileOutputStream os = new FileOutputStream(file, true);
+                        os.write(out[0].getBytes());
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
                 }
             }
         };
@@ -199,37 +199,40 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
                                 duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
                             mCalls.put(Constants.CALLS1, duration + (long) mCalls.get(Constants.CALLS1));
+                            duration = (long) mCalls.get(Constants.CALLS1);
                             break;
                         case Constants.SIM2:
                             mCalls.put(Constants.CALLS2_EX, duration + (long) mCalls.get(Constants.CALLS2_EX));
                             if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
                                 duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
                             mCalls.put(Constants.CALLS2, duration + (long) mCalls.get(Constants.CALLS2));
+                            duration = (long) mCalls.get(Constants.CALLS2);
                             break;
                         case Constants.SIM3:
                             mCalls.put(Constants.CALLS3_EX, duration + (long) mCalls.get(Constants.CALLS3_EX));
                             if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
                                 duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
                             mCalls.put(Constants.CALLS3, duration + (long) mCalls.get(Constants.CALLS3));
+                            duration = (long) mCalls.get(Constants.CALLS3);
                             break;
                     }
                     CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
                     refreshWidgetAndNotification(context, sim, duration);
-            /*String out = "Call Ends\n";
-            try {
-                // to this path add a new directory path
-                File dir = new File(String.valueOf(mContext.getFilesDir()));
-                // create this directory if not already created
-                dir.mkdir();
-                // create the file in which we will write the contents
-                String fileName = "call_log.txt";
-                File file = new File(dir, fileName);
-                FileOutputStream os = new FileOutputStream(file, true);
-                os.write(out.getBytes());
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+                    /*String out = "Call Ends\n";
+                    try {
+                        // to this path add a new directory path
+                        File dir = new File(String.valueOf(mContext.getFilesDir()));
+                        // create this directory if not already created
+                        dir.mkdir();
+                        // create the file in which we will write the contents
+                        String fileName = "call_log.txt";
+                        File file = new File(dir, fileName);
+                        FileOutputStream os = new FileOutputStream(file, true);
+                        os.write(out.getBytes());
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
                 }
             }
         };
@@ -529,10 +532,18 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 mLimitHasChanged = false;
             }
             tot1 = mLimits[0] - (long) mCalls.get(Constants.CALLS1);
-            if (mSimQuantity >= 2)
+            if (tot1 < 0)
+                tot1 = 0;
+            if (mSimQuantity >= 2) {
                 tot2 = mLimits[1] - (long) mCalls.get(Constants.CALLS2);
-            if (mSimQuantity == 3)
+                if (tot2 < 0)
+                    tot2 = 0;
+            }
+            if (mSimQuantity == 3) {
                 tot3 = mLimits[2] - (long) mCalls.get(Constants.CALLS3);
+                if (tot3 < 0)
+                    tot3 = 0;
+            }
         } else {
             tot1 = (long) mCalls.get(Constants.CALLS1);
             tot2 = (long) mCalls.get(Constants.CALLS2);

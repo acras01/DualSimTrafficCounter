@@ -132,7 +132,10 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     String limit = prefsSIM.getString(Constants.PREF_SIM1_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS1, 0)));
+                    long rest = lim - bundle.getLong(Constants.CALLS1, 0);
+                    if (rest < 0)
+                        rest = 0;
+                    text = DataFormat.formatCallDuration(context, rest);
                 } else
                     text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);
@@ -188,7 +191,10 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     String limit = prefsSIM.getString(Constants.PREF_SIM2_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS2, 0)));
+                    long rest = lim - bundle.getLong(Constants.CALLS2, 0);
+                    if (rest < 0)
+                        rest = 0;
+                    text = DataFormat.formatCallDuration(context, rest);
                 } else
                     text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0));
                 updateViews.setTextViewText(R.id.totSIM2, text);
@@ -252,7 +258,10 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     String limit = prefsSIM.getString(Constants.PREF_SIM3_CALLS[1], "");
                     if (!limit.equals(""))
                         lim = Long.valueOf(limit) * Constants.MINUTE;
-                    text = DataFormat.formatCallDuration(context, (lim - bundle.getLong(Constants.CALLS3, 0)));
+                    long rest = lim - bundle.getLong(Constants.CALLS3, 0);
+                    if (rest < 0)
+                        rest = 0;
+                    text = DataFormat.formatCallDuration(context, rest);
                 } else
                     text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);
