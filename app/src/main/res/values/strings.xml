@@ -37,8 +37,8 @@
     <string name="set_ringtone_summary">Set your notification sound</string>
     <string name="use_vibration">Vibration</string>
     <string name="use_vibration_summary">Set if you need vibration</string>
-    <string name="limit_summary" >Set traffic limit for each SIM</string>
-    <string name="limit_title" > Traffic limit settings</string>
+    <string name="limit_summary">Set traffic limit for each SIM</string>
+    <string name="limit_title"> Traffic limit settings</string>
     <string name="measure_value">Measure value</string>
     <string name="period_value">Period of measurement</string>
     <string name="limit">Value</string>
@@ -145,7 +145,7 @@
     <string name="used">Used</string>
     <string name="show_full_text_on_widget">Traffic data on widget</string>
     <string name="data_reset">%1$s: traffic data has been resetted</string>
-    <string name="test_hint" >Please, enable mobile data on all of your SIM one by one starting with SIM #1. When enable for SIM #1, please, choose SIM1 radiobutton and press Test. And so on. At the end click OK. The app will define some internal parameters. Thank you!</string>
+    <string name="test_hint">Please, enable mobile data on all of your SIM one by one starting with SIM #1. When enable for SIM #1, please, choose SIM1 radiobutton and press Test. And so on. At the end click OK. The app will define some internal parameters. Thank you!</string>
     <string name="action_show_test">Test SIM on MTK before Lollipop</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -189,8 +189,8 @@
     <string name="deleted">Widget deleted!</string>
     <string name="remain_calls">"Remaining: "</string>
     <string name="show_remaining_calls">Show remaining call time in notification area</string>
-    <string name="show_remaining_widget" >Show remaining traffic on widget</string>
-    <string name="show_remaining_calls_widget" >Show remaining call time on widget</string>
+    <string name="show_remaining_widget">Show remaining traffic on widget</string>
+    <string name="show_remaining_calls_widget">Show remaining call time on widget</string>
     <string name="service_stop">Service has been stopped. Please, start service first</string>
     <string name="show_rx_tx">Show received/transmitted on widget</string>
     <string name="show_used_left">Show used/left</string>

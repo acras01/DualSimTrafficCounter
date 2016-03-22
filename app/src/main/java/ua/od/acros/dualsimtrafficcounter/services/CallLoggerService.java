@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.services;
 
-import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -347,7 +346,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mIsOutgoing = false;
         final Context ctx = context;
         this.mNumber[0] = number.replaceAll("[\\s\\-()]", "");
-        //mNumber[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
+        //this.mNumber[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
         tm.listen(new PhoneStateListener() {
             @Override
@@ -378,7 +377,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper);
                             if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
                                 mIsDialogShown = true;
-                                Dialog dialog = new AlertDialog.Builder(ctx, R.style.AppTheme_Dialog)
+                                AlertDialog dialog = new AlertDialog.Builder(ctx, R.style.AppTheme_Dialog)
                                         .setTitle(CallLoggerService.this.mNumber[0])
                                         .setMessage(R.string.is_out_of_home_network)
                                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
