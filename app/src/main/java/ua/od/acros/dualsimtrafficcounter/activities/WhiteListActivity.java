@@ -134,7 +134,7 @@ public class WhiteListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class SaveTask extends AsyncTask<Void, Void, Boolean> {
+    private class SaveTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -144,7 +144,8 @@ public class WhiteListActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+            if (result)
+                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
         }
     }
 }

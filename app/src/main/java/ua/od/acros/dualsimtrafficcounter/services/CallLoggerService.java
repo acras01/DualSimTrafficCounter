@@ -12,12 +12,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -349,6 +352,27 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         //this.mNumber[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
         tm.listen(new PhoneStateListener() {
+
+            class SaveListTask extends AsyncTask<Bundle, Void, Boolean> {
+                @Override
+                protected Boolean doInBackground(Bundle... params) {
+                    ArrayList<String> list = params[0].getStringArrayList("list");
+                    if (list != null) {
+                        list.add(params[0].getString("number"));
+                        CustomDatabaseHelper.writeWhiteList(params[0].getInt("sim"), list, mDbHelper);
+                        return true;
+                    } else
+                        return false;
+
+                }
+
+                @Override
+                protected void onPostExecute(Boolean result) {
+                    if (result)
+                        Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+                }
+            }
+
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
                 if (!mIsOutgoing)
@@ -377,6 +401,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper);
                             if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
                                 mIsDialogShown = true;
+                                final Bundle bundle = new Bundle();
+                                bundle.putString("number", CallLoggerService.this.mNumber[0]);
+                                bundle.putInt("sim", sim);
                                 AlertDialog dialog = new AlertDialog.Builder(ctx, R.style.AppTheme_Dialog)
                                         .setTitle(CallLoggerService.this.mNumber[0])
                                         .setMessage(R.string.is_out_of_home_network)
@@ -384,8 +411,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 mIsOutgoing = true;
-                                                blackList.add(CallLoggerService.this.mNumber[0]);
-                                                CustomDatabaseHelper.writeBlackList(sim, blackList, mDbHelper);
+                                                bundle.putStringArrayList("list", blackList);
+                                                new SaveListTask().execute(bundle);
                                                 dialog.dismiss();
                                             }
                                         })
@@ -393,8 +420,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 mIsOutgoing = false;
-                                                whiteList.add(CallLoggerService.this.mNumber[0]);
-                                                CustomDatabaseHelper.writeWhiteList(sim, whiteList, mDbHelper);
+                                                bundle.putStringArrayList("list", whiteList);
+                                                new SaveListTask().execute(bundle);
                                                 dialog.dismiss();
                                             }
                                         })
@@ -406,7 +433,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             }
                                         })
                                         .create();
-                                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                Window window = dialog.getWindow();
+                                window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+                                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                                 dialog.show();
                             } else if (blackList.contains(CallLoggerService.this.mNumber[0]))
                                 mIsOutgoing = true;
