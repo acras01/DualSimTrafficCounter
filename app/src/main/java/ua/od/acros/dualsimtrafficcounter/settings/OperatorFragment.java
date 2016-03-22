@@ -12,6 +12,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 
@@ -26,7 +27,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        Context context = getActivity().getApplicationContext();
+        Context context = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 

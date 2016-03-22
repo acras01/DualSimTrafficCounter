@@ -71,7 +71,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        mContext = getApplicationContext();
+        mContext = CustomApplication.getAppContext();
 
         if (!CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext))
             startService(new Intent(this, TrafficCountService.class));

@@ -16,7 +16,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 public class IconsListFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 
     private String[] mListItems;
-    private ListViewCompat lv;
+    private ListViewCompat listView;
     private String mLogo;
 
     private OnCompleteListener mListener;
@@ -42,7 +42,7 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mListItems = getResources().getStringArray(R.array.icons);
         View view = inflater.inflate(R.layout.icons_list_layout, container, false);
-        lv = (ListViewCompat) view.findViewById(R.id.list);
+        listView = (ListViewCompat) view.findViewById(R.id.list);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return view;
     }
@@ -51,8 +51,8 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mListItems);
-        lv.setAdapter(adapter);
-        lv.setOnItemClickListener(this);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
     }
 
     @Override

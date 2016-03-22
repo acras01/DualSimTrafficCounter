@@ -22,7 +22,6 @@ public class TwoLinePreference extends android.support.v7.preference.Preference 
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-
         TextView textView = (TextView) holder.findViewById(android.R.id.title);
         if (textView != null) {
             textView.setSingleLine(false);

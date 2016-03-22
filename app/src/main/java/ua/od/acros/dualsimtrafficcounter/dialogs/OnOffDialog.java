@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -38,22 +39,21 @@ public class OnOffDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        mContext = getActivity().getApplicationContext();
-        String[] mOperatorNames = new String[3];
-        mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
-        mOperatorNames[1] = MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2);
-        mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
+        mContext = CustomApplication.getAppContext();
+        String[] operatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
         View view = View.inflate(getActivity(), R.layout.onoff_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
-        sim1rb.setText(mOperatorNames[0]);
+        sim1rb.setText(operatorNames[0]);
         RadioButton sim2rb = (RadioButton) view.findViewById(R.id.sim2RB);
-        sim2rb.setText(mOperatorNames[1]);
+        sim2rb.setText(operatorNames[1]);
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
-        sim3rb.setText(mOperatorNames[2]);
+        sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()) {
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             if (simQuantity == 1) {

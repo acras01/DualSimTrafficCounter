@@ -70,7 +70,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        mContext = getApplicationContext();
+        mContext = CustomApplication.getAppContext();
 
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext))
             startService(new Intent(mContext, CallLoggerService.class));

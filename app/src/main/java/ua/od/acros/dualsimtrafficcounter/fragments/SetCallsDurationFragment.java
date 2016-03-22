@@ -48,7 +48,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -57,7 +57,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.duration_fragment, container, false);
         duration = (EditText) view.findViewById(R.id.duration);
         Spinner spinner = (Spinner) view.findViewById(R.id.spinner);

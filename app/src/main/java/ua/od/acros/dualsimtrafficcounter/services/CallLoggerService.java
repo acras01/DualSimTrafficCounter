@@ -50,9 +50,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private Context mContext;
     private CustomDatabaseHelper mDbHelper;
     private ContentValues mCalls;
-    private DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-    private DateTimeFormatter fmtTime = DateTimeFormat.forPattern(Constants.TIME_FORMAT + ":ss");
-    private DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
+    private DateTimeFormatter mDateFormat = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
+    private DateTimeFormatter mTimeFormat = DateTimeFormat.forPattern(Constants.TIME_FORMAT + ":ss");
+    private DateTimeFormatter mDateTimeFormat = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
     private String[] mOperatorNames = new String[3];
     private SharedPreferences mPrefs;
     private int mSimQuantity;
@@ -64,10 +64,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private DateTime mResetTime3;
     private boolean mIsOutgoing = false;
     private boolean mIsDialogShown = false;
-    private final String[] number = new String[1];
+    private final String[] mNumber = new String[1];
     private boolean mLimitHasChanged;
     private long[] mLimits = new long[3];
-    private BroadcastReceiver callAnsweredReceiver, callEndedReceiver;
+    private BroadcastReceiver mCallAnsweredReceiver, mCallEndedReceiver;
 
     public CallLoggerService() {
     }
@@ -81,7 +81,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = getApplicationContext();
+        mContext = CustomApplication.getAppContext();
         EventBus.getDefault().register(this);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
@@ -90,8 +90,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
         if (mCalls.get(Constants.LAST_DATE).equals("")) {
             DateTime dateTime = new DateTime();
-            mCalls.put(Constants.LAST_TIME, dateTime.toString(fmtTime));
-            mCalls.put(Constants.LAST_DATE, dateTime.toString(fmtDate));
+            mCalls.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
+            mCalls.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
         }
         mLimits = getSIMLimits();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -100,7 +100,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        callAnsweredReceiver = new BroadcastReceiver() {
+        mCallAnsweredReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (mIsOutgoing) {
@@ -175,9 +175,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             }
         };
         IntentFilter answer = new IntentFilter(Constants.OUTGOING_CALL_ANSWERED);
-        registerReceiver(callAnsweredReceiver, answer);
+        registerReceiver(mCallAnsweredReceiver, answer);
 
-        callEndedReceiver = new BroadcastReceiver() {
+        mCallEndedReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (mIsOutgoing) {
@@ -191,8 +191,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     Toast.makeText(context, mOperatorNames[sim] + ": " +
                             DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
                     DateTime now = new DateTime();
-                    mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-                    mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+                    mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
+                    mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
                     switch (sim) {
                         case Constants.SIM1:
                             mCalls.put(Constants.CALLS1_EX, duration + (long) mCalls.get(Constants.CALLS1_EX));
@@ -237,7 +237,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             }
         };
         IntentFilter end = new IntentFilter(Constants.OUTGOING_CALL_ENDED);
-        registerReceiver(callEndedReceiver, end);
+        registerReceiver(mCallEndedReceiver, end);
     }
 
     @Subscribe
@@ -250,8 +250,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mCalls == null)
             mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
         DateTime now = new DateTime();
-        mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-        mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+        mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
+        mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
         int sim = event.sim;
         long duration = DataFormat.getDuration(event.calls, event.callsv);
         switch (sim) {
@@ -275,8 +275,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Subscribe
     public void onMessageEvent(ClearCallsEvent event) {
         DateTime now = new DateTime();
-        mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-        mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+        mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
+        mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
@@ -298,56 +298,56 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     private void startTask(Context context, String number) {
         DateTime now = DateTime.now();
-        DateTime mResetTime1 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(fmtDateTime)));
+        DateTime mResetTime1 = mDateTimeFormat.parseDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(mDateTimeFormat)));
         boolean mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1_CALLS[9], true);
         if (mSimQuantity >= 2) {
-            mResetTime2 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[8], now.toString(fmtDateTime)));
+            mResetTime2 = mDateTimeFormat.parseDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[8], now.toString(mDateTimeFormat)));
             mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2_CALLS[9], true);
         }
         if (mSimQuantity == 3) {
-            mResetTime3 = fmtDateTime.parseDateTime(mPrefs.getString(Constants.PREF_SIM3_CALLS[8], now.toString(fmtDateTime)));
+            mResetTime3 = mDateTimeFormat.parseDateTime(mPrefs.getString(Constants.PREF_SIM3_CALLS[8], now.toString(mDateTimeFormat)));
             mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3_CALLS[9], true);
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
-            mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-            mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+            mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
+            mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
             mCalls.put(Constants.CALLS1, 0L);
             mCalls.put(Constants.CALLS1_EX, 0L);
             CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
             mIsResetNeeded1 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
-                    .putString(Constants.PREF_SIM1_CALLS[10], now.toString(fmtDateTime))
+                    .putString(Constants.PREF_SIM1_CALLS[10], now.toString(mDateTimeFormat))
                     .apply();
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
-            mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-            mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+            mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
+            mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
             mCalls.put(Constants.CALLS2, 0L);
             mCalls.put(Constants.CALLS3_EX, 0L);
             CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
             mIsResetNeeded2 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
-                    .putString(Constants.PREF_SIM2_CALLS[10], now.toString(fmtDateTime))
+                    .putString(Constants.PREF_SIM2_CALLS[10], now.toString(mDateTimeFormat))
                     .apply();
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
-            mCalls.put(Constants.LAST_DATE, now.toString(fmtDate));
-            mCalls.put(Constants.LAST_TIME, now.toString(fmtTime));
+            mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
+            mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
             mCalls.put(Constants.CALLS3, 0L);
             mCalls.put(Constants.CALLS3_EX, 0L);
             CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
             mIsResetNeeded3 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
-                    .putString(Constants.PREF_SIM3_CALLS[10], now.toString(fmtDateTime))
+                    .putString(Constants.PREF_SIM3_CALLS[10], now.toString(mDateTimeFormat))
                     .apply();
         }
         mIsOutgoing = false;
         final Context ctx = context;
-        this.number[0] = number.replaceAll("[\\s\\-()]", "");
-        //number[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
+        this.mNumber[0] = number.replaceAll("[\\s\\-()]", "");
+        //mNumber[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
         tm.listen(new PhoneStateListener() {
             @Override
@@ -359,7 +359,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             break;
                         case TelephonyManager.CALL_STATE_OFFHOOK:
                             final int sim = MobileUtils.getSimId(ctx);
-                            /*String out = sim + " " + CallLoggerService.this.number[0] + "\n";
+                            /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
                             try {
                                 // to this path add a new directory path
                                 File dir = new File(String.valueOf(ctx.getFilesDir()));
@@ -376,16 +376,16 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             }*/
                             final ArrayList<String> whiteList = CustomDatabaseHelper.readWhiteList(sim, mDbHelper);
                             final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper);
-                            if (!whiteList.contains(CallLoggerService.this.number[0]) && !blackList.contains(CallLoggerService.this.number[0]) && !mIsDialogShown) {
+                            if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
                                 mIsDialogShown = true;
                                 Dialog dialog = new AlertDialog.Builder(ctx, R.style.AppTheme_Dialog)
-                                        .setTitle(CallLoggerService.this.number[0])
+                                        .setTitle(CallLoggerService.this.mNumber[0])
                                         .setMessage(R.string.is_out_of_home_network)
                                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 mIsOutgoing = true;
-                                                blackList.add(CallLoggerService.this.number[0]);
+                                                blackList.add(CallLoggerService.this.mNumber[0]);
                                                 CustomDatabaseHelper.writeBlackList(sim, blackList, mDbHelper);
                                                 dialog.dismiss();
                                             }
@@ -394,7 +394,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 mIsOutgoing = false;
-                                                whiteList.add(CallLoggerService.this.number[0]);
+                                                whiteList.add(CallLoggerService.this.mNumber[0]);
                                                 CustomDatabaseHelper.writeWhiteList(sim, whiteList, mDbHelper);
                                                 dialog.dismiss();
                                             }
@@ -409,7 +409,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                         .create();
                                 dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
                                 dialog.show();
-                            } else if (blackList.contains(CallLoggerService.this.number[0]))
+                            } else if (blackList.contains(CallLoggerService.this.mNumber[0]))
                                 mIsOutgoing = true;
                             break;
                         case TelephonyManager.CALL_STATE_IDLE:
@@ -573,8 +573,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
-        unregisterReceiver(callAnsweredReceiver);
-        unregisterReceiver(callEndedReceiver);
+        unregisterReceiver(mCallAnsweredReceiver);
+        unregisterReceiver(mCallEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().unregister(this);
     }

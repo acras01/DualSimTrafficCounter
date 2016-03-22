@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 
 public class TimePreference extends DialogPreference {
 
-    public int hour = 0;
-    public int minute = 0;
+    public int mHour = 0;
+    public int mMinute = 0;
 
     public static int parseHour(String value) {
         try {
@@ -52,8 +52,8 @@ public class TimePreference extends DialogPreference {
         } else {
             value = defaultValue.toString();
         }
-        hour = parseHour(value);
-        minute = parseMinute(value);
+        mHour = parseHour(value);
+        mMinute = parseMinute(value);
     }
 
     public void persistStringValue(String value) {

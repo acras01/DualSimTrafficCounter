@@ -25,6 +25,7 @@ import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
@@ -33,10 +34,9 @@ import ua.od.acros.dualsimtrafficcounter.utils.ListItem;
 public class WhiteListActivity extends AppCompatActivity {
 
     private WhiteListAdapter mAdapter;
-    private List<ListItem> mItems;
     private Context mContext = this;
     private int mKey;
-    private CustomDatabaseHelper mDatabaseHelper;
+    private CustomDatabaseHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +54,13 @@ public class WhiteListActivity extends AppCompatActivity {
             // Now recreate for it to take effect
             recreate();
         }
-        mContext = getApplicationContext();
-        mDatabaseHelper = CustomDatabaseHelper.getInstance(mContext);
+        mContext = CustomApplication.getAppContext();
+        mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
-        ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDatabaseHelper);
-        mItems = loadContactsFromDB(mContext, whiteList);
+        ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper);
+        List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);
         List<String> numbers = new ArrayList<>();
-        for (ListItem item : mItems)
+        for (ListItem item : listItems)
             numbers.add(item.getNumber());
         for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
             if (numbers.contains(i.next())) {
@@ -68,10 +68,10 @@ public class WhiteListActivity extends AppCompatActivity {
             }
         }
         for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
-            mItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
+            listItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
             i.remove();
         }
-        mAdapter = new WhiteListAdapter(mItems);
+        mAdapter = new WhiteListAdapter(listItems);
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -138,7 +138,7 @@ public class WhiteListActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            CustomDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDatabaseHelper);
+            CustomDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDbHelper);
             return true;
         }
 

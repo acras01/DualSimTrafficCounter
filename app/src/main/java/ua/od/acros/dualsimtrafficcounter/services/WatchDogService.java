@@ -19,6 +19,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 
@@ -43,7 +44,7 @@ public class WatchDogService extends Service{
     public void onCreate() {
         super.onCreate();
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        mContext = getApplicationContext();
+        mContext = CustomApplication.getAppContext();
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         // cancel if already existed
         if (mTimer != null) {
@@ -58,11 +59,9 @@ public class WatchDogService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         mIsFirstRun = true;
         // schedule task
         mTimer.scheduleAtFixedRate(new WatchDogTask(), 0, Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")) * 60 * 1000);
-
         return START_STICKY;
     }
 
@@ -77,7 +76,6 @@ public class WatchDogService extends Service{
     private class WatchDogTask extends TimerTask {
         @Override
         public void run() {
-
             if (mIsFirstRun) {
                 try {
                     TimeUnit.MINUTES.sleep(Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")));
@@ -87,15 +85,15 @@ public class WatchDogService extends Service{
                 }
                 mIsFirstRun = false;
             }
-            ContentValues dataMap = CustomDatabaseHelper.readTrafficData(mDbHelper);
-            if (dataMap.get(Constants.LAST_DATE).equals("")) {
+            ContentValues cv = CustomDatabaseHelper.readTrafficData(mDbHelper);
+            if (cv.get(Constants.LAST_DATE).equals("")) {
                 Calendar myCalendar = Calendar.getInstance();
                 SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
                 SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-                dataMap.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-                dataMap.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+                cv.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
+                cv.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
             }
-            String lastUpdate = dataMap.get(Constants.LAST_DATE) + " " + dataMap.get(Constants.LAST_TIME);
+            String lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
             DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
             DateTime last = fmt.parseDateTime(lastUpdate);
             DateTime now = new DateTime();

@@ -46,7 +46,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
     private ContentValues mDataMap;
-    private BroadcastReceiver dataReceiver;
+    private BroadcastReceiver mTrafficDataReceiver;
     private Button bLim1, bLim2, bLim3;
     private MenuItem mService, mMobileData;
     private CustomDatabaseHelper mDbHelper;
@@ -59,7 +59,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private boolean mIsRunning = false;
     private Context mContext;
 
-    public static TrafficFragment newInstance(String param1, String param2) {
+    public static TrafficFragment newInstance() {
         return new TrafficFragment();
     }
 
@@ -72,7 +72,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         EventBus.getDefault().register(this);
         mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
@@ -87,7 +87,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         mIsNight =  TrafficCountService.getIsNight();
 
-        dataReceiver = new BroadcastReceiver() {
+        mTrafficDataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 if (isVisible()) {
                     try {
@@ -176,7 +176,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             }
         };
         IntentFilter countServiceFilter = new IntentFilter(Constants.TRAFFIC_BROADCAST_ACTION);
-        mContext.registerReceiver(dataReceiver, countServiceFilter);
+        mContext.registerReceiver(mTrafficDataReceiver, countServiceFilter);
 
         Intent intent = new Intent(mContext, TrafficInfoWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
@@ -323,7 +323,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view;
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             view = inflater.inflate(R.layout.traffic_fragment, container, false);
             RX1 = (TextView) view.findViewById(R.id.RX1);
@@ -475,7 +475,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         super.onDetach();
         mListener = null;
         try {
-            mContext.unregisterReceiver(dataReceiver);
+            mContext.unregisterReceiver(mTrafficDataReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }

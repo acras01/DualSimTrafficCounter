@@ -39,11 +39,11 @@ public class TimePreferenceDialog extends PreferenceDialogFragmentCompat impleme
             mTimePicker.setIs24HourView(true);
         TimePreference pref = (TimePreference) getPreference();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mTimePicker.setHour(pref.hour);
-            mTimePicker.setMinute(pref.minute);
+            mTimePicker.setHour(pref.mHour);
+            mTimePicker.setMinute(pref.mMinute);
         } else {
-            mTimePicker.setCurrentHour(pref.hour);
-            mTimePicker.setCurrentMinute(pref.minute);
+            mTimePicker.setCurrentHour(pref.mHour);
+            mTimePicker.setCurrentMinute(pref.mMinute);
         }
     }
 
@@ -52,13 +52,13 @@ public class TimePreferenceDialog extends PreferenceDialogFragmentCompat impleme
         if (positiveResult) {
             TimePreference pref = (TimePreference) getPreference();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                pref.hour = mTimePicker.getHour();
-                pref.minute = mTimePicker.getMinute();
+                pref.mHour = mTimePicker.getHour();
+                pref.mMinute = mTimePicker.getMinute();
             } else {
-                pref.hour = mTimePicker.getCurrentHour();
-                pref.minute = mTimePicker.getCurrentMinute();
+                pref.mHour = mTimePicker.getCurrentHour();
+                pref.mMinute = mTimePicker.getCurrentMinute();
             }
-            String value = TimePreference.timeToString(pref.hour, pref.minute);
+            String value = TimePreference.timeToString(pref.mHour, pref.mMinute);
             if (pref.callChangeListener(value)) pref.persistStringValue(value);
         }
     }

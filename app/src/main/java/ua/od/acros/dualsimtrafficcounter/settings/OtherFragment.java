@@ -37,7 +37,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        mContext = getActivity().getApplicationContext();
+        mContext = CustomApplication.getAppContext();
         PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
 

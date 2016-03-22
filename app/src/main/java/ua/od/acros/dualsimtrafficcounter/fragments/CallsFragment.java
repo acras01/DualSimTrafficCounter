@@ -46,12 +46,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private SharedPreferences mPrefs;
     private int mSimQuantity;
     private OnFragmentInteractionListener mListener;
-    private BroadcastReceiver callDataReceiver;
+    private BroadcastReceiver mCallDataReceiver;
     private MenuItem mService;
     private boolean mIsRunning = false;
     private Context mContext;
 
-    public static CallsFragment newInstance(String param1, String param2) {
+    public static CallsFragment newInstance() {
         return new CallsFragment();
     }
 
@@ -64,14 +64,14 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
         mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-        callDataReceiver = new BroadcastReceiver() {
+        mCallDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
@@ -115,7 +115,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             }
         };
         IntentFilter callDataFilter = new IntentFilter(Constants.CALLS_BROADCAST_ACTION);
-        mContext.registerReceiver(callDataReceiver, callDataFilter);
+        mContext.registerReceiver(mCallDataReceiver, callDataFilter);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calls_fragment, container, false);
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         TOT1 = (TextView) view.findViewById(R.id.Tot1);
         TOT2 = (TextView) view.findViewById(R.id.Tot2);
         TOT3 = (TextView) view.findViewById(R.id.Tot3);
@@ -233,7 +233,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         super.onDetach();
         mListener = null;
         try {
-            mContext.unregisterReceiver(callDataReceiver);
+            mContext.unregisterReceiver(mCallDataReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }

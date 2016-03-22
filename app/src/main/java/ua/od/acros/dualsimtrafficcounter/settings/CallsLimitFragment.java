@@ -20,6 +20,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -36,8 +37,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        Context mContext = getActivity().getApplicationContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Context context = CustomApplication.getAppContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.calls_settings);
@@ -61,11 +62,10 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         opValue2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
         opValue3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
 
-
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
-        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (simQuantity == 1) {

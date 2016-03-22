@@ -27,7 +27,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
     private Context mContext;
     private SharedPreferences mPrefs;
     private boolean mEnabled;
-    private SwitchCompat mSwitch = null;
+    private SwitchCompat switchCompat = null;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -44,11 +44,11 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
             View custom = actionBar.getCustomView();
             TextView tv = (TextView) custom.findViewById(R.id.titleText);
             tv.setText(R.string.use_notification_title);
-            mSwitch = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
+            switchCompat = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
         }
-        if (mSwitch != null) {
-            mSwitch.setChecked(mEnabled);
-            mSwitch.setOnCheckedChangeListener(this);
+        if (switchCompat != null) {
+            switchCompat.setChecked(mEnabled);
+            switchCompat.setOnCheckedChangeListener(this);
         }
         updateSettings();
     }

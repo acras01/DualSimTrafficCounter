@@ -50,7 +50,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        mContext = getActivity().getApplicationContext();
+        mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 

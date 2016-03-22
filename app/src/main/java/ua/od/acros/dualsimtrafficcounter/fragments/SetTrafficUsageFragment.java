@@ -52,7 +52,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -61,7 +61,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
         txInput = (EditText) view.findViewById(R.id.txamount);
         rxInput = (EditText) view.findViewById(R.id.rxamount);

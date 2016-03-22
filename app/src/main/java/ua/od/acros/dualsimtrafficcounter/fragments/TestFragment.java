@@ -16,13 +16,14 @@ import android.widget.Toast;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class TestFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
 
     private String mSimChecked = "";
     private boolean mAlternative = false;
-    private SharedPreferences.Editor edit;
+    private SharedPreferences.Editor mEdit;
     private String[] mOperatorNames = new String[3];
     private OnFragmentInteractionListener mListener;
     private Context mContext;
@@ -40,7 +41,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -49,7 +50,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.test_fragment, container, false);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
@@ -59,7 +60,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
         RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        edit = prefs.edit();
+        mEdit = prefs.edit();
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simQuantity == 1) {
@@ -85,8 +86,8 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonOK:
-                edit.putBoolean(Constants.PREF_OTHER[20], mAlternative);
-                edit.apply();
+                mEdit.putBoolean(Constants.PREF_OTHER[20], mAlternative);
+                mEdit.apply();
                 getActivity().onBackPressed();
                 break;
             case R.id.test:
@@ -94,13 +95,13 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
                     int sim = Constants.DISABLED;
                     try {
                         sim = (int) Settings.System.getLong(mContext.getContentResolver(), "gprs_connection_sim_setting");
-                        edit.putInt(mSimChecked, sim);
+                        mEdit.putInt(mSimChecked, sim);
                         mAlternative = true;
                     } catch (Settings.SettingNotFoundException e0) {
                         e0.printStackTrace();
                         try {
                             sim = (int) Settings.System.getLong(mContext.getContentResolver(), "gprs_connection_setting");
-                            edit.putInt(mSimChecked, sim);
+                            mEdit.putInt(mSimChecked, sim);
                             mAlternative = true;
                         } catch (Settings.SettingNotFoundException e1) {
                             e1.printStackTrace();

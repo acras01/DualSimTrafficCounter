@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
@@ -49,7 +50,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     private Context mContext;
 
     // TODO: Rename and change types and number of parameters
-    public static TrafficForDateFragment newInstance(String param1, String param2) {
+    public static TrafficForDateFragment newInstance() {
         return new TrafficForDateFragment();
     }
 
@@ -64,7 +65,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         mMonth = new DateTime().getMonthOfYear();
         mYear = new DateTime().getYear();
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -73,7 +74,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.traffic_for_date_fragment, container, false);
         pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.GONE);

@@ -5,11 +5,11 @@ import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.PreferenceViewHolder;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class TwoLineEditTextPreference extends EditTextPreference {
-    private EditText editText;
+
+    private AppCompatEditText mEditText;
 
     public TwoLineEditTextPreference(Context context) {
         this(context, null);
@@ -25,18 +25,17 @@ public class TwoLineEditTextPreference extends EditTextPreference {
 
     public TwoLineEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        editText = new AppCompatEditText(context, attrs);
-        editText.setId(android.R.id.edit);
+        mEditText = new AppCompatEditText(context, attrs);
+        mEditText.setId(android.R.id.edit);
     }
 
-    public EditText getEditText() {
-        return editText;
+    public AppCompatEditText getEditText() {
+        return mEditText;
     }
 
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-
         TextView textView = (TextView) holder.findViewById(android.R.id.title);
         if (textView != null) {
             textView.setSingleLine(false);
