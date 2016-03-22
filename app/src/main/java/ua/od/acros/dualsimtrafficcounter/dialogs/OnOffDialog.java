@@ -11,8 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -21,8 +21,8 @@ import org.greenrobot.eventbus.EventBus;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class OnOffDialog extends DialogFragment {
 
@@ -46,11 +46,11 @@ public class OnOffDialog extends DialogFragment {
 
         View view = View.inflate(getActivity(), R.layout.onoff_dialog, null);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
+        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(operatorNames[0]);
-        RadioButton sim2rb = (RadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
         sim2rb.setText(operatorNames[1]);
-        RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()) {

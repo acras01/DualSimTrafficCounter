@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import org.acra.ACRA;
@@ -32,16 +32,16 @@ import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class CallsFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TextView SIM1, SIM2, SIM3, TOT1, TOT2, TOT3, TIP;
     private ContentValues mCalls;
-    private Button bLim1, bLim2, bLim3;
+    private AppCompatButton bLim1, bLim2, bLim3;
     private CustomDatabaseHelper mDbHelper;
     private SharedPreferences mPrefs;
     private int mSimQuantity;
@@ -132,9 +132,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         SIM3 = (TextView) view.findViewById(R.id.sim3_name);
         TIP = (TextView) view.findViewById(R.id.tip);
 
-        bLim1 = (Button) view.findViewById(R.id.limit1_calls);
-        bLim2 = (Button) view.findViewById(R.id.limit2_calls);
-        bLim3 = (Button) view.findViewById(R.id.limit3_calls);
+        bLim1 = (AppCompatButton) view.findViewById(R.id.limit1_calls);
+        bLim2 = (AppCompatButton) view.findViewById(R.id.limit2_calls);
+        bLim3 = (AppCompatButton) view.findViewById(R.id.limit3_calls);
 
         view.findViewById(R.id.buttonClear1).setOnClickListener(this);
         view.findViewById(R.id.buttonClear2).setOnClickListener(this);

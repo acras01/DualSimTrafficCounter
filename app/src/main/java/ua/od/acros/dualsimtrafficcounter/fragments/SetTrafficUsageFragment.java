@@ -6,14 +6,15 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatRadioButton;
+import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -24,8 +25,8 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class SetTrafficUsageFragment extends Fragment implements CompoundButton.OnCheckedChangeListener,
         RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -33,9 +34,9 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     private EditText txInput, rxInput;
     private int mTXSpinnerSel, mRXSpinnerSel;
     private int mSimChecked = Constants.DISABLED;
-    private Spinner rxSpinner;
+    private AppCompatSpinner rxSpinner;
     private String[] mOperatorNames;
-    private CheckBox total;
+    private AppCompatCheckBox total;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
 
@@ -65,14 +66,14 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
         txInput = (EditText) view.findViewById(R.id.txamount);
         rxInput = (EditText) view.findViewById(R.id.rxamount);
-        Spinner txSpinner = (Spinner) view.findViewById(R.id.spinnertx);
-        rxSpinner = (Spinner) view.findViewById(R.id.spinnerrx);
+        Spinner txSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnertx);
+        rxSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnerrx);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
+        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
-        RadioButton sim2rb = (RadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
         sim2rb.setText(mOperatorNames[1]);
-        RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
@@ -83,7 +84,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         }
         if (simQuantity == 2)
             sim3rb.setEnabled(false);
-        total = (CheckBox) view.findViewById(R.id.checktotal);
+        total = (AppCompatCheckBox) view.findViewById(R.id.checktotal);
         total.setChecked(false);
         total.setOnCheckedChangeListener(this);
         radioGroup.setOnCheckedChangeListener(this);

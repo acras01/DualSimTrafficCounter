@@ -10,8 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,7 +49,7 @@ public class ChooseActionDialog extends AppCompatActivity {
             recreate();
         }
         View view = View.inflate(this, R.layout.action_dialog, null);
-        RadioButton change = (RadioButton) view.findViewById(R.id.actionchange);
+        AppCompatRadioButton change = (AppCompatRadioButton) view.findViewById(R.id.actionchange);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) ||

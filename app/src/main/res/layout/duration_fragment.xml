@@ -33,21 +33,21 @@
         android:layout_alignParentStart="true"
         android:layout_margin="10dp">
 
-        <RadioButton
+        <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim1RB"
             android:text="SIM1"
             android:textColor="?android:attr/textColorPrimary" />
 
-        <RadioButton
+        <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim2RB"
             android:text="SIM2"
             android:textColor="?android:attr/textColorPrimary" />
 
-        <RadioButton
+        <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sim3RB"
@@ -71,7 +71,7 @@
         android:singleLine="true"
         android:layout_below="@+id/radioGroup" />
 
-    <Spinner
+    <android.support.v7.widget.AppCompatSpinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
@@ -82,10 +82,10 @@
         android:minWidth="@dimen/spinner_width"
         android:layout_marginBottom="10dp" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@android:string/ok"
+        android:text="@string/set"
         android:id="@+id/buttonOK"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v7.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -45,21 +45,21 @@
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp">
 
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/sim1RB"
                     android:text="SIM1"
                     android:textColor="?android:attr/textColorPrimary" />
 
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/sim2RB"
                     android:text="SIM2"
                     android:textColor="?android:attr/textColorPrimary" />
 
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/sim3RB"
@@ -91,7 +91,7 @@
         android:dividerPadding="5dp"
         android:showDividers="middle">
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/test"
@@ -99,7 +99,7 @@
             android:layout_weight=".5"
             style="?android:attr/buttonBarButtonStyle" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/ok"
@@ -108,4 +108,4 @@
             style="?android:attr/buttonBarButtonStyle" />
     </android.support.v7.widget.LinearLayoutCompat>
 
-</LinearLayout>
+</android.support.v7.widget.LinearLayoutCompat>

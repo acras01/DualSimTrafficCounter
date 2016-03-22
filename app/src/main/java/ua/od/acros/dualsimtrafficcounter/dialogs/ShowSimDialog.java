@@ -1,16 +1,16 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
-import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
-import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -20,7 +20,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCheckedChangeListener {
 
-    private Button bOK;
+    private AppCompatButton bOK;
     private static boolean[] mSim = new boolean[3];
     private SharedPreferences mPrefs;
     private String mActivity;
@@ -57,9 +57,9 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         View view = View.inflate(getActivity(), R.layout.showsim_dialog, null);
-        CheckBox sim1 = (CheckBox) view.findViewById(R.id.sim1);
-        CheckBox sim2 = (CheckBox) view.findViewById(R.id.sim2);
-        CheckBox sim3 = (CheckBox) view.findViewById(R.id.sim3);
+        AppCompatCheckBox sim1 = (AppCompatCheckBox) view.findViewById(R.id.sim1);
+        AppCompatCheckBox sim2 = (AppCompatCheckBox) view.findViewById(R.id.sim2);
+        AppCompatCheckBox sim3 = (AppCompatCheckBox) view.findViewById(R.id.sim3);
         int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         sim1.setText(mOperatorNames[0]);
@@ -101,7 +101,7 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                bOK = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

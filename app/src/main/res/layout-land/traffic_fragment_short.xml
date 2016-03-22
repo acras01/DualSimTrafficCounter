@@ -83,7 +83,7 @@
                             android:visibility="visible"
                             android:textColor="?android:attr/textColorPrimary" />
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="-"
@@ -93,7 +93,7 @@
                             style="?android:attr/buttonBarButtonStyle"
                             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/reset"
@@ -132,7 +132,7 @@
                             android:visibility="visible"
                             android:textColor="?android:attr/textColorPrimary" />
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="-"
@@ -142,7 +142,7 @@
                             style="?android:attr/buttonBarButtonStyle"
                             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/reset"
@@ -181,7 +181,7 @@
                             android:visibility="visible"
                             android:textColor="?android:attr/textColorPrimary" />
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="-"
@@ -191,7 +191,7 @@
                             style="?android:attr/buttonBarButtonStyle"
                             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/reset"

@@ -7,10 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -53,11 +53,11 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.test_fragment, container, false);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
+        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
-        RadioButton sim2rb = (RadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
         sim2rb.setText(mOperatorNames[1]);
-        RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mEdit = prefs.edit();

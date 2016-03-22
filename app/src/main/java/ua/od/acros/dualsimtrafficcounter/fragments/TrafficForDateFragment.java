@@ -8,13 +8,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,9 +29,9 @@ import java.text.SimpleDateFormat;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 
 
 public class TrafficForDateFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
@@ -39,7 +39,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     private int mYear, mMonth, mDay;
     private int mSimChecked = Constants.NULL;
     private int mSimQuantity;
-    private Button bSetDate, bOK;
+    private AppCompatButton bSetDate, bOK;
     private ProgressBar pb;
     private RadioGroup radioGroup;
 
@@ -79,16 +79,16 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.GONE);
         radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        bSetDate = (Button) view.findViewById(R.id.setdate);
+        bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        RadioButton sim1rb = (RadioButton) view.findViewById(R.id.sim1RB);
+        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
-        RadioButton sim2rb = (RadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
         sim2rb.setText(mOperatorNames[1]);
-        RadioButton sim3rb = (RadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         if (mSimQuantity == 1) {
             sim2rb.setEnabled(false);
@@ -105,9 +105,9 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         TOTN = (TextView) view.findViewById(R.id.totalnight);
         day = (TextView) view.findViewById(R.id.day);
         night = (TextView) view.findViewById(R.id.night);
-        bOK = (Button) view.findViewById(R.id.buttonOK);
+        bOK = (AppCompatButton) view.findViewById(R.id.buttonOK);
         bOK.setOnClickListener(this);
-        bSetDate = (Button) view.findViewById(R.id.setdate);
+        bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         RXN.setVisibility(View.GONE);
         TXN.setVisibility(View.GONE);

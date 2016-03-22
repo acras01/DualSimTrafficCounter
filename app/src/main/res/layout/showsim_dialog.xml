@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v7.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textAlignment="center" >
+    android:weightSum="1">
 
-    <android.support.v7.widget.LinearLayoutCompat
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
-
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SIM1"
@@ -20,7 +14,7 @@
             android:layout_weight=".33"
             android:textColor="?android:attr/textColorPrimary" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SIM2"
@@ -28,13 +22,12 @@
             android:layout_weight=".33"
             android:textColor="?android:attr/textColorPrimary" />
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SIM3"
             android:id="@+id/sim3"
             android:layout_weight=".33"
             android:textColor="?android:attr/textColorPrimary" />
-    </android.support.v7.widget.LinearLayoutCompat>
 
-</RelativeLayout>
+</android.support.v7.widget.LinearLayoutCompat>
