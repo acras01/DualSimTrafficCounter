@@ -114,8 +114,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 replaceFragments(CallsLimitFragment.class);
             else if (mFragment instanceof OperatorFragment)
                 replaceFragments(OperatorFragment.class);
-        } else if (fragment instanceof SettingsFragment)
+        } else if (fragment instanceof SettingsFragment) {
+            setResult(RESULT_OK, null);
             finish();
+        }
         else
             replaceFragments(SettingsFragment.class);
     }

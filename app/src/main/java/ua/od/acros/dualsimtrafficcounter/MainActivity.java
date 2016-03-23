@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SetTrafficUsageFragment.OnFragmentInteractionListener, CallsFragment.OnFragmentInteractionListener,
         SetCallsDurationFragment.OnFragmentInteractionListener {
 
+    private static final int REQUEST_CODE = 1981;
     private static Context mContext;
     private static SharedPreferences mPrefs;
     private static final String FIRST_RUN = "first_run";
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
     private NavigationView mNavigationView;
+    private int mLastMenuItem;
 
     /*static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -442,28 +444,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String tag = "";
         switch (id) {
             case R.id.nav_traffic:
+                mLastMenuItem = id;
                 tag = Constants.TRAFFIC_TAG;
                 newFragment = mTraffic;
                 break;
             case R.id.nav_calls:
+                mLastMenuItem = id;
                 tag = Constants.CALLS_TAG;
                 newFragment = mCalls;
                 break;
             case R.id.nav_traf_for_date:
+                mLastMenuItem = id;
                 newFragment = mTrafficForDate;
                 break;
             case R.id.nav_test:
+                mLastMenuItem = id;
                 newFragment = mTest;
                 break;
             case R.id.nav_set_usage:
+                mLastMenuItem = id;
                 newFragment = mSetUsage;
                 break;
             case R.id.nav_set_duration:
+                mLastMenuItem = id;
                 newFragment = mSetDuration;
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(mContext, SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
                 break;
             case R.id.nav_email:
                 showDialog(EMAIL);
@@ -486,6 +494,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
+            setItemChecked(mLastMenuItem, true);
     }
 
     private void setItemChecked(int id, boolean checked) {
