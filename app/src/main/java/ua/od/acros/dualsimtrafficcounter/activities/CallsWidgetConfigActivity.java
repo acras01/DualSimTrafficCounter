@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
-import android.support.v4.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,14 +10,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -36,9 +36,9 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
 import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class CallsWidgetConfigActivity extends AppCompatActivity implements IconsListFragment.OnCompleteListener,
@@ -148,15 +148,15 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        CheckBox names = (CheckBox) findViewById(R.id.names);
+        AppCompatCheckBox names = (AppCompatCheckBox) findViewById(R.id.names);
         names.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[1], true));
-        CheckBox icons = (CheckBox) findViewById(R.id.icons);
+        AppCompatCheckBox icons = (AppCompatCheckBox) findViewById(R.id.icons);
         icons.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[2], true));
-        CheckBox back = (CheckBox) findViewById(R.id.useBack);
+        AppCompatCheckBox back = (AppCompatCheckBox) findViewById(R.id.useBack);
         back.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[12], true));
-        CheckBox div = (CheckBox) findViewById(R.id.divider);
+        AppCompatCheckBox div = (AppCompatCheckBox) findViewById(R.id.divider);
         div.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[14], true));
-        CheckBox remain = (CheckBox) findViewById(R.id.remain_calls);
+        AppCompatCheckBox remain = (AppCompatCheckBox) findViewById(R.id.remain_calls);
         remain.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[18], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);

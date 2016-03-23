@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Prepare Navigation View Menu
         MenuItem mTestItem = mNavigationView.getMenu().findItem(R.id.nav_test);
-        if (CustomApplication.isMtkDevice() &&
+        if (CustomApplication.isOldMtkDevice() &&
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mTestItem.setVisible(true);
             mTestItem.setEnabled(true);
@@ -175,9 +175,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     !CustomApplication.hasRoot())
                 showDialog(ANDROID_5_0);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
-                    !CustomApplication.isMtkDevice())
+                    !CustomApplication.isOldMtkDevice())
                 showDialog(MTK);
-            if (CustomApplication.isMtkDevice() &&
+            if (CustomApplication.isOldMtkDevice() &&
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 if (savedInstanceState == null) {
                     getSupportFragmentManager()
@@ -511,11 +511,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onCallsFragmentInteraction(Uri uri) {
-
+        // Do different stuff
     }
 
     @Override
     public void onSetDurationFragmentInteraction(Uri uri) {
-
+        // Do different stuff
     }
 }

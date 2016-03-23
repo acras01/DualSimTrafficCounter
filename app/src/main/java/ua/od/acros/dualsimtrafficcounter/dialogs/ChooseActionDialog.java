@@ -53,7 +53,7 @@ public class ChooseActionDialog extends AppCompatActivity {
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isMtkDevice()) ||
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) ||
                 android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) ||
                 prefs.getBoolean(Constants.PREF_OTHER[10], true) || simQuantity == 1)
             change.setEnabled(false);

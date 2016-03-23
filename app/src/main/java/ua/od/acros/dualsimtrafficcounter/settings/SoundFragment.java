@@ -14,28 +14,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.NotificationSwitch;
 
-public class SoundFragment extends PreferenceFragmentCompatFix implements CompoundButton.OnCheckedChangeListener {
+public class SoundFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int REQUEST_CODE_ALERT_RINGTONE = 142;
     private Context mContext;
     private SharedPreferences mPrefs;
-    private boolean mEnabled;
-    private SwitchCompat switchCompat = null;
+    private NotificationSwitch mSwitch = null;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         mContext = getActivity().getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mEnabled = mPrefs.getBoolean(Constants.PREF_OTHER[3], true);
         addPreferencesFromResource(R.xml.notification_settings);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        SwitchCompat actionBarSwitch = null;
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
@@ -44,12 +43,10 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
             View custom = actionBar.getCustomView();
             TextView tv = (TextView) custom.findViewById(R.id.titleText);
             tv.setText(R.string.use_notification_title);
-            switchCompat = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
+            actionBarSwitch = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
         }
-        if (switchCompat != null) {
-            switchCompat.setChecked(mEnabled);
-            switchCompat.setOnCheckedChangeListener(this);
-        }
+        if (actionBarSwitch != null)
+            mSwitch = new NotificationSwitch(getActivity(), actionBarSwitch);
         updateSettings();
     }
 
@@ -57,7 +54,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
         int count = getPreferenceScreen().getPreferenceCount();
         for (int i = 0; i < count; ++i) {
             android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);
-            pref.setEnabled(mEnabled);
+            pref.setEnabled(mSwitch.isSwitchOn());
             if (pref.getKey().equals(Constants.PREF_OTHER[1])) {
                 Ringtone ringtone = RingtoneManager.getRingtone(mContext, Uri.parse(getRingtonePreferenceValue()));
                 pref.setSummary(ringtone.getTitle(mContext));
@@ -68,12 +65,16 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
     @Override
     public void onResume() {
         super.onResume();
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
+        mSwitch.resume();
         updateSettings();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        mSwitch.pause();
     }
 
     @Override
@@ -131,11 +132,8 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Compou
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        mEnabled = isChecked;
-        mPrefs.edit()
-                .putBoolean(Constants.PREF_OTHER[3], mEnabled)
-                .apply();
-        updateSettings();
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Constants.PREF_OTHER[3]))
+            updateSettings();
     }
 }

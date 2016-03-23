@@ -33,13 +33,13 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     private static final String XPOSED = "de.robv.android.xposed.installer";
     private Context mContext;
     private boolean mIsAttached;
+    private SharedPreferences mPrefs;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
         mContext = CustomApplication.getAppContext();
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .registerOnSharedPreferenceChangeListener(this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         addPreferencesFromResource(R.xml.other_settings);
 
@@ -85,15 +85,13 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         super.onResume();
         android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
         toolBar.setTitle(R.string.other_title);
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

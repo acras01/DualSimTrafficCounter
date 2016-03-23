@@ -39,7 +39,6 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
 
         Context context = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.calls_settings);
 

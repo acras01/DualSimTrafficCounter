@@ -52,7 +52,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.traffic_settings);
 
@@ -133,7 +132,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             everyday3.setEnabled(false);
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isMtkDevice())) {
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));

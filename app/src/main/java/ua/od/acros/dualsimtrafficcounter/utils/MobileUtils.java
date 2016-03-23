@@ -69,7 +69,7 @@ public class MobileUtils {
                 e.printStackTrace();
             }
             if (mTelephonyClass != null) {
-                if (CustomApplication.isMtkDevice()) {
+                if (CustomApplication.isOldMtkDevice()) {
                     try {
                         Class<?> c = Class.forName(MEDIATEK);
                         Method[] cm = c.getDeclaredMethods();
@@ -305,7 +305,7 @@ public class MobileUtils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (sim == Constants.DISABLED && CustomApplication.isMtkDevice()) {
+                    if (sim == Constants.DISABLED && CustomApplication.isOldMtkDevice()) {
                         for (int i = 0; i < simQuantity; i++) {
                             int state = Constants.DISABLED;
                             try {
@@ -538,7 +538,7 @@ public class MobileUtils {
                             }
                         }
                     } else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                        if (CustomApplication.isMtkDevice()) {
+                        if (CustomApplication.isOldMtkDevice()) {
                             try {
                                 Class<?> c = Class.forName(MEDIATEK);
                                 Method[] cm = c.getDeclaredMethods();
@@ -727,7 +727,7 @@ public class MobileUtils {
             }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
-                    if (CustomApplication.isMtkDevice()) {
+                    if (CustomApplication.isOldMtkDevice()) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             Method[] cm = c.getDeclaredMethods();
@@ -876,7 +876,7 @@ public class MobileUtils {
             }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
-                    if (CustomApplication.isMtkDevice()) {
+                    if (CustomApplication.isOldMtkDevice()) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             Method[] cm = c.getDeclaredMethods();
@@ -1001,7 +1001,7 @@ public class MobileUtils {
             }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
-                    if (CustomApplication.isMtkDevice()) {
+                    if (CustomApplication.isOldMtkDevice()) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             Method[] cm = c.getDeclaredMethods();
@@ -1313,7 +1313,7 @@ public class MobileUtils {
             mLastActiveSIM = activeSIM(context, mActiveNetworkInfo);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isMtkDevice()) {
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);

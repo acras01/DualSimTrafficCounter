@@ -53,7 +53,7 @@ public class OnOffDialog extends DialogFragment {
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()) {
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             if (simQuantity == 1) {

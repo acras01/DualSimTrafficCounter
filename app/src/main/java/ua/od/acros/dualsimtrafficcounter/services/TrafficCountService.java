@@ -249,7 +249,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
                 case Constants.CONTINUE_ACTION:
                     if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()))
+                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                         MobileUtils.toggleMobileDataConnection(true, mContext, sim);
                     switch (sim) {
                         case Constants.SIM1:
@@ -267,7 +267,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
                 case Constants.OFF_ACTION:
                     if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()))
+                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                         timerStart(Constants.CHECK);
                     else {
                         switch (mActiveSIM) {
@@ -901,7 +901,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()))
+                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
@@ -1132,7 +1132,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()))
+                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
@@ -1363,7 +1363,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
                         if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isMtkDevice()))
+                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);

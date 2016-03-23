@@ -32,7 +32,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 public class CustomApplication extends Application {
 
     private static Context mContext;
-    private static Boolean mIsMtkDevice = null;
+    private static Boolean mIsOldMtkDevice = null;
     private static Boolean mHasRoot = null;
     private static boolean mIsActivityVisible;
 
@@ -91,7 +91,7 @@ public class CustomApplication extends Application {
     }
 
     // Supported MTK devices
-    private static final Set<String> MTK_DEVICES = new HashSet<>(Arrays.asList(
+    private static final Set<String> OLD_MTK_DEVICES = new HashSet<>(Arrays.asList(
             new String[]{
                     // Single-core SoC
                     "mt6575",
@@ -108,11 +108,11 @@ public class CustomApplication extends Application {
             }
     ));
 
-    public static boolean isMtkDevice() {
-        if (mIsMtkDevice != null)
-            return mIsMtkDevice;
-        mIsMtkDevice = MTK_DEVICES.contains(Build.HARDWARE.toLowerCase());
-        return mIsMtkDevice;
+    public static boolean isOldMtkDevice() {
+        if (mIsOldMtkDevice != null)
+            return mIsOldMtkDevice;
+        mIsOldMtkDevice = OLD_MTK_DEVICES.contains(Build.HARDWARE.toLowerCase());
+        return mIsOldMtkDevice;
     }
 
     public static boolean hasRoot() {

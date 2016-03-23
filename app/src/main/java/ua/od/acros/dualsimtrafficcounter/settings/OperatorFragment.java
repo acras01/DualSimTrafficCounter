@@ -29,7 +29,6 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
 
         Context context = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.operator_settings);
 

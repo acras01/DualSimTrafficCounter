@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
-import android.support.v4.app.DialogFragment;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,14 +10,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -36,9 +36,9 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
 import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class TrafficWidgetConfigActivity extends AppCompatActivity implements IconsListFragment.OnCompleteListener,
@@ -64,7 +64,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
     private int mDim;
     private String mUserPickedImage;
     private boolean[] mSim;
-    private CheckBox remain, rxtx;
+    private AppCompatCheckBox remain, rxtx;
     private Context mContext;
 
     @Override
@@ -156,25 +156,25 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        CheckBox names = (CheckBox) findViewById(R.id.names);
+        AppCompatCheckBox names = (AppCompatCheckBox) findViewById(R.id.names);
         names.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true));
-        CheckBox info = (CheckBox) findViewById(R.id.info);
+        AppCompatCheckBox info = (AppCompatCheckBox) findViewById(R.id.info);
         info.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true));
-        CheckBox icons = (CheckBox) findViewById(R.id.icons);
+        AppCompatCheckBox icons = (AppCompatCheckBox) findViewById(R.id.icons);
         icons.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true));
-        CheckBox speed = (CheckBox) findViewById(R.id.speed);
+        AppCompatCheckBox speed = (AppCompatCheckBox) findViewById(R.id.speed);
         speed.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true));
-        CheckBox back = (CheckBox) findViewById(R.id.useBack);
+        AppCompatCheckBox back = (AppCompatCheckBox) findViewById(R.id.useBack);
         back.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true));
-        CheckBox div = (CheckBox) findViewById(R.id.divider);
+        AppCompatCheckBox div = (AppCompatCheckBox) findViewById(R.id.divider);
         div.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true));
-        CheckBox active = (CheckBox) findViewById(R.id.activesim);
+        AppCompatCheckBox active = (AppCompatCheckBox) findViewById(R.id.activesim);
         active.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false));
-        CheckBox daynight = (CheckBox) findViewById(R.id.daynight_icons);
+        AppCompatCheckBox daynight = (AppCompatCheckBox) findViewById(R.id.daynight_icons);
         daynight.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false));
-        remain = (CheckBox) findViewById(R.id.remain_data);
+        remain = (AppCompatCheckBox) findViewById(R.id.remain_data);
         remain.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false));
-        rxtx = (CheckBox) findViewById(R.id.rx_tx);
+        rxtx = (AppCompatCheckBox) findViewById(R.id.rx_tx);
         rxtx.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true));
 
         namesSum = (TextView) findViewById(R.id.names_summary);

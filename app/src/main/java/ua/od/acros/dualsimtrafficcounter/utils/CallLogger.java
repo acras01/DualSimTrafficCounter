@@ -20,10 +20,10 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
-    private static final String ENUM_PHONE_STATE = Build.VERSION.SDK_INT > 16 ?
+    private static final String ENUM_PHONE_STATE = Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN ?
             "com.android.internal.telephony.PhoneConstants$State" :
             "com.android.internal.telephony.Phone$State";
-    private static final int CALL_STATE_ACTIVE = Build.VERSION.SDK_INT >= 22 ? 3 : 2;
+    private static final int CALL_STATE_ACTIVE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? 3 : 2;
     private static final String ENUM_CALL_STATE = "com.android.internal.telephony.Call$State";
     private static final String CLASS_ASYNC_RESULT = "android.os.AsyncResult";
     private static final String CLASS_CALL_NOTIFIER = "com.android.phone.CallNotifier";
@@ -54,7 +54,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
             final Class<?> classCallNotifier = XposedHelpers.findClass(CLASS_CALL_NOTIFIER, loadPackageParam.classLoader);
             final Class<? extends Enum> enumPhoneState = (Class<? extends Enum>) Class.forName(ENUM_PHONE_STATE);
             final Class<? extends Enum> enumCallState = (Class<? extends Enum>) Class.forName(ENUM_CALL_STATE);
-            if (CustomApplication.isMtkDevice()) {
+            if (CustomApplication.isOldMtkDevice()) {
                 XposedHelpers.findAndHookMethod(classCallNotifier, "onDisconnect",
                         CLASS_ASYNC_RESULT, int.class, onDisconnectHook);
             } else {
