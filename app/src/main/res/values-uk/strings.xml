@@ -193,4 +193,5 @@
     <string name="use_auto_theme">Використовувати автоматичну зміну денної/нічної тем</string>
     <string name="use_day_theme">Використовувати денну тему</string>
     <string name="check_input">Вказано невірне значення</string>
+    <string name="size_hint">Введіть ціле позитивне число</string>
 </resources>

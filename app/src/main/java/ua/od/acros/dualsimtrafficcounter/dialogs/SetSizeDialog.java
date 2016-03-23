@@ -1,14 +1,14 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -20,7 +20,7 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
     private static final String mKey1 = "size";
     private static final String mKey2 = "id";
     private static final String mKey3 = "act";
-    private EditText mEditText;
+    private AppCompatEditText mEditText;
     private String mActivity;
 
     public static DialogFragment newInstance(String size, int dialog, String activity) {
@@ -54,14 +54,22 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.text_size_fragment, container);
-        mEditText = (EditText) view.findViewById(R.id.txtSize);
+        mEditText = (AppCompatEditText) view.findViewById(R.id.txtSize);
         mEditText.setText(mSize);
-        getDialog().setTitle(R.string.text_size);
+        int id = 0;
+        switch (mDialog) {
+            case 0:
+                id = R.string.text_size;
+                break;
+            case 1:
+                id = R.string.icon_size;
+                break;
+        }
+        getDialog().setTitle(id);
         // Show soft keyboard automatically
         mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         mEditText.setOnEditorActionListener(this);
-
         return view;
     }
 

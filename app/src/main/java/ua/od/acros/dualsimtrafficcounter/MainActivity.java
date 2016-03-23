@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .beginTransaction()
                             .add(R.id.content_frame, mTest)
                             .commit();
-                    mNavigationView.setCheckedItem(R.id.nav_test);
+                    setItemChecked(R.id.nav_test, true);
                 }
             } else {
                 getSupportFragmentManager()
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .add(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
-                mNavigationView.setCheckedItem(R.id.nav_traffic);
+                setItemChecked(R.id.nav_traffic, true);
             }
         } else if (action != null && action.equals("tap") && savedInstanceState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
@@ -201,14 +201,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
-                mNavigationView.setCheckedItem(R.id.nav_traffic);
+                setItemChecked(R.id.nav_traffic, true);
             } else {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.content_frame, mCalls)
                         .addToBackStack(Constants.CALLS_TAG)
                         .commit();
-                mNavigationView.setCheckedItem(R.id.nav_calls);
+                setItemChecked(R.id.nav_calls, true);
             }
         } else {
             if (savedInstanceState == null) {
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .add(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
-                mNavigationView.setCheckedItem(R.id.nav_traffic);
+                setItemChecked(R.id.nav_traffic, true);
             }
         }
     }
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .beginTransaction()
                         .replace(R.id.content_frame, mTraffic)
                         .commit();
-                mNavigationView.setCheckedItem(R.id.nav_traffic);
+                setItemChecked(R.id.nav_traffic, true);
             }
         }
     }
@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .remove(currentFragment)
                         .replace(R.id.content_frame, mTraffic)
                         .commit();
-                mNavigationView.setCheckedItem(R.id.nav_traffic);
+                setItemChecked(R.id.nav_traffic, true);
             }
         }
         if (mNeedsRestart && mTraffic.isVisible()) {
@@ -400,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .detach(mTraffic)
                     .attach(mTraffic)
                     .commit();
-            mNavigationView.setCheckedItem(R.id.nav_traffic);
+            setItemChecked(R.id.nav_traffic, true);
         }
     }
 
@@ -436,8 +436,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        mNavigationView.setCheckedItem(id);
-        item.setChecked(true);
+        setItemChecked(id, true);
         Fragment newFragment = null;
         FragmentManager fm = getSupportFragmentManager();
         String tag = "";
@@ -487,6 +486,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void setItemChecked(int id, boolean checked) {
+        mNavigationView.setCheckedItem(id);
+        mNavigationView.getMenu().findItem(id)
+                .setCheckable(checked)
+                .setChecked(checked);
     }
 
     @Override
