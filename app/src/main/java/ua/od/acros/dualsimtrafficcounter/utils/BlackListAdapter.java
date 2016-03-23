@@ -49,8 +49,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         final TextView textView = viewHolder.textView;
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ListItem item = (ListItem) buttonView.getTag();
-                item.setChecked(isChecked);
+                ((ListItem) buttonView.getTag()).setChecked(isChecked);
                 if (isChecked)
                     textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
                 else

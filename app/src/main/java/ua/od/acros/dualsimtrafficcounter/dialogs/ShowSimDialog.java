@@ -11,21 +11,26 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
-public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCheckedChangeListener {
+public class ShowSimDialog extends DialogFragment {
 
     private AppCompatButton bOK;
     private static boolean[] mSim = new boolean[3];
-    private SharedPreferences mPrefs;
     private String mActivity;
     private Context mContext;
     private String[] mOperatorNames;
+    private int mSimQuantity;
 
     public static ShowSimDialog newInstance(String activity, boolean[] sim) {
         ShowSimDialog f = new ShowSimDialog();
@@ -44,52 +49,27 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = CustomApplication.getAppContext();
-        mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mActivity = getArguments().getString("activity");
         mSim = getArguments().getBooleanArray("sim");
         mOperatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        View view = View.inflate(getActivity(), R.layout.showsim_dialog, null);
-        AppCompatCheckBox sim1 = (AppCompatCheckBox) view.findViewById(R.id.sim1);
-        AppCompatCheckBox sim2 = (AppCompatCheckBox) view.findViewById(R.id.sim2);
-        AppCompatCheckBox sim3 = (AppCompatCheckBox) view.findViewById(R.id.sim3);
-        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-        sim1.setText(mOperatorNames[0]);
-        sim2.setText(mOperatorNames[1]);
-        sim3.setText(mOperatorNames[2]);
-        if (simQuantity == 1) {
-            sim2.setEnabled(false);
-            sim2.setChecked(false);
-            mSim[1] = false;
-            sim3.setEnabled(false);
-            sim3.setChecked(false);
-            mSim[2] = false;
+        final List<Item> items = new ArrayList<>();
+        for (int i = 0; i < mSim.length; i++) {
+            items.add(new Item(mOperatorNames[i], mSim[i]));
         }
-        if (simQuantity == 2) {
-            sim3.setEnabled(false);
-            sim3.setChecked(false);
-            mSim[2] = false;
-        }
-
-        sim1.setOnCheckedChangeListener(this);
-        sim2.setOnCheckedChangeListener(this);
-        sim3.setOnCheckedChangeListener(this);
-
-        sim1.setChecked(mSim[0]);
-        sim2.setChecked(mSim[1]);
-        sim3.setChecked(mSim[2]);
-
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppTheme_Dialog)
-                .setView(view)
+        final CustomListAdapter adapter = new CustomListAdapter(mContext, R.layout.showsim_list_row, items);
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.choose_sim)
+                .setAdapter(adapter, null)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -97,7 +77,6 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
                     }
                 })
                 .create();
-
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
@@ -106,6 +85,9 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
                     @Override
                     public void onClick(View view) {
                         ShowSimDialogClosedListener listener = (ShowSimDialogClosedListener) getActivity();
+                        for (Item item : adapter.getList()) {
+                            mSim[adapter.getList().indexOf(item)] = item.isChecked();
+                        }
                         listener.OnDialogClosed(mActivity, mSim);
                         dismiss();
                     }
@@ -115,19 +97,72 @@ public class ShowSimDialog extends DialogFragment implements CompoundButton.OnCh
         return dialog;
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.sim1:
-                mSim[0] = isChecked;
-                break;
-            case R.id.sim2:
-                mSim[1] = isChecked;
-                break;
-            case R.id.sim3:
-                mSim[2] = isChecked;
-                break;
+    private class Item {
+        private String name;
+        private boolean checked;
+
+        Item(String name, boolean checked) {
+            this.name = name;
+            this.checked = checked;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isChecked() {
+            return checked;
+        }
+
+        public void setChecked(boolean checked) {
+            this.checked = checked;
         }
     }
 
+    private class CustomListAdapter extends ArrayAdapter<Item> {
+
+        private ViewHolder holder;
+        private List<Item> list;
+        private int layout;
+
+        public CustomListAdapter(Context context, int layout, List<Item> list) {
+            super(context, layout, list);
+            this.list = list;
+            this.layout = layout;
+        }
+
+        private class ViewHolder {
+            AppCompatCheckBox item;
+        }
+
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            if (convertView == null ) {
+                holder = new ViewHolder();
+                convertView = getActivity().getLayoutInflater().inflate(layout, null);
+                convertView.setTag(holder);
+                holder.item = (AppCompatCheckBox) convertView.findViewById(R.id.checkBox);
+            }
+            else
+                holder = (ViewHolder) convertView.getTag();
+            holder.item.setEnabled(true);
+            holder.item.setTag(list.get(position));
+            holder.item.setText(list.get(position).getName());
+            holder.item.setChecked(list.get(position).isChecked());
+            holder.item.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    ((Item) buttonView.getTag()).setChecked(isChecked);
+                }
+            });
+            if (position >= mSimQuantity) {
+                holder.item.setEnabled(false);
+                holder.item.setChecked(false);
+            }
+            return convertView;
+        }
+
+        public List<Item> getList() {
+            return list;
+        }
+    }
 }

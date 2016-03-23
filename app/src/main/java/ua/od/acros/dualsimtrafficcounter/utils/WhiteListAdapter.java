@@ -46,8 +46,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         ViewHolder viewHolder = new ViewHolder(v);
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ListItem item = (ListItem) buttonView.getTag();
-                item.setChecked(isChecked);
+                ((ListItem) buttonView.getTag()).setChecked(isChecked);
             }
         });
         return viewHolder;
