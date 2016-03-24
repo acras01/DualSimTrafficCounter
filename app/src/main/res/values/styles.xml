@@ -44,15 +44,19 @@
         <item name="android:textAppearanceLarge">?android:attr/textAppearanceMedium</item>
     </style>
 
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowTitleStyle">@style/AppTheme.Dialog.Title</item>
+    </style>
+
+    <style name="AppTheme.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowTitleStyle">@style/AppTheme.Dialog.Title</item>
     </style>
 
     <style name="AppTheme.Dialog.Title">
-        <item name="android:textAppearance">@style/AppTheme.Dialog.Title.TextAppearance</item>
+        <item name="android:textAppearance">@style/TextAppearance.Dialog.Title</item>
     </style>
 
-    <style name="AppTheme.Dialog.Title.TextAppearance" parent="TextAppearance.AppCompat.Title">
+    <style name="TextAppearance.Dialog.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 

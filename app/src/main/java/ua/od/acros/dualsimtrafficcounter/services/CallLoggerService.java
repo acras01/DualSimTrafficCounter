@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -404,7 +405,30 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 final Bundle bundle = new Bundle();
                                 bundle.putString("number", CallLoggerService.this.mNumber[0]);
                                 bundle.putInt("sim", sim);
-                                AlertDialog dialog = new AlertDialog.Builder(ctx, R.style.AppTheme_Dialog)
+                                int style = R.style.AppTheme_Light_Dialog;
+                                if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true)) {
+                                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                                    switch (currentNightMode) {
+                                        case Configuration.UI_MODE_NIGHT_NO:
+                                            // Night mode is not active, we're in day time
+                                            style = R.style.AppTheme_Light_Dialog;
+                                            break;
+                                        case Configuration.UI_MODE_NIGHT_YES:
+                                            // Night mode is active, we're at night!
+                                            style = R.style.AppTheme_Dialog;
+                                            break;
+                                        case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                                            // We don't know what mode we're in, assume notnight
+                                            style = R.style.AppTheme_Light_Dialog;
+                                            break;
+                                    }
+                                } else {
+                                    if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
+                                        style = R.style.AppTheme_Light_Dialog;
+                                    else
+                                        style = R.style.AppTheme_Dialog;
+                                }
+                                AlertDialog dialog = new AlertDialog.Builder(ctx, style)
                                         .setTitle(CallLoggerService.this.mNumber[0])
                                         .setMessage(R.string.is_out_of_home_network)
                                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
