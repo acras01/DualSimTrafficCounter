@@ -48,12 +48,12 @@ import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
-import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
+import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 

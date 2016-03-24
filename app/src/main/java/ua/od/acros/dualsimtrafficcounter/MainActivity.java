@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String EMAIL = "email";
     private static final String MTK = "mtk";
     private static final String XPOSED = "de.robv.android.xposed.installer";
-    private android.support.v4.app.Fragment mTrafficForDate, mTraffic, mTest, mSetUsage, mCalls, mSetDuration;
+    private Fragment mTrafficForDate, mTraffic, mTest, mSetUsage, mCalls, mSetDuration;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
     private NavigationView mNavigationView;
@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .add(R.id.content_frame, mTest)
                             .commit();
                     setItemChecked(R.id.nav_test, true);
+                    mLastMenuItem = R.id.nav_test;
                 }
             } else {
                 getSupportFragmentManager()
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
+                mLastMenuItem = R.id.nav_traffic;
             }
         } else if (action != null && action.equals("tap") && savedInstanceState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
@@ -204,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
+                mLastMenuItem = R.id.nav_traffic;
             } else {
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -211,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(Constants.CALLS_TAG)
                         .commit();
                 setItemChecked(R.id.nav_calls, true);
+                mLastMenuItem = R.id.nav_calls;
             }
         } else {
             if (savedInstanceState == null) {
@@ -220,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
+                mLastMenuItem = R.id.nav_traffic;
             }
         }
     }

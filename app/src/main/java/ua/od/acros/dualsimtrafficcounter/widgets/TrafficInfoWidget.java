@@ -25,8 +25,8 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.TrafficWidgetConfigActivity;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 
 public class TrafficInfoWidget extends AppWidgetProvider {
 
