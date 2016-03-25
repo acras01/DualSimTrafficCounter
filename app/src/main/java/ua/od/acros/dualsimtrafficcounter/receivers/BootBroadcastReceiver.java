@@ -54,9 +54,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i1Off.setAction(Constants.ALARM_ACTION);
                 final int SIM1_OFF = 100;
                 PendingIntent pi1Off = PendingIntent.getBroadcast(context, SIM1_OFF, i1Off, 0);
-                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]));
-                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]));
-                alarmTime.secondOfMinute().setCopy(0);
+                alarmTime = new DateTime().withHourOfDay(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]))
+                        .withMinuteOfHour(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]))
+                        .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
@@ -69,9 +69,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i1On.setAction(Constants.ALARM_ACTION);
                 final int SIM1_ON = 101;
                 PendingIntent pi1On = PendingIntent.getBroadcast(context, SIM1_ON, i1On, 0);
-                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]));
-                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]));
-                alarmTime.secondOfMinute().setCopy(0);
+                alarmTime = new DateTime().withHourOfDay(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]))
+                        .withMinuteOfHour(Integer.valueOf(prefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]))
+                        .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1On);
@@ -84,10 +84,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i2Off.setAction(Constants.ALARM_ACTION);
                 final int SIM2_OFF = 110;
                 PendingIntent pi2Off = PendingIntent.getBroadcast(context, SIM2_OFF, i2Off, 0);
-                am.cancel(pi2Off);
-                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]));
-                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]));
-                alarmTime.secondOfMinute().setCopy(0);
+                alarmTime = new DateTime().withHourOfDay(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]))
+                        .withMinuteOfHour(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]))
+                        .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
@@ -100,9 +99,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i2On.setAction(Constants.ALARM_ACTION);
                 final int SIM2_ON = 111;
                 PendingIntent pi2On = PendingIntent.getBroadcast(context, SIM2_ON, i2On, 0);
-                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]));
-                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]));
-                alarmTime.secondOfMinute().setCopy(0);
+                alarmTime = new DateTime().withHourOfDay(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]))
+                        .withMinuteOfHour(Integer.valueOf(prefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]))
+                        .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2On);
@@ -115,9 +114,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i3Off.setAction(Constants.ALARM_ACTION);
                 final int SIM3_OFF = 120;
                 PendingIntent pi3Off = PendingIntent.getBroadcast(context, SIM3_OFF, i3Off, 0);
-                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]));
-                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]));
-                alarmTime.secondOfMinute().setCopy(0);
+                alarmTime = new DateTime().withHourOfDay(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]))
+                        .withMinuteOfHour(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]))
+                        .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
@@ -130,9 +129,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 i3On.setAction(Constants.ALARM_ACTION);
                 final int SIM3_ON = 121;
                 PendingIntent pi3On = PendingIntent.getBroadcast(context, SIM3_ON, i3On, 0);
-                alarmTime.hourOfDay().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]));
-                alarmTime.minuteOfHour().setCopy(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]));
-                alarmTime.secondOfMinute().setCopy(0);
+                alarmTime = new DateTime().withHourOfDay(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]))
+                        .withMinuteOfHour(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]))
+                        .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3On);
