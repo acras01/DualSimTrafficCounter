@@ -52,7 +52,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.test_fragment, container, false);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
         AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);

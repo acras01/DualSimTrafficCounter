@@ -68,7 +68,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         rxInput = (EditText) view.findViewById(R.id.rxamount);
         Spinner txSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnertx);
         rxSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnerrx);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
         AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);

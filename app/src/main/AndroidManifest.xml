@@ -56,7 +56,7 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:process=":error_report"
-            android:theme="@style/AppTheme.Dialog">
+            android:theme="@style/AppTheme.Auto.Dialog">
         </activity>
         <activity
             android:name=".activities.SettingsActivity"

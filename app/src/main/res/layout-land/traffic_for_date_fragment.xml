@@ -45,35 +45,8 @@
                 android:weightSum="1"
                 android:id="@+id/ll">
 
-                <RadioGroup
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/radioGroup"
-                    android:layout_margin="10dp"
-                    android:layout_weight=".4">
-
-                    <android.support.v7.widget.AppCompatRadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/sim1RB"
-                        android:text="SIM1"
-                        android:textColor="?android:attr/textColorPrimary" />
-
-                    <android.support.v7.widget.AppCompatRadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/sim2RB"
-                        android:text="SIM2"
-                        android:textColor="?android:attr/textColorPrimary" />
-
-                    <android.support.v7.widget.AppCompatRadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/sim3RB"
-                        android:text="SIM3"
-                        android:textColor="?android:attr/textColorPrimary" />
-
-                </RadioGroup>
+                <include layout="@layout/sim_radiogroup"
+                    android:id="@+id/sim_group"/>
 
                 <TableLayout
                     android:layout_width="wrap_content"

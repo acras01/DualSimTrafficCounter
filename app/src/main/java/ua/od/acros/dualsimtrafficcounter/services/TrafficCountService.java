@@ -95,7 +95,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private DateTime mResetTime1;
     private DateTime mResetTime2;
     private DateTime mResetTime3;
-    private ContentValues mDataMap;
+    private ContentValues mTrafficData;
     private CustomDatabaseHelper mDbHelper;
     private ScheduledExecutorService mTaskExecutor = null;
     private ScheduledFuture<?> mTaskResult = null;
@@ -134,15 +134,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
-        mDataMap = CustomDatabaseHelper.readTrafficData(mDbHelper);
-        if (mDataMap.get(Constants.LAST_DATE).equals("")) {
+        mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
             DateTime dateTime = new DateTime();
-            mDataMap.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
-            mDataMap.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
         }
 
         mActiveSIM = Constants.DISABLED;
-        mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
+        mLastActiveSIM = (int) mTrafficData.get(Constants.LAST_ACTIVE_SIM);
 
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -178,21 +178,21 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         mLastActiveSIM = mActiveSIM;
         if (mPrefs.getBoolean(Constants.PREF_SIM1[14], true) && mLastActiveSIM == Constants.SIM1) {
-            mDataMap.put(Constants.TOTAL1, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL1),
+            mTrafficData.put(Constants.TOTAL1, DataFormat.getRoundLong((long) mTrafficData.get(Constants.TOTAL1),
                     mPrefs.getString(Constants.PREF_SIM1[15], "1"), mPrefs.getString(Constants.PREF_SIM1[16], "0")));
-            CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+            CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
         }
 
         if (mPrefs.getBoolean(Constants.PREF_SIM2[14], true) && mLastActiveSIM == Constants.SIM2) {
-            mDataMap.put(Constants.TOTAL2, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL2),
+            mTrafficData.put(Constants.TOTAL2, DataFormat.getRoundLong((long) mTrafficData.get(Constants.TOTAL2),
                     mPrefs.getString(Constants.PREF_SIM2[15], "1"), mPrefs.getString(Constants.PREF_SIM2[16], "0")));
-            CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+            CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
         }
 
         if (mPrefs.getBoolean(Constants.PREF_SIM3[14], true) && mLastActiveSIM == Constants.SIM3) {
-            mDataMap.put(Constants.TOTAL3, DataFormat.getRoundLong((long) mDataMap.get(Constants.TOTAL3),
+            mTrafficData.put(Constants.TOTAL3, DataFormat.getRoundLong((long) mTrafficData.get(Constants.TOTAL3),
                     mPrefs.getString(Constants.PREF_SIM3[15], "1"), mPrefs.getString(Constants.PREF_SIM3[16], "0")));
-            CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+            CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
         }
 
         try {
@@ -307,39 +307,39 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         switch (sim) {
             case Constants.SIM1:
                 if (mIsNight1) {
-                    mDataMap.put(Constants.SIM1RX_N, 0L);
-                    mDataMap.put(Constants.SIM1TX_N, 0L);
-                    mDataMap.put(Constants.TOTAL1_N, 0L);
+                    mTrafficData.put(Constants.SIM1RX_N, 0L);
+                    mTrafficData.put(Constants.SIM1TX_N, 0L);
+                    mTrafficData.put(Constants.TOTAL1_N, 0L);
                 } else {
-                    mDataMap.put(Constants.SIM1RX, 0L);
-                    mDataMap.put(Constants.SIM1TX, 0L);
-                    mDataMap.put(Constants.TOTAL1, 0L);
+                    mTrafficData.put(Constants.SIM1RX, 0L);
+                    mTrafficData.put(Constants.SIM1TX, 0L);
+                    mTrafficData.put(Constants.TOTAL1, 0L);
                 }
                 break;
             case Constants.SIM2:
                 if (mIsNight2) {
-                    mDataMap.put(Constants.SIM2RX_N, 0L);
-                    mDataMap.put(Constants.SIM2TX_N, 0L);
-                    mDataMap.put(Constants.TOTAL2_N, 0L);
+                    mTrafficData.put(Constants.SIM2RX_N, 0L);
+                    mTrafficData.put(Constants.SIM2TX_N, 0L);
+                    mTrafficData.put(Constants.TOTAL2_N, 0L);
                 } else {
-                    mDataMap.put(Constants.SIM2RX, 0L);
-                    mDataMap.put(Constants.SIM2TX, 0L);
-                    mDataMap.put(Constants.TOTAL2, 0L);
+                    mTrafficData.put(Constants.SIM2RX, 0L);
+                    mTrafficData.put(Constants.SIM2TX, 0L);
+                    mTrafficData.put(Constants.TOTAL2, 0L);
                 }
                 break;
             case Constants.SIM3:
                 if (mIsNight3) {
-                    mDataMap.put(Constants.SIM3RX_N, 0L);
-                    mDataMap.put(Constants.SIM3TX_N, 0L);
-                    mDataMap.put(Constants.TOTAL3_N, 0L);
+                    mTrafficData.put(Constants.SIM3RX_N, 0L);
+                    mTrafficData.put(Constants.SIM3TX_N, 0L);
+                    mTrafficData.put(Constants.TOTAL3_N, 0L);
                 } else {
-                    mDataMap.put(Constants.SIM3RX, 0L);
-                    mDataMap.put(Constants.SIM3TX, 0L);
-                    mDataMap.put(Constants.TOTAL3, 0L);
+                    mTrafficData.put(Constants.SIM3RX, 0L);
+                    mTrafficData.put(Constants.SIM3TX, 0L);
+                    mTrafficData.put(Constants.TOTAL3, 0L);
                 }
                 break;
         }
-        CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+        CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
         if (CustomApplication.isScreenOn(mContext)) {
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification(sim));
@@ -361,51 +361,51 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
-        if (mDataMap == null)
-            mDataMap = CustomDatabaseHelper.readTrafficData(mDbHelper);
+        if (mTrafficData == null)
+            mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
                 mReceived1 = DataFormat.getFormatLong(event.rx, event.rxv);
                 mTransmitted1 = DataFormat.getFormatLong(event.tx, event.txv);
                 if (mIsNight1) {
-                    mDataMap.put(Constants.SIM1RX_N, mReceived1);
-                    mDataMap.put(Constants.SIM1TX_N, mTransmitted1);
-                    mDataMap.put(Constants.TOTAL1_N, mReceived1 + mTransmitted1);
+                    mTrafficData.put(Constants.SIM1RX_N, mReceived1);
+                    mTrafficData.put(Constants.SIM1TX_N, mTransmitted1);
+                    mTrafficData.put(Constants.TOTAL1_N, mReceived1 + mTransmitted1);
                 } else {
-                    mDataMap.put(Constants.SIM1RX, mReceived1);
-                    mDataMap.put(Constants.SIM1TX, mTransmitted1);
-                    mDataMap.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
+                    mTrafficData.put(Constants.SIM1RX, mReceived1);
+                    mTrafficData.put(Constants.SIM1TX, mTransmitted1);
+                    mTrafficData.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
                 }
-                CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+                CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
                 break;
             case Constants.SIM2:
                 mReceived2 = DataFormat.getFormatLong(event.rx, event.rxv);
                 mTransmitted2 = DataFormat.getFormatLong(event.tx, event.txv);
                 if (mIsNight2) {
-                    mDataMap.put(Constants.SIM2RX_N, mReceived2);
-                    mDataMap.put(Constants.SIM2TX_N, mTransmitted2);
-                    mDataMap.put(Constants.TOTAL2_N, mReceived2 + mTransmitted2);
+                    mTrafficData.put(Constants.SIM2RX_N, mReceived2);
+                    mTrafficData.put(Constants.SIM2TX_N, mTransmitted2);
+                    mTrafficData.put(Constants.TOTAL2_N, mReceived2 + mTransmitted2);
                 } else {
-                    mDataMap.put(Constants.SIM2RX, mReceived2);
-                    mDataMap.put(Constants.SIM2TX, mTransmitted2);
-                    mDataMap.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
+                    mTrafficData.put(Constants.SIM2RX, mReceived2);
+                    mTrafficData.put(Constants.SIM2TX, mTransmitted2);
+                    mTrafficData.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
                 }
-                CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+                CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
                 break;
             case Constants.SIM3:
                 mReceived3 = DataFormat.getFormatLong(event.rx, event.rxv);
                 mTransmitted3 = DataFormat.getFormatLong(event.tx, event.txv);
                 if (mIsNight3) {
-                    mDataMap.put(Constants.SIM3RX_N, mReceived3);
-                    mDataMap.put(Constants.SIM3TX_N, mTransmitted3);
-                    mDataMap.put(Constants.TOTAL3_N, mReceived3 + mTransmitted3);
+                    mTrafficData.put(Constants.SIM3RX_N, mReceived3);
+                    mTrafficData.put(Constants.SIM3TX_N, mTransmitted3);
+                    mTrafficData.put(Constants.TOTAL3_N, mReceived3 + mTransmitted3);
                 } else {
-                    mDataMap.put(Constants.SIM3RX, mReceived3);
-                    mDataMap.put(Constants.SIM3TX, mTransmitted3);
-                    mDataMap.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
+                    mTrafficData.put(Constants.SIM3RX, mReceived3);
+                    mTrafficData.put(Constants.SIM3TX, mTransmitted3);
+                    mTrafficData.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
                 }
-                CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+                CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
                 break;
         }
         if (CustomApplication.isScreenOn(mContext)) {
@@ -442,15 +442,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
-        mDataMap = CustomDatabaseHelper.readTrafficData(mDbHelper);
-        if (mDataMap.get(Constants.LAST_DATE).equals("")) {
+        mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
             DateTime dateTime = new DateTime();
-            mDataMap.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
-            mDataMap.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
         }
 
         mActiveSIM = Constants.DISABLED;
-        mLastActiveSIM = (int) mDataMap.get(Constants.LAST_ACTIVE_SIM);
+        mLastActiveSIM = (int) mTrafficData.get(Constants.LAST_ACTIVE_SIM);
 
         sendDataBroadcast(0L, 0L);
 
@@ -615,7 +615,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (DateTimeComparator.getDateOnlyInstance().compare(mNowDate, mLastDate) > 0 || mResetRuleHasChanged) {
             simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
                     Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
-            mResetTime1 = DateUtils.getResetDate(Constants.SIM1, mDataMap, mPrefs, simPref);
+            mResetTime1 = DateUtils.getResetDate(Constants.SIM1, mTrafficData, mPrefs, simPref);
             if (mResetTime1 != null) {
                 mIsResetNeeded1 = true;
                 mPrefs.edit()
@@ -626,7 +626,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (mSimQuantity >= 2) {
                 simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
                         Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
-                mResetTime2 = DateUtils.getResetDate(Constants.SIM2, mDataMap, mPrefs, simPref);
+                mResetTime2 = DateUtils.getResetDate(Constants.SIM2, mTrafficData, mPrefs, simPref);
                 if (mResetTime2 != null) {
                     mIsResetNeeded2 = true;
                     mPrefs.edit()
@@ -638,7 +638,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (mSimQuantity == 3) {
                 simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
                         Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
-                mResetTime3 = DateUtils.getResetDate(Constants.SIM3, mDataMap, mPrefs, simPref);
+                mResetTime3 = DateUtils.getResetDate(Constants.SIM3, mTrafficData, mPrefs, simPref);
                 if (mResetTime3 != null) {
                     mIsResetNeeded3 = true;
                     mPrefs.edit()
@@ -658,16 +658,16 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
             EventBus.getDefault().post(new TipTrafficEvent());
 
-            DateTime dt = mDateFormat.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
+            DateTime dt = mDateFormat.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
 
             if (mLimitHasChanged) {
                 mLimits = getSIMLimits();
                 mLimitHasChanged = false;
             }
 
-            long tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
-            long tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
-            long tot3 = mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3);
+            long tot1 = mIsNight1 ? (long) mTrafficData.get(Constants.TOTAL1_N) : (long) mTrafficData.get(Constants.TOTAL1);
+            long tot2 = mIsNight2 ? (long) mTrafficData.get(Constants.TOTAL2_N) : (long) mTrafficData.get(Constants.TOTAL2);
+            long tot3 = mIsNight3 ? (long) mTrafficData.get(Constants.TOTAL3_N) : (long) mTrafficData.get(Constants.TOTAL3);
             try {
                 if (mIsSIM1OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
                         || (tot1 <= mLimits[0] && (mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
@@ -720,29 +720,29 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long speedRX;
                     long speedTX;
 
-                    //avoid NPE by refreshing mDataMap
+                    //avoid NPE by refreshing mTrafficData
                     //begin
-                    mDataMap.put(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
-                    mDataMap.put(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
-                    mDataMap.put(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
-                    mDataMap.put(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
-                    mDataMap.put(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
-                    mDataMap.put(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
-                    mDataMap.put(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
-                    mDataMap.put(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
-                    mDataMap.put(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
-                    mDataMap.put(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
-                    mDataMap.put(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
-                    mDataMap.put(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
-                    mDataMap.put(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
-                    mDataMap.put(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
-                    mDataMap.put(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
-                    mDataMap.put(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
-                    mDataMap.put(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
-                    mDataMap.put(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
-                    mDataMap.put(Constants.LAST_TIME, (String) mDataMap.get(Constants.LAST_TIME));
-                    mDataMap.put(Constants.LAST_DATE, (String) mDataMap.get(Constants.LAST_DATE));
-                    mDataMap.put(Constants.LAST_ACTIVE_SIM, (int) mDataMap.get(Constants.LAST_ACTIVE_SIM));
+                    mTrafficData.put(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
+                    mTrafficData.put(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
+                    mTrafficData.put(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
+                    mTrafficData.put(Constants.SIM1TX, (long) mTrafficData.get(Constants.SIM1TX));
+                    mTrafficData.put(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
+                    mTrafficData.put(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
+                    mTrafficData.put(Constants.TOTAL1, (long) mTrafficData.get(Constants.TOTAL1));
+                    mTrafficData.put(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
+                    mTrafficData.put(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
+                    mTrafficData.put(Constants.SIM1RX_N, (long) mTrafficData.get(Constants.SIM1RX_N));
+                    mTrafficData.put(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
+                    mTrafficData.put(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
+                    mTrafficData.put(Constants.SIM1TX_N, (long) mTrafficData.get(Constants.SIM1TX_N));
+                    mTrafficData.put(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
+                    mTrafficData.put(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
+                    mTrafficData.put(Constants.TOTAL1_N, (long) mTrafficData.get(Constants.TOTAL1_N));
+                    mTrafficData.put(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
+                    mTrafficData.put(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
+                    mTrafficData.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                    mTrafficData.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                    mTrafficData.put(Constants.LAST_ACTIVE_SIM, (int) mTrafficData.get(Constants.LAST_ACTIVE_SIM));
                     //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -756,7 +756,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long tx = 0;
                     long tot = 0;
 
-                    mLastDate = mDateFormat.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
+                    mLastDate = mDateFormat.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
                     if (mPrefs.getBoolean(Constants.PREF_SIM1[17], false)) {
@@ -771,40 +771,40 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     boolean emptyDB = CustomDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
                     if (emptyDB) {
-                        mDataMap.put(Constants.SIM1RX, 0L);
-                        mDataMap.put(Constants.SIM2RX, 0L);
-                        mDataMap.put(Constants.SIM3RX, 0L);
-                        mDataMap.put(Constants.SIM1TX, 0L);
-                        mDataMap.put(Constants.SIM2TX, 0L);
-                        mDataMap.put(Constants.SIM3TX, 0L);
-                        mDataMap.put(Constants.TOTAL1, 0L);
-                        mDataMap.put(Constants.TOTAL2, 0L);
-                        mDataMap.put(Constants.TOTAL3, 0L);
-                        mDataMap.put(Constants.SIM1RX_N, 0L);
-                        mDataMap.put(Constants.SIM2RX_N, 0L);
-                        mDataMap.put(Constants.SIM3RX_N, 0L);
-                        mDataMap.put(Constants.SIM1TX_N, 0L);
-                        mDataMap.put(Constants.SIM2TX_N, 0L);
-                        mDataMap.put(Constants.SIM3TX_N, 0L);
-                        mDataMap.put(Constants.TOTAL1_N, 0L);
-                        mDataMap.put(Constants.TOTAL2_N, 0L);
-                        mDataMap.put(Constants.TOTAL3_N, 0L);
-                        mDataMap.put(Constants.LAST_RX, 0L);
-                        mDataMap.put(Constants.LAST_TX, 0L);
-                        mDataMap.put(Constants.LAST_TIME, "");
-                        mDataMap.put(Constants.LAST_DATE, "");
-                        mDataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
+                        mTrafficData.put(Constants.SIM1RX, 0L);
+                        mTrafficData.put(Constants.SIM2RX, 0L);
+                        mTrafficData.put(Constants.SIM3RX, 0L);
+                        mTrafficData.put(Constants.SIM1TX, 0L);
+                        mTrafficData.put(Constants.SIM2TX, 0L);
+                        mTrafficData.put(Constants.SIM3TX, 0L);
+                        mTrafficData.put(Constants.TOTAL1, 0L);
+                        mTrafficData.put(Constants.TOTAL2, 0L);
+                        mTrafficData.put(Constants.TOTAL3, 0L);
+                        mTrafficData.put(Constants.SIM1RX_N, 0L);
+                        mTrafficData.put(Constants.SIM2RX_N, 0L);
+                        mTrafficData.put(Constants.SIM3RX_N, 0L);
+                        mTrafficData.put(Constants.SIM1TX_N, 0L);
+                        mTrafficData.put(Constants.SIM2TX_N, 0L);
+                        mTrafficData.put(Constants.SIM3TX_N, 0L);
+                        mTrafficData.put(Constants.TOTAL1_N, 0L);
+                        mTrafficData.put(Constants.TOTAL2_N, 0L);
+                        mTrafficData.put(Constants.TOTAL3_N, 0L);
+                        mTrafficData.put(Constants.LAST_RX, 0L);
+                        mTrafficData.put(Constants.LAST_TX, 0L);
+                        mTrafficData.put(Constants.LAST_TIME, "");
+                        mTrafficData.put(Constants.LAST_DATE, "");
+                        mTrafficData.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
                     } else if ((DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3)) {
                         mHasActionChosen = false;
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1) {
-                            mDataMap.put(Constants.SIM1RX, 0L);
-                            mDataMap.put(Constants.SIM1TX, 0L);
-                            mDataMap.put(Constants.TOTAL1, 0L);
-                            mDataMap.put(Constants.SIM1RX_N, 0L);
-                            mDataMap.put(Constants.SIM1TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL1_N, 0L);
+                            mTrafficData.put(Constants.SIM1RX, 0L);
+                            mTrafficData.put(Constants.SIM1TX, 0L);
+                            mTrafficData.put(Constants.TOTAL1, 0L);
+                            mTrafficData.put(Constants.SIM1RX_N, 0L);
+                            mTrafficData.put(Constants.SIM1TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL1_N, 0L);
                             rx = tx = mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
                             mSIM1ContinueOverLimit = false;
@@ -815,20 +815,20 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2) {
-                            mDataMap.put(Constants.SIM2RX, 0L);
-                            mDataMap.put(Constants.SIM2TX, 0L);
-                            mDataMap.put(Constants.TOTAL2, 0L);
-                            mDataMap.put(Constants.SIM2RX_N, 0L);
-                            mDataMap.put(Constants.SIM2TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL2_N, 0L);
+                            mTrafficData.put(Constants.SIM2RX, 0L);
+                            mTrafficData.put(Constants.SIM2TX, 0L);
+                            mTrafficData.put(Constants.TOTAL2, 0L);
+                            mTrafficData.put(Constants.SIM2RX_N, 0L);
+                            mTrafficData.put(Constants.SIM2TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL2_N, 0L);
                             if (!mIsNight1) {
-                                rx = (long) mDataMap.get(Constants.SIM1RX);
-                                tx = (long) mDataMap.get(Constants.SIM1TX);
-                                tot = (long) mDataMap.get(Constants.TOTAL1);
+                                rx = (long) mTrafficData.get(Constants.SIM1RX);
+                                tx = (long) mTrafficData.get(Constants.SIM1TX);
+                                tot = (long) mTrafficData.get(Constants.TOTAL1);
                             } else {
-                                rx = (long) mDataMap.get(Constants.SIM1RX_N);
-                                tx = (long) mDataMap.get(Constants.SIM1TX_N);
-                                tot = (long) mDataMap.get(Constants.TOTAL1_N);
+                                rx = (long) mTrafficData.get(Constants.SIM1RX_N);
+                                tx = (long) mTrafficData.get(Constants.SIM1TX_N);
+                                tot = (long) mTrafficData.get(Constants.TOTAL1_N);
                             }
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
@@ -840,20 +840,20 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3) {
-                            mDataMap.put(Constants.SIM3RX, 0L);
-                            mDataMap.put(Constants.SIM3TX, 0L);
-                            mDataMap.put(Constants.TOTAL3, 0L);
-                            mDataMap.put(Constants.SIM3RX_N, 0L);
-                            mDataMap.put(Constants.SIM3TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL3_N, 0L);
+                            mTrafficData.put(Constants.SIM3RX, 0L);
+                            mTrafficData.put(Constants.SIM3TX, 0L);
+                            mTrafficData.put(Constants.TOTAL3, 0L);
+                            mTrafficData.put(Constants.SIM3RX_N, 0L);
+                            mTrafficData.put(Constants.SIM3TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL3_N, 0L);
                             if (!mIsNight1) {
-                                rx = (long) mDataMap.get(Constants.SIM1RX);
-                                tx = (long) mDataMap.get(Constants.SIM1TX);
-                                tot = (long) mDataMap.get(Constants.TOTAL1);
+                                rx = (long) mTrafficData.get(Constants.SIM1RX);
+                                tx = (long) mTrafficData.get(Constants.SIM1TX);
+                                tot = (long) mTrafficData.get(Constants.TOTAL1);
                             } else {
-                                rx = (long) mDataMap.get(Constants.SIM1RX_N);
-                                tx = (long) mDataMap.get(Constants.SIM1TX_N);
-                                tot = (long) mDataMap.get(Constants.TOTAL1_N);
+                                rx = (long) mTrafficData.get(Constants.SIM1RX_N);
+                                tx = (long) mTrafficData.get(Constants.SIM1TX_N);
+                                tot = (long) mTrafficData.get(Constants.TOTAL1_N);
                             }
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
@@ -866,13 +866,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     } else {
                         if (!mIsNight1) {
-                            rx = (long) mDataMap.get(Constants.SIM1RX);
-                            tx = (long) mDataMap.get(Constants.SIM1TX);
-                            tot = (long) mDataMap.get(Constants.TOTAL1);
+                            rx = (long) mTrafficData.get(Constants.SIM1RX);
+                            tx = (long) mTrafficData.get(Constants.SIM1TX);
+                            tot = (long) mTrafficData.get(Constants.TOTAL1);
                         } else {
-                            rx = (long) mDataMap.get(Constants.SIM1RX_N);
-                            tx = (long) mDataMap.get(Constants.SIM1TX_N);
-                            tot = (long) mDataMap.get(Constants.TOTAL1_N);
+                            rx = (long) mTrafficData.get(Constants.SIM1RX_N);
+                            tx = (long) mTrafficData.get(Constants.SIM1TX_N);
+                            tot = (long) mTrafficData.get(Constants.TOTAL1_N);
                         }
                     }
 
@@ -891,7 +891,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[0]) || mSIM1ContinueOverLimit) {
-                        mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
+                        mTrafficData.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
@@ -913,16 +913,16 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     if (!mIsSIM1OverLimit) {
                         if (!mIsNight1) {
-                            mDataMap.put(Constants.SIM1RX, rx);
-                            mDataMap.put(Constants.SIM1TX, tx);
-                            mDataMap.put(Constants.TOTAL1, tot);
+                            mTrafficData.put(Constants.SIM1RX, rx);
+                            mTrafficData.put(Constants.SIM1TX, tx);
+                            mTrafficData.put(Constants.TOTAL1, tot);
                         } else {
-                            mDataMap.put(Constants.SIM1RX_N, rx);
-                            mDataMap.put(Constants.SIM1TX_N, tx);
-                            mDataMap.put(Constants.TOTAL1_N, tot);
+                            mTrafficData.put(Constants.SIM1RX_N, rx);
+                            mTrafficData.put(Constants.SIM1TX_N, tx);
+                            mTrafficData.put(Constants.TOTAL1_N, tot);
                         }
-                        mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
+                        mTrafficData.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
+                        mTrafficData.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB);
                         if (CustomApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -951,29 +951,29 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long speedRX;
                     long speedTX;
 
-                    //avoid NPE by refreshing mDataMap
+                    //avoid NPE by refreshing mTrafficData
                     //begin
-                    mDataMap.put(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
-                    mDataMap.put(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
-                    mDataMap.put(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
-                    mDataMap.put(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
-                    mDataMap.put(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
-                    mDataMap.put(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
-                    mDataMap.put(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
-                    mDataMap.put(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
-                    mDataMap.put(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
-                    mDataMap.put(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
-                    mDataMap.put(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
-                    mDataMap.put(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
-                    mDataMap.put(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
-                    mDataMap.put(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
-                    mDataMap.put(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
-                    mDataMap.put(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
-                    mDataMap.put(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
-                    mDataMap.put(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
-                    mDataMap.put(Constants.LAST_TIME, (String) mDataMap.get(Constants.LAST_TIME));
-                    mDataMap.put(Constants.LAST_DATE, (String) mDataMap.get(Constants.LAST_DATE));
-                    mDataMap.put(Constants.LAST_ACTIVE_SIM, (int) mDataMap.get(Constants.LAST_ACTIVE_SIM));
+                    mTrafficData.put(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
+                    mTrafficData.put(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
+                    mTrafficData.put(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
+                    mTrafficData.put(Constants.SIM1TX, (long) mTrafficData.get(Constants.SIM1TX));
+                    mTrafficData.put(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
+                    mTrafficData.put(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
+                    mTrafficData.put(Constants.TOTAL1, (long) mTrafficData.get(Constants.TOTAL1));
+                    mTrafficData.put(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
+                    mTrafficData.put(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
+                    mTrafficData.put(Constants.SIM1RX_N, (long) mTrafficData.get(Constants.SIM1RX_N));
+                    mTrafficData.put(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
+                    mTrafficData.put(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
+                    mTrafficData.put(Constants.SIM1TX_N, (long) mTrafficData.get(Constants.SIM1TX_N));
+                    mTrafficData.put(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
+                    mTrafficData.put(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
+                    mTrafficData.put(Constants.TOTAL1_N, (long) mTrafficData.get(Constants.TOTAL1_N));
+                    mTrafficData.put(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
+                    mTrafficData.put(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
+                    mTrafficData.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                    mTrafficData.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                    mTrafficData.put(Constants.LAST_ACTIVE_SIM, (int) mTrafficData.get(Constants.LAST_ACTIVE_SIM));
                     //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -987,7 +987,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long tx = 0;
                     long tot = 0;
 
-                    mLastDate = mDateFormat.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
+                    mLastDate = mDateFormat.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
                     if (mPrefs.getBoolean(Constants.PREF_SIM2[17], false)) {
@@ -1002,48 +1002,48 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     boolean emptyDB = CustomDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
                     if (emptyDB) {
-                        mDataMap.put(Constants.SIM1RX, 0L);
-                        mDataMap.put(Constants.SIM2RX, 0L);
-                        mDataMap.put(Constants.SIM3RX, 0L);
-                        mDataMap.put(Constants.SIM1TX, 0L);
-                        mDataMap.put(Constants.SIM2TX, 0L);
-                        mDataMap.put(Constants.SIM3TX, 0L);
-                        mDataMap.put(Constants.TOTAL1, 0L);
-                        mDataMap.put(Constants.TOTAL2, 0L);
-                        mDataMap.put(Constants.TOTAL3, 0L);
-                        mDataMap.put(Constants.SIM1RX_N, 0L);
-                        mDataMap.put(Constants.SIM2RX_N, 0L);
-                        mDataMap.put(Constants.SIM3RX_N, 0L);
-                        mDataMap.put(Constants.SIM1TX_N, 0L);
-                        mDataMap.put(Constants.SIM2TX_N, 0L);
-                        mDataMap.put(Constants.SIM3TX_N, 0L);
-                        mDataMap.put(Constants.TOTAL1_N, 0L);
-                        mDataMap.put(Constants.TOTAL2_N, 0L);
-                        mDataMap.put(Constants.TOTAL3_N, 0L);
-                        mDataMap.put(Constants.LAST_RX, 0L);
-                        mDataMap.put(Constants.LAST_TX, 0L);
-                        mDataMap.put(Constants.LAST_TIME, "");
-                        mDataMap.put(Constants.LAST_DATE, "");
-                        mDataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
+                        mTrafficData.put(Constants.SIM1RX, 0L);
+                        mTrafficData.put(Constants.SIM2RX, 0L);
+                        mTrafficData.put(Constants.SIM3RX, 0L);
+                        mTrafficData.put(Constants.SIM1TX, 0L);
+                        mTrafficData.put(Constants.SIM2TX, 0L);
+                        mTrafficData.put(Constants.SIM3TX, 0L);
+                        mTrafficData.put(Constants.TOTAL1, 0L);
+                        mTrafficData.put(Constants.TOTAL2, 0L);
+                        mTrafficData.put(Constants.TOTAL3, 0L);
+                        mTrafficData.put(Constants.SIM1RX_N, 0L);
+                        mTrafficData.put(Constants.SIM2RX_N, 0L);
+                        mTrafficData.put(Constants.SIM3RX_N, 0L);
+                        mTrafficData.put(Constants.SIM1TX_N, 0L);
+                        mTrafficData.put(Constants.SIM2TX_N, 0L);
+                        mTrafficData.put(Constants.SIM3TX_N, 0L);
+                        mTrafficData.put(Constants.TOTAL1_N, 0L);
+                        mTrafficData.put(Constants.TOTAL2_N, 0L);
+                        mTrafficData.put(Constants.TOTAL3_N, 0L);
+                        mTrafficData.put(Constants.LAST_RX, 0L);
+                        mTrafficData.put(Constants.LAST_TX, 0L);
+                        mTrafficData.put(Constants.LAST_TIME, "");
+                        mTrafficData.put(Constants.LAST_DATE, "");
+                        mTrafficData.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
                     } else if ((DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3)) {
                         mHasActionChosen = false;
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1) {
-                            mDataMap.put(Constants.SIM1RX, 0L);
-                            mDataMap.put(Constants.SIM1TX, 0L);
-                            mDataMap.put(Constants.TOTAL1, 0L);
-                            mDataMap.put(Constants.SIM1RX_N, 0L);
-                            mDataMap.put(Constants.SIM1TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL1_N, 0L);
+                            mTrafficData.put(Constants.SIM1RX, 0L);
+                            mTrafficData.put(Constants.SIM1TX, 0L);
+                            mTrafficData.put(Constants.TOTAL1, 0L);
+                            mTrafficData.put(Constants.SIM1RX_N, 0L);
+                            mTrafficData.put(Constants.SIM1TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL1_N, 0L);
                             if (!mIsNight2) {
-                                rx = (long) mDataMap.get(Constants.SIM2RX);
-                                tx = (long) mDataMap.get(Constants.SIM2TX);
-                                tot = (long) mDataMap.get(Constants.TOTAL2);
+                                rx = (long) mTrafficData.get(Constants.SIM2RX);
+                                tx = (long) mTrafficData.get(Constants.SIM2TX);
+                                tot = (long) mTrafficData.get(Constants.TOTAL2);
                             } else {
-                                rx = (long) mDataMap.get(Constants.SIM2RX_N);
-                                tx = (long) mDataMap.get(Constants.SIM2TX_N);
-                                tot = (long) mDataMap.get(Constants.TOTAL2_N);
+                                rx = (long) mTrafficData.get(Constants.SIM2RX_N);
+                                tx = (long) mTrafficData.get(Constants.SIM2TX_N);
+                                tot = (long) mTrafficData.get(Constants.TOTAL2_N);
                             }
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
@@ -1055,12 +1055,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2) {
-                            mDataMap.put(Constants.SIM2RX, 0L);
-                            mDataMap.put(Constants.SIM2TX, 0L);
-                            mDataMap.put(Constants.TOTAL2, 0L);
-                            mDataMap.put(Constants.SIM2RX_N, 0L);
-                            mDataMap.put(Constants.SIM2TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL2_N, 0L);
+                            mTrafficData.put(Constants.SIM2RX, 0L);
+                            mTrafficData.put(Constants.SIM2TX, 0L);
+                            mTrafficData.put(Constants.TOTAL2, 0L);
+                            mTrafficData.put(Constants.SIM2RX_N, 0L);
+                            mTrafficData.put(Constants.SIM2TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL2_N, 0L);
                             rx = tx = mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
                             mSIM2ContinueOverLimit = false;
@@ -1071,20 +1071,20 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3) {
-                            mDataMap.put(Constants.SIM3RX, 0L);
-                            mDataMap.put(Constants.SIM3TX, 0L);
-                            mDataMap.put(Constants.TOTAL3, 0L);
-                            mDataMap.put(Constants.SIM3RX_N, 0L);
-                            mDataMap.put(Constants.SIM3TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL3_N, 0L);
+                            mTrafficData.put(Constants.SIM3RX, 0L);
+                            mTrafficData.put(Constants.SIM3TX, 0L);
+                            mTrafficData.put(Constants.TOTAL3, 0L);
+                            mTrafficData.put(Constants.SIM3RX_N, 0L);
+                            mTrafficData.put(Constants.SIM3TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL3_N, 0L);
                             if (!mIsNight2) {
-                                rx = (long) mDataMap.get(Constants.SIM2RX);
-                                tx = (long) mDataMap.get(Constants.SIM2TX);
-                                tot = (long) mDataMap.get(Constants.TOTAL2);
+                                rx = (long) mTrafficData.get(Constants.SIM2RX);
+                                tx = (long) mTrafficData.get(Constants.SIM2TX);
+                                tot = (long) mTrafficData.get(Constants.TOTAL2);
                             } else {
-                                rx = (long) mDataMap.get(Constants.SIM2RX_N);
-                                tx = (long) mDataMap.get(Constants.SIM2TX_N);
-                                tot = (long) mDataMap.get(Constants.TOTAL2_N);
+                                rx = (long) mTrafficData.get(Constants.SIM2RX_N);
+                                tx = (long) mTrafficData.get(Constants.SIM2TX_N);
+                                tot = (long) mTrafficData.get(Constants.TOTAL2_N);
                             }
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
@@ -1097,13 +1097,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     } else {
                         if (!mIsNight2) {
-                            rx = (long) mDataMap.get(Constants.SIM2RX);
-                            tx = (long) mDataMap.get(Constants.SIM2TX);
-                            tot = (long) mDataMap.get(Constants.TOTAL2);
+                            rx = (long) mTrafficData.get(Constants.SIM2RX);
+                            tx = (long) mTrafficData.get(Constants.SIM2TX);
+                            tot = (long) mTrafficData.get(Constants.TOTAL2);
                         } else {
-                            rx = (long) mDataMap.get(Constants.SIM2RX_N);
-                            tx = (long) mDataMap.get(Constants.SIM2TX_N);
-                            tot = (long) mDataMap.get(Constants.TOTAL2_N);
+                            rx = (long) mTrafficData.get(Constants.SIM2RX_N);
+                            tx = (long) mTrafficData.get(Constants.SIM2TX_N);
+                            tot = (long) mTrafficData.get(Constants.TOTAL2_N);
                         }
                     }
 
@@ -1122,7 +1122,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[1]) || mSIM2ContinueOverLimit) {
-                        mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
+                        mTrafficData.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
@@ -1144,16 +1144,16 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     if (!mIsSIM2OverLimit) {
                         if (!mIsNight2) {
-                            mDataMap.put(Constants.SIM2RX, rx);
-                            mDataMap.put(Constants.SIM2TX, tx);
-                            mDataMap.put(Constants.TOTAL2, tot);
+                            mTrafficData.put(Constants.SIM2RX, rx);
+                            mTrafficData.put(Constants.SIM2TX, tx);
+                            mTrafficData.put(Constants.TOTAL2, tot);
                         } else {
-                            mDataMap.put(Constants.SIM2RX_N, rx);
-                            mDataMap.put(Constants.SIM2TX_N, tx);
-                            mDataMap.put(Constants.TOTAL2_N, tot);
+                            mTrafficData.put(Constants.SIM2RX_N, rx);
+                            mTrafficData.put(Constants.SIM2TX_N, tx);
+                            mTrafficData.put(Constants.TOTAL2_N, tot);
                         }
-                        mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
+                        mTrafficData.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
+                        mTrafficData.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB);
                         if (CustomApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1182,29 +1182,29 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long speedRX;
                     long speedTX;
 
-                    //avoid NPE by refreshing mDataMap
+                    //avoid NPE by refreshing mTrafficData
                     //begin
-                    mDataMap.put(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
-                    mDataMap.put(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
-                    mDataMap.put(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
-                    mDataMap.put(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
-                    mDataMap.put(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
-                    mDataMap.put(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
-                    mDataMap.put(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
-                    mDataMap.put(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
-                    mDataMap.put(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
-                    mDataMap.put(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
-                    mDataMap.put(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
-                    mDataMap.put(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
-                    mDataMap.put(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
-                    mDataMap.put(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
-                    mDataMap.put(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
-                    mDataMap.put(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
-                    mDataMap.put(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
-                    mDataMap.put(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
-                    mDataMap.put(Constants.LAST_TIME, (String) mDataMap.get(Constants.LAST_TIME));
-                    mDataMap.put(Constants.LAST_DATE, (String) mDataMap.get(Constants.LAST_DATE));
-                    mDataMap.put(Constants.LAST_ACTIVE_SIM, (int) mDataMap.get(Constants.LAST_ACTIVE_SIM));
+                    mTrafficData.put(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
+                    mTrafficData.put(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
+                    mTrafficData.put(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
+                    mTrafficData.put(Constants.SIM1TX, (long) mTrafficData.get(Constants.SIM1TX));
+                    mTrafficData.put(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
+                    mTrafficData.put(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
+                    mTrafficData.put(Constants.TOTAL1, (long) mTrafficData.get(Constants.TOTAL1));
+                    mTrafficData.put(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
+                    mTrafficData.put(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
+                    mTrafficData.put(Constants.SIM1RX_N, (long) mTrafficData.get(Constants.SIM1RX_N));
+                    mTrafficData.put(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
+                    mTrafficData.put(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
+                    mTrafficData.put(Constants.SIM1TX_N, (long) mTrafficData.get(Constants.SIM1TX_N));
+                    mTrafficData.put(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
+                    mTrafficData.put(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
+                    mTrafficData.put(Constants.TOTAL1_N, (long) mTrafficData.get(Constants.TOTAL1_N));
+                    mTrafficData.put(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
+                    mTrafficData.put(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
+                    mTrafficData.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                    mTrafficData.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                    mTrafficData.put(Constants.LAST_ACTIVE_SIM, (int) mTrafficData.get(Constants.LAST_ACTIVE_SIM));
                     //end
 
                     long timeDelta = SystemClock.elapsedRealtime() - mLastUpdateTime;
@@ -1218,7 +1218,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long tx = 0;
                     long tot = 0;
 
-                    mLastDate = mDateFormat.parseDateTime((String) mDataMap.get(Constants.LAST_DATE));
+                    mLastDate = mDateFormat.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
                     if (mPrefs.getBoolean(Constants.PREF_SIM3[17], false)) {
@@ -1233,48 +1233,48 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     boolean emptyDB = CustomDatabaseHelper.isTrafficTableEmpty(mDbHelper);
 
                     if (emptyDB) {
-                        mDataMap.put(Constants.SIM1RX, 0L);
-                        mDataMap.put(Constants.SIM2RX, 0L);
-                        mDataMap.put(Constants.SIM3RX, 0L);
-                        mDataMap.put(Constants.SIM1TX, 0L);
-                        mDataMap.put(Constants.SIM2TX, 0L);
-                        mDataMap.put(Constants.SIM3TX, 0L);
-                        mDataMap.put(Constants.TOTAL1, 0L);
-                        mDataMap.put(Constants.TOTAL2, 0L);
-                        mDataMap.put(Constants.TOTAL3, 0L);
-                        mDataMap.put(Constants.SIM1RX_N, 0L);
-                        mDataMap.put(Constants.SIM2RX_N, 0L);
-                        mDataMap.put(Constants.SIM3RX_N, 0L);
-                        mDataMap.put(Constants.SIM1TX_N, 0L);
-                        mDataMap.put(Constants.SIM2TX_N, 0L);
-                        mDataMap.put(Constants.SIM3TX_N, 0L);
-                        mDataMap.put(Constants.TOTAL1_N, 0L);
-                        mDataMap.put(Constants.TOTAL2_N, 0L);
-                        mDataMap.put(Constants.TOTAL3_N, 0L);
-                        mDataMap.put(Constants.LAST_RX, 0L);
-                        mDataMap.put(Constants.LAST_TX, 0L);
-                        mDataMap.put(Constants.LAST_TIME, "");
-                        mDataMap.put(Constants.LAST_DATE, "");
-                        mDataMap.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
+                        mTrafficData.put(Constants.SIM1RX, 0L);
+                        mTrafficData.put(Constants.SIM2RX, 0L);
+                        mTrafficData.put(Constants.SIM3RX, 0L);
+                        mTrafficData.put(Constants.SIM1TX, 0L);
+                        mTrafficData.put(Constants.SIM2TX, 0L);
+                        mTrafficData.put(Constants.SIM3TX, 0L);
+                        mTrafficData.put(Constants.TOTAL1, 0L);
+                        mTrafficData.put(Constants.TOTAL2, 0L);
+                        mTrafficData.put(Constants.TOTAL3, 0L);
+                        mTrafficData.put(Constants.SIM1RX_N, 0L);
+                        mTrafficData.put(Constants.SIM2RX_N, 0L);
+                        mTrafficData.put(Constants.SIM3RX_N, 0L);
+                        mTrafficData.put(Constants.SIM1TX_N, 0L);
+                        mTrafficData.put(Constants.SIM2TX_N, 0L);
+                        mTrafficData.put(Constants.SIM3TX_N, 0L);
+                        mTrafficData.put(Constants.TOTAL1_N, 0L);
+                        mTrafficData.put(Constants.TOTAL2_N, 0L);
+                        mTrafficData.put(Constants.TOTAL3_N, 0L);
+                        mTrafficData.put(Constants.LAST_RX, 0L);
+                        mTrafficData.put(Constants.LAST_TX, 0L);
+                        mTrafficData.put(Constants.LAST_TIME, "");
+                        mTrafficData.put(Constants.LAST_DATE, "");
+                        mTrafficData.put(Constants.LAST_ACTIVE_SIM, Constants.DISABLED);
                     } else if ((DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3)) {
                         mHasActionChosen = false;
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1) {
-                            mDataMap.put(Constants.SIM1RX, 0L);
-                            mDataMap.put(Constants.SIM1TX, 0L);
-                            mDataMap.put(Constants.TOTAL1, 0L);
-                            mDataMap.put(Constants.SIM1RX_N, 0L);
-                            mDataMap.put(Constants.SIM1TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL1_N, 0L);
+                            mTrafficData.put(Constants.SIM1RX, 0L);
+                            mTrafficData.put(Constants.SIM1TX, 0L);
+                            mTrafficData.put(Constants.TOTAL1, 0L);
+                            mTrafficData.put(Constants.SIM1RX_N, 0L);
+                            mTrafficData.put(Constants.SIM1TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL1_N, 0L);
                             if (!mIsNight3) {
-                                rx = (long) mDataMap.get(Constants.SIM3RX);
-                                tx = (long) mDataMap.get(Constants.SIM3TX);
-                                tot = (long) mDataMap.get(Constants.TOTAL3);
+                                rx = (long) mTrafficData.get(Constants.SIM3RX);
+                                tx = (long) mTrafficData.get(Constants.SIM3TX);
+                                tot = (long) mTrafficData.get(Constants.TOTAL3);
                             } else {
-                                rx = (long) mDataMap.get(Constants.SIM3RX_N);
-                                tx = (long) mDataMap.get(Constants.SIM3TX_N);
-                                tot = (long) mDataMap.get(Constants.TOTAL3_N);
+                                rx = (long) mTrafficData.get(Constants.SIM3RX_N);
+                                tx = (long) mTrafficData.get(Constants.SIM3TX_N);
+                                tot = (long) mTrafficData.get(Constants.TOTAL3_N);
                             }
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
@@ -1286,20 +1286,20 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             pushResetNotification(Constants.SIM1);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2) {
-                            mDataMap.put(Constants.SIM2RX, 0L);
-                            mDataMap.put(Constants.SIM2TX, 0L);
-                            mDataMap.put(Constants.TOTAL2, 0L);
-                            mDataMap.put(Constants.SIM2RX_N, 0L);
-                            mDataMap.put(Constants.SIM2TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL2_N, 0L);
+                            mTrafficData.put(Constants.SIM2RX, 0L);
+                            mTrafficData.put(Constants.SIM2TX, 0L);
+                            mTrafficData.put(Constants.TOTAL2, 0L);
+                            mTrafficData.put(Constants.SIM2RX_N, 0L);
+                            mTrafficData.put(Constants.SIM2TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL2_N, 0L);
                             if (!mIsNight3) {
-                                rx = (long) mDataMap.get(Constants.SIM3RX);
-                                tx = (long) mDataMap.get(Constants.SIM3TX);
-                                tot = (long) mDataMap.get(Constants.TOTAL3);
+                                rx = (long) mTrafficData.get(Constants.SIM3RX);
+                                tx = (long) mTrafficData.get(Constants.SIM3TX);
+                                tot = (long) mTrafficData.get(Constants.TOTAL3);
                             } else {
-                                rx = (long) mDataMap.get(Constants.SIM3RX_N);
-                                tx = (long) mDataMap.get(Constants.SIM3TX_N);
-                                tot = (long) mDataMap.get(Constants.TOTAL3_N);
+                                rx = (long) mTrafficData.get(Constants.SIM3RX_N);
+                                tx = (long) mTrafficData.get(Constants.SIM3TX_N);
+                                tot = (long) mTrafficData.get(Constants.TOTAL3_N);
                             }
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
@@ -1311,12 +1311,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             pushResetNotification(Constants.SIM2);
                         }
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3) {
-                            mDataMap.put(Constants.SIM3RX, 0L);
-                            mDataMap.put(Constants.SIM3TX, 0L);
-                            mDataMap.put(Constants.TOTAL3, 0L);
-                            mDataMap.put(Constants.SIM3RX_N, 0L);
-                            mDataMap.put(Constants.SIM3TX_N, 0L);
-                            mDataMap.put(Constants.TOTAL3_N, 0L);
+                            mTrafficData.put(Constants.SIM3RX, 0L);
+                            mTrafficData.put(Constants.SIM3TX, 0L);
+                            mTrafficData.put(Constants.TOTAL3, 0L);
+                            mTrafficData.put(Constants.SIM3RX_N, 0L);
+                            mTrafficData.put(Constants.SIM3TX_N, 0L);
+                            mTrafficData.put(Constants.TOTAL3_N, 0L);
                             rx = tx = mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
                             mSIM3ContinueOverLimit = false;
@@ -1328,13 +1328,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     } else {
                         if (!mIsNight2) {
-                            rx = (long) mDataMap.get(Constants.SIM3RX);
-                            tx = (long) mDataMap.get(Constants.SIM3TX);
-                            tot = (long) mDataMap.get(Constants.TOTAL3);
+                            rx = (long) mTrafficData.get(Constants.SIM3RX);
+                            tx = (long) mTrafficData.get(Constants.SIM3TX);
+                            tot = (long) mTrafficData.get(Constants.TOTAL3);
                         } else {
-                            rx = (long) mDataMap.get(Constants.SIM3RX_N);
-                            tx = (long) mDataMap.get(Constants.SIM3TX_N);
-                            tot = (long) mDataMap.get(Constants.TOTAL3_N);
+                            rx = (long) mTrafficData.get(Constants.SIM3RX_N);
+                            tx = (long) mTrafficData.get(Constants.SIM3TX_N);
+                            tot = (long) mTrafficData.get(Constants.TOTAL3_N);
                         }
                     }
 
@@ -1353,7 +1353,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[2]) || mSIM3ContinueOverLimit) {
-                        mDataMap.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
+                        mTrafficData.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
                         tot = tx + rx;
@@ -1375,16 +1375,16 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     if (!mIsSIM3OverLimit) {
                         if (!mIsNight3) {
-                            mDataMap.put(Constants.SIM3RX, rx);
-                            mDataMap.put(Constants.SIM3TX, tx);
-                            mDataMap.put(Constants.TOTAL3, tot);
+                            mTrafficData.put(Constants.SIM3RX, rx);
+                            mTrafficData.put(Constants.SIM3TX, tx);
+                            mTrafficData.put(Constants.TOTAL3, tot);
                         } else {
-                            mDataMap.put(Constants.SIM3RX_N, rx);
-                            mDataMap.put(Constants.SIM3TX_N, tx);
-                            mDataMap.put(Constants.TOTAL3_N, tot);
+                            mTrafficData.put(Constants.SIM3RX_N, rx);
+                            mTrafficData.put(Constants.SIM3TX_N, tx);
+                            mTrafficData.put(Constants.TOTAL3_N, tot);
                         }
-                        mDataMap.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        mDataMap.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
+                        mTrafficData.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
+                        mTrafficData.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
                         writeToDataBase(diffrx, difftx, emptyDB);
                         if (CustomApplication.isScreenOn(mContext)) {
                             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1452,9 +1452,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         final long MB = 1024 * 1024;
         if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
                 || emptyDB) {
-            mDataMap.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
-            mDataMap.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
-            CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
+            CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
         }
     }
 
@@ -1463,24 +1463,24 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         intent.putExtra(Constants.WIDGET_IDS, getWidgetIds(mContext));
         intent.putExtra(Constants.SPEEDRX, speedRX);
         intent.putExtra(Constants.SPEEDTX, speedTX);
-        intent.putExtra(Constants.SIM1RX, (long) mDataMap.get(Constants.SIM1RX));
-        intent.putExtra(Constants.SIM2RX, (long) mDataMap.get(Constants.SIM2RX));
-        intent.putExtra(Constants.SIM3RX, (long) mDataMap.get(Constants.SIM3RX));
-        intent.putExtra(Constants.SIM1TX, (long) mDataMap.get(Constants.SIM1TX));
-        intent.putExtra(Constants.SIM2TX, (long) mDataMap.get(Constants.SIM2TX));
-        intent.putExtra(Constants.SIM3TX, (long) mDataMap.get(Constants.SIM3TX));
-        intent.putExtra(Constants.TOTAL1, (long) mDataMap.get(Constants.TOTAL1));
-        intent.putExtra(Constants.TOTAL2, (long) mDataMap.get(Constants.TOTAL2));
-        intent.putExtra(Constants.TOTAL3, (long) mDataMap.get(Constants.TOTAL3));
-        intent.putExtra(Constants.SIM1RX_N, (long) mDataMap.get(Constants.SIM1RX_N));
-        intent.putExtra(Constants.SIM2RX_N, (long) mDataMap.get(Constants.SIM2RX_N));
-        intent.putExtra(Constants.SIM3RX_N, (long) mDataMap.get(Constants.SIM3RX_N));
-        intent.putExtra(Constants.SIM1TX_N, (long) mDataMap.get(Constants.SIM1TX_N));
-        intent.putExtra(Constants.SIM2TX_N, (long) mDataMap.get(Constants.SIM2TX_N));
-        intent.putExtra(Constants.SIM3TX_N, (long) mDataMap.get(Constants.SIM3TX_N));
-        intent.putExtra(Constants.TOTAL1_N, (long) mDataMap.get(Constants.TOTAL1_N));
-        intent.putExtra(Constants.TOTAL2_N, (long) mDataMap.get(Constants.TOTAL2_N));
-        intent.putExtra(Constants.TOTAL3_N, (long) mDataMap.get(Constants.TOTAL3_N));
+        intent.putExtra(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
+        intent.putExtra(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
+        intent.putExtra(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
+        intent.putExtra(Constants.SIM1TX, (long) mTrafficData.get(Constants.SIM1TX));
+        intent.putExtra(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
+        intent.putExtra(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
+        intent.putExtra(Constants.TOTAL1, (long) mTrafficData.get(Constants.TOTAL1));
+        intent.putExtra(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
+        intent.putExtra(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
+        intent.putExtra(Constants.SIM1RX_N, (long) mTrafficData.get(Constants.SIM1RX_N));
+        intent.putExtra(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
+        intent.putExtra(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
+        intent.putExtra(Constants.SIM1TX_N, (long) mTrafficData.get(Constants.SIM1TX_N));
+        intent.putExtra(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
+        intent.putExtra(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
+        intent.putExtra(Constants.TOTAL1_N, (long) mTrafficData.get(Constants.TOTAL1_N));
+        intent.putExtra(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
+        intent.putExtra(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
         if (mActiveSIM == Constants.DISABLED)
             intent.putExtra(Constants.SIM_ACTIVE, mLastActiveSIM);
         else
@@ -1499,23 +1499,23 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mLimits = getSIMLimits();
                 mLimitHasChanged = false;
             }
-            tot1 = mIsNight1 ? mLimits[0] - (long) mDataMap.get(Constants.TOTAL1_N) : mLimits[0] - (long) mDataMap.get(Constants.TOTAL1);
+            tot1 = mIsNight1 ? mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1_N) : mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1);
             if (tot1 < 0)
                 tot1 = 0;
             if (mSimQuantity >= 2) {
-                tot2 = mIsNight2 ? mLimits[1] - (long) mDataMap.get(Constants.TOTAL2_N) : mLimits[1] - (long) mDataMap.get(Constants.TOTAL2);
+                tot2 = mIsNight2 ? mLimits[1] - (long) mTrafficData.get(Constants.TOTAL2_N) : mLimits[1] - (long) mTrafficData.get(Constants.TOTAL2);
                 if (tot2 < 0)
                     tot2 = 0;
             }
             if (mSimQuantity == 3) {
-                tot3 = mIsNight3 ? mLimits[2] - (long) mDataMap.get(Constants.TOTAL3_N) : mLimits[2] - (long) mDataMap.get(Constants.TOTAL3);
+                tot3 = mIsNight3 ? mLimits[2] - (long) mTrafficData.get(Constants.TOTAL3_N) : mLimits[2] - (long) mTrafficData.get(Constants.TOTAL3);
                 if (tot3 < 0)
                     tot3 = 0;
             }
         } else {
-            tot1 = mIsNight1 ? (long) mDataMap.get(Constants.TOTAL1_N) : (long) mDataMap.get(Constants.TOTAL1);
-            tot2 = mIsNight2 ? (long) mDataMap.get(Constants.TOTAL2_N) : (long) mDataMap.get(Constants.TOTAL2);
-            tot3 = mIsNight3 ? (long) mDataMap.get(Constants.TOTAL3_N) : (long) mDataMap.get(Constants.TOTAL3);
+            tot1 = mIsNight1 ? (long) mTrafficData.get(Constants.TOTAL1_N) : (long) mTrafficData.get(Constants.TOTAL1);
+            tot2 = mIsNight2 ? (long) mTrafficData.get(Constants.TOTAL2_N) : (long) mTrafficData.get(Constants.TOTAL2);
+            tot3 = mIsNight3 ? (long) mTrafficData.get(Constants.TOTAL3_N) : (long) mTrafficData.get(Constants.TOTAL3);
         }
         if (mPrefs.getBoolean(Constants.PREF_OTHER[16], true)) {
             if (mLimits[0] != Long.MAX_VALUE)
@@ -1747,7 +1747,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        CustomDatabaseHelper.writeTrafficData(mDataMap, mDbHelper);
+        CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().unregister(this);
     }

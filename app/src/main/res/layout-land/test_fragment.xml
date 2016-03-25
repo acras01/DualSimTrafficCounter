@@ -30,43 +30,17 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_alignEnd="@+id/radioGroup"
+                android:layout_alignEnd="@+id/sim_group"
                 android:gravity="center_vertical"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
                 android:textColor="?android:attr/textColorPrimary" />
 
-            <RadioGroup
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/radioGroup"
+            <include layout="@layout/sim_radiogroup"
+                android:id="@+id/sim_group"
                 android:layout_below="@+id/choosesim"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_margin="10dp">
-
-                <android.support.v7.widget.AppCompatRadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sim1RB"
-                    android:text="SIM1"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <android.support.v7.widget.AppCompatRadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sim2RB"
-                    android:text="SIM2"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <android.support.v7.widget.AppCompatRadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sim3RB"
-                    android:text="SIM3"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-            </RadioGroup>
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -74,9 +48,9 @@
                 android:text="@string/test_hint"
                 android:id="@+id/hint"
                 android:layout_margin="5dp"
-                android:layout_toRightOf="@+id/radioGroup"
-                android:layout_alignTop="@+id/radioGroup"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:layout_toRightOf="@+id/sim_group"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_below="@+id/choosesim" />
         </RelativeLayout>
     </ScrollView>
 

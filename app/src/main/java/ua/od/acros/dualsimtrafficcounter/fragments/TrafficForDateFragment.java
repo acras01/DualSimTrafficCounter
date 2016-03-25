@@ -78,7 +78,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         View view = inflater.inflate(R.layout.traffic_for_date_fragment, container, false);
         pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.GONE);
-        radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
         bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);

@@ -61,7 +61,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         View view = inflater.inflate(R.layout.duration_fragment, container, false);
         duration = (EditText) view.findViewById(R.id.duration);
         AppCompatSpinner spinner = (AppCompatSpinner) view.findViewById(R.id.spinner);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
         AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);

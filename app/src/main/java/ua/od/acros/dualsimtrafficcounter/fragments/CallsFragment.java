@@ -40,7 +40,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class CallsFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TextView SIM1, SIM2, SIM3, TOT1, TOT2, TOT3, TIP;
-    private ContentValues mCalls;
+    private ContentValues mCallsData;
     private AppCompatButton bLim1, bLim2, bLim3;
     private CustomDatabaseHelper mDbHelper;
     private SharedPreferences mPrefs;
@@ -67,7 +67,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             mContext = CustomApplication.getAppContext();
         mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
-        mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
+        mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
         mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -174,8 +174,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim2.setOnClickListener(this);
         bLim3.setOnClickListener(this);
 
-        mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
-        TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS1)));
+        mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+        TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS1)));
 
         long[] limit = setTotalText();
         TypedValue typedValue = new TypedValue();
@@ -184,17 +184,17 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{
                 android.R.attr.textColorPrimary});
         int primaryColor = arr.getColor(0, -1);
-        if ((long) mCalls.get(Constants.CALLS1) >= limit[0])
+        if ((long) mCallsData.get(Constants.CALLS1) >= limit[0])
             TOT1.setTextColor(Color.RED);
         else
             TOT1.setTextColor(primaryColor);
-        TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS2)));
-        if ((long) mCalls.get(Constants.CALLS2) >= limit[1])
+        TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS2)));
+        if ((long) mCallsData.get(Constants.CALLS2) >= limit[1])
             TOT2.setTextColor(Color.RED);
         else
             TOT2.setTextColor(primaryColor);
-        TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCalls.get(Constants.CALLS3)));
-        if ((long) mCalls.get(Constants.CALLS3) >= limit[2])
+        TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS3)));
+        if ((long) mCallsData.get(Constants.CALLS3) >= limit[2])
             TOT3.setTextColor(Color.RED);
         else
             TOT3.setTextColor(primaryColor);
@@ -261,10 +261,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM1));
                 else {
-                    mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
-                    mCalls.put(Constants.CALLS1, 0L);
-                    mCalls.put(Constants.CALLS1_EX, 0L);
-                    CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    mCallsData.put(Constants.CALLS1, 0L);
+                    mCallsData.put(Constants.CALLS1_EX, 0L);
+                    CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
                 }
                 TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -272,10 +272,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM2));
                 else {
-                    mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
-                    mCalls.put(Constants.CALLS2, 0L);
-                    mCalls.put(Constants.CALLS3_EX, 0L);
-                    CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    mCallsData.put(Constants.CALLS2, 0L);
+                    mCallsData.put(Constants.CALLS3_EX, 0L);
+                    CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
                 }
                 TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -283,10 +283,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext))
                     EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM3));
                 else {
-                    mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
-                    mCalls.put(Constants.CALLS3, 0L);
-                    mCalls.put(Constants.CALLS3_EX, 0L);
-                    CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    mCallsData.put(Constants.CALLS3, 0L);
+                    mCallsData.put(Constants.CALLS3_EX, 0L);
+                    CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
                 }
                 TOT3.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;

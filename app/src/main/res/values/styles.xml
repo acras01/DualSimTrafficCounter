@@ -44,6 +44,10 @@
         <item name="android:textAppearanceLarge">?android:attr/textAppearanceMedium</item>
     </style>
 
+    <style name="AppTheme.Auto.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowTitleStyle">@style/AppTheme.Dialog.Title</item>
+    </style>
+
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="android:windowTitleStyle">@style/AppTheme.Dialog.Title</item>
     </style>

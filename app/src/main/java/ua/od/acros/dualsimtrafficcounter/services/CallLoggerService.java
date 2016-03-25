@@ -52,7 +52,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     private Context mContext;
     private CustomDatabaseHelper mDbHelper;
-    private ContentValues mCalls;
+    private ContentValues mCallsData;
     private DateTimeFormatter mDateFormat = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
     private DateTimeFormatter mTimeFormat = DateTimeFormat.forPattern(Constants.TIME_FORMAT + ":ss");
     private DateTimeFormatter mDateTimeFormat = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
@@ -90,11 +90,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
-        if (mCalls.get(Constants.LAST_DATE).equals("")) {
+        mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+        if (mCallsData.get(Constants.LAST_DATE).equals("")) {
             DateTime dateTime = new DateTime();
-            mCalls.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
-            mCalls.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
+            mCallsData.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
+            mCallsData.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
         }
         mLimits = getSIMLimits();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -108,7 +108,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             public void onReceive(Context context, Intent intent) {
                 if (mIsOutgoing) {
                     //final String[] out = {"Call Starts\n"};
-                    mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
                     String lim, inter;
                     long currentDuration = 0;
                     int interval = 10;
@@ -116,7 +116,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                     switch (sim) {
                         case Constants.SIM1:
-                            currentDuration = (long) mCalls.get(Constants.CALLS1);
+                            currentDuration = (long) mCallsData.get(Constants.CALLS1);
                             lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
                             inter = mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0");
                             if (!inter.equals(""))
@@ -125,7 +125,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 limit = Long.valueOf(lim) * Constants.MINUTE;
                             break;
                         case Constants.SIM2:
-                            currentDuration = (long) mCalls.get(Constants.CALLS2);
+                            currentDuration = (long) mCallsData.get(Constants.CALLS2);
                             lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
                             inter = mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0");
                             if (!inter.equals(""))
@@ -134,7 +134,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 limit = Long.valueOf(lim) * Constants.MINUTE;
                             break;
                         case Constants.SIM3:
-                            currentDuration = (long) mCalls.get(Constants.CALLS3);
+                            currentDuration = (long) mCallsData.get(Constants.CALLS3);
                             lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
                             inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
                             if (!inter.equals(""))
@@ -194,32 +194,32 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     Toast.makeText(context, mOperatorNames[sim] + ": " +
                             DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
                     DateTime now = new DateTime();
-                    mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
-                    mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+                    mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+                    mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
                     switch (sim) {
                         case Constants.SIM1:
-                            mCalls.put(Constants.CALLS1_EX, duration + (long) mCalls.get(Constants.CALLS1_EX));
+                            mCallsData.put(Constants.CALLS1_EX, duration + (long) mCallsData.get(Constants.CALLS1_EX));
                             if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
                                 duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                            mCalls.put(Constants.CALLS1, duration + (long) mCalls.get(Constants.CALLS1));
-                            duration = (long) mCalls.get(Constants.CALLS1);
+                            mCallsData.put(Constants.CALLS1, duration + (long) mCallsData.get(Constants.CALLS1));
+                            duration = (long) mCallsData.get(Constants.CALLS1);
                             break;
                         case Constants.SIM2:
-                            mCalls.put(Constants.CALLS2_EX, duration + (long) mCalls.get(Constants.CALLS2_EX));
+                            mCallsData.put(Constants.CALLS2_EX, duration + (long) mCallsData.get(Constants.CALLS2_EX));
                             if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
                                 duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                            mCalls.put(Constants.CALLS2, duration + (long) mCalls.get(Constants.CALLS2));
-                            duration = (long) mCalls.get(Constants.CALLS2);
+                            mCallsData.put(Constants.CALLS2, duration + (long) mCallsData.get(Constants.CALLS2));
+                            duration = (long) mCallsData.get(Constants.CALLS2);
                             break;
                         case Constants.SIM3:
-                            mCalls.put(Constants.CALLS3_EX, duration + (long) mCalls.get(Constants.CALLS3_EX));
+                            mCallsData.put(Constants.CALLS3_EX, duration + (long) mCallsData.get(Constants.CALLS3_EX));
                             if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
                                 duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                            mCalls.put(Constants.CALLS3, duration + (long) mCalls.get(Constants.CALLS3));
-                            duration = (long) mCalls.get(Constants.CALLS3);
+                            mCallsData.put(Constants.CALLS3, duration + (long) mCallsData.get(Constants.CALLS3));
+                            duration = (long) mCallsData.get(Constants.CALLS3);
                             break;
                     }
-                    CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+                    CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
                     refreshWidgetAndNotification(context, sim, duration);
                     /*String out = "Call Ends\n";
                     try {
@@ -250,52 +250,52 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Subscribe
     public void onMessageEvent(SetCallsEvent event) {
-        if (mCalls == null)
-            mCalls = CustomDatabaseHelper.readCallsData(mDbHelper);
+        if (mCallsData == null)
+            mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
         DateTime now = new DateTime();
-        mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
-        mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+        mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+        mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
         int sim = event.sim;
         long duration = DataFormat.getDuration(event.calls, event.callsv);
         switch (sim) {
             case Constants.SIM1:
-                mCalls.put(Constants.CALLS1, duration);
-                mCalls.put(Constants.CALLS1_EX, duration);
+                mCallsData.put(Constants.CALLS1, duration);
+                mCallsData.put(Constants.CALLS1_EX, duration);
                 break;
             case Constants.SIM2:
-                mCalls.put(Constants.CALLS2, duration);
-                mCalls.put(Constants.CALLS2_EX, duration);
+                mCallsData.put(Constants.CALLS2, duration);
+                mCallsData.put(Constants.CALLS2_EX, duration);
                 break;
             case Constants.SIM3:
-                mCalls.put(Constants.CALLS3, duration);
-                mCalls.put(Constants.CALLS3_EX, duration);
+                mCallsData.put(Constants.CALLS3, duration);
+                mCallsData.put(Constants.CALLS3_EX, duration);
                 break;
         }
-        CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+        CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
         refreshWidgetAndNotification(mContext, sim, duration);
     }
 
     @Subscribe
     public void onMessageEvent(ClearCallsEvent event) {
         DateTime now = new DateTime();
-        mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
-        mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+        mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+        mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
-                mCalls.put(Constants.CALLS1, 0L);
-                mCalls.put(Constants.CALLS1_EX, 0L);
+                mCallsData.put(Constants.CALLS1, 0L);
+                mCallsData.put(Constants.CALLS1_EX, 0L);
                 break;
             case Constants.SIM2:
-                mCalls.put(Constants.CALLS2, 0L);
-                mCalls.put(Constants.CALLS2_EX, 0L);
+                mCallsData.put(Constants.CALLS2, 0L);
+                mCallsData.put(Constants.CALLS2_EX, 0L);
                 break;
             case Constants.SIM3:
-                mCalls.put(Constants.CALLS3, 0L);
-                mCalls.put(Constants.CALLS3_EX, 0L);
+                mCallsData.put(Constants.CALLS3, 0L);
+                mCallsData.put(Constants.CALLS3_EX, 0L);
                 break;
         }
-        CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+        CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
         refreshWidgetAndNotification(mContext, sim, 0L);
     }
 
@@ -312,11 +312,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3_CALLS[9], true);
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime1) >= 0 && mIsResetNeeded1) {
-            mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
-            mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
-            mCalls.put(Constants.CALLS1, 0L);
-            mCalls.put(Constants.CALLS1_EX, 0L);
-            CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+            mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+            mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+            mCallsData.put(Constants.CALLS1, 0L);
+            mCallsData.put(Constants.CALLS1_EX, 0L);
+            CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
             mIsResetNeeded1 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
@@ -324,11 +324,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     .apply();
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
-            mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
-            mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
-            mCalls.put(Constants.CALLS2, 0L);
-            mCalls.put(Constants.CALLS3_EX, 0L);
-            CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+            mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+            mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+            mCallsData.put(Constants.CALLS2, 0L);
+            mCallsData.put(Constants.CALLS3_EX, 0L);
+            CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
             mIsResetNeeded2 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
@@ -336,11 +336,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     .apply();
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
-            mCalls.put(Constants.LAST_DATE, now.toString(mDateFormat));
-            mCalls.put(Constants.LAST_TIME, now.toString(mTimeFormat));
-            mCalls.put(Constants.CALLS3, 0L);
-            mCalls.put(Constants.CALLS3_EX, 0L);
-            CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+            mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+            mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+            mCallsData.put(Constants.CALLS3, 0L);
+            mCallsData.put(Constants.CALLS3_EX, 0L);
+            CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
             mIsResetNeeded3 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
@@ -585,23 +585,23 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 mLimits = getSIMLimits();
                 mLimitHasChanged = false;
             }
-            tot1 = mLimits[0] - (long) mCalls.get(Constants.CALLS1);
+            tot1 = mLimits[0] - (long) mCallsData.get(Constants.CALLS1);
             if (tot1 < 0)
                 tot1 = 0;
             if (mSimQuantity >= 2) {
-                tot2 = mLimits[1] - (long) mCalls.get(Constants.CALLS2);
+                tot2 = mLimits[1] - (long) mCallsData.get(Constants.CALLS2);
                 if (tot2 < 0)
                     tot2 = 0;
             }
             if (mSimQuantity == 3) {
-                tot3 = mLimits[2] - (long) mCalls.get(Constants.CALLS3);
+                tot3 = mLimits[2] - (long) mCallsData.get(Constants.CALLS3);
                 if (tot3 < 0)
                     tot3 = 0;
             }
         } else {
-            tot1 = (long) mCalls.get(Constants.CALLS1);
-            tot2 = (long) mCalls.get(Constants.CALLS2);
-            tot3 = (long) mCalls.get(Constants.CALLS3);
+            tot1 = (long) mCallsData.get(Constants.CALLS1);
+            tot2 = (long) mCallsData.get(Constants.CALLS2);
+            tot3 = (long) mCallsData.get(Constants.CALLS3);
         }
 
         if (mLimits[0] != Long.MAX_VALUE)
@@ -626,7 +626,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         super.onDestroy();
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        CustomDatabaseHelper.writeCallsData(mCalls, mDbHelper);
+        CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
         unregisterReceiver(mCallAnsweredReceiver);
         unregisterReceiver(mCallEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
