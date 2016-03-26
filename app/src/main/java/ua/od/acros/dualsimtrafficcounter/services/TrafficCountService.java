@@ -303,9 +303,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
-        DateTime now = DateTime.now();
-        mTrafficData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
-        mTrafficData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+        mNowDate = DateTime.now();
+        mTrafficData.put(Constants.LAST_TIME, mNowDate.toString(mTimeFormat));
+        mTrafficData.put(Constants.LAST_DATE, mNowDate.toString(mDateFormat));
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
@@ -366,9 +366,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         if (mTrafficData == null)
             mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
-        DateTime now = DateTime.now();
-        mTrafficData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
-        mTrafficData.put(Constants.LAST_DATE, now.toString(mDateFormat));
+        mNowDate = DateTime.now();
+        mTrafficData.put(Constants.LAST_TIME, mNowDate.toString(mTimeFormat));
+        mTrafficData.put(Constants.LAST_DATE, mNowDate.toString(mDateFormat));
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
