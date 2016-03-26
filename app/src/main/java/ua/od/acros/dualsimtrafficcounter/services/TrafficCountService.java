@@ -303,6 +303,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
+        DateTime now = DateTime.now();
+        mTrafficData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+        mTrafficData.put(Constants.LAST_DATE, now.toString(mDateFormat));
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
@@ -363,6 +366,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         if (mTrafficData == null)
             mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+        DateTime now = DateTime.now();
+        mTrafficData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
+        mTrafficData.put(Constants.LAST_DATE, now.toString(mDateFormat));
         int sim = event.sim;
         switch (sim) {
             case Constants.SIM1:
@@ -798,6 +804,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3)) {
                         mHasActionChosen = false;
+                        mTrafficData.put(Constants.LAST_TIME, mNowDate.toString(mTimeFormat));
+                        mTrafficData.put(Constants.LAST_DATE, mNowDate.toString(mDateFormat));
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1) {
                             mTrafficData.put(Constants.SIM1RX, 0L);
                             mTrafficData.put(Constants.SIM1TX, 0L);
@@ -1029,6 +1037,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3)) {
                         mHasActionChosen = false;
+                        mTrafficData.put(Constants.LAST_TIME, mNowDate.toString(mTimeFormat));
+                        mTrafficData.put(Constants.LAST_DATE, mNowDate.toString(mDateFormat));
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1) {
                             mTrafficData.put(Constants.SIM1RX, 0L);
                             mTrafficData.put(Constants.SIM1TX, 0L);
@@ -1260,6 +1270,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime2) >= 0 && mIsResetNeeded2)
                             || (DateTimeComparator.getInstance().compare(mNowDate, mResetTime3) >= 0 && mIsResetNeeded3)) {
                         mHasActionChosen = false;
+                        mTrafficData.put(Constants.LAST_TIME, mNowDate.toString(mTimeFormat));
+                        mTrafficData.put(Constants.LAST_DATE, mNowDate.toString(mDateFormat));
                         if (DateTimeComparator.getInstance().compare(mNowDate, mResetTime1) >= 0 && mIsResetNeeded1) {
                             mTrafficData.put(Constants.SIM1RX, 0L);
                             mTrafficData.put(Constants.SIM1TX, 0L);
