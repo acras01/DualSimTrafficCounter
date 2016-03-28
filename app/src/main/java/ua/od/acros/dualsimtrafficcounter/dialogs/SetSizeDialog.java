@@ -59,9 +59,11 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
         int id = 0;
         switch (mDialog) {
             case 0:
+            case 2:
                 id = R.string.text_size;
                 break;
             case 1:
+            case 3:
                 id = R.string.icon_size;
                 break;
         }
