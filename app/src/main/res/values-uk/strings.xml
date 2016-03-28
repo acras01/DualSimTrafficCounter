@@ -194,4 +194,5 @@
     <string name="use_day_theme">Використовувати денну тему</string>
     <string name="check_input">Вказано невірне значення</string>
     <string name="size_hint">Введіть ціле позитивне число</string>
+    <string name="visit_4pda">Відкрити тему додатку на форумі 4pda.ru</string>
 </resources>

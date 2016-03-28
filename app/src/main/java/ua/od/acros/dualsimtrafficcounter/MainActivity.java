@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -41,8 +43,8 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
@@ -58,11 +60,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String EMAIL = "email";
     private static final String MTK = "mtk";
     private static final String XPOSED = "de.robv.android.xposed.installer";
-    private Fragment mTrafficForDate, mTraffic, mTest, mSetUsage, mCalls, mSetDuration;
+    private Fragment mTrafficForDate;
+    private static Fragment mTraffic;
+    private static Fragment mTest;
+    private Fragment mSetUsage;
+    private Fragment mCalls;
+    private Fragment mSetDuration;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
-    private NavigationView mNavigationView;
-    private int mLastMenuItem;
+    private static NavigationView mNavigationView;
+    private static int mLastMenuItem;
+    private String mAction;
+    private Bundle mState;
 
     /*static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -80,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mState = savedInstanceState;
         mContext = CustomApplication.getAppContext();
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -105,44 +115,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+        if (drawer != null) {
+            drawer.addDrawerListener(toggle);
+        }
         toggle.syncState();
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
-        mNavigationView.setNavigationItemSelectedListener(this);
+        if (mNavigationView != null) {
+            mNavigationView.setNavigationItemSelectedListener(this);
+            //Prepare Navigation View Menu
+            MenuItem mTestItem = mNavigationView.getMenu().findItem(R.id.nav_test);
+            if (CustomApplication.isOldMtkDevice() &&
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                mTestItem.setVisible(true);
+                mTestItem.setEnabled(true);
+            } else {
+                mTestItem.setVisible(false);
+                mTestItem.setEnabled(false);
+            }
 
-        //Prepare Navigation View Menu
-        MenuItem mTestItem = mNavigationView.getMenu().findItem(R.id.nav_test);
-        if (CustomApplication.isOldMtkDevice() &&
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mTestItem.setVisible(true);
-            mTestItem.setEnabled(true);
-        } else {
-            mTestItem.setVisible(false);
-            mTestItem.setEnabled(false);
-        }
+            mCallsItem = mNavigationView.getMenu().findItem(R.id.nav_calls_menu);
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
+                mCallsItem.setVisible(true);
+                mCallsItem.setEnabled(true);
+            } else {
+                mCallsItem.setVisible(false);
+                mCallsItem.setEnabled(false);
+            }
 
-        mCallsItem = mNavigationView.getMenu().findItem(R.id.nav_calls_menu);
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
-            mCallsItem.setVisible(true);
-            mCallsItem.setEnabled(true);
-        } else {
-            mCallsItem.setVisible(false);
-            mCallsItem.setEnabled(false);
+            //set Version in Navigation View Header
+            //View headerLayout = mNavigationView.findViewById(R.id.headerLayout);
+            View headerLayout = mNavigationView.getHeaderView(0);
+            TextView versionView = (TextView) headerLayout.findViewById(R.id.versioninfo);
+            String version;
+            try {
+                version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                version = getResources().getString(R.string.not_available);
+            }
+            versionView.setText(String.format(getResources().getString(R.string.app_version), version));
         }
-
-        //set Version in Navigation View Header
-        //View headerLayout = mNavigationView.findViewById(R.id.headerLayout);
-        View headerLayout = mNavigationView.getHeaderView(0);
-        TextView versionView = (TextView) headerLayout.findViewById(R.id.versioninfo);
-        String version;
-        try {
-            version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            version = getResources().getString(R.string.not_available);
-        }
-        versionView.setText(String.format(getResources().getString(R.string.app_version), version));
 
         mTraffic = new TrafficFragment();
         mTrafficForDate = new TrafficForDateFragment();
@@ -166,73 +179,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
-        String action = getIntent().getAction();
-
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
-            mPrefs.edit()
-                    .putBoolean(Constants.PREF_OTHER[9], false)
-                    .apply();
-            showDialog(FIRST_RUN);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-                    !CustomApplication.hasRoot())
-                showDialog(ANDROID_5_0);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
-                    !CustomApplication.isOldMtkDevice())
-                showDialog(MTK);
-            if (CustomApplication.isOldMtkDevice() &&
-                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                if (savedInstanceState == null) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .add(R.id.content_frame, mTest)
-                            .commit();
-                    setItemChecked(R.id.nav_test, true);
-                    mLastMenuItem = R.id.nav_test;
-                }
-            } else {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.content_frame, mTraffic)
-                        .addToBackStack(Constants.TRAFFIC_TAG)
-                        .commit();
-                setItemChecked(R.id.nav_traffic, true);
-                mLastMenuItem = R.id.nav_traffic;
-            }
-        } else if (action != null && action.equals("tap") && savedInstanceState == null) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, mTraffic)
-                        .addToBackStack(Constants.TRAFFIC_TAG)
-                        .commit();
-                setItemChecked(R.id.nav_traffic, true);
-                mLastMenuItem = R.id.nav_traffic;
-            } else {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, mCalls)
-                        .addToBackStack(Constants.CALLS_TAG)
-                        .commit();
-                setItemChecked(R.id.nav_calls, true);
-                mLastMenuItem = R.id.nav_calls;
-            }
-        } else {
-            if (savedInstanceState == null) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.content_frame, mTraffic)
-                        .addToBackStack(Constants.TRAFFIC_TAG)
-                        .commit();
-                setItemChecked(R.id.nav_traffic, true);
-                mLastMenuItem = R.id.nav_traffic;
-            }
-        }
+        mAction = getIntent().getAction();
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
@@ -248,45 +201,71 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public static class CustomDialog extends DialogFragment {
+        public static CustomDialog newInstance(String key) {
+            CustomDialog d = new CustomDialog();
+            Bundle b = new Bundle();
+            b.putString("key", key);
+            d.setArguments(b);
+            return d;
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setCancelable(false)
+                    .setTitle(R.string.attention)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (CustomApplication.isOldMtkDevice() &&
+                                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.content_frame, mTest)
+                                        .commit();
+                                setItemChecked(R.id.nav_test, true);
+                                mLastMenuItem = R.id.nav_test;
+                            } else {
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.content_frame, mTraffic)
+                                        .addToBackStack(Constants.TRAFFIC_TAG)
+                                        .commit();
+                                setItemChecked(R.id.nav_traffic, true);
+                                mLastMenuItem = R.id.nav_traffic;
+                            }
+                        }
+                    })
+                    .create();
+            String key = getArguments().getString("key");
+            if (key != null) {
+                switch (key) {
+                    case FIRST_RUN:
+                        dialog.setMessage(getString(R.string.set_sim_number));
+                        break;
+                    case MTK:
+                        dialog.setMessage(getString(R.string.on_off_not_supported));
+                        break;
+                    case ANDROID_5_0:
+                        dialog.setMessage(getString(R.string.need_root));
+                        break;
+                }
+            }
+            dialog.setCanceledOnTouchOutside(false);
+            return dialog;
+        }
+    }
+
     public void showDialog(String key) {
         switch (key) {
-            case FIRST_RUN:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.attention)
-                        .setMessage(R.string.set_sim_number)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-                break;
-            case MTK:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.attention)
-                        .setMessage(R.string.on_off_not_supported)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-                break;
-            case ANDROID_5_0:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.attention)
-                        .setMessage(R.string.need_root)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
+            default:
+                CustomDialog.newInstance(key).show(getSupportFragmentManager(), "dialog");
                 break;
             case EMAIL:
+                setItemChecked(mLastMenuItem, true);
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.send_email)
                         .setMessage(R.string.why_email)
@@ -390,7 +369,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_OTHER[9], false)
+                    .apply();
+            showDialog(FIRST_RUN);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                    !CustomApplication.hasRoot())
+                showDialog(ANDROID_5_0);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
+                    !CustomApplication.isOldMtkDevice())
+                showDialog(MTK);
+        } else if (mAction != null && mAction.equals("tap") && mState == null) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, mTraffic)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
+                        .commit();
+                setItemChecked(R.id.nav_traffic, true);
+                mLastMenuItem = R.id.nav_traffic;
+            } else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, mCalls)
+                        .addToBackStack(Constants.CALLS_TAG)
+                        .commit();
+                setItemChecked(R.id.nav_calls, true);
+                mLastMenuItem = R.id.nav_calls;
+            }
+        } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
             if (currentFragment instanceof CallsFragment) {
                 getSupportFragmentManager()
@@ -400,14 +408,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
             }
-        }
-        if (mNeedsRestart && mTraffic.isVisible()) {
+        } else if (mNeedsRestart && mTraffic.isVisible()) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .detach(mTraffic)
                     .attach(mTraffic)
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
+        } else if (mState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.content_frame, mTraffic)
+                    .addToBackStack(Constants.TRAFFIC_TAG)
+                    .commit();
+            setItemChecked(R.id.nav_traffic, true);
+            mLastMenuItem = R.id.nav_traffic;
         }
     }
 
@@ -443,7 +458,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        setItemChecked(id, true);
         Fragment newFragment = null;
         FragmentManager fm = getSupportFragmentManager();
         String tag = "";
@@ -475,11 +489,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 newFragment = mSetDuration;
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(mContext, SettingsActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
+                setItemChecked(id, false);
+                Intent i1 = new Intent(mContext, SettingsActivity.class);
+                startActivityForResult(i1, REQUEST_CODE);
                 break;
             case R.id.nav_email:
+                setItemChecked(id, false);
                 showDialog(EMAIL);
+                break;
+            case R.id.nav_4pda:
+                setItemChecked(id, false);
+                String url = "http://4pda.ru/forum/index.php?showtopic=699793";
+                Intent i2 = new Intent(Intent.ACTION_VIEW);
+                i2.setData(Uri.parse(url));
+                startActivity(i2);
                 break;
         }
         if (newFragment != null) {
@@ -497,7 +520,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (drawer != null) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 
@@ -507,11 +532,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setItemChecked(mLastMenuItem, true);
     }
 
-    private void setItemChecked(int id, boolean checked) {
+    private static void setItemChecked(int id, boolean checked) {
         mNavigationView.setCheckedItem(id);
-        mNavigationView.getMenu().findItem(id)
-                .setCheckable(checked)
-                .setChecked(checked);
+        mNavigationView.getMenu().findItem(id).setChecked(checked);
     }
 
     @Override
