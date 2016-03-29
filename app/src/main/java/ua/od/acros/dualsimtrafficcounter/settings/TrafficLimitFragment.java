@@ -455,7 +455,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         DateTime alarmTime;
         //Scheduled ON/OFF
-        if (key.equals(Constants.PREF_SIM1[11]) || key.equals(Constants.PREF_SIM1[12]) || key.equals(Constants.PREF_SIM1[13])) {
+        if ((key.equals(Constants.PREF_SIM1[11]) && sharedPreferences.contains(Constants.PREF_SIM1[12])) ||
+                key.equals(Constants.PREF_SIM1[12])) {
             Intent i1Off = new Intent(mContext, OnOffReceiver.class);
             i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1Off.putExtra(Constants.ON_OFF, false);
@@ -473,7 +474,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             } else
                 am.cancel(pi1Off);
-
+        }
+        if ((key.equals(Constants.PREF_SIM1[11]) && sharedPreferences.contains(Constants.PREF_SIM1[13])) ||
+                key.equals(Constants.PREF_SIM1[13])) {
             Intent i1On = new Intent(mContext, OnOffReceiver.class);
             i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
             i1On.putExtra(Constants.ON_OFF, true);
@@ -492,7 +495,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             } else
                 am.cancel(pi1On);
         }
-        if (key.equals(Constants.PREF_SIM2[11]) || key.equals(Constants.PREF_SIM2[12]) || key.equals(Constants.PREF_SIM2[13])) {
+        if ((key.equals(Constants.PREF_SIM2[11]) && sharedPreferences.contains(Constants.PREF_SIM2[12])) ||
+                key.equals(Constants.PREF_SIM2[12])) {
             Intent i2Off = new Intent(mContext, OnOffReceiver.class);
             i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2Off.putExtra(Constants.ON_OFF, false);
@@ -510,7 +514,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             } else
                 am.cancel(pi2Off);
-
+        }
+        if ((key.equals(Constants.PREF_SIM2[11]) && sharedPreferences.contains(Constants.PREF_SIM2[13])) ||
+                key.equals(Constants.PREF_SIM2[13])) {
             Intent i2On = new Intent(mContext, OnOffReceiver.class);
             i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
             i2On.putExtra(Constants.ON_OFF, true);
@@ -529,7 +535,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             } else
                 am.cancel(pi2On);
         }
-        if (key.equals(Constants.PREF_SIM3[11]) || key.equals(Constants.PREF_SIM3[12]) || key.equals(Constants.PREF_SIM3[13])) {
+        if ((key.equals(Constants.PREF_SIM3[11]) && sharedPreferences.contains(Constants.PREF_SIM3[12])) ||
+                key.equals(Constants.PREF_SIM3[12])) {
             Intent i3Off = new Intent(mContext, OnOffReceiver.class);
             i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3Off.putExtra(Constants.ON_OFF, false);
@@ -547,7 +554,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             } else
                 am.cancel(pi3Off);
-
+        }
+        if ((key.equals(Constants.PREF_SIM2[11]) && sharedPreferences.contains(Constants.PREF_SIM2[13])) ||
+                key.equals(Constants.PREF_SIM2[13])) {
             Intent i3On = new Intent(mContext, OnOffReceiver.class);
             i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
             i3On.putExtra(Constants.ON_OFF, true);
