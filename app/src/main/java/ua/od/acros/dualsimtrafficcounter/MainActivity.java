@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -300,6 +301,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+                                //Resume
+                                fileName = "resume.txt";
+                                file = new File(dir, fileName);
+                                try {
+                                    uris.add(Uri.fromFile(file));
+                                    InputStream is = openFileInput(fileName);
+                                    if (is != null) {
+                                        InputStreamReader isr = new InputStreamReader(is);
+                                        BufferedReader br = new BufferedReader(isr);
+                                        String read;
+                                        StringBuilder sb = new StringBuilder();
+                                        while ((read = br.readLine()) != null ) {
+                                            read += "\n";
+                                            sb.append(read);
+                                        }
+                                        is.close();
+                                        content += sb.toString();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 //Active SIM
                                 int sim = MobileUtils.getMobileDataInfo(mContext, true)[1];
                                 fileName = "sim_log.txt";
@@ -369,6 +391,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        String out = "";
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             mPrefs.edit()
                     .putBoolean(Constants.PREF_OTHER[9], false)
@@ -380,6 +403,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !CustomApplication.isOldMtkDevice())
                 showDialog(MTK);
+            out = "first";
         } else if (mAction != null && mAction.equals("tap") && mState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
                 getSupportFragmentManager()
@@ -389,6 +413,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
                 mLastMenuItem = R.id.nav_traffic;
+                out = "tap_traffic";
             } else {
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -397,6 +422,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_calls, true);
                 mLastMenuItem = R.id.nav_calls;
+                out = "tap_calls";
             }
         } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
@@ -407,6 +433,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.content_frame, mTraffic)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
+                mLastMenuItem = R.id.nav_traffic;
+                out = "not_call_logger";
             }
         } else if (mNeedsRestart && mTraffic.isVisible()) {
             getSupportFragmentManager()
@@ -415,6 +443,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .attach(mTraffic)
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
+            mLastMenuItem = R.id.nav_traffic;
+            out = "restart";
         } else if (mState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -423,6 +453,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
             mLastMenuItem = R.id.nav_traffic;
+            out = "normal";
+        }
+        try {
+            File dir = new File(String.valueOf(getFilesDir()));
+            // create the file in which we will write the contents
+            String fileName = "resume.txt";
+            File file = new File(dir, fileName);
+            FileOutputStream os = new FileOutputStream(file);
+            os.write(out.getBytes());
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

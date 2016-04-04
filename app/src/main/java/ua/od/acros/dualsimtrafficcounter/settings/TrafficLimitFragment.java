@@ -470,7 +470,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
-                    alarmTime.plusDays(1);
+                    alarmTime = alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             } else
                 am.cancel(pi1Off);
@@ -490,7 +490,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
-                    alarmTime.plusDays(1);
+                    alarmTime = alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1On);
             } else
                 am.cancel(pi1On);
@@ -510,7 +510,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
-                    alarmTime.plusDays(1);
+                    alarmTime = alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2Off);
             } else
                 am.cancel(pi2Off);
@@ -530,7 +530,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
-                    alarmTime.plusDays(1);
+                    alarmTime = alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi2On);
             } else
                 am.cancel(pi2On);
@@ -550,7 +550,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
-                    alarmTime.plusDays(1);
+                    alarmTime = alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3Off);
             } else
                 am.cancel(pi3Off);
@@ -570,7 +570,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
-                    alarmTime.plusDays(1);
+                    alarmTime = alarmTime.plusDays(1);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi3On);
             } else
                 am.cancel(pi3On);
