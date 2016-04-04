@@ -161,7 +161,7 @@
     <string name="minutes">%1$sхв.</string>
     <string name="tip_calls">Вказана тривалість дзвінків не є точною, а є округленою згідно з інтревалом тарифікації</string>
     <string name="traffic_rest">%1$s (залишок): %2$s</string>
-    <string name="body">Методи класу TelephonyManager</string>
+    <string name="body">Інформація для тестування</string>
     <string name="choose_client">Оберить кліента для відправки повідомлення</string>
     <string name="is_out_of_home_network">Абонент, якого Ви викликаєте, обслуговується іншим оператором?</string>
     <string name="no">Ні</string>

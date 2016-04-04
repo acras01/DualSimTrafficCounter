@@ -279,10 +279,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
                                 ArrayList<Uri> uris = new ArrayList<>();
                                 File dir = new File(String.valueOf(mContext.getFilesDir()));
-                                ArrayList<String> content = new ArrayList<>();
+                                String content = getString(R.string.body) + "\n";
                                 //TelephonyMethods
                                 String fileName = "telephony.txt";
-                                content.add(getString(R.string.body) + "\n");
                                 File file = new File(dir, fileName);
                                 try {
                                     uris.add(Uri.fromFile(file));
@@ -297,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content.add(sb.toString());
+                                        content += sb.toString();
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -318,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content.add(sb.toString());
+                                        content += sb.toString();
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -326,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 //Active SIM
                                 int sim = MobileUtils.getMobileDataInfo(mContext, true)[1];
                                 fileName = "sim_log.txt";
-                                content.add("\n" + "Active SIM " + sim + "\n");
+                                content += "\n" + "Active SIM " + sim + "\n";
                                 file = new File(dir, fileName);
                                 try {
                                     uris.add(Uri.fromFile(file));
@@ -341,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content.add(sb.toString());
+                                        content += sb.toString();
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -349,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 //Operator Names
                                 ArrayList<String> names = MobileUtils.getOperatorNames(mContext);
                                 fileName = "name_log.txt";
-                                content.add("\n" + "Operator names " + names.toString() + "\n");
+                                content += "\n" + "Operator names " + names.toString() + "\n";
                                 file = new File(dir, fileName);
                                 try {
                                     uris.add(Uri.fromFile(file));
@@ -364,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content.add(sb.toString());
+                                        content += sb.toString();
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();

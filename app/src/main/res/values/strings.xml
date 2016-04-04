@@ -169,7 +169,7 @@
     <string name="is_out_of_home_network">Are you calling outside of your home network?</string>
     <string name="no">No</string>
     <string name="send_email">Send email to developer</string>
-    <string name="body">Here are methods from TelephonyManager</string>
+    <string name="body">Here are some debug information</string>
     <string name="choose_client">Choose your email client</string>
     <string name="why_email">If app on your device isn\'t working correctly, you can send me email with some useful information about your device. For example, ROM version and CPU name</string>
     <string name="use_call_logger">Enable outgoing calls logger service</string>
