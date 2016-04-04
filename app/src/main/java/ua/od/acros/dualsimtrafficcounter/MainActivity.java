@@ -279,9 +279,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
                                 ArrayList<Uri> uris = new ArrayList<>();
                                 File dir = new File(String.valueOf(mContext.getFilesDir()));
+                                ArrayList<String> content = new ArrayList<>();
                                 //TelephonyMethods
                                 String fileName = "telephony.txt";
-                                String content = getString(R.string.body) + "\n";
+                                content.add(getString(R.string.body) + "\n");
                                 File file = new File(dir, fileName);
                                 try {
                                     uris.add(Uri.fromFile(file));
@@ -296,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content += sb.toString();
+                                        content.add(sb.toString());
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -317,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content += sb.toString();
+                                        content.add(sb.toString());
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -325,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 //Active SIM
                                 int sim = MobileUtils.getMobileDataInfo(mContext, true)[1];
                                 fileName = "sim_log.txt";
-                                content += "\n" + "Active SIM " + sim + "\n";
+                                content.add("\n" + "Active SIM " + sim + "\n");
                                 file = new File(dir, fileName);
                                 try {
                                     uris.add(Uri.fromFile(file));
@@ -340,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content += sb.toString();
+                                        content.add(sb.toString());
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -348,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 //Operator Names
                                 ArrayList<String> names = MobileUtils.getOperatorNames(mContext);
                                 fileName = "name_log.txt";
-                                content += "\n" + "Operator names " + names.toString() + "\n";
+                                content.add("\n" + "Operator names " + names.toString() + "\n");
                                 file = new File(dir, fileName);
                                 try {
                                     uris.add(Uri.fromFile(file));
@@ -363,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             sb.append(read);
                                         }
                                         is.close();
-                                        content += sb.toString();
+                                        content.add(sb.toString());
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -454,6 +455,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setItemChecked(R.id.nav_traffic, true);
             mLastMenuItem = R.id.nav_traffic;
             out = "normal";
+        } else {
+            openFragment(mLastMenuItem);
+            setItemChecked(mLastMenuItem, true);
+            out = "last_item";
         }
         try {
             File dir = new File(String.valueOf(getFilesDir()));
@@ -499,48 +504,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        openFragment(item.getItemId());
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer != null) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        return true;
+    }
+
+    private void openFragment(int itemId) {
         Fragment newFragment = null;
         FragmentManager fm = getSupportFragmentManager();
         String tag = "";
-        switch (id) {
+        switch (itemId) {
             case R.id.nav_traffic:
-                mLastMenuItem = id;
+                mLastMenuItem = itemId;
                 tag = Constants.TRAFFIC_TAG;
                 newFragment = mTraffic;
                 break;
             case R.id.nav_calls:
-                mLastMenuItem = id;
+                mLastMenuItem = itemId;
                 tag = Constants.CALLS_TAG;
                 newFragment = mCalls;
                 break;
             case R.id.nav_traf_for_date:
-                mLastMenuItem = id;
+                mLastMenuItem = itemId;
                 newFragment = mTrafficForDate;
                 break;
             case R.id.nav_test:
-                mLastMenuItem = id;
+                mLastMenuItem = itemId;
                 newFragment = mTest;
                 break;
             case R.id.nav_set_usage:
-                mLastMenuItem = id;
+                mLastMenuItem = itemId;
                 newFragment = mSetUsage;
                 break;
             case R.id.nav_set_duration:
-                mLastMenuItem = id;
+                mLastMenuItem = itemId;
                 newFragment = mSetDuration;
                 break;
             case R.id.nav_settings:
-                setItemChecked(id, false);
+                setItemChecked(itemId, false);
                 Intent i1 = new Intent(mContext, SettingsActivity.class);
                 startActivityForResult(i1, REQUEST_CODE);
                 break;
             case R.id.nav_email:
-                setItemChecked(id, false);
+                setItemChecked(itemId, false);
                 showDialog(EMAIL);
                 break;
             case R.id.nav_4pda:
-                setItemChecked(id, false);
+                setItemChecked(itemId, false);
                 String url = "http://4pda.ru/forum/index.php?showtopic=699793";
                 Intent i2 = new Intent(Intent.ACTION_VIEW);
                 i2.setData(Uri.parse(url));
@@ -548,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         if (newFragment != null) {
-            Fragment frg = getSupportFragmentManager().findFragmentByTag(tag);
+            Fragment frg = fm.findFragmentByTag(tag);
             if (tag.equals("") || frg != null)
                 fm.beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -561,11 +574,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(tag)
                         .commit();
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer != null) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-        return true;
     }
 
     @Override
