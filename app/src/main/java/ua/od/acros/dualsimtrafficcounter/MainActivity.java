@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setItemChecked(mLastMenuItem, true);
             out = "last_item";
         }
-        Fragment frg = null;
+        /*Fragment frg = null;
         try {
             frg = fm.findFragmentById(R.id.content_frame);
         } catch (Exception e) {
@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setItemChecked(R.id.nav_traffic, true);
             mLastMenuItem = R.id.nav_traffic;
             out = "null";
-        }
+        }*/
         try {
             File dir = new File(String.valueOf(getFilesDir()));
             // create the file in which we will write the contents
