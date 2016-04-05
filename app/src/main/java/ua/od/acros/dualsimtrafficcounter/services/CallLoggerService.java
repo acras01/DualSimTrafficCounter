@@ -50,7 +50,7 @@ import ua.od.acros.dualsimtrafficcounter.widgets.CallsInfoWidget;
 
 public class CallLoggerService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener{
 
-    private Context mContext;
+    private static Context mContext;
     private CustomDatabaseHelper mDbHelper;
     private ContentValues mCallsData;
     private DateTimeFormatter mDateFormat = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
@@ -220,7 +220,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             break;
                     }
                     CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
-                    refreshWidgetAndNotification(context, sim, duration);
+                    refreshWidgetAndNotification(sim, duration);
                     /*String out = "Call Ends\n";
                     try {
                         // to this path add a new directory path
@@ -272,7 +272,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 break;
         }
         CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
-        refreshWidgetAndNotification(mContext, sim, duration);
+        refreshWidgetAndNotification(sim, duration);
     }
 
     @Subscribe
@@ -296,7 +296,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 break;
         }
         CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
-        refreshWidgetAndNotification(mContext, sim, 0L);
+        refreshWidgetAndNotification(sim, 0L);
     }
 
     private void startTask(Context context, String number) {
@@ -478,11 +478,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         }, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
-    private void refreshWidgetAndNotification(Context context, int sim, long duration) {
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    private void refreshWidgetAndNotification(int sim, long duration) {
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(Constants.STARTED_ID, buildNotification());
-        int[] ids = getWidgetIds(context);
-        if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn(context)) || ids.length != 0) {
+        int[] ids = getWidgetIds();
+        if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn()) || ids.length != 0) {
             Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
             callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
             callsIntent.putExtra(Constants.CALL_DURATION, duration);
@@ -564,7 +564,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(Constants.STARTED_ID, buildNotification());
-        int[] ids = getWidgetIds(mContext);
+        int[] ids = getWidgetIds();
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
             i.putExtra(Constants.WIDGET_IDS, ids);
@@ -633,11 +633,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         EventBus.getDefault().unregister(this);
     }
 
-    private static int[] getWidgetIds(Context context) {
-        int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, CallsInfoWidget.class));
+    private static int[] getWidgetIds() {
+        int[] ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, CallsInfoWidget.class));
         if (ids.length == 0) {
             try {
-                File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
+                File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
                 String[] children = dir.list();
                 int i = 0;
                 for (String aChildren : children) {

@@ -74,7 +74,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         EventBus.getDefault().register(this);
-        mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext);
+        mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -289,7 +289,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     TIP.setText(getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     mService.setIcon(R.drawable.ic_action_enable);
-                    mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext);
+                    mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
                 }
                 else {
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
@@ -297,7 +297,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     TIP.setText(getString(R.string.tip));
                     item.setTitle(R.string.action_stop);
                     mService.setIcon(R.drawable.ic_action_disable);
-                    mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext);
+                    mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
                 }
                 break;
             case R.id.action_mobile_data_on_off:
@@ -537,7 +537,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 startActivity(settIntent);
                 break;
             case R.id.buttonClear1:
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext))
+                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new ClearTrafficEvent(Constants.SIM1));
                 else {
                     mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
@@ -564,7 +564,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.buttonClear2:
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext))
+                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new ClearTrafficEvent(Constants.SIM2));
                 else {
                     mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
@@ -591,7 +591,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.buttonClear3:
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext))
+                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new ClearTrafficEvent(Constants.SIM3));
                 else {
                     mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);

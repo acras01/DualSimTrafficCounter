@@ -20,18 +20,18 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
-            if (CustomApplication.isMyServiceRunning(TrafficCountService.class, context))
+            if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 EventBus.getDefault().post(new NoConnectivityEvent());
         } else if (MobileUtils.getMobileDataInfo(context, false)[0] == 2) {
             SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-            if (!CustomApplication.isMyServiceRunning(TrafficCountService.class, context) &&
+            if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
                     !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                 Intent i = new Intent(context, TrafficCountService.class);
                 i.setAction(intent.getAction());
                 i.putExtras(intent.getExtras());
                 i.setFlags(intent.getFlags());
                 context.startService(i);
-            } else if (CustomApplication.isMyServiceRunning(TrafficCountService.class, context))
+            } else if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 EventBus.getDefault().post(new MobileConnectionEvent());
         }
     }

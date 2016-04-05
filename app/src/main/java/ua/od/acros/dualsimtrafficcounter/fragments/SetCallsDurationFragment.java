@@ -116,7 +116,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public void onClick(View view) {
         if (mSimChecked != Constants.DISABLED && !duration.getText().toString().equals("")) {
-            if (CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext)) {
+            if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
                 SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
                 EventBus.getDefault().post(event);
                 getActivity().onBackPressed();

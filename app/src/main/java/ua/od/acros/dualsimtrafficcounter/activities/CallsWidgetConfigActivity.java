@@ -72,7 +72,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
 
         mContext = CustomApplication.getAppContext();
 
-        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext))
+        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class))
             startService(new Intent(mContext, CallLoggerService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);

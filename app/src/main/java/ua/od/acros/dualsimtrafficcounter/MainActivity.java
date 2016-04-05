@@ -166,17 +166,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MobileUtils.getTelephonyManagerMethods(mContext);
 
-        if (!CustomApplication.isMyServiceRunning(WatchDogService.class, mContext) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             startService(new Intent(mContext, WatchDogService.class));
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
-        if (!CustomApplication.isPackageExisted(mContext, XPOSED)) {
+        if (!CustomApplication.isPackageExisted(XPOSED)) {
             mPrefs.edit()
                     .putBoolean(Constants.PREF_OTHER[24], true)
                     .putBoolean(Constants.PREF_OTHER[25], false)
                     .apply();
         }
-        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
+        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
 
         mAction = getIntent().getAction();
@@ -418,8 +418,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setItemChecked(R.id.nav_calls, true);
                 mLastMenuItem = R.id.nav_calls;
             }
-        } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true) &&
-                (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration)) {
+        } else if (CustomApplication.isPackageExisted(XPOSED) && (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration) &&
+                !mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
             Fragment currentFragment = fm.findFragmentById(R.id.content_frame);
             if (currentFragment instanceof CallsFragment) {
                 fm.beginTransaction()

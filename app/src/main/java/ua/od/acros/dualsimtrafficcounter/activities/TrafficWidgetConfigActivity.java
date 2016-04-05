@@ -73,7 +73,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
 
         mContext = CustomApplication.getAppContext();
 
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class, mContext))
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class))
             startService(new Intent(this, TrafficCountService.class));
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);

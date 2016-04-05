@@ -50,7 +50,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         simQuantity.setOnPreferenceChangeListener(this);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
-        if (!CustomApplication.isPackageExisted(mContext, XPOSED)) {
+        if (!CustomApplication.isPackageExisted(XPOSED)) {
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
             getPreferenceScreen().getSharedPreferences().edit()
@@ -106,7 +106,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             final int RESET = 1981;
             PendingIntent piReset = PendingIntent.getBroadcast(mContext, RESET, iReset, 0);
             if (!sharedPreferences.getBoolean(key, false)) {
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class, mContext)) {
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
                     mContext.stopService(new Intent(mContext, CallLoggerService.class));
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_OTHER[24], true)
