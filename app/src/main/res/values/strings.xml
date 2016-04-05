@@ -106,7 +106,8 @@
     <string name="time_on">ON time</string>
     <string name="userpick">User</string>
     <string name="round_traffic">Round traffic in session</string>
-    <string name="crash_toast_text">Sending crash report to developer</string>
+    <string name="crash_toast_text">Send error log to developer?</string>
+    <string name="crash_toast_text_ok">Sending error log to developer…</string>
     <string name="pref_disable_acra">Send error logs to developer</string>
     <string name="show_icon_in_statusbar">Show service icon in status bar  (if service gets closed by system, try enabling this). Needs service restart!</string>
     <string name="use_divider">Show divider line</string>

@@ -102,7 +102,7 @@
     <string name="time_on">Час увімкн.</string>
     <string name="userpick">Користув.</string>
     <string name="round_traffic">Округляти трафік за сесію</string>
-    <string name="crash_toast_text">Відправка звіту про помилку розробнику</string>
+    <string name="crash_toast_text">Відправити звіт про помилку розробнику?</string>
     <string name="pref_disable_acra">Відправка звітів про помилки</string>
     <string name="show_icon_in_statusbar">Іконка сервісу в статус барі (якщо сервіс зупиняється системою, спробйте лишити увімкненим). Потрібен перезапуск сервісу!</string>
     <string name="use_divider">Відображати роздільну лінію</string>
@@ -195,4 +195,5 @@
     <string name="check_input">Вказано невірне значення</string>
     <string name="size_hint">Введіть ціле позитивне число</string>
     <string name="visit_4pda">Відкрити тему додатку на форумі 4pda.ru</string>
+    <string name="crash_toast_text_ok">Відправка звіту про помилку розробнику…</string>
 </resources>

@@ -102,7 +102,7 @@
     <string name="time_on">Время вкл.</string>
     <string name="userpick">Пользов.</string>
     <string name="round_traffic">Округлять трафик за сессию</string>
-    <string name="crash_toast_text">Отправка отчета об ошибке разработчику</string>
+    <string name="crash_toast_text">Отправить отчет об ошибке разработчику?</string>
     <string name="pref_disable_acra">Отправка отчетов об ошибках</string>
     <string name="show_icon_in_statusbar">Иконка сервиса в статус баре (если сервис останавливается системой, оставьте включенным). Требуется перезапуск сервиса!</string>
     <string name="use_divider">Показывать разделительную полосу</string>
@@ -195,4 +195,5 @@
     <string name="check_input">Введено неправильное значение</string>
     <string name="size_hint">Введите целое положительное число</string>
     <string name="visit_4pda">Посетить тему программы на форуме 4pda.ru</string>
+    <string name="crash_toast_text_ok">Отправка отчета об ошибке разработчику…</string>
 </resources>

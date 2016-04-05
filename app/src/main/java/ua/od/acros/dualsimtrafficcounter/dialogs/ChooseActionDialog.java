@@ -33,7 +33,7 @@ public class ChooseActionDialog extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Context context = CustomApplication.getAppContext();
+        final Context context = CustomApplication.getAppContext();
         mIsActive = true;
         SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (savedInstanceState == null) {
@@ -99,7 +99,7 @@ public class ChooseActionDialog extends AppCompatActivity {
                 bOK = (AppCompatButton) mDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 textColor[0] = bOK.getTextColors();
                 bOK.setEnabled(false);
-                bOK.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                bOK.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

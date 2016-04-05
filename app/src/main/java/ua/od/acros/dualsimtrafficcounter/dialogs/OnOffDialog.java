@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRadioButton;
@@ -53,7 +54,8 @@ public class OnOffDialog extends DialogFragment {
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()) {
+        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()) ||
+                Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             if (simQuantity == 1) {
@@ -67,7 +69,7 @@ public class OnOffDialog extends DialogFragment {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
         }
-        final ColorStateList[] textColor = {ColorStateList.valueOf(getResources().getColor(R.color.colorAccent))};
+        final ColorStateList[] textColor = {ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.colorAccent))};
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -107,7 +109,7 @@ public class OnOffDialog extends DialogFragment {
                 bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 textColor[0] = bOK.getTextColors();
                 bOK.setEnabled(false);
-                bOK.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                bOK.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark));
                 bOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

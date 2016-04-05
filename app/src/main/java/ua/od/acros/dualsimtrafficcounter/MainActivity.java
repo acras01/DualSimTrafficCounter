@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -391,7 +390,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        String out = "";
         FragmentManager fm = getSupportFragmentManager();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             mPrefs.edit()
@@ -404,7 +402,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !CustomApplication.isOldMtkDevice())
                 showDialog(MTK);
-            out = "first";
         } else if (mAction != null && mAction.equals("tap") && mState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
                 fm.beginTransaction()
@@ -413,7 +410,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
                 mLastMenuItem = R.id.nav_traffic;
-                out = "tap_traffic";
             } else {
                 fm.beginTransaction()
                         .replace(R.id.content_frame, mCalls)
@@ -421,9 +417,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_calls, true);
                 mLastMenuItem = R.id.nav_calls;
-                out = "tap_calls";
             }
-        } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
+        } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], true) &&
+                (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration)) {
             Fragment currentFragment = fm.findFragmentById(R.id.content_frame);
             if (currentFragment instanceof CallsFragment) {
                 fm.beginTransaction()
@@ -432,7 +428,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
                 mLastMenuItem = R.id.nav_traffic;
-                out = "not_call_logger";
             }
         } else if (mNeedsRestart && mTraffic.isVisible()) {
             fm.beginTransaction()
@@ -441,7 +436,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
             mLastMenuItem = R.id.nav_traffic;
-            out = "restart";
         } else if (mState == null) {
             fm.beginTransaction()
                     .add(R.id.content_frame, mTraffic)
@@ -449,37 +443,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
             mLastMenuItem = R.id.nav_traffic;
-            out = "normal";
         } else {
             openFragment(mLastMenuItem);
             setItemChecked(mLastMenuItem, true);
-            out = "last_item";
-        }
-        /*Fragment frg = null;
-        try {
-            frg = fm.findFragmentById(R.id.content_frame);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (frg == null) {
-            fm.beginTransaction()
-                    .add(R.id.content_frame, mTraffic)
-                    .addToBackStack(Constants.TRAFFIC_TAG)
-                    .commit();
-            setItemChecked(R.id.nav_traffic, true);
-            mLastMenuItem = R.id.nav_traffic;
-            out = "null";
-        }*/
-        try {
-            File dir = new File(String.valueOf(getFilesDir()));
-            // create the file in which we will write the contents
-            String fileName = "resume.txt";
-            File file = new File(dir, fileName);
-            FileOutputStream os = new FileOutputStream(file);
-            os.write(out.getBytes());
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
