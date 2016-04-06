@@ -1192,28 +1192,33 @@ public class MobileUtils {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static void setMobileNetworkFromLollipop(final Context context, int sim, boolean on) throws Exception {
-        String cmd = null;
-        int state;
+        String[] cmd = null;
         try {
-            // Get the current state of the mobile network.
-            state = on ? 1 : 0;
             // Get the value of the "TRANSACTION_setDataEnabled" field.
             String transactionCode = getTransactionCode(context);
             // Android 5.1+ (API 22) and later.
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                int activeSim = getMobileDataInfo(context, true)[1];
+                SubscriptionInfo currentSubInfo = sm.getActiveSubscriptionInfoForSimSlotIndex(activeSim);
                 List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
                 if (sl != null)
                     for (SubscriptionInfo si : sl) {
                         if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                            cmd = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + state;
+                            if (on) {
+                                cmd = new String[]{"service call phone " + transactionCode + " i32 " + currentSubInfo.getSubscriptionId() + " i32 " + 0,
+                                        "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
+                            } else
+                                cmd = new String[] {"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0};
                             break;
                         }
                     }
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                 // Android 5.0 (API 21) only.
+                int state = on ? 1 : 0;
                 if (transactionCode != null && transactionCode.length() > 0)
-                    cmd = "service call phone " + transactionCode + " i32 " + state;
+                    cmd = new String[]{"service call phone " + transactionCode + " i32 " + state};
+            }
             if (CustomApplication.hasRoot() && cmd != null)
                 RootShell.getShell(true).add(new Command(0, cmd));
             else
