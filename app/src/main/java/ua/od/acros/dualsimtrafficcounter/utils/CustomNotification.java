@@ -17,30 +17,30 @@ public class CustomNotification extends Notification {
 
     private static String mTraffic = "", mCalls = "";
     private static NotificationCompat.Builder mBuilder;
-    private static Context mContext;
     private static boolean mIdChanged = false;
     private static boolean mPriorityChanged = false;
 
-    private static NotificationCompat.Builder newInstance() {
+    private static NotificationCompat.Builder newInstance(Context context, int priority) {
         if (mBuilder == null) {
-            Intent notificationIntent = new Intent(mContext, MainActivity.class);
+            Intent notificationIntent = new Intent(context, MainActivity.class);
             notificationIntent.setAction("tap");
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
-            mBuilder = new NotificationCompat.Builder(mContext)
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+            mBuilder = new NotificationCompat.Builder(context)
+                    .setPriority(priority)
                     .setContentIntent(contentIntent)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setWhen(System.currentTimeMillis())
                     .setOngoing(true)
                     .setLargeIcon(bm)
-                    .setContentTitle(mContext.getString(R.string.app_name));
+                    .setContentTitle(context.getString(R.string.app_name));
         }
         return mBuilder;
     }
 
     public static Notification getNotification(Context context, String traffic, String calls) {
-        mContext = context.getApplicationContext();
+        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         int mActiveSIM = TrafficCountService.getActiveSIM();
         if (mActiveSIM == Constants.DISABLED)
             mActiveSIM = TrafficCountService.getLastActiveSIM();
@@ -49,18 +49,18 @@ public class CustomNotification extends Notification {
         if (calls.equals(""))
             calls = mCalls;
         String bigText;
-        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
-            bigText = mContext.getString(R.string.traffic) + "\n" + traffic + "\n" +
-                    mContext.getString(R.string.calls) + "\n" + calls + "\n";
+            bigText = context.getString(R.string.traffic) + "\n" + traffic + "\n" +
+                    context.getString(R.string.calls) + "\n" + calls + "\n";
         else
-            bigText = mContext.getString(R.string.traffic) + "\n" + traffic;
+            bigText = context.getString(R.string.traffic) + "\n" + traffic;
         mTraffic = traffic;
         mCalls = calls;
-        NotificationCompat.Builder b = newInstance();
+        int p = prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
+        NotificationCompat.Builder b = newInstance(context, p);
         if (mIdChanged) {
             mIdChanged = false;
-            b.setSmallIcon(getOperatorLogoID(mContext, mActiveSIM));
+            b.setSmallIcon(getOperatorLogoID(context, mActiveSIM));
         }
         if (mPriorityChanged) {
             mPriorityChanged = false;
@@ -93,8 +93,8 @@ public class CustomNotification extends Notification {
             return R.drawable.ic_launcher_small;
     }
 
-    public static void setPriorityNeedsChange(boolean idNeedsChange) {
-        mPriorityChanged = idNeedsChange;
+    public static void setPriorityNeedsChange(boolean priorityNeedsChange) {
+        mPriorityChanged = priorityNeedsChange;
     }
 
     public static void setIdNeedsChange(boolean idNeedsChange) {
