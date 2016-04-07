@@ -20,15 +20,18 @@ public class CustomNotification extends Notification {
     private static boolean mIdChanged = false;
     private static boolean mPriorityChanged = false;
 
-    private static NotificationCompat.Builder newInstance(Context context, int priority) {
+    private static NotificationCompat.Builder newInstance(Context context) {
         if (mBuilder == null) {
+            int p = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
+                    .getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX :
+                    NotificationCompat.PRIORITY_MIN;
             Intent notificationIntent = new Intent(context, MainActivity.class);
             notificationIntent.setAction("tap");
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
             mBuilder = new NotificationCompat.Builder(context)
-                    .setPriority(priority)
+                    .setPriority(p)
                     .setContentIntent(contentIntent)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setWhen(System.currentTimeMillis())
@@ -56,8 +59,7 @@ public class CustomNotification extends Notification {
             bigText = context.getString(R.string.traffic) + "\n" + traffic;
         mTraffic = traffic;
         mCalls = calls;
-        int p = prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
-        NotificationCompat.Builder b = newInstance(context, p);
+        NotificationCompat.Builder b = newInstance(context);
         if (mIdChanged) {
             mIdChanged = false;
             b.setSmallIcon(getOperatorLogoID(context, mActiveSIM));
