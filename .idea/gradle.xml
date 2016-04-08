@@ -18,17 +18,6 @@
             <option value="$PROJECT_DIR$/joda-time-2.8.2" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/RootShell" />
-            <option value="$PROJECT_DIR$/XposedBridge" />
-            <option value="$PROJECT_DIR$/acra" />
-            <option value="$PROJECT_DIR$/ambilwarna" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/joda-time-2.8.2" />
-          </set>
-        </option>
       </GradleProjectSettings>
     </option>
   </component>

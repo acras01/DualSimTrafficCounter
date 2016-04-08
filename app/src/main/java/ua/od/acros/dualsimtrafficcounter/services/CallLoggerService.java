@@ -360,7 +360,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     ArrayList<String> list = params[0].getStringArrayList("list");
                     if (list != null) {
                         list.add(params[0].getString("number"));
-                        CustomDatabaseHelper.writeWhiteList(params[0].getInt("sim"), list, mDbHelper);
+                        if (params[0].getBoolean("white", false))
+                            CustomDatabaseHelper.writeWhiteList(params[0].getInt("sim"), list, mDbHelper);
+                        else
+                            CustomDatabaseHelper.writeBlackList(params[0].getInt("sim"), list, mDbHelper);
                         return true;
                     } else
                         return false;
@@ -436,6 +439,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             public void onClick(DialogInterface dialog, int which) {
                                                 mIsOutgoing = true;
                                                 bundle.putStringArrayList("list", blackList);
+                                                bundle.putBoolean("white", !mIsOutgoing);
                                                 new SaveListTask().execute(bundle);
                                                 dialog.dismiss();
                                             }
@@ -445,6 +449,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             public void onClick(DialogInterface dialog, int which) {
                                                 mIsOutgoing = false;
                                                 bundle.putStringArrayList("list", whiteList);
+                                                bundle.putBoolean("white", !mIsOutgoing);
                                                 new SaveListTask().execute(bundle);
                                                 dialog.dismiss();
                                             }
