@@ -22,16 +22,13 @@ public class CustomNotification extends Notification {
 
     private static NotificationCompat.Builder newInstance(Context context) {
         if (mBuilder == null) {
-            int p = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE)
-                    .getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX :
-                    NotificationCompat.PRIORITY_MIN;
+            mPriorityChanged = true;
             Intent notificationIntent = new Intent(context, MainActivity.class);
             notificationIntent.setAction("tap");
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
             mBuilder = new NotificationCompat.Builder(context)
-                    .setPriority(p)
                     .setContentIntent(contentIntent)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setWhen(System.currentTimeMillis())
