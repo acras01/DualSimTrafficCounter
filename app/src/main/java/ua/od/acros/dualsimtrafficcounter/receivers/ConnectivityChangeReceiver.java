@@ -22,7 +22,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 EventBus.getDefault().post(new NoConnectivityEvent());
-        } else if (MobileUtils.getMobileDataInfo(context, false)[0] == 2) {
+        } else if (MobileUtils.isMobileDataActive(context) == 2) {
             SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
             if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
                     !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {

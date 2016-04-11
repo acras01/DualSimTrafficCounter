@@ -199,7 +199,7 @@ public class MobileUtils {
         }
     }
 
-    private static int activeSIM(Context context, NetworkInfo networkInfo) {
+    public static int getActiveSIM(Context context) {
         String out = " ";
         if (mSubIds == null)
             mSubIds = new ArrayList<>();
@@ -247,16 +247,20 @@ public class MobileUtils {
                 }
             }
             if (sim == Constants.DISABLED) {
-                SubscriptionManager sm = SubscriptionManager.from(context);
-                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-                if (sl != null)
-                    for (int i = 0; i < sl.size(); i++) {
-                        if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), networkInfo.getExtraInfo())) {
-                            sim = sl.get(i).getSimSlotIndex();
-                            out = "getNetworkFromApnsFile " + sim;
-                            break;
+                final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+                if (activeNetworkInfo != null) {
+                    SubscriptionManager sm = SubscriptionManager.from(context);
+                    List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                    if (sl != null)
+                        for (int i = 0; i < sl.size(); i++) {
+                            if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), activeNetworkInfo.getExtraInfo())) {
+                                sim = sl.get(i).getSimSlotIndex();
+                                out = "getNetworkFromApnsFile " + sim;
+                                break;
+                            }
                         }
-                    }
+                }
             }
             if (sim == Constants.DISABLED) {
                 try {
@@ -279,15 +283,19 @@ public class MobileUtils {
                 }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
-                    try {
-                        if (mGetSimId == null)
-                            mGetSimId = getMethod(mTelephonyClass, "getSimId", 0);
-                        if (mGetSimId != null) {
-                            sim = (int) mGetSimId.invoke(networkInfo);
+                    final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+                    if (activeNetworkInfo != null) {
+                        try {
+                            if (mGetSimId == null)
+                                mGetSimId = getMethod(mTelephonyClass, "getSimId", 0);
+                            if (mGetSimId != null) {
+                                sim = (int) mGetSimId.invoke(activeNetworkInfo);
+                            }
+                            out = "getSimId " + sim;
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        out = "getSimId " + sim;
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                     if (sim == Constants.DISABLED && CustomApplication.isOldMtkDevice()) {
                         for (int i = 0; i < simQuantity; i++) {
@@ -1058,7 +1066,7 @@ public class MobileUtils {
                 if (sl != null)
                     for (SubscriptionInfo si : sl) {
                         if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                            int activeSim = getMobileDataInfo(context, true)[1];
+                            int activeSim = getActiveSIM(context);
                             if (on && activeSim != Constants.DISABLED) {
                                 SubscriptionInfo currentSubInfo = sm.getActiveSubscriptionInfoForSimSlotIndex(activeSim);
                                 commands = new String[]{"service call phone " + transactionCode + " i32 " + currentSubInfo.getSubscriptionId() + " i32 " + 0,
@@ -1137,23 +1145,18 @@ public class MobileUtils {
         }
     }
 
-    public static int[] getMobileDataInfo(Context context, boolean sim) {
-        int[] mobileDataEnabled = {0, -1}; // Assume disabled
+    public static int isMobileDataActive(Context context) {
+        int mobileDataEnabled = 0; // Assume disabled
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
         if (mActiveNetworkInfo != null) {
             String typeName = mActiveNetworkInfo.getTypeName().toLowerCase();
             boolean isConnected = mActiveNetworkInfo.isConnectedOrConnecting();
             int type = mActiveNetworkInfo.getType();
-            if ((isNetworkTypeMobile(type)) && (typeName.contains("mobile")) && isConnected) {
-                mobileDataEnabled[0] = 2;
-                if (sim)
-                    mobileDataEnabled[1] = activeSIM(context, mActiveNetworkInfo);
-                else
-                    mobileDataEnabled[1] = Constants.DISABLED;
-            }
+            if ((isNetworkTypeMobile(type)) && (typeName.contains("mobile")) && isConnected)
+                mobileDataEnabled = 2;
             else if ((!isNetworkTypeMobile(type)) && (!typeName.contains("mobile")) && isConnected)
-                mobileDataEnabled[0] = 1;
+                mobileDataEnabled = 1;
         }
         return mobileDataEnabled;
     }
@@ -1180,9 +1183,7 @@ public class MobileUtils {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         boolean mAlternative = prefs.getBoolean(Constants.PREF_OTHER[20], false);
         if (!ON) {
-            final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
-            mLastActiveSIM = activeSIM(context, mActiveNetworkInfo);
+            mLastActiveSIM = getActiveSIM(context);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {

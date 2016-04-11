@@ -489,7 +489,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         TimerTask tTask = null;
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-        mActiveSIM = MobileUtils.getMobileDataInfo(mContext, true)[1];
+        mActiveSIM = MobileUtils.getActiveSIM(mContext);
         CustomNotification.setIdNeedsChange(true);
         if (task == Constants.COUNT) {
             switch (mActiveSIM) {
@@ -732,7 +732,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2
+                if (MobileUtils.isMobileDataActive(mContext) == 2
                         && (mTaskResult != null && !mTaskResult.isCancelled())) {
 
                     long speedRX;
@@ -968,7 +968,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2
+                if (MobileUtils.isMobileDataActive(mContext) == 2
                         && (mTaskResult != null && !mTaskResult.isCancelled())) {
 
                     long speedRX;
@@ -1203,7 +1203,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
             try {
-                if (MobileUtils.getMobileDataInfo(mContext, false)[0] == 2
+                if (MobileUtils.isMobileDataActive(mContext) == 2
                         && (mTaskResult != null && !mTaskResult.isCancelled())) {
 
                     long speedRX;

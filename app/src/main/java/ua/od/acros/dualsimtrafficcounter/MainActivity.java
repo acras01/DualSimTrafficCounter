@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     e.printStackTrace();
                                 }
                                 //Active SIM
-                                int sim = MobileUtils.getMobileDataInfo(mContext, true)[1];
+                                int sim = MobileUtils.getActiveSIM(mContext);
                                 fileName = "sim_log.txt";
                                 content += "\n" + "Active SIM " + sim + "\n";
                                 file = new File(dir, fileName);
