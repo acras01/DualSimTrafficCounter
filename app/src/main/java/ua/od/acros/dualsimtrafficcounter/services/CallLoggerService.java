@@ -458,7 +458,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 mIsOutgoing = false;
-                                                dialog.dismiss();
+                                                dialog.cancel();
                                             }
                                         })
                                         .create();

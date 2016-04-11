@@ -73,7 +73,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         setHasOptionsMenu(true);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
-        EventBus.getDefault().register(this);
         mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -220,6 +219,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume(){
         super.onResume();
+        EventBus.getDefault().register(this);
         android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
         toolBar.setSubtitle(R.string.notification_title);
         setButtonLimitText();
@@ -229,6 +229,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
+        EventBus.getDefault().unregister(this);
         CustomApplication.activityPaused();
     }
 
@@ -479,12 +480,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     private void setLabelText(int sim, String rx, String tx) {

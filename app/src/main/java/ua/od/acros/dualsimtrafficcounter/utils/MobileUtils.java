@@ -1047,7 +1047,7 @@ public class MobileUtils {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static void setMobileNetworkFromLollipop(final Context context, int sim, boolean on) throws Exception {
-        String[] cmd = null;
+        String[] commands = null;
         try {
             // Get the value of the "TRANSACTION_setDataEnabled" field.
             String transactionCode = getTransactionCode(context);
@@ -1061,12 +1061,12 @@ public class MobileUtils {
                             int activeSim = getMobileDataInfo(context, true)[1];
                             if (on && activeSim != Constants.DISABLED) {
                                 SubscriptionInfo currentSubInfo = sm.getActiveSubscriptionInfoForSimSlotIndex(activeSim);
-                                cmd = new String[]{"service call phone " + transactionCode + " i32 " + currentSubInfo.getSubscriptionId() + " i32 " + 0,
+                                commands = new String[]{"service call phone " + transactionCode + " i32 " + currentSubInfo.getSubscriptionId() + " i32 " + 0,
                                         "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
                             } else if (on) {
-                                cmd = new String[] {"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
+                                commands = new String[]{"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
                             } else
-                                cmd = new String[] {"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0};
+                                commands = new String[]{"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0};
                             break;
                         }
                     }
@@ -1074,16 +1074,26 @@ public class MobileUtils {
                 // Android 5.0 (API 21) only.
                 int state = on ? 1 : 0;
                 if (transactionCode != null && transactionCode.length() > 0)
-                    cmd = new String[]{"service call phone " + transactionCode + " i32 " + state};
+                    commands = new String[]{"service call phone " + transactionCode + " i32 " + state};
             }
-            if (CustomApplication.hasRoot() && cmd != null)
-                RootShell.getShell(true).add(new Command(0, cmd));
+            if (CustomApplication.hasRoot() && commands != null)
+                for (String command : commands) {
+                    RootShell.getShell(true).add(new Command(0, command));
+                }
             else
                 Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
+    }
+
+    private static boolean isMobileDataEnabledFromLollipop(Context context) {
+        boolean state = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
+        }
+        return state;
     }
 
     private static String getTransactionCode(Context context) {
