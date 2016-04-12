@@ -554,11 +554,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             };
             timer.start();
         }
-        if (key.equals(Constants.PREF_OTHER[12])) {
-            CustomNotification.setPriorityNeedsChange(true);
-            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(Constants.STARTED_ID, buildNotification());
-        }
     }
 
     private static void vibrate(Vibrator v, int v1, int p1) {

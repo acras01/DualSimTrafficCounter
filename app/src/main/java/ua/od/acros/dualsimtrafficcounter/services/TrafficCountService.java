@@ -569,17 +569,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             };
             timer.start();
         }
-        if (key.equals(Constants.PREF_OTHER[12])) {
-            CustomNotification.setPriorityNeedsChange(true);
-            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(Constants.STARTED_ID, buildNotification(mActiveSIM));
-        }
-        if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
-                key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23])) {
-            CustomNotification.setIdNeedsChange(true);
-            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(Constants.STARTED_ID, buildNotification(mActiveSIM));
-        }
     }
 
     private long[] getSIMLimits() {

@@ -104,7 +104,7 @@
     <string name="round_traffic">Округлять трафик за сессию</string>
     <string name="crash_toast_text">Отправить отчет об ошибке разработчику?</string>
     <string name="pref_disable_acra">Отправка отчетов об ошибках</string>
-    <string name="show_icon_in_statusbar">Иконка сервиса в статус баре (если сервис останавливается системой, оставьте включенным). Требуется перезапуск сервиса!</string>
+    <string name="show_icon_in_statusbar">Иконка сервиса в статус баре (если сервис останавливается системой, оставьте включенным)</string>
     <string name="use_divider">Показывать разделительную полосу</string>
     <string name="detect_sim">Автоопределение количества SIM</string>
     <string name="set_sim_number">Если количество SIM определяется некорректно, установите его вручную в Настройках</string>

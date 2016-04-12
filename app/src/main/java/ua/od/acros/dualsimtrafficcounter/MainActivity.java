@@ -66,12 +66,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment mSetUsage;
     private Fragment mCalls;
     private Fragment mSetDuration;
+    private boolean mNeedsReloadView = false;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
     private static NavigationView mNavigationView;
     private static int mLastMenuItem;
     private String mAction;
     private Bundle mState;
+    private Intent mStarterIntent;
 
     /*static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mStarterIntent = getIntent();
         mState = savedInstanceState;
         mContext = CustomApplication.getAppContext();
         mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -391,7 +394,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         FragmentManager fm = getSupportFragmentManager();
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
+        if (mNeedsRestart) {
+            mNeedsRestart = false;
+            finish();
+            startActivity(mStarterIntent);
+        } else if (mNeedsReloadView && mTraffic.isVisible()) {
+            fm.beginTransaction()
+                    .detach(mTraffic)
+                    .attach(mTraffic)
+                    .commit();
+            setItemChecked(R.id.nav_traffic, true);
+            mLastMenuItem = R.id.nav_traffic;
+        } else if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             mPrefs.edit()
                     .putBoolean(Constants.PREF_OTHER[9], false)
                     .apply();
@@ -429,13 +443,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setItemChecked(R.id.nav_traffic, true);
                 mLastMenuItem = R.id.nav_traffic;
             }
-        } else if (mNeedsRestart && mTraffic.isVisible()) {
-            fm.beginTransaction()
-                    .detach(mTraffic)
-                    .attach(mTraffic)
-                    .commit();
-            setItemChecked(R.id.nav_traffic, true);
-            mLastMenuItem = R.id.nav_traffic;
         } else if (mState == null) {
             fm.beginTransaction()
                     .add(R.id.content_frame, mTraffic)
@@ -461,6 +468,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         if (key.equals(Constants.PREF_OTHER[7]))
+            mNeedsReloadView = true;
+        if (key.equals(Constants.PREF_OTHER[28]) || key.equals(Constants.PREF_OTHER[29]))
             mNeedsRestart = true;
         if (key.equals(Constants.PREF_OTHER[25])) {
             if (sharedPreferences.getBoolean(key, true)) {

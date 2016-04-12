@@ -20,9 +20,11 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
+import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 
 
 public class OtherFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -122,6 +124,19 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
             }
         }
+        if (key.equals(Constants.PREF_OTHER[12])) {
+            CustomNotification.setPriorityNeedsChange(true);
+            if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+                mContext.stopService(new Intent(mContext, TrafficCountService.class));
+                mContext.startService(new Intent(mContext, TrafficCountService.class));
+            } else if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
+                mContext.stopService(new Intent(mContext, CallLoggerService.class));
+                mContext.startService(new Intent(mContext, CallLoggerService.class));
+            }
+        }
+        if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
+                key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
+            CustomNotification.setIdNeedsChange(true);
     }
 
     @Override

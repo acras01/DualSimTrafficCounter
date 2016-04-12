@@ -109,7 +109,7 @@
     <string name="crash_toast_text">Send error log to developer?</string>
     <string name="crash_toast_text_ok">Sending error log to developer…</string>
     <string name="pref_disable_acra">Send error logs to developer</string>
-    <string name="show_icon_in_statusbar">Show service icon in status bar  (if service gets closed by system, try enabling this). Needs service restart!</string>
+    <string name="show_icon_in_statusbar">Show service icon in status bar  (if service gets closed by system, try enabling this)</string>
     <string name="use_divider">Show divider line</string>
     <string name="detect_sim">Autodetect SIM quantity</string>
     <string name="user_sim">Enter SIM quantity</string>
