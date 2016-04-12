@@ -85,7 +85,7 @@ public class MobileUtils {
             else
                 return 0;
         } else {
-            int ret = 1;
+            int simQuantity = 1;
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (mTelephonyClass == null)
                 try {
@@ -103,12 +103,12 @@ public class MobileUtils {
                             String id = (String) mGetDeviceId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
                             String idNext = (String) mGetDeviceId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i + 1);
                             if (idNext != null && !id.equals(idNext))
-                                ret++;
+                                simQuantity++;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (ret == 1)
+                    if (simQuantity == 1)
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetDeviceId == null) {
@@ -118,7 +118,7 @@ public class MobileUtils {
                                 String id = (String) mGetDeviceId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
                                 String idNext = (String) mGetDeviceId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i + 1);
                                 if (idNext != null && !id.equals(idNext))
-                                    ret++;
+                                    simQuantity++;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -131,12 +131,12 @@ public class MobileUtils {
                             long id = (long) mGetSubIdBySlot.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
                             long idNext = (long) mGetSubIdBySlot.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
                             if (idNext != 0 && id != idNext)
-                                ret++;
+                                simQuantity++;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (ret == 1)
+                    if (simQuantity == 1)
                         try {
                             if (mGetDeviceId == null)
                                 mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI + "Ext", 0);
@@ -144,12 +144,12 @@ public class MobileUtils {
                                 String id = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
                                 String idNext = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
                                 if (idNext != null && !id.equals(idNext))
-                                    ret++;
+                                    simQuantity++;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    if (ret == 1)
+                    if (simQuantity == 1)
                         try {
                             if (mGetDeviceId == null)
                                 mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 0);
@@ -157,12 +157,12 @@ public class MobileUtils {
                                 String id = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
                                 String idNext = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
                                 if (idNext != null && !id.equals(idNext))
-                                    ret++;
+                                    simQuantity++;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    if (ret == 1)
+                    if (simQuantity == 1)
                         try {
                             if (mGetITelephony == null)
                                 mGetITelephony = getMethod(mTelephonyClass, "getITelephony", 0);
@@ -172,12 +172,12 @@ public class MobileUtils {
                                     mTelephonyStub = mGetITelephony.invoke(tm, i);
                                 }
                                 if (mTelephonyStub != null)
-                                    ret++;
+                                    simQuantity++;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    if (ret == 1)
+                    if (simQuantity == 1)
                         try {
                             if (mFrom == null)
                                 mFrom = getMethod(mTelephonyClass, "from", 1);
@@ -188,14 +188,14 @@ public class MobileUtils {
                                     mTelephonyStub = mFrom.invoke(tm, params);
                                 }
                                 if (mTelephonyStub != null)
-                                    ret++;
+                                    simQuantity++;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                 }
             }
-            return ret;
+            return simQuantity;
         }
     }
 
@@ -343,7 +343,7 @@ public class MobileUtils {
                             try {
 
                                 if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context, mTelephonyClass);
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetDataState == null)
                                     mGetDataState = getMethod(mTelephonyClass, GET_DATA, 0);
                                 state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), mSubIds.get(i));
@@ -473,12 +473,12 @@ public class MobileUtils {
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        Class<?> mTelephonyClass = null;
-        try {
-            mTelephonyClass = Class.forName(tm.getClass().getName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (mTelephonyClass == null)
+            try {
+                mTelephonyClass = Class.forName(tm.getClass().getName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
                     int sim = Constants.DISABLED;
@@ -538,7 +538,7 @@ public class MobileUtils {
                             }
                         } else {
                             if (mSubIds == null)
-                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context, mTelephonyClass);
+                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                             if (mGetCallState == null)
                                 mGetCallState = getMethod(mTelephonyClass, GET_CALL, 0);
                             for (long subId : mSubIds) {
@@ -628,14 +628,14 @@ public class MobileUtils {
                 return Constants.SIM1;
     }
 
-    private static ArrayList<Long> getSubIds(Class c, int simQuantity, Context context, Class<?> telephony) {
+    private static ArrayList<Long> getSubIds(Class<?> telephonyClass, int simQuantity, Context context) {
         ArrayList<Long> subIds = new ArrayList<>();
         try {
             if (mGetSubIdBySlot == null)
-                mGetSubIdBySlot = getMethod(c, GET_SUBID, 0);
+                mGetSubIdBySlot = getMethod(telephonyClass, GET_SUBID, 0);
             for (int i = 0; i < simQuantity; i++) {
                 try {
-                    subIds.add(i, (long) mGetSubIdBySlot.invoke(telephony.getConstructor(Context.class).newInstance(context), i));
+                    subIds.add(i, (long) mGetSubIdBySlot.invoke(telephonyClass.getConstructor(Context.class).newInstance(context), i));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -702,7 +702,7 @@ public class MobileUtils {
                         if (name.size() == 0) {
                             try {
                                 if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context, mTelephonyClass);
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetNetworkOperatorName == null)
                                     mGetNetworkOperatorName = getMethod(mTelephonyClass, GET_NAME, 0);
                                 for (long subId : mSubIds) {
@@ -827,7 +827,7 @@ public class MobileUtils {
                         if (code.size() == 0) {
                             try {
                                 if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context, mTelephonyClass);
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetSimOperator == null)
                                     mGetSimOperator = getMethod(mTelephonyClass, GET_CODE, 0);
                                 for (long subId : mSubIds) {
@@ -887,12 +887,12 @@ public class MobileUtils {
                 e.printStackTrace();
             }
         } else {
-            Class<?> mTelephonyClass = null;
-            try {
-                mTelephonyClass = Class.forName(tm.getClass().getName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            if (mTelephonyClass == null)
+                try {
+                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             if (mTelephonyClass != null) {
                 if (simQuantity > 1) {
                     if (CustomApplication.isOldMtkDevice()) {
@@ -922,7 +922,7 @@ public class MobileUtils {
                         if (imei.size() == 0) {
                             try {
                                 if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context, mTelephonyClass);
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetDeviceId == null)
                                     mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 0);
                                 for (long subId : mSubIds) {
@@ -1107,13 +1107,18 @@ public class MobileUtils {
     private static String getTransactionCode(Context context) {
         try {
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            final Class<?> mTelephonyClass = Class.forName(tm.getClass().getName());
-            final Method mTelephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
-            mTelephonyMethod.setAccessible(true);
-            final Object mTelephonyStub = mTelephonyMethod.invoke(tm);
-            final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
-            final Class<?> mClass = mTelephonyStubClass.getDeclaringClass();
-            final Field field = mClass.getDeclaredField("TRANSACTION_setDataEnabled");
+            if (mTelephonyClass == null)
+                try {
+                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            final Method telephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
+            telephonyMethod.setAccessible(true);
+            final Object telephonyStub = telephonyMethod.invoke(tm);
+            final Class<?> telephonyStubClass = Class.forName(telephonyStub.getClass().getName());
+            final Class<?> c = telephonyStubClass.getDeclaringClass();
+            final Field field = c.getDeclaredField("TRANSACTION_setDataEnabled");
             field.setAccessible(true);
             return String.valueOf(field.getInt(null));
         } catch (Exception e) {
@@ -1123,7 +1128,7 @@ public class MobileUtils {
         }
     }
 
-    private static void setMobileDataEnabled(Context context, boolean enabled) {
+    private static void setMobileDataEnabled(Context context, boolean enabled, int sim) {
         try {
             final ConnectivityManager conman = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             final Class conmanClass = Class.forName(conman.getClass().getName());
@@ -1137,6 +1142,15 @@ public class MobileUtils {
                     m.setAccessible(true);
                     if (m.getParameterTypes().length == 1)
                         m.invoke(connectivityManager, enabled);
+                    else if (m.getParameterTypes().length == 2) {
+                        /*SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+                        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
+                                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+                        if (mSubIds == null)
+                            mSubIds = getSubIds(mTelephonyClass, simQuantity, context);*/
+                        final Object[] params = {sim + 1, enabled};
+                        m.invoke(connectivityManager, params);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -1146,7 +1160,7 @@ public class MobileUtils {
     }
 
     public static int isMobileDataActive(Context context) {
-        int mobileDataEnabled = 0; // Assume disabled
+        int state = 0; // Assume disabled
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
         if (mActiveNetworkInfo != null) {
@@ -1154,11 +1168,11 @@ public class MobileUtils {
             boolean isConnected = mActiveNetworkInfo.isConnectedOrConnecting();
             int type = mActiveNetworkInfo.getType();
             if ((isNetworkTypeMobile(type)) && (typeName.contains("mobile")) && isConnected)
-                mobileDataEnabled = 2;
+                state = 2;
             else if ((!isNetworkTypeMobile(type)) && (!typeName.contains("mobile")) && isConnected)
-                mobileDataEnabled = 1;
+                state = 1;
         }
-        return mobileDataEnabled;
+        return state;
     }
 
     private static boolean isNetworkTypeMobile(int networkType) {
@@ -1187,7 +1201,7 @@ public class MobileUtils {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
-                setMobileDataEnabled(context, false);
+                setMobileDataEnabled(context, false, Constants.DISABLED);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 localIntent.putExtra("simid", Constants.DISABLED);
@@ -1197,6 +1211,8 @@ public class MobileUtils {
         if (ON && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, mLastActiveSIM, true);
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
+                setMobileDataEnabled(context, false, mLastActiveSIM);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
@@ -1225,6 +1241,8 @@ public class MobileUtils {
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setMobileNetworkFromLollipop(context, sim, true);
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
+                setMobileDataEnabled(context, false, sim);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
@@ -1353,7 +1371,6 @@ public class MobileUtils {
                     case "25001":
                     case "25702":
                     case "43801":
-                    case "25501":
                     case "43407":
                         return "mts";
                     case "23002":
@@ -1490,6 +1507,7 @@ public class MobileUtils {
                     case "23403":
                     case "23415":
                     case "23491":
+                    case "25501":
                         return "vodafone";
                     case "25011":
                         return "yota";

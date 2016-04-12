@@ -115,7 +115,10 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) {
+        if ((android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP &&
+                        !CustomApplication.isOldMtkDevice()) ||
+                (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP &&
+                        !CustomApplication.hasRoot())) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             autoff1.setChecked(false);
@@ -131,8 +134,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             everyday2.setEnabled(false);
             everyday3.setEnabled(false);
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())) {
+        if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP ||
+                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP &&
+                        !CustomApplication.isOldMtkDevice())) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));
@@ -142,6 +146,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             everyday3.setEntries(getResources().getStringArray(R.array.onoff_LP));
             everyday3.setEntryValues(getResources().getStringArray(R.array.onoff_values_LP));
         }
+
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
