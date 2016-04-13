@@ -1155,12 +1155,7 @@ public class MobileUtils {
                     if (m.getParameterTypes().length == 1)
                         m.invoke(connectivityManager, enabled);
                     else if (m.getParameterTypes().length == 2) {
-                        /*SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-                        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
-                                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-                        if (mSubIds == null)
-                            mSubIds = getSubIds(mTelephonyClass, simQuantity, context);*/
-                        final Object[] params = {sim + 1, enabled};
+                        final Object[] params = {getSimIMEI(context).get(sim), enabled};
                         m.invoke(connectivityManager, params);
                     }
                 }
