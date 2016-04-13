@@ -1098,7 +1098,7 @@ public class MobileUtils {
         protected Context doInBackground(Object... params) {
             try {
                 RootShell.getShell(true).add(new Command(0,(String) params[1]));
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(2);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
