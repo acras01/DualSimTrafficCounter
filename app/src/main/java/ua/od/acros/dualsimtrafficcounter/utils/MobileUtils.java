@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.SubscriptionInfo;
@@ -1066,9 +1067,8 @@ public class MobileUtils {
                 if (sl != null)
                     for (SubscriptionInfo si : sl) {
                         if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                            int activeSim = getActiveSIM(context);
-                            if (on && activeSim != Constants.DISABLED) {
-                                SubscriptionInfo currentSubInfo = sm.getActiveSubscriptionInfoForSimSlotIndex(activeSim);
+                            if (on && isMobileDataEnabledFromLollipop(context)) {
+                                SubscriptionInfo currentSubInfo = sm.getActiveSubscriptionInfoForSimSlotIndex(getActiveSIM(context));
                                 commands = new String[]{"service call phone " + transactionCode + " i32 " + currentSubInfo.getSubscriptionId() + " i32 " + 0,
                                         "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
                             } else if (on) {
@@ -1086,7 +1086,7 @@ public class MobileUtils {
             }
             if (CustomApplication.hasRoot() && commands != null)
                 for (String command : commands) {
-                    RootShell.getShell(true).add(new Command(0, command));
+                    new RootTask().execute(context, command);
                 }
             else
                 Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
@@ -1096,12 +1096,30 @@ public class MobileUtils {
         }
     }
 
-    private static boolean isMobileDataEnabledFromLollipop(Context context) {
-        boolean state = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            state = Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
+    private static class RootTask extends AsyncTask<Object, Void, Context> {
+
+        @Override
+        protected Context doInBackground(Object... params) {
+            try {
+                RootShell.getShell(true).add(new Command(0,(String) params[1]));
+                TimeUnit.SECONDS.sleep(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+            return (Context) params[0];
         }
-        return state;
+
+        @Override
+        protected void onPostExecute(Context result) {
+            if (result != null)
+                Toast.makeText(result, getActiveSIM(result) + " " + isMobileDataEnabledFromLollipop(result), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private static boolean isMobileDataEnabledFromLollipop(Context context) {
+        return Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
     }
 
     private static String getTransactionCode(Context context) {
@@ -1234,7 +1252,7 @@ public class MobileUtils {
                 context.sendBroadcast(localIntent);
             }
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

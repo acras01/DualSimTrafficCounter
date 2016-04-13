@@ -540,7 +540,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (key.equals(Constants.PREF_SIM1_CALLS[1]) || key.equals(Constants.PREF_SIM2_CALLS[1]) || key.equals(Constants.PREF_SIM3_CALLS[1]))
             mLimitHasChanged = true;
         if (key.equals(Constants.PREF_OTHER[5]) && sharedPreferences.getBoolean(key, false)) {
-            CountDownTimer timer = new CountDownTimer(2000, 1000) {
+            new CountDownTimer(2000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
 
@@ -551,8 +551,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                     nm.notify(Constants.STARTED_ID, buildNotification());
                 }
-            };
-            timer.start();
+            }.start();
         }
     }
 

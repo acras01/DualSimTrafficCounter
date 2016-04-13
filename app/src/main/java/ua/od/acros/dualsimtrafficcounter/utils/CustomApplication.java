@@ -110,18 +110,16 @@ public class CustomApplication extends Application {
     ));
 
     public static boolean isOldMtkDevice() {
-        if (mIsOldMtkDevice != null)
-            return mIsOldMtkDevice;
-        mIsOldMtkDevice = OLD_MTK_DEVICES.contains(Build.HARDWARE.toLowerCase()) ||
-                OLD_MTK_DEVICES.contains(System.getProperty("ro.mediatek.platform", "")) ||
-                OLD_MTK_DEVICES.contains(System.getProperty("ro.board.platform", ""));
+        if (mIsOldMtkDevice == null)
+            mIsOldMtkDevice = OLD_MTK_DEVICES.contains(Build.HARDWARE.toLowerCase()) ||
+                    OLD_MTK_DEVICES.contains(System.getProperty("ro.mediatek.platform", "")) ||
+                    OLD_MTK_DEVICES.contains(System.getProperty("ro.board.platform", ""));
         return mIsOldMtkDevice;
     }
 
     public static boolean hasRoot() {
-        if (mHasRoot != null)
-            return mHasRoot;
-        mHasRoot = RootShell.isRootAvailable() && RootShell.isAccessGiven();
+        if (mHasRoot == null)
+            mHasRoot = RootShell.isRootAvailable() && RootShell.isAccessGiven();
         return mHasRoot;
     }
 }
