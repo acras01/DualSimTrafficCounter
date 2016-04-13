@@ -1067,11 +1067,7 @@ public class MobileUtils {
                 if (sl != null)
                     for (SubscriptionInfo si : sl) {
                         if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                            if (on && isMobileDataEnabledFromLollipop(context)) {
-                                SubscriptionInfo currentSubInfo = sm.getActiveSubscriptionInfoForSimSlotIndex(getActiveSIM(context));
-                                commands = new String[]{"service call phone " + transactionCode + " i32 " + currentSubInfo.getSubscriptionId() + " i32 " + 0,
-                                        "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
-                            } else if (on) {
+                            if (on) {
                                 commands = new String[]{"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
                             } else
                                 commands = new String[]{"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0};
@@ -1228,6 +1224,7 @@ public class MobileUtils {
         }
         if (ON && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
                 setMobileNetworkFromLollipop(context, mLastActiveSIM, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, mLastActiveSIM);
@@ -1258,6 +1255,7 @@ public class MobileUtils {
             }
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setMobileNetworkFromLollipop(context, getActiveSIM(context), false);
                 setMobileNetworkFromLollipop(context, sim, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, sim);
