@@ -1056,7 +1056,7 @@ public class MobileUtils {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static void setMobileNetworkFromLollipop(final Context context, int sim, boolean on) throws Exception {
-        String[] commands = null;
+        String command = null;
         try {
             // Get the value of the "TRANSACTION_setDataEnabled" field.
             String transactionCode = getTransactionCode(context);
@@ -1068,9 +1068,9 @@ public class MobileUtils {
                     for (SubscriptionInfo si : sl) {
                         if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
                             if (on) {
-                                commands = new String[]{"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1};
+                                command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1;
                             } else
-                                commands = new String[]{"service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0};
+                                command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0;
                             break;
                         }
                     }
@@ -1078,12 +1078,10 @@ public class MobileUtils {
                 // Android 5.0 (API 21) only.
                 int state = on ? 1 : 0;
                 if (transactionCode != null && transactionCode.length() > 0)
-                    commands = new String[]{"service call phone " + transactionCode + " i32 " + state};
+                    command = "service call phone " + transactionCode + " i32 " + state;
             }
-            if (CustomApplication.hasRoot() && commands != null)
-                for (String command : commands) {
-                    new RootTask().execute(context, command);
-                }
+            if (CustomApplication.hasRoot() && command != null)
+                new RootTask().execute(context, command);
             else
                 Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
