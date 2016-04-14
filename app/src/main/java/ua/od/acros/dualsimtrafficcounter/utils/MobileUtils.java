@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -1055,59 +1056,105 @@ public class MobileUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static void setMobileNetworkFromLollipop(final Context context, int sim, boolean on) throws Exception {
-        String command = null;
-        try {
-            // Get the value of the "TRANSACTION_setDataEnabled" field.
-            String transactionCode = getTransactionCode(context);
-            // Android 5.1+ (API 22) and later.
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-                if (sl != null)
-                    for (SubscriptionInfo si : sl) {
-                        if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                            if (on) {
-                                command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1;
-                            } else
-                                command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0;
-                            break;
-                        }
-                    }
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
-                // Android 5.0 (API 21) only.
-                int state = on ? 1 : 0;
-                if (transactionCode != null && transactionCode.length() > 0)
-                    command = "service call phone " + transactionCode + " i32 " + state;
-            }
-            if (CustomApplication.hasRoot() && command != null)
-                new RootTask().execute(context, command);
-            else
-                Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            ACRA.getErrorReporter().handleException(e);
-        }
-    }
-
-    private static class RootTask extends AsyncTask<Object, Void, Context> {
+    private static class SetMobileNetworkFromLollipop extends AsyncTask<Object, Void, Context> {
 
         @Override
         protected Context doInBackground(Object... params) {
+            Context context = (Context) params[0];
+            int sim = (int) params[1];
+            boolean on = (boolean) params[2];
+            String command = null;
+            final String[] out = {new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()).toString() + "\n"};
             try {
-                RootShell.getShell(true).add(new Command(0,(String) params[1]));
-                TimeUnit.SECONDS.sleep(2);
+                // Get the value of the "TRANSACTION_setDataEnabled" field.
+                String transactionCode = getTransactionCode(context);
+                out[0] += transactionCode + "\n";
+                // Android 5.1+ (API 22) and later.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                    SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                    List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                    if (sl != null) {
+                        out[0] += sl.toString() + "\n";
+                        for (SubscriptionInfo si : sl) {
+                            if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
+                                if (on) {
+                                    command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1;
+                                } else
+                                    command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0;
+                                break;
+                            }
+                        }
+                    }
+                } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                    // Android 5.0 (API 21) only.
+                    int state = on ? 1 : 0;
+                    if (transactionCode != null && transactionCode.length() > 0)
+                        command = "service call phone " + transactionCode + " i32 " + state;
+                }
+                if (CustomApplication.hasRoot() && command != null) {
+                    out[0] += command + "\n";
+                    Command cmd = new Command(0, command) {
+                        @Override
+                        public void commandOutput(int id, String line) {
+                            out[0] = id + " " + line + "\n";
+                            super.commandOutput(id, line);
+                        }
+
+                        @Override
+                        public void commandTerminated(int id, String reason) {
+                            out[0] += id + " " + reason + "\n";
+                        }
+
+                        @Override
+                        public void commandCompleted(int id, int exitcode) {
+                            out[0] += id + " " + exitcode + "\n";
+                        }
+                    };
+                    RootShell.getShell(true).add(cmd);
+                    sleep(2000);
+                } else {
+                    Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
+                    return null;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+                ACRA.getErrorReporter().handleException(e);
                 return null;
             }
-            return (Context) params[0];
+            //Execution output
+            try {
+                File dir = new File(String.valueOf(context.getFilesDir()));
+                // create the file in which we will write the contents
+                String fileName = "setmobiledata.txt";
+                File file = new File(dir, fileName);
+                FileOutputStream os = new FileOutputStream(file, true);
+                os.write(out[0].getBytes());
+                os.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return context;
         }
 
         @Override
         protected void onPostExecute(Context result) {
-            if (result != null)
-                Toast.makeText(result, getActiveSIM(result) + " " + isMobileDataEnabledFromLollipop(result), Toast.LENGTH_LONG).show();
+            if (result != null) {
+                String out = "sim" + getActiveSIM(result) + " " + isMobileDataEnabledFromLollipop(result);
+                Toast.makeText(result, out, Toast.LENGTH_LONG).show();
+                //Execution output
+                try {
+                    File dir = new File(String.valueOf(result.getFilesDir()));
+                    // create the file in which we will write the contents
+                    String fileName = "setmobiledata.txt";
+                    File file = new File(dir, fileName);
+                    FileOutputStream os = new FileOutputStream(file, true);
+                    out +=  "\n\n";
+                    os.write(out.getBytes());
+                    os.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -1206,7 +1253,7 @@ public class MobileUtils {
         if (!ON) {
             mLastActiveSIM = getActiveSIM(context);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
+                new SetMobileNetworkFromLollipop().execute(context, mLastActiveSIM, false);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, Constants.DISABLED);
             } else {
@@ -1217,8 +1264,8 @@ public class MobileUtils {
         }
         if (ON && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
-                setMobileNetworkFromLollipop(context, mLastActiveSIM, true);
+                new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, false);
+                new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, mLastActiveSIM);
             } else {
@@ -1241,15 +1288,11 @@ public class MobileUtils {
                     localIntent.putExtra("simid", (long) mLastActiveSIM);
                 context.sendBroadcast(localIntent);
             }
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            sleep(1000);
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, getActiveSIM(context), false);
-                setMobileNetworkFromLollipop(context, sim, true);
+                new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSIM(context), false);
+                new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, sim, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, sim);
             } else {
@@ -1273,11 +1316,7 @@ public class MobileUtils {
                 context.sendBroadcast(localIntent);
             }
         }
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep(1000);
     }
 
     public static String getName(Context context, String key1, String key2, int sim) {
@@ -1558,7 +1597,7 @@ public class MobileUtils {
     }
 
     public static void getTelephonyManagerMethods(Context context) {
-        String out = " ";
+        String out;
         try {
             File dir = new File(String.valueOf(context.getFilesDir()));
             // create the file in which we will write the contents
@@ -1573,6 +1612,14 @@ public class MobileUtils {
             }
             os.close();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void  sleep(long time) {
+        try {
+            TimeUnit.MILLISECONDS.sleep(time);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
