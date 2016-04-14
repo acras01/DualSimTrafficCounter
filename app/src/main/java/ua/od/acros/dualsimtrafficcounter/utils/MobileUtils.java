@@ -71,7 +71,7 @@ public class MobileUtils {
         for (Method m : cm) {
             if (m.getName().equalsIgnoreCase(name)) {
                 m.setAccessible(true);
-                if (m.getParameterTypes().length > params)
+                if (m.getParameterTypes().length == params)
                     return m;
             }
         }
@@ -100,7 +100,7 @@ public class MobileUtils {
                     try {
                         Class<?> c = Class.forName(MEDIATEK);
                         if (mGetDeviceId == null)
-                            mGetDeviceId = getMethod(c, GET_IMEI, 0);
+                            mGetDeviceId = getMethod(c, GET_IMEI, 1);
                         for (int i = 0; i < 2; i++) {
                             String id = (String) mGetDeviceId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
                             String idNext = (String) mGetDeviceId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i + 1);
@@ -114,7 +114,7 @@ public class MobileUtils {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetDeviceId == null) {
-                                mGetDeviceId = getMethod(c, GET_IMEI, 0);
+                                mGetDeviceId = getMethod(c, GET_IMEI, 1);
                             }
                             for (int i = 0; i < 2; i++) {
                                 String id = (String) mGetDeviceId.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
@@ -128,7 +128,7 @@ public class MobileUtils {
                 } else {
                     try {
                         if (mGetSubIdBySlot == null)
-                            mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 0);
+                            mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
                         for (int i = 0; i < 2; i++) {
                             long id = (long) mGetSubIdBySlot.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
                             long idNext = (long) mGetSubIdBySlot.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
@@ -141,7 +141,7 @@ public class MobileUtils {
                     if (simQuantity == 1)
                         try {
                             if (mGetDeviceId == null)
-                                mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI + "Ext", 0);
+                                mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI + "Ext", 1);
                             for (int i = 0; i < 2; i++) {
                                 String id = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
                                 String idNext = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i + 1);
@@ -154,7 +154,7 @@ public class MobileUtils {
                     if (simQuantity == 1)
                         try {
                             if (mGetDeviceId == null)
-                                mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 0);
+                                mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
                             for (int i = 0; i < 2; i++) {
                                 String id = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) i);
                                 String idNext = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), (long) (i + 1));
@@ -167,7 +167,7 @@ public class MobileUtils {
                     if (simQuantity == 1)
                         try {
                             if (mGetITelephony == null)
-                                mGetITelephony = getMethod(mTelephonyClass, "getITelephony", 0);
+                                mGetITelephony = getMethod(mTelephonyClass, "getITelephony", 1);
                             for (int i = 0; i < 2; i++) {
                                 Object mTelephonyStub = null;
                                 if (mGetITelephony != null) {
@@ -182,7 +182,7 @@ public class MobileUtils {
                     if (simQuantity == 1)
                         try {
                             if (mFrom == null)
-                                mFrom = getMethod(mTelephonyClass, "from", 1);
+                                mFrom = getMethod(mTelephonyClass, "from", 2);
                             for (int i = 0; i < 2; i++) {
                                 final Object[] params = {context, i};
                                 Object mTelephonyStub = null;
@@ -290,7 +290,7 @@ public class MobileUtils {
                     if (activeNetworkInfo != null) {
                         try {
                             if (mGetSimId == null)
-                                mGetSimId = getMethod(mTelephonyClass, "getSimId", 0);
+                                mGetSimId = getMethod(mTelephonyClass, "getSimId", 1);
                             if (mGetSimId != null) {
                                 sim = (int) mGetSimId.invoke(activeNetworkInfo);
                             }
@@ -305,7 +305,7 @@ public class MobileUtils {
                             try {
                                 Class<?> c = Class.forName(MEDIATEK);
                                 if (mGetDataState == null)
-                                    mGetDataState = getMethod(c, GET_DATA, 0);
+                                    mGetDataState = getMethod(c, GET_DATA, 1);
                                 state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -324,7 +324,7 @@ public class MobileUtils {
                                 try {
                                     Class<?> c = Class.forName(MEDIATEK);
                                     if (mGetDataState == null)
-                                        mGetDataState = getMethod(c, GET_DATA, 0);
+                                        mGetDataState = getMethod(c, GET_DATA, 1);
                                     state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -347,7 +347,7 @@ public class MobileUtils {
                                 if (mSubIds == null)
                                     mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetDataState == null)
-                                    mGetDataState = getMethod(mTelephonyClass, GET_DATA, 0);
+                                    mGetDataState = getMethod(mTelephonyClass, GET_DATA, 1);
                                 state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), mSubIds.get(i));
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -366,7 +366,7 @@ public class MobileUtils {
                             int state = Constants.DISABLED;
                             try {
                                 if (mGetDataState == null)
-                                    mGetDataState = getMethod(mTelephonyClass, GET_DATA + "Ext", 0);
+                                    mGetDataState = getMethod(mTelephonyClass, GET_DATA + "Ext", 1);
                                 state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -385,7 +385,7 @@ public class MobileUtils {
                             int state = Constants.DISABLED;
                             try {
                                 if (mGetITelephony == null)
-                                    mGetITelephony = getMethod(mTelephonyClass, "getITelephony", 0);
+                                    mGetITelephony = getMethod(mTelephonyClass, "getITelephony", 1);
                                 Object mTelephonyStub = null;
                                 if (mGetITelephony != null) {
                                     mTelephonyStub = mGetITelephony.invoke(tm, i);
@@ -421,7 +421,7 @@ public class MobileUtils {
                     if (sim == Constants.DISABLED) {
                         try {
                             if (mFrom == null)
-                                mFrom = getMethod(mTelephonyClass, "from", 1);
+                                mFrom = getMethod(mTelephonyClass, "from", 2);
                             for (int i = 0; i < simQuantity; i++) {
                                 int state = Constants.DISABLED;
                                 final Object[] params = {context, i};
@@ -486,7 +486,7 @@ public class MobileUtils {
                     int sim = Constants.DISABLED;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
                         if (mGetCallState == null)
-                            mGetCallState = getMethod(mTelephonyClass, GET_CALL, 0);
+                            mGetCallState = getMethod(mTelephonyClass, GET_CALL, 1);
                         for (int i = 0; i < simQuantity; i++) {
                             try {
                                 int state = (int) mGetCallState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
@@ -503,7 +503,7 @@ public class MobileUtils {
                             try {
                                 Class<?> c = Class.forName(MEDIATEK);
                                 if (mGetCallState == null)
-                                    mGetCallState = getMethod(c, GET_CALL, 0);
+                                    mGetCallState = getMethod(c, GET_CALL, 1);
                                 for (int i = 0; i < simQuantity; i++) {
                                     try {
                                         int state = (int) mGetCallState.invoke(c.getConstructor(Context.class).newInstance(context), i);
@@ -522,7 +522,7 @@ public class MobileUtils {
                                 try {
                                     Class<?> c = Class.forName(MEDIATEK);
                                     if (mGetCallState == null)
-                                        mGetCallState = getMethod(c, GET_CALL, 0);
+                                        mGetCallState = getMethod(c, GET_CALL, 1);
                                     for (int i = 0; i < simQuantity; i++) {
                                         try {
                                             int state = (int) mGetCallState.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
@@ -542,7 +542,7 @@ public class MobileUtils {
                             if (mSubIds == null)
                                 mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                             if (mGetCallState == null)
-                                mGetCallState = getMethod(mTelephonyClass, GET_CALL, 0);
+                                mGetCallState = getMethod(mTelephonyClass, GET_CALL, 1);
                             for (long subId : mSubIds) {
                                 try {
                                     int state = (int) mGetCallState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
@@ -556,7 +556,7 @@ public class MobileUtils {
                             }
                             if (sim == Constants.DISABLED) {
                                 if (mGetCallState == null)
-                                    mGetCallState = getMethod(mTelephonyClass, GET_CALL + "Ext", 0);
+                                    mGetCallState = getMethod(mTelephonyClass, GET_CALL + "Ext", 1);
                                 for (int i = 0; i < simQuantity; i++) {
                                     try {
                                         int state = (int) mGetCallState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
@@ -571,7 +571,7 @@ public class MobileUtils {
                             }
                             if (sim == Constants.DISABLED) {
                                 if (mGetITelephony == null)
-                                    mGetITelephony = getMethod(mTelephonyClass, "getITelephony", 0);
+                                    mGetITelephony = getMethod(mTelephonyClass, "getITelephony", 1);
                                 for (int i = 0; i < simQuantity; i++) {
                                     try {
                                         Object mTelephonyStub = null;
@@ -606,7 +606,7 @@ public class MobileUtils {
                             if (sim == Constants.DISABLED) {
                                 try {
                                     if (mFrom == null)
-                                        mFrom = getMethod(mTelephonyClass, "from", 1);
+                                        mFrom = getMethod(mTelephonyClass, "from", 2);
                                     if (mFrom != null)
                                         for (int i = 0; i < simQuantity; i++) {
                                             final Object[] params = {context, i};
@@ -634,7 +634,7 @@ public class MobileUtils {
         ArrayList<Long> subIds = new ArrayList<>();
         try {
             if (mGetSubIdBySlot == null)
-                mGetSubIdBySlot = getMethod(telephonyClass, GET_SUBID, 0);
+                mGetSubIdBySlot = getMethod(telephonyClass, GET_SUBID, 1);
             for (int i = 0; i < simQuantity; i++) {
                 try {
                     subIds.add(i, (long) mGetSubIdBySlot.invoke(telephonyClass.getConstructor(Context.class).newInstance(context), i));
@@ -677,7 +677,7 @@ public class MobileUtils {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetNetworkOperatorName == null)
-                                mGetNetworkOperatorName = getMethod(c, GET_NAME, 0);
+                                mGetNetworkOperatorName = getMethod(c, GET_NAME, 1);
                             for (int i = 0; i < simQuantity; i++) {
                                 name.add(i, (String) mGetNetworkOperatorName.invoke(c.getConstructor(Context.class).newInstance(context), i));
                             }
@@ -690,7 +690,7 @@ public class MobileUtils {
                             try {
                                 Class<?> c = Class.forName(MEDIATEK);
                                 if (mGetNetworkOperatorName == null)
-                                    mGetNetworkOperatorName = getMethod(c, GET_NAME, 0);
+                                    mGetNetworkOperatorName = getMethod(c, GET_NAME, 1);
                                 for (int i = 0; i < simQuantity; i++) {
                                     name.add(i, (String) mGetNetworkOperatorName.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
                                 }
@@ -706,7 +706,7 @@ public class MobileUtils {
                                 if (mSubIds == null)
                                     mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetNetworkOperatorName == null)
-                                    mGetNetworkOperatorName = getMethod(mTelephonyClass, GET_NAME, 0);
+                                    mGetNetworkOperatorName = getMethod(mTelephonyClass, GET_NAME, 1);
                                 for (long subId : mSubIds) {
                                     String nameCurr = (String) mGetNetworkOperatorName.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
                                     if (!nameCurr.equals(""))
@@ -721,7 +721,7 @@ public class MobileUtils {
                         if (name.size() == 0) {
                             try {
                                 if (mGetNetworkOperatorName == null)
-                                    mGetNetworkOperatorName = getMethod(mTelephonyClass, GET_NAME + "Ext", 0);
+                                    mGetNetworkOperatorName = getMethod(mTelephonyClass, GET_NAME + "Ext", 1);
                                 for (int i = 0; i < simQuantity; i++) {
                                     name.add(i, (String) mGetNetworkOperatorName.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
                                 }
@@ -734,7 +734,7 @@ public class MobileUtils {
                         if (name.size() == 0) {
                             try {
                                 if (mFrom == null)
-                                    mFrom = getMethod(mTelephonyClass, "from", 1);
+                                    mFrom = getMethod(mTelephonyClass, "from", 2);
                                 for (int i = 0; i < simQuantity; i++) {
                                     final Object[] params = {context, i};
                                     TelephonyManager mTelephonyStub = null;
@@ -881,7 +881,7 @@ public class MobileUtils {
                 if (mTelephonyClass == null)
                     mTelephonyClass = Class.forName(tm.getClass().getName());
                 if (mGetDeviceId == null)
-                    mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 0);
+                    mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
                 for (int i = 0; i < simQuantity; i++) {
                     imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
                 }
@@ -901,7 +901,7 @@ public class MobileUtils {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetDeviceId == null)
-                                mGetDeviceId = getMethod(c, GET_IMEI, 0);
+                                mGetDeviceId = getMethod(c, GET_IMEI, 1);
                             for (int i = 0; i < simQuantity; i++) {
                                 imei.add(i, (String) mGetDeviceId.invoke(c.getConstructor(Context.class).newInstance(context), i));
                             }
@@ -912,7 +912,7 @@ public class MobileUtils {
                             try {
                                 Class<?> c = Class.forName(MEDIATEK);
                                 if (mGetDeviceId == null)
-                                    mGetDeviceId = getMethod(c, GET_IMEI, 0);
+                                    mGetDeviceId = getMethod(c, GET_IMEI, 1);
                                 for (int i = 0; i < simQuantity; i++) {
                                     imei.add(i, (String) mGetDeviceId.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
                                 }
@@ -926,7 +926,7 @@ public class MobileUtils {
                                 if (mSubIds == null)
                                     mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetDeviceId == null)
-                                    mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 0);
+                                    mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
                                 for (long subId : mSubIds) {
                                     String imeiCurr = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
                                     if (!imeiCurr.equals(""))
@@ -939,7 +939,7 @@ public class MobileUtils {
                         if (imei.size() == 0) {
                             try {
                                 if (mGetDeviceId == null)
-                                    mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI + "Ext", 0);
+                                    mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI + "Ext", 1);
                                 for (int i = 0; i < simQuantity; i++) {
                                     imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
                                 }
@@ -954,7 +954,7 @@ public class MobileUtils {
                                     if (m.getName().equalsIgnoreCase("getSubscriberInfo")) {
                                         m.setAccessible(true);
                                         m.getParameterTypes();
-                                        if (m.getParameterTypes().length > 0) {
+                                        if (m.getParameterTypes().length == 1) {
                                             for (int i = 0; i < simQuantity; i++) {
                                                 final Object mTelephonyStub = m.invoke(tm, i);
                                                 final Class<?> mTelephonyStubClass = Class.forName(mTelephonyStub.getClass().getName());
@@ -973,7 +973,7 @@ public class MobileUtils {
                         if (imei.size() == 0) {
                             try {
                                 if (mFrom == null)
-                                    mFrom = getMethod(mTelephonyClass, "from", 1);
+                                    mFrom = getMethod(mTelephonyClass, "from", 2);
                                 for (int i = 0; i < simQuantity; i++) {
                                     final Object[] params = {context, i};
                                     TelephonyManager mTelephonyStub = null;
@@ -1096,7 +1096,7 @@ public class MobileUtils {
                     Command cmd = new Command(0, command) {
                         @Override
                         public void commandOutput(int id, String line) {
-                            out[0] = id + " " + line + "\n";
+                            out[0] += id + " " + line + "\n";
                             super.commandOutput(id, line);
                         }
 
@@ -1264,7 +1264,8 @@ public class MobileUtils {
         }
         if (ON && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, false);
+                if (isMobileDataEnabledFromLollipop(context))
+                    new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, mLastActiveSIM);
@@ -1291,7 +1292,8 @@ public class MobileUtils {
             sleep(1000);
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSIM(context), false);
+                if (isMobileDataEnabledFromLollipop(context))
+                    new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSIM(context), false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, sim, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, sim);
