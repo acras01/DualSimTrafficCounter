@@ -1055,11 +1055,21 @@ public class MobileUtils {
         return operatorFound;
     }
 
+    private static class Wrapper {
+        public Context context;
+        public boolean result;
+
+        private Wrapper(Context ctx, boolean res) {
+            this.context = ctx;
+            this.result = res;
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static class SetMobileNetworkFromLollipop extends AsyncTask<Object, Void, Context> {
+    private static class SetMobileNetworkFromLollipop extends AsyncTask<Object, Void, Wrapper> {
 
         @Override
-        protected Context doInBackground(Object... params) {
+        protected Wrapper doInBackground(Object... params) {
             Context context = (Context) params[0];
             int sim = (int) params[1];
             boolean on = (boolean) params[2];
@@ -1111,15 +1121,18 @@ public class MobileUtils {
                         }
                     };
                     RootShell.getShell(true).add(cmd);
-                    sleep(2000);
+                    boolean state = isMobileDataEnabledFromLollipop(context);
+                    for (int i = 0; i < 30 || state != isMobileDataEnabledFromLollipop(context); i++) {
+                        sleep(1000);
+                    }
                 } else {
                     Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
-                    return null;
+                    return new Wrapper(context, false);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
-                return null;
+                return new Wrapper(context, false);
             }
             //Execution output
             try {
@@ -1133,17 +1146,19 @@ public class MobileUtils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return context;
+            return new Wrapper(context, true);
         }
 
         @Override
-        protected void onPostExecute(Context result) {
-            if (result != null) {
-                String out = "sim" + getActiveSIM(result) + " " + isMobileDataEnabledFromLollipop(result);
-                Toast.makeText(result, out, Toast.LENGTH_LONG).show();
+        protected void onPostExecute(Wrapper wrapper) {
+            Context context = wrapper.context;
+            boolean result = wrapper.result;
+            if (result) {
+                String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabledFromLollipop(context);
+                Toast.makeText(context, out, Toast.LENGTH_LONG).show();
                 //Execution output
                 try {
-                    File dir = new File(String.valueOf(result.getFilesDir()));
+                    File dir = new File(String.valueOf(context.getFilesDir()));
                     // create the file in which we will write the contents
                     String fileName = "setmobiledata.txt";
                     File file = new File(dir, fileName);
@@ -1154,7 +1169,8 @@ public class MobileUtils {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            } else
+                Toast.makeText(context, "Execution failed!", Toast.LENGTH_LONG).show();
         }
     }
 
