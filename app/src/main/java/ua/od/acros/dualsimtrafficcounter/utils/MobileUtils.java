@@ -1073,55 +1073,55 @@ public class MobileUtils {
             Context context = (Context) params[0];
             int sim = (int) params[1];
             boolean on = (boolean) params[2];
+            boolean oldState = isMobileDataEnabledFromLollipop(context);
             String command = null;
             final String[] out = {new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()).toString() + "\n"};
             try {
-                // Get the value of the "TRANSACTION_setDataEnabled" field.
-                String transactionCode = getTransactionCode(context);
-                out[0] += transactionCode + "\n";
-                // Android 5.1+ (API 22) and later.
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                    SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                    List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-                    if (sl != null) {
-                        out[0] += sl.toString() + "\n";
-                        for (SubscriptionInfo si : sl) {
-                            if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                                if (on) {
-                                    command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1;
-                                } else
-                                    command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0;
-                                break;
+                if (oldState != on) {
+                    // Get the value of the "TRANSACTION_setDataEnabled" field.
+                    String transactionCode = getTransactionCode(context);
+                    out[0] += transactionCode + "\n";
+                    // Android 5.1+ (API 22) and later.
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                        SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                        List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                        if (sl != null) {
+                            out[0] += sl.toString() + "\n";
+                            for (SubscriptionInfo si : sl) {
+                                if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
+                                    if (on) {
+                                        command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1;
+                                    } else
+                                        command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0;
+                                    break;
+                                }
                             }
                         }
+                    } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                        // Android 5.0 (API 21) only.
+                        int state = on ? 1 : 0;
+                        if (transactionCode != null && transactionCode.length() > 0)
+                            command = "service call phone " + transactionCode + " i32 " + state;
                     }
-                } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
-                    // Android 5.0 (API 21) only.
-                    int state = on ? 1 : 0;
-                    if (transactionCode != null && transactionCode.length() > 0)
-                        command = "service call phone " + transactionCode + " i32 " + state;
-                }
-                if (CustomApplication.hasRoot() && command != null) {
-                    out[0] += command + "\n";
-                    Command cmd = new Command(0, command) {
-                        @Override
-                        public void commandOutput(int id, String line) {
-                            out[0] += id + " " + line + "\n";
-                            super.commandOutput(id, line);
-                        }
+                    if (CustomApplication.hasRoot() && command != null) {
+                        out[0] += command + "\n";
+                        Command cmd = new Command(0, command) {
+                            @Override
+                            public void commandOutput(int id, String line) {
+                                out[0] += id + " " + line + "\n";
+                                super.commandOutput(id, line);
+                            }
 
-                        @Override
-                        public void commandTerminated(int id, String reason) {
-                            out[0] += id + " " + reason + "\n";
-                        }
+                            @Override
+                            public void commandTerminated(int id, String reason) {
+                                out[0] += id + " " + reason + "\n";
+                            }
 
-                        @Override
-                        public void commandCompleted(int id, int exitcode) {
-                            out[0] += id + " " + exitcode + "\n";
-                        }
-                    };
-                    boolean oldState = isMobileDataEnabledFromLollipop(context);
-                    if (oldState != on) {
+                            @Override
+                            public void commandCompleted(int id, int exitcode) {
+                                out[0] += id + " " + exitcode + "\n";
+                            }
+                        };
                         RootShell.getShell(true).add(cmd);
                         for (int i = 1; i < 31; i++) {
                             sleep(1000);
