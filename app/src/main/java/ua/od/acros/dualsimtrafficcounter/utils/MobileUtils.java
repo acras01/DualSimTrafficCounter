@@ -1120,10 +1120,16 @@ public class MobileUtils {
                             out[0] += id + " " + exitcode + "\n";
                         }
                     };
-                    RootShell.getShell(true).add(cmd);
-                    boolean state = isMobileDataEnabledFromLollipop(context);
-                    for (int i = 0; i < 30 || state != isMobileDataEnabledFromLollipop(context); i++) {
-                        sleep(1000);
+                    boolean oldState = isMobileDataEnabledFromLollipop(context);
+                    if (oldState != on) {
+                        RootShell.getShell(true).add(cmd);
+                        for (int i = 1; i < 31; i++) {
+                            sleep(1000);
+                            if (oldState != isMobileDataEnabledFromLollipop(context)) {
+                                out[0] += i + " seconds\n";
+                                break;
+                            }
+                        }
                     }
                 } else {
                     Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
