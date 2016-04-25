@@ -1131,10 +1131,8 @@ public class MobileUtils {
                             }
                         }
                     }
-                } else {
-                    Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
+                } else
                     return new Wrapper(context, false);
-                }
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
