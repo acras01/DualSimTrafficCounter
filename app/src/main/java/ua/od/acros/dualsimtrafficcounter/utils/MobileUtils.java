@@ -1072,12 +1072,12 @@ public class MobileUtils {
         protected Wrapper doInBackground(Object... params) {
             Context context = (Context) params[0];
             int sim = (int) params[1];
-            boolean on = (boolean) params[2];
+            boolean swtch = (boolean) params[2];
             boolean oldState = isMobileDataEnabledFromLollipop(context);
             String command = null;
             final String[] out = {new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()).toString() + "\n"};
             try {
-                if (oldState != on) {
+                if (oldState != swtch) {
                     // Get the value of the "TRANSACTION_setDataEnabled" field.
                     String transactionCode = getTransactionCode(context);
                     out[0] += transactionCode + "\n";
@@ -1089,7 +1089,7 @@ public class MobileUtils {
                             out[0] += sl.toString() + "\n";
                             for (SubscriptionInfo si : sl) {
                                 if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                                    if (on) {
+                                    if (swtch) {
                                         command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 1;
                                     } else
                                         command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + 0;
@@ -1099,7 +1099,7 @@ public class MobileUtils {
                         }
                     } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                         // Android 5.0 (API 21) only.
-                        int state = on ? 1 : 0;
+                        int state = swtch ? 1 : 0;
                         if (transactionCode != null && transactionCode.length() > 0)
                             command = "service call phone " + transactionCode + " i32 " + state;
                     }
@@ -1267,10 +1267,10 @@ public class MobileUtils {
         }
     }
 
-    public static void toggleMobileDataConnection(boolean ON, Context context, int sim) throws Exception {
+    public static void toggleMobileDataConnection(boolean swtch, Context context, int sim) throws Exception {
         SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         boolean mAlternative = prefs.getBoolean(Constants.PREF_OTHER[20], false);
-        if (!ON) {
+        if (!swtch) {
             mLastActiveSIM = getActiveSIM(context);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 new SetMobileNetworkFromLollipop().execute(context, mLastActiveSIM, false);
@@ -1282,7 +1282,7 @@ public class MobileUtils {
                 context.sendBroadcast(localIntent);
             }
         }
-        if (ON && sim == Constants.DISABLED) {
+        if (swtch && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (isMobileDataEnabledFromLollipop(context))
                     new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, false);
