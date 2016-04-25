@@ -1057,9 +1057,9 @@ public class MobileUtils {
 
     private static class Wrapper {
         public Context context;
-        public boolean result;
+        public int result;
 
-        private Wrapper(Context ctx, boolean res) {
+        private Wrapper(Context ctx, int res) {
             this.context = ctx;
             this.result = res;
         }
@@ -1132,11 +1132,11 @@ public class MobileUtils {
                         }
                     }
                 } else
-                    return new Wrapper(context, false);
+                    return new Wrapper(context, 1);
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
-                return new Wrapper(context, false);
+                return new Wrapper(context, 2);
             }
             //Execution output
             try {
@@ -1150,31 +1150,38 @@ public class MobileUtils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return new Wrapper(context, true);
+            return new Wrapper(context, 0);
         }
 
         @Override
         protected void onPostExecute(Wrapper wrapper) {
             Context context = wrapper.context;
-            boolean result = wrapper.result;
-            if (result) {
-                String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabledFromLollipop(context);
-                Toast.makeText(context, out, Toast.LENGTH_LONG).show();
-                //Execution output
-                try {
-                    File dir = new File(String.valueOf(context.getFilesDir()));
-                    // create the file in which we will write the contents
-                    String fileName = "setmobiledata.txt";
-                    File file = new File(dir, fileName);
-                    FileOutputStream os = new FileOutputStream(file, true);
-                    out +=  "\n\n";
-                    os.write(out.getBytes());
-                    os.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else
-                Toast.makeText(context, "Execution failed!", Toast.LENGTH_LONG).show();
+            int result = wrapper.result;
+            switch (result) {
+                case 0:
+                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabledFromLollipop(context);
+                    Toast.makeText(context, out, Toast.LENGTH_LONG).show();
+                    //Execution output
+                    try {
+                        File dir = new File(String.valueOf(context.getFilesDir()));
+                        // create the file in which we will write the contents
+                        String fileName = "setmobiledata.txt";
+                        File file = new File(dir, fileName);
+                        FileOutputStream os = new FileOutputStream(file, true);
+                        out += "\n\n";
+                        os.write(out.getBytes());
+                        os.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1:
+                    Toast.makeText(context, R.string.no_root_granted, Toast.LENGTH_LONG).show();
+                    break;
+                case 2:
+                    Toast.makeText(context, R.string.execution_failed, Toast.LENGTH_LONG).show();
+                    break;
+            }
         }
     }
 

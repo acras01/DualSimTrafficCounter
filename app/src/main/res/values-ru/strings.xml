@@ -196,4 +196,5 @@
     <string name="size_hint">Введите целое положительное число</string>
     <string name="visit_4pda">Посетить тему программы на форуме 4pda.ru</string>
     <string name="crash_toast_text_ok">Отправка отчета об ошибке разработчику…</string>
+    <string name="execution_failed">Операция не выполнена!</string>
 </resources>
