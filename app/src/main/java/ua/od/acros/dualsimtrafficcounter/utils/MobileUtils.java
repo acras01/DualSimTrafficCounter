@@ -1292,19 +1292,19 @@ public class MobileUtils {
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
-                    int sim_ = Constants.DISABLED;
+                    int simAlt = Constants.DISABLED;
                     switch (mLastActiveSIM) {
                         case Constants.SIM1:
-                            sim_ = prefs.getInt(Constants.PREF_OTHER[21], Constants.DISABLED);
+                            simAlt = prefs.getInt(Constants.PREF_OTHER[21], Constants.DISABLED);
                             break;
                         case Constants.SIM2:
-                            sim_ = prefs.getInt(Constants.PREF_OTHER[22], Constants.DISABLED);
+                            simAlt = prefs.getInt(Constants.PREF_OTHER[22], Constants.DISABLED);
                             break;
                         case Constants.SIM3:
-                            sim_ = prefs.getInt(Constants.PREF_OTHER[23], Constants.DISABLED);
+                            simAlt = prefs.getInt(Constants.PREF_OTHER[23], Constants.DISABLED);
                             break;
                     }
-                    localIntent.putExtra("simid", (long) sim_);
+                    localIntent.putExtra("simid", (long) simAlt);
                 } else
                     localIntent.putExtra("simid", (long) mLastActiveSIM);
                 context.sendBroadcast(localIntent);
