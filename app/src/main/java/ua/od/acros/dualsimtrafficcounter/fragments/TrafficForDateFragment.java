@@ -49,7 +49,6 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     private String[] mOperatorNames = new String[3];
     private Context mContext;
 
-    // TODO: Rename and change types and number of parameters
     public static TrafficForDateFragment newInstance() {
         return new TrafficForDateFragment();
     }
@@ -200,7 +199,6 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onTrafficForDateFragmentInteraction(Uri uri);
     }
 
@@ -231,47 +229,49 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         @Override
         protected void onPostExecute(Bundle result) {
             super.onPostExecute(result);
-            pb.setVisibility(View.GONE);
-            bOK.setEnabled(true);
-            radioGroup.setEnabled(true);
-            for (int i = 0; i < radioGroup.getChildCount(); i++) {
-                if (i < mSimQuantity)
-                    radioGroup.getChildAt(i).setEnabled(true);
+            if (!isDetached()) {
+                pb.setVisibility(View.GONE);
+                bOK.setEnabled(true);
+                radioGroup.setEnabled(true);
+                for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                    if (i < mSimQuantity)
+                        radioGroup.getChildAt(i).setEnabled(true);
+                }
+                bSetDate.setEnabled(true);
+                if (result != null && mSimChecked != Constants.NULL) {
+                    SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+                    String[] prefsConst = new String[Constants.PREF_SIM1.length];
+                    switch (mSimChecked) {
+                        case Constants.SIM1:
+                            prefsConst = Constants.PREF_SIM1;
+                            break;
+                        case Constants.SIM2:
+                            prefsConst = Constants.PREF_SIM2;
+                            break;
+                        case Constants.SIM3:
+                            prefsConst = Constants.PREF_SIM3;
+                            break;
+                    }
+                    String opName = MobileUtils.getName(mContext, prefsConst[5], prefsConst[6], mSimChecked);
+                    day.setText(opName);
+                    night.setText(String.format(getResources().getString(R.string.night), opName));
+
+                    RX.setText(DataFormat.formatData(mContext, result.getLong("rx")));
+                    TX.setText(DataFormat.formatData(mContext, result.getLong("tx")));
+                    TOT.setText(DataFormat.formatData(mContext, result.getLong("tot")));
+
+                    if (prefs.getBoolean(prefsConst[17], false)) {
+                        RXN.setVisibility(View.VISIBLE);
+                        TXN.setVisibility(View.VISIBLE);
+                        TOTN.setVisibility(View.VISIBLE);
+                        night.setVisibility(View.VISIBLE);
+                        RXN.setText(DataFormat.formatData(mContext, result.getLong("rx_n")));
+                        TXN.setText(DataFormat.formatData(mContext, result.getLong("tx_n")));
+                        TOTN.setText(DataFormat.formatData(mContext, result.getLong("tot_n")));
+                    }
+                } else
+                    Toast.makeText(mContext, R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
             }
-            bSetDate.setEnabled(true);
-            if (result != null && mSimChecked != Constants.NULL) {
-                SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-                String[] prefsConst = new String[Constants.PREF_SIM1.length];
-                switch (mSimChecked) {
-                    case Constants.SIM1:
-                        prefsConst = Constants.PREF_SIM1;
-                        break;
-                    case Constants.SIM2:
-                        prefsConst = Constants.PREF_SIM2;
-                        break;
-                    case Constants.SIM3:
-                        prefsConst = Constants.PREF_SIM3;
-                        break;
-                }
-                String opName = MobileUtils.getName(mContext, prefsConst[5], prefsConst[6], mSimChecked);
-                day.setText(opName);
-                night.setText(String.format(getResources().getString(R.string.night), opName));
-
-                RX.setText(DataFormat.formatData(mContext, result.getLong("rx")));
-                TX.setText(DataFormat.formatData(mContext, result.getLong("tx")));
-                TOT.setText(DataFormat.formatData(mContext, result.getLong("tot")));
-
-                if (prefs.getBoolean(prefsConst[17], false)) {
-                    RXN.setVisibility(View.VISIBLE);
-                    TXN.setVisibility(View.VISIBLE);
-                    TOTN.setVisibility(View.VISIBLE);
-                    night.setVisibility(View.VISIBLE);
-                    RXN.setText(DataFormat.formatData(mContext, result.getLong("rx_n")));
-                    TXN.setText(DataFormat.formatData(mContext, result.getLong("tx_n")));
-                    TOTN.setText(DataFormat.formatData(mContext, result.getLong("tot_n")));
-                }
-            } else
-                Toast.makeText(mContext, R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
         }
     }
 
