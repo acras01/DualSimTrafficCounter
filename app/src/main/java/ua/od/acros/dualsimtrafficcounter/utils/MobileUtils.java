@@ -1135,6 +1135,7 @@ public class MobileUtils {
                     return new Wrapper(context, 1);
             } catch (Exception e) {
                 e.printStackTrace();
+                out[0] += e.toString() + "\n";
                 ACRA.getErrorReporter().handleException(e);
                 return new Wrapper(context, 2);
             }

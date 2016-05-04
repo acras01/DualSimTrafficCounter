@@ -574,9 +574,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         String limit1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
         String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
         String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
-        String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
-        String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
-        String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
+        String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "0") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
+        String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "0") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
+        String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "0") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
         int value1;
         if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
             value1 = 0;
