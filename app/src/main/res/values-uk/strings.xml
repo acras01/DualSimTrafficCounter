@@ -197,4 +197,6 @@
     <string name="visit_4pda">Відкрити тему додатку на форумі 4pda.ru</string>
     <string name="crash_toast_text_ok">Відправка звіту про помилку розробнику…</string>
     <string name="execution_failed">Операцію не виконано!</string>
+    <string name="calls_reset">%1$s: дані про виклики було скинуто</string>
+    <string name="show_reset_notification">Відображати повідомлення при скиданні</string>
 </resources>

@@ -197,4 +197,6 @@
     <string name="visit_4pda">Посетить тему программы на форуме 4pda.ru</string>
     <string name="crash_toast_text_ok">Отправка отчета об ошибке разработчику…</string>
     <string name="execution_failed">Операция не выполнена!</string>
+    <string name="calls_reset">%1$s: данные о звонках были обнулены</string>
+    <string name="show_reset_notification">Показывать уведомление при обнулении</string>
 </resources>

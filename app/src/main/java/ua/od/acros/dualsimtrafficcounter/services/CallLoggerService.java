@@ -2,6 +2,7 @@ package ua.od.acros.dualsimtrafficcounter.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -13,11 +14,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -35,6 +39,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.File;
 import java.util.ArrayList;
 
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
@@ -322,18 +327,22 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
                     .putString(Constants.PREF_SIM1_CALLS[10], now.toString(mDateTimeFormat))
                     .apply();
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[31], false))
+                pushResetNotification(Constants.SIM1);
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime2) >= 0 && mIsResetNeeded2) {
             mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
             mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
             mCallsData.put(Constants.CALLS2, 0L);
-            mCallsData.put(Constants.CALLS3_EX, 0L);
+            mCallsData.put(Constants.CALLS2_EX, 0L);
             CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
             mIsResetNeeded2 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
                     .putString(Constants.PREF_SIM2_CALLS[10], now.toString(mDateTimeFormat))
                     .apply();
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[31], false))
+                pushResetNotification(Constants.SIM2);
         }
         if (DateTimeComparator.getInstance().compare(now, mResetTime3) >= 0 && mIsResetNeeded3) {
             mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
@@ -346,6 +355,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
                     .putString(Constants.PREF_SIM3_CALLS[10], now.toString(mDateTimeFormat))
                     .apply();
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[31], false))
+                pushResetNotification(Constants.SIM3);
         }
         mIsOutgoing = false;
         final Context ctx = context;
@@ -573,6 +584,50 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
             startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         return START_STICKY;
+    }
+
+    private void pushResetNotification(int simid) {
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
+        String text = "";
+        int id;
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
+            String[] pref = new String[Constants.PREF_SIM1.length];
+            switch (simid) {
+                case Constants.SIM1:
+                    pref = Constants.PREF_SIM1;
+                    text = mOperatorNames[0];
+                    break;
+                case Constants.SIM2:
+                    pref = Constants.PREF_SIM2;
+                    text = mOperatorNames[1];
+                    break;
+                case Constants.SIM3:
+                    pref = Constants.PREF_SIM3;
+                    text = mOperatorNames[2];
+                    break;
+            }
+            if (mPrefs.getString(pref[23], "none").equals("auto"))
+                id = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, simid), "drawable", mContext.getPackageName());
+            else
+                id = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
+        } else
+            id = R.drawable.ic_launcher_small;
+        text = String.format(getResources().getString(R.string.calls_reset), text);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.setAction("calls");
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
+                .setContentIntent(contentIntent)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(id)
+                .setLargeIcon(bm)
+                .setContentTitle(getResources().getString(R.string.notification_title))
+                .setContentText(text);
+        nm.notify(simid + 1981, builder.build());
     }
 
     private Notification buildNotification() {
