@@ -1073,9 +1073,10 @@ public class MobileUtils {
             Context context = (Context) params[0];
             int sim = (int) params[1];
             boolean swtch = (boolean) params[2];
-            boolean oldState = isMobileDataEnabledFromLollipop(context);
+            boolean oldState = isMobileDataEnabled(context);
             String command = null;
             final String[] out = {new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()).toString() + "\n"};
+            out[0] += "Current state: " + oldState + " Requested state: " + swtch + "\n";
             try {
                 if (oldState != swtch) {
                     int state = swtch ? 1 : 0;
@@ -1122,14 +1123,14 @@ public class MobileUtils {
                         RootShell.getShell(true).add(cmd);
                         for (int i = 1; i < 31; i++) {
                             sleep(1000);
-                            if (oldState != isMobileDataEnabledFromLollipop(context)) {
+                            if (oldState != isMobileDataEnabled(context)) {
                                 out[0] += i + " seconds\n";
                                 break;
                             }
                         }
-                    }
-                } else
-                    return new Wrapper(context, 1);
+                    } else
+                        return new Wrapper(context, 1);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 out[0] += e.toString() + "\n";
@@ -1157,7 +1158,7 @@ public class MobileUtils {
             int result = wrapper.result;
             switch (result) {
                 case 0:
-                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabledFromLollipop(context);
+                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabled(context);
                     Toast.makeText(context, out, Toast.LENGTH_LONG).show();
                     //Execution output
                     try {
@@ -1183,9 +1184,20 @@ public class MobileUtils {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private static boolean isMobileDataEnabledFromLollipop(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) == 1;
+    private static boolean isMobileDataEnabled(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            // The row has been moved to 'global' table in API level 17
+            return Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) != 0;
+        }
+        try {
+            // It was in 'secure' table before
+            return Settings.Secure.getInt(context.getContentResolver(), "mobile_data") != 0;
+        } catch (Settings.SettingNotFoundException e) {
+            // It was in 'system' table originally, but I don't remember when that was the case.
+            // So, probably, you won't need all these try/catches.
+            // But, hey, it is better to be safe than sorry :)
+            return Settings.System.getInt(context.getContentResolver(), "mobile_data", 0) != 0;
+        }
     }
 
     private static String getTransactionCode(Context context) {
@@ -1289,7 +1301,7 @@ public class MobileUtils {
         }
         if (swtch && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (isMobileDataEnabledFromLollipop(context))
+                if (isMobileDataEnabled(context))
                     new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
@@ -1317,7 +1329,7 @@ public class MobileUtils {
             sleep(1000);
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (isMobileDataEnabledFromLollipop(context))
+                if (isMobileDataEnabled(context))
                     new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSIM(context), false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, sim, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
