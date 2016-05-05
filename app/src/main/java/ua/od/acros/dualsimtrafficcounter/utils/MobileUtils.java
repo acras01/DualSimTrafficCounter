@@ -1073,7 +1073,7 @@ public class MobileUtils {
             Context context = (Context) params[0];
             int sim = (int) params[1];
             boolean swtch = (boolean) params[2];
-            boolean oldState = isMobileDataEnabled(context);
+            boolean oldState = isMobileDataActive(context);
             String command = null;
             final String[] out = {new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()).toString() + "\n"};
             out[0] += "Current state: " + oldState + " Requested state: " + swtch + "\n";
@@ -1123,7 +1123,7 @@ public class MobileUtils {
                         RootShell.getShell(true).add(cmd);
                         for (int i = 1; i < 31; i++) {
                             sleep(1000);
-                            if (oldState != isMobileDataEnabled(context)) {
+                            if (oldState != isMobileDataActive(context)) {
                                 out[0] += i + " seconds\n";
                                 break;
                             }
@@ -1158,7 +1158,7 @@ public class MobileUtils {
             int result = wrapper.result;
             switch (result) {
                 case 0:
-                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabled(context);
+                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabledFromSettings(context);
                     Toast.makeText(context, out, Toast.LENGTH_LONG).show();
                     //Execution output
                     try {
@@ -1181,22 +1181,6 @@ public class MobileUtils {
                     Toast.makeText(context, R.string.execution_failed, Toast.LENGTH_LONG).show();
                     break;
             }
-        }
-    }
-
-    private static boolean isMobileDataEnabled(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            // The row has been moved to 'global' table in API level 17
-            return Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) != 0;
-        }
-        try {
-            // It was in 'secure' table before
-            return Settings.Secure.getInt(context.getContentResolver(), "mobile_data") != 0;
-        } catch (Settings.SettingNotFoundException e) {
-            // It was in 'system' table originally, but I don't remember when that was the case.
-            // So, probably, you won't need all these try/catches.
-            // But, hey, it is better to be safe than sorry :)
-            return Settings.System.getInt(context.getContentResolver(), "mobile_data", 0) != 0;
         }
     }
 
@@ -1250,7 +1234,47 @@ public class MobileUtils {
         }
     }
 
-    public static int isMobileDataActive(Context context) {
+    public static boolean isMobileDataActive(Context context) {
+        return hasActiveNetworkInfo(context) == 2 || isMobileDataEnabledFromSettings(context)
+                || isMobileDataEnabledFromConnectivityManager(context) == 1;
+    }
+
+    private static boolean isMobileDataEnabledFromSettings(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            // The row has been moved to 'global' table in API level 17
+            return Settings.Global.getInt(context.getContentResolver(), "mobile_data", 0) != 0;
+        }
+        try {
+            // It was in 'secure' table before
+            return Settings.Secure.getInt(context.getContentResolver(), "mobile_data") != 0;
+        } catch (Settings.SettingNotFoundException e) {
+            // It was in 'system' table originally, but I don't remember when that was the case.
+            // So, probably, you won't need all these try/catches.
+            // But, hey, it is better to be safe than sorry :)
+            return Settings.System.getInt(context.getContentResolver(), "mobile_data", 0) != 0;
+        }
+    }
+
+    private static int isMobileDataEnabledFromConnectivityManager(Context context) {
+        final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        try {
+            Class<?> c = Class.forName(cm.getClass().getName());
+            Method m;
+            if (c != null) {
+                m = getMethod(c, "getMobileDataEnabled", 0);
+                if (m != null)
+                    return (boolean) m.invoke(cm) ? 1 : 0;
+                else
+                    return 2;
+            } else
+                return 2;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 2;
+        }
+    }
+
+    public static int hasActiveNetworkInfo(Context context) {
         int state = 0; // Assume disabled
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
@@ -1301,7 +1325,7 @@ public class MobileUtils {
         }
         if (swtch && sim == Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (isMobileDataEnabled(context))
+                if (isMobileDataActive(context))
                     new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
@@ -1329,7 +1353,7 @@ public class MobileUtils {
             sleep(1000);
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (isMobileDataEnabled(context))
+                if (isMobileDataActive(context))
                     new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSIM(context), false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, sim, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {

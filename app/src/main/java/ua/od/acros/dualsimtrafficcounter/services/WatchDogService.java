@@ -98,7 +98,7 @@ public class WatchDogService extends Service{
             DateTime last = fmt.parseDateTime(lastUpdate);
             DateTime now = new DateTime();
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
-                    (MobileUtils.isMobileDataActive(mContext) == 2 &&
+                    (MobileUtils.isMobileDataActive(mContext) &&
                             MobileUtils.getActiveSIM(mContext) > Constants.DISABLED) &&
                     !mPrefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                 stopService(new Intent(mContext, TrafficCountService.class));

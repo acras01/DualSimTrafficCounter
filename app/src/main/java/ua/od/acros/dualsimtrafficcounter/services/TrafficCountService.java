@@ -720,7 +720,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
             try {
-                if (MobileUtils.isMobileDataActive(mContext) == 2
+                if (MobileUtils.isMobileDataActive(mContext)
                         && (mTaskResult != null && !mTaskResult.isCancelled())) {
 
                     long speedRX;
@@ -958,7 +958,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
             try {
-                if (MobileUtils.isMobileDataActive(mContext) == 2
+                if (MobileUtils.isMobileDataActive(mContext)
                         && (mTaskResult != null && !mTaskResult.isCancelled())) {
 
                     long speedRX;
@@ -1196,7 +1196,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         @Override
         public void run() {
             try {
-                if (MobileUtils.isMobileDataActive(mContext) == 2
+                if (MobileUtils.isMobileDataActive(mContext)
                         && (mTaskResult != null && !mTaskResult.isCancelled())) {
 
                     long speedRX;

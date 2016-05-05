@@ -258,7 +258,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {
-            switch (MobileUtils.isMobileDataActive(mContext)) {
+            switch (MobileUtils.hasActiveNetworkInfo(mContext)) {
                 case 0:
                     mMobileData.setEnabled(true);
                     mMobileData.setTitle(R.string.action_enable);
@@ -483,7 +483,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setLabelText(int sim, String rx, String tx) {
-        int swtch = MobileUtils.isMobileDataActive(mContext);
+        int swtch = MobileUtils.hasActiveNetworkInfo(mContext);
         switch (sim) {
             default:
                 if (swtch== 0)
