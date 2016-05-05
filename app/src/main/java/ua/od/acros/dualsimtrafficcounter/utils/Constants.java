@@ -47,17 +47,17 @@ public class Constants {
             "name1", "autooff1", "prefer1", "time1", "day1", "everydayonoff1", "timeoff1", "timeon1", //13
             "op_round1", "op_limit1", "op_value1", "usenight1", "limitnight1", //18
             "valuenight1", "nighton1", "nightoff1", "nightround1", "operator_logo1", "reset1", "needsreset1", //25
-            "nextreset1", "overlimit1", "action_chosen1"}; //28
+            "nextreset1", "overlimit1", "action_chosen1", "prelimit1", "prelimitpercent1"}; //30
     public static final String[] PREF_SIM2 = {"stub", "limit2", "value2", "period2", "round2", "auto2", //5
             "name2", "autooff2", "prefer2", "time2", "day2", "everydayonoff2", "timeoff2", "timeon2", //13
             "op_round2", "op_limit2", "op_value2", "usenight2", "limitnight2", //18
             "valuenight2", "nighton2", "nightoff2", "nightround2", "operator_logo2", "reset2", "needsreset2", //25
-            "nextreset2", "overlimit2", "action_chosen2"}; //28
+            "nextreset2", "overlimit2", "action_chosen2", "prelimit2", "prelimitpercent2"}; //30
     public static final String[] PREF_SIM3 = {"stub", "limit3", "value3", "period3", "round3", "auto3", //5
             "name3", "autooff3", "prefer3", "time3", "day3", "everydayonoff3", "timeoff3", "timeon3", //13
             "op_round3", "op_limit31", "op_value3", "usenight3", "limitnight3", //18
             "valuenight3", "nighton3", "nightoff3", "nightround3", "operator_logo3", "reset3", "needsreset3", //25
-            "nextreset3", "overlimit3", "action_chosen3"}; //28
+            "nextreset3", "overlimit3", "action_chosen3", "prelimit3", "prelimitpercent3"}; //30
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11

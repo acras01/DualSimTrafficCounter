@@ -199,4 +199,7 @@
     <string name="execution_failed">Операция не выполнена!</string>
     <string name="calls_reset">%1$s: данные о звонках были обнулены</string>
     <string name="show_reset_notification">Показывать уведомление при обнулении</string>
+    <string name="pre_limit_percent">Уведомлять, если осталось меньше (%):</string>
+    <string name="use_pre_limit_notification">Оповещать заранее про исчерпание лимита</string>
+    <string name="pre_limit">Вы почти исчерпали свой лимит трафика!</string>
 </resources>

@@ -199,4 +199,7 @@
     <string name="execution_failed">Операцію не виконано!</string>
     <string name="calls_reset">%1$s: дані про виклики було скинуто</string>
     <string name="show_reset_notification">Відображати повідомлення при скиданні</string>
+    <string name="pre_limit_percent">Повідомляти, якщо лишилося менше (%):</string>
+    <string name="use_pre_limit_notification">Повідомляти завчасно про вичерпання ліміту</string>
+    <string name="pre_limit">Ви майже вичерпали свій ліміт трафіку!</string>
 </resources>

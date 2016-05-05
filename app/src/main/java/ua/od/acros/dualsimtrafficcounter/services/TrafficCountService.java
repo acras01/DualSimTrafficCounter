@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
 
@@ -73,6 +74,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private long mTransmitted2 = 0;
     private long mReceived3 = 0;
     private long mTransmitted3 = 0;
+    private String mPreLimit1 = "0";
+    private String mPreLimit2 = "0";
+    private String mPreLimit3 = "0";
     private boolean mIsSIM1OverLimit = false;
     private boolean mIsSIM2OverLimit = false;
     private boolean mIsSIM3OverLimit = false;
@@ -442,6 +446,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mHasActionChosen1 = mPrefs.getBoolean(Constants.PREF_SIM1[28], false);
         mHasActionChosen2 = mPrefs.getBoolean(Constants.PREF_SIM2[28], false);
         mHasActionChosen3 = mPrefs.getBoolean(Constants.PREF_SIM3[28], false);
+        mPreLimit1 = mPrefs.getString(Constants.PREF_SIM1[30], "0");
+        mPreLimit2 = mPrefs.getString(Constants.PREF_SIM2[30], "0");
+        mPreLimit3 = mPrefs.getString(Constants.PREF_SIM3[30], "0");
         mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
         if (mIsResetNeeded1)
             mResetTime1 = mDateTimeFormat.parseDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
@@ -568,6 +575,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             }.start();
         }
+        if (key.equals(Constants.PREF_SIM1[30]))
+            mPreLimit1 = mPrefs.getString(key, "0");
+        if (key.equals(Constants.PREF_SIM2[30]))
+            mPreLimit2 = mPrefs.getString(key, "0");
+        if (key.equals(Constants.PREF_SIM3[30]))
+            mPreLimit3 = mPrefs.getString(key, "0");
     }
 
     private long[] getSIMLimits() {
@@ -909,6 +922,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         tx += difftx;
                         tot = tx + rx;
                         mIsSIM1OverLimit = false;
+                        if (mPrefs.getBoolean(Constants.PREF_SIM1[29], false)) {
+                            int left = (int) (100 * (1 - tot / mLimits[0]));
+                            if (left < Integer.valueOf(mPreLimit1)) {
+                                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                vibrator.vibrate(1000);
+                                vibrator.cancel();
+                            }
+                        }
                     } else if (!mHasActionChosen1) {
                         mIsSIM1OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
@@ -1147,6 +1168,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         tx += difftx;
                         tot = tx + rx;
                         mIsSIM2OverLimit = false;
+                        if (mPrefs.getBoolean(Constants.PREF_SIM2[29], false)) {
+                            int left = (int) (100 * (1 - tot / mLimits[1]));
+                            if (left < Integer.valueOf(mPreLimit2)) {
+                                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                vibrator.vibrate(1000);
+                                vibrator.cancel();
+                            }
+                        }
                     } else if (!mHasActionChosen2) {
                         mIsSIM2OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
@@ -1385,6 +1414,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         tx += difftx;
                         tot = tx + rx;
                         mIsSIM3OverLimit = false;
+                        if (mPrefs.getBoolean(Constants.PREF_SIM3[29], false)) {
+                            int left = (int) (100 * (1 - tot / mLimits[2]));
+                            if (left < Integer.valueOf(mPreLimit3)) {
+                                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                vibrator.vibrate(1000);
+                                vibrator.cancel();
+                            }
+                        }
                     } else if (!mHasActionChosen3) {
                         mIsSIM3OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))

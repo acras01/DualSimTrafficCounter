@@ -206,4 +206,7 @@
     <string name="execution_failed">Execution failed!</string>
     <string name="calls_reset">%1$s: calls data has been reset</string>
     <string name="show_reset_notification">Show reset notification</string>
+    <string name="use_pre_limit_notification">Use pre-limit notification</string>
+    <string name="pre_limit_percent">Notify when left less then (%):</string>
+    <string name="pre_limit">You\'ve almost use your traffic limit!</string>
 </resources>

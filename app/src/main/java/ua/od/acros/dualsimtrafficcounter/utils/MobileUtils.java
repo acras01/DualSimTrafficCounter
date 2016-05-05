@@ -1158,7 +1158,7 @@ public class MobileUtils {
             int result = wrapper.result;
             switch (result) {
                 case 0:
-                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataEnabledFromSettings(context);
+                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataActive(context);
                     Toast.makeText(context, out, Toast.LENGTH_LONG).show();
                     //Execution output
                     try {
