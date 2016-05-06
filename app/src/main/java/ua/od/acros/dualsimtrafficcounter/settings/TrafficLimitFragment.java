@@ -46,6 +46,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private int mSimQuantity;
     private Context mContext;
     private boolean mIsAttached = false;
+    private TwoLineEditTextPreference prelimitValue1, prelimitValue2, prelimitValue3;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -111,6 +112,10 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         round1N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[22]);
         round2N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[22]);
         round3N = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[22]);
+        //Pre-Limit
+        prelimitValue1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[30]);
+        prelimitValue2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[30]);
+        prelimitValue3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[30]);
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
@@ -171,6 +176,10 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         day2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
         day3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 31)});
 
+        prelimitValue1.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 99)});
+        prelimitValue2.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 99)});
+        prelimitValue3.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 99)});
+
         if (getArguments() != null) {
             String sim = getArguments().getString("sim");
             SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
@@ -220,6 +229,13 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             value2N.setSummary(value2N.getEntry());
         if (value3N != null)
             value3N.setSummary(value3N.getEntry());
+        //Pre-Limit
+        if (prelimitValue1 != null)
+            prelimitValue1.setSummary(prelimitValue1.getText());
+        if (prelimitValue2 != null)
+            prelimitValue2.setSummary(prelimitValue2.getText());
+        if (prelimitValue3 != null)
+            prelimitValue3.setSummary(prelimitValue3.getText());
 
         if (period1 != null) {
             period1.setSummary(period1.getEntry());

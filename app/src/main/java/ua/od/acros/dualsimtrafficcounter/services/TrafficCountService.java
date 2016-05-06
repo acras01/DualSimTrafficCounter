@@ -74,9 +74,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private long mTransmitted2 = 0;
     private long mReceived3 = 0;
     private long mTransmitted3 = 0;
-    private String mPreLimit1 = "0";
-    private String mPreLimit2 = "0";
-    private String mPreLimit3 = "0";
     private boolean mIsSIM1OverLimit = false;
     private boolean mIsSIM2OverLimit = false;
     private boolean mIsSIM3OverLimit = false;
@@ -110,6 +107,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private long[] mLimits = new long[3];
     private boolean mLimitHasChanged = false;
     private DateTime mLastDate, mNowDate;
+    private boolean mPreLimitNotification1 = false;
+    private boolean mPreLimitNotification2 = false;
+    private boolean mPreLimitNotification3 = false;
+
 
     public TrafficCountService() {
     }
@@ -440,15 +441,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        mPreLimitNotification1 = false;
+        mPreLimitNotification2 = false;
+        mPreLimitNotification3 = false;
         mSIM1ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM1[27], false);
         mSIM2ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM2[27], false);
         mSIM3ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM3[27], false);
         mHasActionChosen1 = mPrefs.getBoolean(Constants.PREF_SIM1[28], false);
         mHasActionChosen2 = mPrefs.getBoolean(Constants.PREF_SIM2[28], false);
         mHasActionChosen3 = mPrefs.getBoolean(Constants.PREF_SIM3[28], false);
-        mPreLimit1 = mPrefs.getString(Constants.PREF_SIM1[30], "0");
-        mPreLimit2 = mPrefs.getString(Constants.PREF_SIM2[30], "0");
-        mPreLimit3 = mPrefs.getString(Constants.PREF_SIM3[30], "0");
         mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
         if (mIsResetNeeded1)
             mResetTime1 = mDateTimeFormat.parseDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
@@ -548,8 +549,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mResetRuleHasChanged = true;
         if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[4]) ||
                 key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[4]) ||
-                key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4]))
+                key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4])) {
             mLimitHasChanged = true;
+            mPreLimitNotification1 = false;
+            mPreLimitNotification2 = false;
+            mPreLimitNotification3 = false;
+        }
         if (key.equals(Constants.PREF_SIM1[5]) || key.equals(Constants.PREF_SIM1[6]))
             mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
         if (key.equals(Constants.PREF_SIM2[5]) || key.equals(Constants.PREF_SIM2[6]))
@@ -575,12 +580,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             }.start();
         }
-        if (key.equals(Constants.PREF_SIM1[30]))
-            mPreLimit1 = mPrefs.getString(key, "0");
-        if (key.equals(Constants.PREF_SIM2[30]))
-            mPreLimit2 = mPrefs.getString(key, "0");
-        if (key.equals(Constants.PREF_SIM3[30]))
-            mPreLimit3 = mPrefs.getString(key, "0");
     }
 
     private long[] getSIMLimits() {
@@ -922,12 +921,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         tx += difftx;
                         tot = tx + rx;
                         mIsSIM1OverLimit = false;
-                        if (mPrefs.getBoolean(Constants.PREF_SIM1[29], false)) {
-                            int left = (int) (100 * (1 - tot / mLimits[0]));
-                            if (left < Integer.valueOf(mPreLimit1)) {
-                                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                                vibrator.vibrate(1000);
-                                vibrator.cancel();
+                        if (mPrefs.getBoolean(Constants.PREF_SIM1[29], false) && !mPreLimitNotification1) {
+                            int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[0]));
+                            if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[30], "0"))) {
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                mPreLimitNotification1 = true;
                             }
                         }
                     } else if (!mHasActionChosen1) {
@@ -1168,12 +1166,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         tx += difftx;
                         tot = tx + rx;
                         mIsSIM2OverLimit = false;
-                        if (mPrefs.getBoolean(Constants.PREF_SIM2[29], false)) {
-                            int left = (int) (100 * (1 - tot / mLimits[1]));
-                            if (left < Integer.valueOf(mPreLimit2)) {
-                                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                                vibrator.vibrate(1000);
-                                vibrator.cancel();
+                        if (mPrefs.getBoolean(Constants.PREF_SIM2[29], false) && !mPreLimitNotification2) {
+                            int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[1]));
+                            if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[30], "0"))) {
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                mPreLimitNotification2 = true;
                             }
                         }
                     } else if (!mHasActionChosen2) {
@@ -1414,12 +1411,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         tx += difftx;
                         tot = tx + rx;
                         mIsSIM3OverLimit = false;
-                        if (mPrefs.getBoolean(Constants.PREF_SIM3[29], false)) {
-                            int left = (int) (100 * (1 - tot / mLimits[2]));
-                            if (left < Integer.valueOf(mPreLimit3)) {
-                                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                                vibrator.vibrate(1000);
-                                vibrator.cancel();
+                        if (mPrefs.getBoolean(Constants.PREF_SIM3[29], false) && !mPreLimitNotification3) {
+                            int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[2]));
+                            if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[30], "0"))) {
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                mPreLimitNotification3 = true;
                             }
                         }
                     } else if (!mHasActionChosen3) {
