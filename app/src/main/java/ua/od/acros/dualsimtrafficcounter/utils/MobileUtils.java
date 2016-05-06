@@ -1315,7 +1315,7 @@ public class MobileUtils {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 new SetMobileNetworkFromLollipop().execute(context, mLastActiveSIM, false);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
-                setMobileDataEnabled(context, false, Constants.DISABLED);
+                setMobileDataEnabled(context, false, mLastActiveSIM);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 localIntent.putExtra("simid", Constants.DISABLED);
