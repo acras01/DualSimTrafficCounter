@@ -201,5 +201,5 @@
     <string name="show_reset_notification">Відображати повідомлення при скиданні</string>
     <string name="pre_limit_percent">Повідомляти, якщо лишилося менше (%):</string>
     <string name="use_pre_limit_notification">Повідомляти завчасно про вичерпання ліміту</string>
-    <string name="pre_limit">Ви майже вичерпали свій ліміт трафіку!</string>
+    <string name="pre_limit">%1$s: Ви майже вичерпали свій ліміт трафіку!</string>
 </resources>

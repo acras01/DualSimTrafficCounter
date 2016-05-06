@@ -208,5 +208,5 @@
     <string name="show_reset_notification">Show reset notification</string>
     <string name="use_pre_limit_notification">Use pre-limit notification</string>
     <string name="pre_limit_percent">Notify when left less then (%):</string>
-    <string name="pre_limit">You\'ve almost use your traffic limit!</string>
+    <string name="pre_limit">%1$s: you\'ve almost use your traffic limit!</string>
 </resources>

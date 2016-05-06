@@ -15,11 +15,13 @@ import android.graphics.BitmapFactory;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
@@ -110,7 +112,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private boolean mPreLimitNotification1 = false;
     private boolean mPreLimitNotification2 = false;
     private boolean mPreLimitNotification3 = false;
-
+    private Handler mHandler;
 
     public TrafficCountService() {
     }
@@ -441,6 +443,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        mHandler = new Handler();
         mPreLimitNotification1 = false;
         mPreLimitNotification2 = false;
         mPreLimitNotification3 = false;
@@ -924,8 +927,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mPrefs.getBoolean(Constants.PREF_SIM1[29], false) && !mPreLimitNotification1) {
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[0]));
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[30], "0"))) {
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
                                 mPreLimitNotification1 = true;
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                showPreLimitToast(Constants.SIM1);
                             }
                         }
                     } else if (!mHasActionChosen1) {
@@ -1169,8 +1173,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mPrefs.getBoolean(Constants.PREF_SIM2[29], false) && !mPreLimitNotification2) {
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[1]));
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[30], "0"))) {
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
                                 mPreLimitNotification2 = true;
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                showPreLimitToast(Constants.SIM2);
                             }
                         }
                     } else if (!mHasActionChosen2) {
@@ -1414,8 +1419,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         if (mPrefs.getBoolean(Constants.PREF_SIM3[29], false) && !mPreLimitNotification3) {
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[2]));
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[30], "0"))) {
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
                                 mPreLimitNotification3 = true;
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                showPreLimitToast(Constants.SIM3);
                             }
                         }
                     } else if (!mHasActionChosen3) {
@@ -1461,6 +1467,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 ACRA.getErrorReporter().handleException(e);
             }
         }
+    }
+
+    private void showPreLimitToast(final int sim) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(mContext, String.format(getResources().getString(R.string.pre_limit), mOperatorNames[sim]), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void pushResetNotification(int simid) {
