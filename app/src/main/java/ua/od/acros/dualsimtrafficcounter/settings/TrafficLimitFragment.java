@@ -71,6 +71,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         TwoLineCheckPreference autoff1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[7]);
         TwoLineCheckPreference autoff2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[7]);
         TwoLineCheckPreference autoff3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[7]);
+        TwoLineCheckPreference autoenable1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[31]);
+        TwoLineCheckPreference autoenable2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[31]);
+        TwoLineCheckPreference autoenable3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[31]);
         prefer1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[8]);
         prefer2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[8]);
         prefer3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[8]);
@@ -132,6 +135,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             autoff2.setEnabled(false);
             autoff3.setChecked(false);
             autoff3.setEnabled(false);
+            autoenable1.setChecked(false);
+            autoenable1.setEnabled(false);
+            autoenable2.setChecked(false);
+            autoenable2.setEnabled(false);
+            autoenable3.setChecked(false);
+            autoenable3.setEnabled(false);
             getPreferenceScreen().findPreference("everyday1").setEnabled(false);
             getPreferenceScreen().findPreference("everyday2").setEnabled(false);
             getPreferenceScreen().findPreference("everyday3").setEnabled(false);

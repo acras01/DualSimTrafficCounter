@@ -23,12 +23,13 @@ import ua.od.acros.dualsimtrafficcounter.R;
 
 @ReportsCrashes(mailTo = "acras1@gmail.com",
         customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,
-                ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.SETTINGS_GLOBAL, ReportField.SETTINGS_SYSTEM,
+                ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.BUILD, ReportField.BRAND,
+                ReportField.SETTINGS_GLOBAL, ReportField.SETTINGS_SYSTEM,
                 ReportField.STACK_TRACE, ReportField.LOGCAT, ReportField.SHARED_PREFERENCES },
         logcatArguments = { "-t", "300", "MyAppTag:V", "System.err:V", "AndroidRuntime:V", "*:S" },
         mode = ReportingInteractionMode.DIALOG,
         resDialogText = R.string.crash_toast_text,
-        resDialogOkToast = R.string.crash_toast_text)
+        resDialogOkToast = R.string.crash_toast_text_ok)
 public class CustomApplication extends Application {
 
     private static Context mContext;

@@ -202,4 +202,5 @@
     <string name="pre_limit_percent">Повідомляти, якщо лишилося менше (%):</string>
     <string name="use_pre_limit_notification">Повідомляти завчасно про вичерпання ліміту</string>
     <string name="pre_limit">%1$s: Ви майже вичерпали свій ліміт трафіку!</string>
+    <string name="auto_enable_data_after_reset">Вмикати мобільні дані автоматично після зміни ліміту або старту нового періоду</string>
 </resources>

@@ -690,7 +690,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             long tot2 = mIsNight2 ? (long) mTrafficData.get(Constants.TOTAL2_N) : (long) mTrafficData.get(Constants.TOTAL2);
             long tot3 = mIsNight3 ? (long) mTrafficData.get(Constants.TOTAL3_N) : (long) mTrafficData.get(Constants.TOTAL3);
             try {
-                if (mIsSIM1OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM1[31], false) && mIsSIM1OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
                         || (tot1 <= mLimits[0] && (mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -701,7 +701,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
                     timerStart(Constants.COUNT);
                 }
-                if (mIsSIM2OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM2[31], false) && mIsSIM2OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
                         || (tot2 <= mLimits[1] && (mPrefs.getBoolean(Constants.PREF_SIM2[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -712,7 +712,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
                     timerStart(Constants.COUNT);
                 }
-                if (mIsSIM3OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM3[31], false) && mIsSIM3OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
                         || (tot3 <= mLimits[2] && (mPrefs.getBoolean(Constants.PREF_SIM3[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
