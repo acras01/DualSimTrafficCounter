@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -226,8 +227,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public void onResume(){
         super.onResume();
         EventBus.getDefault().register(this);
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
-        toolBar.setSubtitle(R.string.notification_title);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
         setButtonLimitText();
         CustomApplication.activityResumed();
     }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatRadioButton;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,8 +79,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     @Override
     public void onResume(){
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);
-        toolBar.setSubtitle(R.string.action_show_test);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_show_test);
     }
 
     @Override

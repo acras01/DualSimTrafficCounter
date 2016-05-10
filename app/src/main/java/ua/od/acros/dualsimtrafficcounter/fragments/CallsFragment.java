@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -242,8 +243,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     @Override
     public void onResume(){
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
-        toolBar.setSubtitle(R.string.calls_fragment);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
         setButtonLimitText();
         CustomApplication.activityResumed();
     }

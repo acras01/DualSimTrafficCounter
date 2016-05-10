@@ -7,11 +7,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
@@ -27,9 +29,9 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 
 public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
@@ -123,18 +125,16 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
 
-        if ((android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP &&
-                        !CustomApplication.isOldMtkDevice()) ||
-                (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP &&
-                        !CustomApplication.hasRoot())) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) ||
+                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
-            /*autoff1.setChecked(false);
+            autoff1.setChecked(false);
             autoff1.setEnabled(false);
             autoff2.setChecked(false);
             autoff2.setEnabled(false);
             autoff3.setChecked(false);
-            autoff3.setEnabled(false);*/
+            autoff3.setEnabled(false);
             autoenable1.setChecked(false);
             autoenable1.setEnabled(false);
             autoenable2.setChecked(false);
@@ -148,9 +148,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             everyday2.setEnabled(false);
             everyday3.setEnabled(false);
         }
-        if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP &&
-                        !CustomApplication.isOldMtkDevice())) {
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
             everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));
@@ -454,8 +452,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     @Override
     public void onResume() {
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
-        toolBar.setTitle(R.string.limit_title);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.limit_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 

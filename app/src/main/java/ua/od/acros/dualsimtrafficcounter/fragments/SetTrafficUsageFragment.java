@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,8 +127,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     @Override
     public void onResume(){
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);
-        toolBar.setSubtitle(R.string.action_set_usage);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_set_usage);
     }
 
     @Override

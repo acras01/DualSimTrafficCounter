@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.TrafficStats;
 import android.net.Uri;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
@@ -265,8 +266,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     timerStart(Constants.CHECK);
                     break;
                 case Constants.CONTINUE_ACTION:
-                    if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
+                    if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
+                            (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                         MobileUtils.toggleMobileDataConnection(true, mContext, sim);
                     switch (sim) {
                         case Constants.SIM1:
@@ -283,8 +284,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         timerStart(Constants.COUNT);
                     break;
                 case Constants.OFF_ACTION:
-                    if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                            (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
+                    if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
+                            (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                         timerStart(Constants.CHECK);
                     else {
                         switch (mActiveSIM) {
@@ -936,8 +937,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsSIM1OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
+                        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
+                                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
@@ -1182,8 +1183,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsSIM2OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
+                        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
+                                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
@@ -1428,8 +1429,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mIsSIM3OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
                             alertNotify(mActiveSIM);
-                        if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && CustomApplication.hasRoot()) ||
-                                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
+                        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
+                                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
                         else if (!ChooseActionDialog.isActive()) {
                             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);

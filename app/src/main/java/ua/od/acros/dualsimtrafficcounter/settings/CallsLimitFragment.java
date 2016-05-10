@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
@@ -186,8 +187,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     @Override
     public void onResume() {
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
-        toolBar.setTitle(R.string.calls_limit_title);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.calls_limit_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 

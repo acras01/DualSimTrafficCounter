@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
@@ -107,8 +108,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     @Override
     public void onResume() {
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
-        toolBar.setTitle(R.string.name_title);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.name_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 

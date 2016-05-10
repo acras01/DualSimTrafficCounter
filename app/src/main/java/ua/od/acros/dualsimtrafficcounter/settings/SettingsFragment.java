@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +50,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         mSwitch.resume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
-        toolBar.setTitle(R.string.action_settings);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.action_settings);
     }
 
     @Override

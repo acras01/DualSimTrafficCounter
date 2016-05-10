@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.preference.Preference;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
@@ -85,8 +86,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     @Override
     public void onResume() {
         super.onResume();
-        android.support.v7.widget.Toolbar toolBar = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbar);;
-        toolBar.setTitle(R.string.other_title);
+        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.other_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
