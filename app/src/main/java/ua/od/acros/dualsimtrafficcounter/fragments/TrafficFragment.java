@@ -189,6 +189,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     @Subscribe
     public void onMessageEvent(OnOffTrafficEvent event) {
         int sim = event.sim;
+        boolean close = event.close;
         try {
             if (sim > Constants.DISABLED)
                 MobileUtils.toggleMobileDataConnection(true, mContext, sim);
@@ -198,7 +199,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
-        invalidateOptionsMenu(getActivity());
+        if (close)
+            getActivity().finish();
+        else
+            invalidateOptionsMenu(getActivity());
     }
 
     @Subscribe

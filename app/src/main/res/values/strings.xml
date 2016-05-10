@@ -210,4 +210,5 @@
     <string name="pre_limit_percent">Notify when left less then (%):</string>
     <string name="pre_limit">%1$s: you\'ve almost use your traffic limit!</string>
     <string name="auto_enable_data_after_reset">Auto-enable mobile data after changing limit or starting new period</string>
+    <string name="close_activity">Close application window</string>
 </resources>

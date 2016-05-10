@@ -203,4 +203,5 @@
     <string name="use_pre_limit_notification">Оповещать заранее про исчерпание лимита</string>
     <string name="pre_limit">%1$s: Вы почти исчерпали свой лимит трафика!</string>
     <string name="auto_enable_data_after_reset">Включать передачу данных автоматически при изменении предела или старте нового периода</string>
+    <string name="close_activity">Закрыть окно приложения</string>
 </resources>

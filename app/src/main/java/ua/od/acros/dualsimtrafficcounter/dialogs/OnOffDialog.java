@@ -12,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -29,6 +30,7 @@ public class OnOffDialog extends DialogFragment {
 
     private int mSimChecked = Constants.NULL;
     private AppCompatButton bOK;
+    private AppCompatCheckBox chbClose;
     private Context mContext;
 
 
@@ -46,6 +48,7 @@ public class OnOffDialog extends DialogFragment {
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
         View view = View.inflate(getActivity(), R.layout.onoff_dialog, null);
+        chbClose = (AppCompatCheckBox) view.findViewById(R.id.checkBox);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(operatorNames[0]);
@@ -73,6 +76,7 @@ public class OnOffDialog extends DialogFragment {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                chbClose.setEnabled(true);
                 bOK.setEnabled(true);
                 bOK.setTextColor(textColor[0]);
                 switch (checkedId) {
@@ -106,6 +110,8 @@ public class OnOffDialog extends DialogFragment {
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
+                chbClose.setEnabled(false);
+                chbClose.setChecked(false);
                 bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 textColor[0] = bOK.getTextColors();
                 bOK.setEnabled(false);
@@ -115,7 +121,7 @@ public class OnOffDialog extends DialogFragment {
                     public void onClick(View view) {
                         if (mSimChecked != Constants.NULL) {
                             dialog.dismiss();
-                            EventBus.getDefault().post(new OnOffTrafficEvent(mSimChecked));
+                            EventBus.getDefault().post(new OnOffTrafficEvent(mSimChecked, chbClose.isChecked()));
                         } else
                             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }
