@@ -66,8 +66,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private Vibrator mVibrator;
     private boolean mIsResetNeeded3 = false;
     private boolean mIsResetNeeded2 = false;
-    private DateTime mResetTime2;
-    private DateTime mResetTime3;
+    private DateTime mResetTime2, mResetTime3;
     private boolean mIsOutgoing = false;
     private boolean mIsDialogShown = false;
     private final String[] mNumber = new String[1];
