@@ -211,6 +211,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.vert12, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
                     if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true)) {
+                        updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setInt(R.id.txSIM1, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_green_dark));
                         updateViews.setInt(R.id.rxSIM1, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_orange_dark));
                         updateViews.setTextViewText(R.id.txSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.SIM1TX_N, 0) :
@@ -227,7 +228,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         if (rest < 0) {
                             rest = 0;
                             updateViews.setInt(R.id.totSIM1, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
-                        }
+                        } else
+                            updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setTextViewText(R.id.rxSIM1, DataFormat.formatData(context, rest));
                     }
                     updateViews.setViewVisibility(R.id.txSIM1, View.VISIBLE);
@@ -305,7 +307,6 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM1, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM1, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout1, View.VISIBLE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true)) {
@@ -362,6 +363,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.vert22, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
                     if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true)) {
+                        updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setInt(R.id.txSIM2, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_green_dark));
                         updateViews.setInt(R.id.rxSIM2, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_orange_dark));
                         updateViews.setTextViewText(R.id.txSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.SIM2TX_N, 0) :
@@ -378,7 +380,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         if (rest < 0) {
                             rest = 0;
                             updateViews.setInt(R.id.totSIM2, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
-                        }
+                        } else
+                            updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setTextViewText(R.id.rxSIM2, DataFormat.formatData(context, rest));
                     }
                     updateViews.setViewVisibility(R.id.txSIM2, View.VISIBLE);
@@ -455,7 +458,6 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM2, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM2, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout2, View.VISIBLE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true) ||
@@ -513,6 +515,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.vert32, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
                     if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true)) {
+                        updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setInt(R.id.txSIM3, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_green_dark));
                         updateViews.setInt(R.id.rxSIM3, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_orange_dark));
                         updateViews.setTextViewText(R.id.txSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.SIM3TX_N, 0) :
@@ -529,7 +532,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         if (rest < 0) {
                             rest = 0;
                             updateViews.setInt(R.id.totSIM3, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
-                        }
+                        } else
+                            updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setTextViewText(R.id.rxSIM3, DataFormat.formatData(context, rest));
                     }
                     updateViews.setViewVisibility(R.id.txSIM3, View.VISIBLE);
@@ -549,7 +553,6 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 }
 
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true)) {
-
                     if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false))
                         Picasso.with(context)
                                 .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[7], "none"), "drawable", context.getPackageName()))
@@ -607,7 +610,6 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM3, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM3, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout3, View.VISIBLE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true) || ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true) ||
