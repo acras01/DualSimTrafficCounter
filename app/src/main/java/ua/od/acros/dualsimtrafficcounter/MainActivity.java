@@ -370,8 +370,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
         FragmentManager fm = getSupportFragmentManager();
         if (mNeedsRestart) {
             mNeedsRestart = false;
