@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,7 +59,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
     private boolean mIsRunning = false;
     private Context mContext;
-    private Intent mSettingsIntent;
 
     public static TrafficFragment newInstance() {
         return new TrafficFragment();
@@ -449,11 +447,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         SIM2.setText(mOperatorNames[1]);
         SIM3.setText(mOperatorNames[2]);
 
-        final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
-        mSettingsIntent = new Intent(Intent.ACTION_MAIN);
-        mSettingsIntent.setComponent(cn);
-        mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
+        if (!CustomApplication.isDataUsageAvailable())
             view.findViewById(R.id.settings).setEnabled(false);
 
         // Inflate the layout for this fragment
@@ -538,7 +532,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.settings:
                 try {
-                    startActivity(mSettingsIntent);
+                    startActivity(CustomApplication.getSettingsIntent());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

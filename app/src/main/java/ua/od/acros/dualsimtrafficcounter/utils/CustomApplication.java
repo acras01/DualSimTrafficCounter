@@ -2,11 +2,14 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.PowerManager;
+import android.provider.Settings;
 
 import com.stericson.RootShell.RootShell;
 
@@ -36,6 +39,8 @@ public class CustomApplication extends Application {
     private static Boolean mIsOldMtkDevice = null;
     private static Boolean mHasRoot = null;
     private static boolean mIsActivityVisible;
+    private static Intent mSettingsIntent;
+    private static boolean mIsDataUsageAvailable = true;
 
     @Override
     public void onCreate() {
@@ -43,6 +48,25 @@ public class CustomApplication extends Application {
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
         mContext = getApplicationContext();
+        final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
+        mSettingsIntent = new Intent(Intent.ACTION_MAIN);
+        mSettingsIntent.setComponent(cn);
+        mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0) {
+            mSettingsIntent = new Intent(Settings.ACTION_SETTINGS);
+            mSettingsIntent.putExtra(":android:show_fragment", "com.android.settings.DataUsageSummary");
+            mSettingsIntent.putExtra(":android:no_headers", true);
+            if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
+                mIsDataUsageAvailable = false;
+        }
+    }
+
+    public static Intent getSettingsIntent() {
+        return mSettingsIntent;
+    }
+
+    public static boolean isDataUsageAvailable() {
+        return mIsDataUsageAvailable;
     }
 
     public static Context getAppContext() {

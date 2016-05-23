@@ -250,11 +250,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         timerStart(Constants.CHECK);
                     break;
                 case Constants.SETTINGS_ACTION:
-                    final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
-                    Intent settIntent = new Intent(Intent.ACTION_MAIN);
-                    settIntent.setComponent(cn);
-                    settIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(settIntent);
+                    startActivity(CustomApplication.getSettingsIntent());
                     break;
                 case Constants.LIMIT_ACTION:
                     Intent i = new Intent(mContext, SettingsActivity.class);

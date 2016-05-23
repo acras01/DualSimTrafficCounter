@@ -71,7 +71,7 @@
     <string name="choose_action">Выберите действие</string>
     <string name="prefer_text">Предпочтительная</string>
     <string name="action_change_limits">Перейти в настройки для изменения пределов</string>
-    <string name="action_continue">Продолжить без изменений</string>
+    <string name="action_continue">Отмена - продолжить без изменений</string>
     <string name="set">Установить</string>
     <string name="time_of_end">Время обнуления </string>
     <string name="day">День обнуления</string>

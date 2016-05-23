@@ -71,7 +71,7 @@
     <string name="choose_action">Оберіть наступну дію</string>
     <string name="prefer_text">Основна</string>
     <string name="action_change_limits">Перейти до налаштувань для зміни лімітів</string>
-    <string name="action_continue">Продовжити без змін</string>
+    <string name="action_continue">Скасувати - продовжити без змін</string>
     <string name="set">Встановити</string>
     <string name="time_of_end">Час скидання</string>
     <string name="day">День скидання</string>

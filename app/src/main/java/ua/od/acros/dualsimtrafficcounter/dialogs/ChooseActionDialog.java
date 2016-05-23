@@ -75,19 +75,22 @@ public class ChooseActionDialog extends AppCompatActivity {
                     case R.id.actionchange:
                         mAction = Constants.CHANGE_ACTION;
                         break;
-                    case R.id.actioncontinue:
-                        mAction = Constants.CONTINUE_ACTION;
+                    case R.id.actionoff:
+                        mAction = Constants.OFF_ACTION;
                         break;
                 }
             }
         });
+        if (!CustomApplication.isDataUsageAvailable())
+            view.findViewById(R.id.actionmobiledata).setEnabled(false);
         mDialog = new AlertDialog.Builder(this)
+                .setCancelable(false)
                 .setView(view)
                 .setTitle(R.string.attention)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        EventBus.getDefault().post(new ActionTrafficEvent(mSimID, Constants.OFF_ACTION));
+                        EventBus.getDefault().post(new ActionTrafficEvent(mSimID, Constants.CONTINUE_ACTION));
                         finish();
                     }
                 })

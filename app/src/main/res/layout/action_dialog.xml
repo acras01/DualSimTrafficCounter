@@ -55,13 +55,22 @@
             android:text="@string/action_change"
             android:textColor="?android:attr/textColorPrimary" />
 
-        <android.support.v7.widget.AppCompatRadioButton
+        <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/actioncontinue"
-            android:text="@string/action_continue"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:text="@string/action_disable"
+            android:id="@+id/actionoff"
+            android:checked="false" />
 
     </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_continue"
+        android:id="@+id/hint"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignLeft="@+id/radioGroup"
+        android:textColor="?android:attr/textColorPrimary" />
 
 </RelativeLayout>

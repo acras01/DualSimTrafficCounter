@@ -74,7 +74,7 @@
     <string name="action_change_limits">Go to settings and change limits</string>
     <string name="w_text_color" translatable="false">#ffffffff</string>
     <string name="w_back_color" translatable="false">#00ffffff</string>
-    <string name="action_continue">Continue without changes</string>
+    <string name="action_continue">Cancel - continue without changes</string>
     <string name="time_of_end">Time of reset</string>
     <string name="set">Set</string>
     <string name="day">Day of reset</string>
