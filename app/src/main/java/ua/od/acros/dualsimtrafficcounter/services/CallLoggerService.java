@@ -9,11 +9,9 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -22,11 +20,8 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,8 +36,11 @@ import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseOperatorDialog;
 import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
+import ua.od.acros.dualsimtrafficcounter.events.ListEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
+import ua.od.acros.dualsimtrafficcounter.events.NoListEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -304,6 +302,43 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         refreshWidgetAndNotification(sim, 0L);
     }
 
+    @Subscribe
+    public void onMessageEvent(ListEvent event) {
+        mIsOutgoing = event.outgoing;
+        event.bundle.putStringArrayList("list", event.list);
+        event.bundle.putBoolean("white", !mIsOutgoing);
+        new SaveListTask().execute(event.bundle);
+    }
+
+    @Subscribe
+    public void onMessageEvent(NoListEvent event) {
+        mIsOutgoing = false;
+    }
+
+    class SaveListTask extends AsyncTask<Bundle, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Bundle... params) {
+            ArrayList<String> list = params[0].getStringArrayList("list");
+            if (list != null) {
+                list.add(params[0].getString("number"));
+                if (params[0].getBoolean("white", false))
+                    CustomDatabaseHelper.writeWhiteList(params[0].getInt("sim"), list, mDbHelper);
+                else
+                    CustomDatabaseHelper.writeBlackList(params[0].getInt("sim"), list, mDbHelper);
+                return true;
+            } else
+                return false;
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result)
+                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
+    }
+
+
     private void startTask(Context context, String number) {
         DateTime now = DateTime.now();
         DateTime mResetTime1 = mDateTimeFormat.parseDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(mDateTimeFormat)));
@@ -365,29 +400,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
         tm.listen(new PhoneStateListener() {
 
-            class SaveListTask extends AsyncTask<Bundle, Void, Boolean> {
-                @Override
-                protected Boolean doInBackground(Bundle... params) {
-                    ArrayList<String> list = params[0].getStringArrayList("list");
-                    if (list != null) {
-                        list.add(params[0].getString("number"));
-                        if (params[0].getBoolean("white", false))
-                            CustomDatabaseHelper.writeWhiteList(params[0].getInt("sim"), list, mDbHelper);
-                        else
-                            CustomDatabaseHelper.writeBlackList(params[0].getInt("sim"), list, mDbHelper);
-                        return true;
-                    } else
-                        return false;
-
-                }
-
-                @Override
-                protected void onPostExecute(Boolean result) {
-                    if (result)
-                        Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
-                }
-            }
-
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
                 if (!mIsOutgoing)
@@ -419,66 +431,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 final Bundle bundle = new Bundle();
                                 bundle.putString("number", CallLoggerService.this.mNumber[0]);
                                 bundle.putInt("sim", sim);
-                                int style = R.style.AppTheme_Light_Dialog;
-                                if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true)) {
-                                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                                    switch (currentNightMode) {
-                                        case Configuration.UI_MODE_NIGHT_NO:
-                                            // Night mode is not active, we're in day time
-                                            style = R.style.AppTheme_Light_Dialog;
-                                            break;
-                                        case Configuration.UI_MODE_NIGHT_YES:
-                                            // Night mode is active, we're at night!
-                                            style = R.style.AppTheme_Dialog;
-                                            break;
-                                        case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                                            // We don't know what mode we're in, assume notnight
-                                            style = R.style.AppTheme_Light_Dialog;
-                                            break;
-                                    }
-                                } else {
-                                    if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
-                                        style = R.style.AppTheme_Light_Dialog;
-                                    else
-                                        style = R.style.AppTheme_Dialog;
-                                }
-                                AlertDialog dialog = new AlertDialog.Builder(ctx, style)
-                                        .setTitle(CallLoggerService.this.mNumber[0])
-                                        .setMessage(R.string.is_out_of_home_network)
-                                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                mIsOutgoing = true;
-                                                bundle.putStringArrayList("list", blackList);
-                                                bundle.putBoolean("white", !mIsOutgoing);
-                                                new SaveListTask().execute(bundle);
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                mIsOutgoing = false;
-                                                bundle.putStringArrayList("list", whiteList);
-                                                bundle.putBoolean("white", !mIsOutgoing);
-                                                new SaveListTask().execute(bundle);
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                        .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                mIsOutgoing = false;
-                                                dialog.cancel();
-                                            }
-                                        })
-                                        .create();
-                                Window window = dialog.getWindow();
-                                window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
-                                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                                dialog.show();
+                                Intent dialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
+                                dialogIntent.putExtra("bundle", bundle);
+                                dialogIntent.putExtra("whitelist", whiteList);
+                                dialogIntent.putExtra("blacklist", blackList);
+                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                mContext.startActivity(dialogIntent);
                             } else if (blackList.contains(CallLoggerService.this.mNumber[0]))
                                 mIsOutgoing = true;
                             break;

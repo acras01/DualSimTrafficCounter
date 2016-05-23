@@ -74,6 +74,11 @@
             android:theme="@style/AppTheme.NoActionBar.Translucent">
         </activity>
         <activity
+            android:name=".dialogs.ChooseOperatorDialog"
+            android:label="@string/title_activity_choose_operator_dialog"
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+        </activity>
+        <activity
             android:name=".activities.TrafficWidgetConfigActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/info_widget_traffic"
@@ -190,6 +195,7 @@
                 <action android:name="ua.od.acros.dualsimtrafficcounter.RESET" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
