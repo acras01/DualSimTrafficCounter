@@ -303,9 +303,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Subscribe
     public void onMessageEvent(ListEvent event) {
-        mIsOutgoing = event.outgoing;
-        event.bundle.putStringArrayList("list", event.list);
-        event.bundle.putBoolean("white", !mIsOutgoing);
+        mIsOutgoing = event.bundle.getBoolean("black");
         new SaveListTask().execute(event.bundle);
     }
 
@@ -320,7 +318,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             ArrayList<String> list = params[0].getStringArrayList("list");
             if (list != null) {
                 list.add(params[0].getString("number"));
-                if (params[0].getBoolean("white", false))
+                if (params[0].getBoolean("black", false))
                     CustomDatabaseHelper.writeWhiteList(params[0].getInt("sim"), list, mDbHelper);
                 else
                     CustomDatabaseHelper.writeBlackList(params[0].getInt("sim"), list, mDbHelper);

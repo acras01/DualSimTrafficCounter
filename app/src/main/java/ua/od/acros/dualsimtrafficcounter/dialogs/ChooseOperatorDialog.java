@@ -3,11 +3,11 @@ package ua.od.acros.dualsimtrafficcounter.dialogs;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.view.Window;
 import android.view.WindowManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,6 +40,13 @@ public class ChooseOperatorDialog extends AppCompatActivity {
             recreate();
         }
 
+        getWindow().setAttributes(new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSLUCENT));
+
         final ArrayList<String> whiteList = getIntent().getStringArrayListExtra("whitelist");
         final ArrayList<String> blackList = getIntent().getStringArrayListExtra("blacklist");
         final Bundle bundle = getIntent().getBundleExtra("bundle");
@@ -52,14 +59,18 @@ public class ChooseOperatorDialog extends AppCompatActivity {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EventBus.getDefault().post(new ListEvent(true, blackList, bundle));
+                        bundle.putStringArrayList("list", blackList);
+                        bundle.putBoolean("black", true);
+                        EventBus.getDefault().post(new ListEvent(bundle));
                         finish();
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EventBus.getDefault().post(new ListEvent(false, whiteList, bundle));
+                        bundle.putStringArrayList("list", whiteList);
+                        bundle.putBoolean("black", false);
+                        EventBus.getDefault().post(new ListEvent(bundle));
                         finish();
                     }
                 })
@@ -71,18 +82,6 @@ public class ChooseOperatorDialog extends AppCompatActivity {
                     }
                 })
                 .create();
-        Window dialogWindow = mDialog.getWindow();
-        dialogWindow.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        dialogWindow.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
-        /*dialogWindow.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
-        Window mainWindow = getWindow();
-        WindowManager.LayoutParams dialoglp = dialogWindow.getAttributes();
-        WindowManager.LayoutParams mainlp = mainWindow.getAttributes();
-        mainlp.width = dialoglp.width; // Width
-        mainlp.height = dialoglp.height; // Height
-        mainWindow.setAttributes(mainlp);*/
 
         if(!this.isFinishing()){
             mDialog.show();
