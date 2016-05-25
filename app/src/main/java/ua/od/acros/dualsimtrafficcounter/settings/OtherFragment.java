@@ -21,6 +21,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.HUDService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -137,6 +138,12 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
                 key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
             CustomNotification.setIdNeedsChange(true);
+        if (key.equals(Constants.PREF_OTHER[32])) {
+            if (sharedPreferences.getBoolean(key, true) && !CustomApplication.isMyServiceRunning(HUDService.class))
+                mContext.startService(new Intent(mContext, HUDService.class));
+            else if (!sharedPreferences.getBoolean(key, true) && CustomApplication.isMyServiceRunning(HUDService.class))
+                mContext.stopService(new Intent(mContext, HUDService.class));
+        }
     }
 
     @Override

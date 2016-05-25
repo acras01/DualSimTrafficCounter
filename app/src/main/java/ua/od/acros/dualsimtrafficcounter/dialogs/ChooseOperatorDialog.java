@@ -44,7 +44,7 @@ public class ChooseOperatorDialog extends AppCompatActivity {
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 PixelFormat.TRANSLUCENT));
 
         final ArrayList<String> whiteList = getIntent().getStringArrayListExtra("whitelist");
@@ -82,6 +82,9 @@ public class ChooseOperatorDialog extends AppCompatActivity {
                     }
                 })
                 .create();
+
+        mDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
 
         if(!this.isFinishing()){
             mDialog.show();

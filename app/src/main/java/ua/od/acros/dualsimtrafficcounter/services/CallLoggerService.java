@@ -33,6 +33,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -145,13 +146,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 limit = Long.valueOf(lim) * Constants.MINUTE;
                             break;
                     }
-                    long timeToVibrate;
-                    if (limit - currentDuration <= interval)
+                    long timeToVibrate = limit - currentDuration - interval;
+                    if (timeToVibrate < 0)
                         timeToVibrate = 0;
-                    else
-                        timeToVibrate = limit - currentDuration - interval;
                     //out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
-                    mCountTimer = new CountDownTimer(timeToVibrate, Constants.SECOND) {
+                    mCountTimer = new CountDownTimer(timeToVibrate, timeToVibrate) {
                         public void onTick(long millisUntilFinished) {
                             //out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
                         }
@@ -435,6 +434,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 dialogIntent.putExtra("whitelist", whiteList);
                                 dialogIntent.putExtra("blacklist", blackList);
                                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                try {
+                                    TimeUnit.MILLISECONDS.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 mContext.startActivity(dialogIntent);
                             } else if (blackList.contains(CallLoggerService.this.mNumber[0]))
                                 mIsOutgoing = true;
@@ -508,7 +512,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (key.equals(Constants.PREF_SIM1_CALLS[1]) || key.equals(Constants.PREF_SIM2_CALLS[1]) || key.equals(Constants.PREF_SIM3_CALLS[1]))
             mLimitHasChanged = true;
         if (key.equals(Constants.PREF_OTHER[5]) && sharedPreferences.getBoolean(key, false)) {
-            new CountDownTimer(2000, 1000) {
+            new CountDownTimer(2000, 2000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
 

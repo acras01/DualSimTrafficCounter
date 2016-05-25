@@ -551,7 +551,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
             mOperatorNames[2] = MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3);
         if (key.equals(Constants.PREF_OTHER[24]) && sharedPreferences.getBoolean(key, false)) {
-            new CountDownTimer(2000, 1000) {
+            new CountDownTimer(2000, 2000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
 

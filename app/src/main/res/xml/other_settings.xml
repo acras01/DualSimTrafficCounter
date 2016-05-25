@@ -32,6 +32,13 @@
         android:summaryOff="@string/calls_fragment"/>
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="hud_service"
+        android:title="@string/use_auto_theme"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off"
+        android:defaultValue="true"/>
+
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
         android:key="watchdog"
         android:title="@string/use_watchdog"
         android:defaultValue="true"
