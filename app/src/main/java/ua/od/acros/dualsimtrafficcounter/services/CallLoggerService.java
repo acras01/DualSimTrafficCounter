@@ -315,13 +315,15 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     class SaveListTask extends AsyncTask<Bundle, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Bundle... params) {
-            ArrayList<String> list = params[0].getStringArrayList("list");
+            Bundle bundle = params[0];
+            ArrayList<String> list = bundle.getStringArrayList("list");
+            int sim = bundle.getInt("sim");
             if (list != null) {
-                list.add(params[0].getString("number"));
-                if (params[0].getBoolean("black", false))
-                    CustomDatabaseHelper.writeWhiteList(params[0].getInt("sim"), list, mDbHelper);
+                list.add(bundle.getString("number"));
+                if (bundle.getBoolean("black", false))
+                    CustomDatabaseHelper.writeBlackList(sim, list, mDbHelper);
                 else
-                    CustomDatabaseHelper.writeBlackList(params[0].getInt("sim"), list, mDbHelper);
+                    CustomDatabaseHelper.writeWhiteList(sim, list, mDbHelper);
                 return true;
             } else
                 return false;
