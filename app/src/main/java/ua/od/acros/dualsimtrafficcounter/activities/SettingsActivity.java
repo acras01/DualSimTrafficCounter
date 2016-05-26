@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.OperatorFragment;
+import ua.od.acros.dualsimtrafficcounter.settings.OtherFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -106,7 +107,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if (mTag != null && (mTag.contains("sim") || mTag.equals("logo"))) {
+        if (mTag != null && (mTag.contains("sim") || mTag.equals("logo") || mTag.equals("float"))) {
             mTag = "";
             if (mFragment instanceof TrafficLimitFragment)
                 replaceFragments(TrafficLimitFragment.class);
@@ -114,6 +115,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 replaceFragments(CallsLimitFragment.class);
             else if (mFragment instanceof OperatorFragment)
                 replaceFragments(OperatorFragment.class);
+            else if (mFragment instanceof OtherFragment)
+                replaceFragments(OtherFragment.class);
         } else if (fragment instanceof SettingsFragment) {
             setResult(RESULT_OK, null);
             finish();

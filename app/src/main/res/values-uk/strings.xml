@@ -204,4 +204,11 @@
     <string name="pre_limit">%1$s: Ви майже вичерпали свій ліміт трафіку!</string>
     <string name="auto_enable_data_after_reset">Вмикати мобільні дані автоматично після зміни ліміту або старту нового періоду</string>
     <string name="close_activity">Закрити вікно додатку</string>
+    <string name="show_floating_window">Відображати плаваюче вікно</string>
+    <string name="close_floating_window">Торкнитесь, щоб сховати плаваюче вікно</string>
+    <string name="floating_window">Плаваюче вікно</string>
+    <string name="floating_window_summary">Плаваюче вікно зі статистикою мобільних даних</string>
+    <string name="reset_floating_window">Скинути положення палваючого вікна</string>
+    <string name="restore_floating_window">Торкнитесь, щоб відобразити плаваюче вікно</string>
+    <string name="show_hud_remaining">Відображати залишок трафіку на плаваючому вікні</string>
 </resources>

@@ -9,7 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.PowerManager;
-import android.provider.Settings;
 
 import com.stericson.RootShell.RootShell;
 
@@ -52,13 +51,8 @@ public class CustomApplication extends Application {
         mSettingsIntent = new Intent(Intent.ACTION_MAIN);
         mSettingsIntent.setComponent(cn);
         mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0) {
-            mSettingsIntent = new Intent(Settings.ACTION_SETTINGS);
-            mSettingsIntent.putExtra(":android:show_fragment", "com.android.settings.DataUsageSummary");
-            mSettingsIntent.putExtra(":android:no_headers", true);
-            if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
-                mIsDataUsageAvailable = false;
-        }
+        if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
+            mIsDataUsageAvailable = false;
     }
 
     public static Intent getSettingsIntent() {

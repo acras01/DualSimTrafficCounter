@@ -64,7 +64,8 @@ public class Constants {
             "status_icon", "auto_sim", "user_sim", "operator_logo", "info_status", //16
             "continue_overlimit", "action_chosen", "data_remain", "alt", "sim1", "sim2", //22
             "sim3", "calls_stopped", "calllogger", "notification_tap", "calls_remain", //27
-            "theme", "theme_auto", "traffic_reset", "calls_reset", "hud_service"}; //32
+            "theme", "theme_auto", "traffic_reset", "calls_reset", "hud_service", //32
+            "hud_textsize", "hud_textcolor", "hud_backcolor", "hud_x", "hud_y", "hud_id", "hud_remain"}; //39
     public static final String[] PREF_WIDGET_TRAFFIC = {"stub", "mNames", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10
@@ -117,4 +118,5 @@ public class Constants {
     public static final String OUTGOING_CALL_ANSWERED = "ua.od.acros.dualsimtrafficcounter.CALL_ANSWERED";
     public static final String OUTGOING_CALL_ENDED = "ua.od.acros.dualsimtrafficcounter.CALL_ENDED";
     public static final String RESET_ACTION = "ua.od.acros.dualsimtrafficcounter.RESET";
+    public static final int FLOATING_WINDOW = 2011;
 }

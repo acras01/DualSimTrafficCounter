@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
@@ -57,8 +58,10 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
+import ua.od.acros.dualsimtrafficcounter.utils.FloatingWindow;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
+import wei.mark.standout.StandOutWindow;
 
 
 public class TrafficCountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -952,7 +955,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1198,7 +1201,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1444,7 +1447,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
 
@@ -1550,6 +1553,37 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
         intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
         mContext.sendBroadcast(intent);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) && mActiveSIM != Constants.DISABLED) {
+            long total = 0;
+            switch (mActiveSIM) {
+                case Constants.SIM1:
+                    if (mIsNight1)
+                        total = (long) mTrafficData.get(Constants.TOTAL1_N);
+                    else
+                        total = (long) mTrafficData.get(Constants.TOTAL1);
+                    break;
+                case Constants.SIM2:
+                    if (mIsNight2)
+                        total = (long) mTrafficData.get(Constants.TOTAL2_N);
+                    else
+                        total = (long) mTrafficData.get(Constants.TOTAL2);
+                    break;
+                case Constants.SIM3:
+                    if (mIsNight3)
+                        total = (long) mTrafficData.get(Constants.TOTAL3_N);
+                    else
+                        total = (long) mTrafficData.get(Constants.TOTAL3);
+                    break;
+            }
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[39], false)) {
+                total = mLimits[mActiveSIM] - total;
+                if (total < 0)
+                    total = 0;
+            }
+            Bundle bundle = new Bundle();
+            bundle.putLong("total", total);
+            StandOutWindow.sendData(mContext, FloatingWindow.class, mPrefs.getInt(Constants.PREF_OTHER[38], -1), Constants.FLOATING_WINDOW, bundle, null, -1);
+        }
     }
 
     private Notification buildNotification(int sim) {

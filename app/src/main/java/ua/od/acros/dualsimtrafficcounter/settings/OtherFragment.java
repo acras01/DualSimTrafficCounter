@@ -15,24 +15,27 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import java.util.Random;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.services.HUDService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
+import ua.od.acros.dualsimtrafficcounter.utils.FloatingWindow;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
+import wei.mark.standout.StandOutWindow;
 
 
 public class OtherFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener {
 
-    private TwoLineEditTextPreference timer, simQuantity;
+    private TwoLineEditTextPreference timer, simQuantity, floatWindow;
 
     private static final String XPOSED = "de.robv.android.xposed.installer";
     private Context mContext;
@@ -53,7 +56,26 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         simQuantity = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[14]);
         simQuantity.setOnPreferenceChangeListener(this);
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
+        floatWindow = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[33]);
+        floatWindow.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
         TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
+        findPreference("hud_reset").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (preference.getKey().equals("hud_reset")) {
+                    StandOutWindow.closeAll(mContext, FloatingWindow.class);
+                    int id = Math.abs(new Random().nextInt());
+                    mPrefs.edit()
+                            .putInt(Constants.PREF_OTHER[38], id)
+                            .putInt(Constants.PREF_OTHER[36], -1)
+                            .putInt(Constants.PREF_OTHER[37], -1)
+                            .apply();
+                    StandOutWindow.show(mContext, FloatingWindow.class, id);
+                    return true;
+                } else
+                    return false;
+            }
+        });
         if (!CustomApplication.isPackageExisted(XPOSED)) {
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
@@ -70,6 +92,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             timer.setSummary(String.format(getResources().getString(R.string.minutes), timer.getText()));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
+        if (floatWindow != null && floatWindow.isEnabled())
+            floatWindow.setSummary(floatWindow.getText());
     }
 
     @Override
@@ -136,10 +160,19 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             }
         }
         if (key.equals(Constants.PREF_OTHER[32])) {
-            if (sharedPreferences.getBoolean(key, true) && !CustomApplication.isMyServiceRunning(HUDService.class))
-                mContext.startService(new Intent(mContext, HUDService.class));
-            else if (!sharedPreferences.getBoolean(key, true) && CustomApplication.isMyServiceRunning(HUDService.class))
-                mContext.stopService(new Intent(mContext, HUDService.class));
+            if (sharedPreferences.getBoolean(key, true)) {
+                int id = Math.abs(new Random().nextInt());
+                mPrefs.edit()
+                        .putInt(Constants.PREF_OTHER[38], id)
+                        .apply();
+                StandOutWindow.show(mContext, FloatingWindow.class, id);
+            } else {
+                int id = mPrefs.getInt(Constants.PREF_OTHER[38], -1);
+                if (id >= 0)
+                    StandOutWindow.close(mContext, FloatingWindow.class, id);
+                else
+                    StandOutWindow.closeAll(mContext, FloatingWindow.class);
+            }
         }
     }
 
@@ -155,6 +188,11 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 if (input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 3))
                     return true;
                 break;
+            case "hud_textsize":
+                if (input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 3))
+                    return true;
+                break;
+
         }
         Toast.makeText(getActivity(), R.string.check_input, Toast.LENGTH_LONG).show();
         return false;

@@ -51,4 +51,5 @@ dependencies {
     provided project(':XposedBridge')
     compile project(':RootShell')
     compile project(':ambilwarna')
+    compile project(':standOut')
 }

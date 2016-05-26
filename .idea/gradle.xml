@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/ambilwarna" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/joda-time-2.8.2" />
+            <option value="$PROJECT_DIR$/standOut" />
           </set>
         </option>
         <option name="myModules">
@@ -27,6 +28,7 @@
             <option value="$PROJECT_DIR$/ambilwarna" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/joda-time-2.8.2" />
+            <option value="$PROJECT_DIR$/standOut" />
           </set>
         </option>
       </GradleProjectSettings>

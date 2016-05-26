@@ -119,8 +119,7 @@
             android:enabled="true"
             android:exported="false">
         </service>
-        <service
-            android:name=".services.HUDService"
+        <service android:name=".utils.FloatingWindow"
             android:enabled="true"
             android:exported="false">
         </service>

@@ -212,4 +212,11 @@
     <string name="auto_enable_data_after_reset">Auto-enable mobile data after changing limit or starting new period</string>
     <string name="close_activity">Close application window</string>
     <string name="title_activity_choose_operator_dialog">ChooseOperatorDialog</string>
+    <string name="close_floating_window">Tap to close floating window</string>
+    <string name="show_floating_window">Show floating window</string>
+    <string name="floating_window">Floating window</string>
+    <string name="floating_window_summary">Floating window with traffic stats</string>
+    <string name="reset_floating_window">Reset floating window position</string>
+    <string name="restore_floating_window">Click to restore floating window</string>
+    <string name="show_hud_remaining">Show remaining traffic on floating window</string>
 </resources>

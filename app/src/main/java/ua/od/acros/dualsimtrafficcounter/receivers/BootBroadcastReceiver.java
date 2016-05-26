@@ -14,6 +14,8 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.FloatingWindow;
+import wei.mark.standout.StandOutWindow;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
 
@@ -30,6 +32,10 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         //start WatchDogService
         if (prefs.getBoolean(Constants.PREF_OTHER[4], true))
             context.startService(new Intent(context, WatchDogService.class));
+
+        //start FloatingWindow
+        if (prefs.getBoolean(Constants.PREF_OTHER[32], false))
+            StandOutWindow.show(context, FloatingWindow.class, prefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
