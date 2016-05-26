@@ -106,7 +106,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-        if (mTag != null && mTag.contains("sim")) {
+        if (mTag != null && (mTag.contains("sim") || mTag.equals("logo"))) {
             mTag = "";
             if (mFragment instanceof TrafficLimitFragment)
                 replaceFragments(TrafficLimitFragment.class);
