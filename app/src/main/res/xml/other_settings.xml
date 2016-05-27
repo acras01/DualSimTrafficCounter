@@ -3,6 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <PreferenceScreen
+        android:title="@string/visual"
+        android:summary="@string/visual_summary"
+        android:key="visual" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
+            android:title="@string/theme" >
+
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
         android:key="theme_auto"
         android:title="@string/use_auto_theme"
@@ -19,19 +27,61 @@
         android:summaryOff="@string/night_theme"
         android:dependency="theme_auto"/>
 
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="calllogger"
-        android:title="@string/use_call_logger"
-        android:summaryOn="@string/on"
-        android:summaryOff="@string/off"
-        android:defaultValue="true"/>
+        </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
 
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="notification_tap"
-        android:title="@string/open_fragment"
-        android:defaultValue="true"
-        android:summaryOn="@string/notification_title"
-        android:summaryOff="@string/calls_fragment"/>
+        <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
+            android:title="@string/main_window" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="fullinfo"
+            android:title="@string/show_full_text"
+            android:defaultValue="true"
+            android:summaryOn="@string/all"
+            android:summaryOff="@string/only_total"/>
+
+        </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
+            android:title="@string/statusbar" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="data_remain"
+            android:title="@string/show_remaining"
+            android:summaryOn="@string/remain"
+            android:summaryOff="@string/used"
+            android:defaultValue="false"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="info_status"
+            android:title="@string/show_info_status"
+            android:summaryOn="@string/all"
+            android:summaryOff="@string/only_active"
+            android:defaultValue="true"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="calls_remain"
+            android:title="@string/show_remaining_calls"
+            android:summaryOn="@string/remain"
+            android:summaryOff="@string/used"
+            android:defaultValue="false"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="status_icon"
+            android:title="@string/show_icon_in_statusbar"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:defaultValue="true"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="notification_tap"
+            android:title="@string/open_fragment"
+            android:defaultValue="true"
+            android:summaryOn="@string/notification_title"
+            android:summaryOff="@string/calls_fragment"/>
+
+        </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
+
+    </PreferenceScreen>
 
     <PreferenceScreen
         android:title="@string/floating_window"
@@ -82,6 +132,18 @@
 
     </PreferenceScreen>
 
+    <PreferenceScreen
+        android:title="@string/add_service"
+        android:summary="@string/add_service_summary"
+        android:key="service" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="calllogger"
+            android:title="@string/use_call_logger"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:defaultValue="true"/>
+
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
         android:key="watchdog"
         android:title="@string/use_watchdog"
@@ -97,40 +159,7 @@
         android:summary=""
         android:dependency="watchdog"/>
 
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="fullinfo"
-        android:title="@string/show_full_text"
-        android:defaultValue="true"
-        android:summaryOn="@string/all"
-        android:summaryOff="@string/only_total"/>
-
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="info_status"
-        android:title="@string/show_info_status"
-        android:summaryOn="@string/all"
-        android:summaryOff="@string/only_active"
-        android:defaultValue="true"/>
-
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="data_remain"
-        android:title="@string/show_remaining"
-        android:summaryOn="@string/remain"
-        android:summaryOff="@string/used"
-        android:defaultValue="false"/>
-
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="calls_remain"
-        android:title="@string/show_remaining_calls"
-        android:summaryOn="@string/remain"
-        android:summaryOff="@string/used"
-        android:defaultValue="false"/>
-
-    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-        android:key="status_icon"
-        android:title="@string/show_icon_in_statusbar"
-        android:summaryOn="@string/on"
-        android:summaryOff="@string/off"
-        android:defaultValue="true"/>
+    </PreferenceScreen>
 
     <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
         android:key="auto_sim"

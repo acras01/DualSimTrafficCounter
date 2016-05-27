@@ -104,7 +104,7 @@
     <string name="round_traffic">Округлять трафик за сессию</string>
     <string name="crash_toast_text">Отправить отчет об ошибке разработчику?</string>
     <string name="pref_disable_acra">Отправка отчетов об ошибках</string>
-    <string name="show_icon_in_statusbar">Иконка сервиса в статус баре (если сервис останавливается системой, оставьте включенным)</string>
+    <string name="show_icon_in_statusbar">Иконка сервиса в статусбаре (если сервис останавливается системой, оставьте включенным)</string>
     <string name="use_divider">Показывать разделительную полосу</string>
     <string name="detect_sim">Автоопределение количества SIM</string>
     <string name="set_sim_number">Если количество SIM определяется некорректно, установите его вручную в Настройках</string>
@@ -131,11 +131,11 @@
     <string name="name_sim1">Название для SIM1</string>
     <string name="name_sim2">Название для SIM2</string>
     <string name="name_sim3">Название для SIM3</string>
-    <string name="show_logo">Лого операторов в статус баре</string>
+    <string name="show_logo">Лого операторов в статусбаре</string>
     <string name="go_to_settings">Перейти в Настройки - Мобильный трафик</string>
     <string name="ask_for_logo">Добавить свое лого</string>
     <string name="ask_for_logo_sum">Письмо разработчику с запросом на добавление лого оператора</string>
-    <string name="show_info_status">Информация о трафике в шторке</string>
+    <string name="show_info_status">Информация о трафике в панели уведомлений</string>
     <string name="on_off_not_supported">Не все функции приложения на Вашем устройстве могут быть доступны</string>
     <string name="remain">Остаток</string>
     <string name="show_remaining">Показывать остаток трафика в панели уведомлений</string>
@@ -171,7 +171,7 @@
     <string name="view_white_list">Просмотр и редактирование белого списка</string>
     <string name="white_list">Белый список</string>
     <string name="limit_title">Ограничение передачи данных</string>
-    <string name="open_fragment">Открывать из шторки</string>
+    <string name="open_fragment">Открывать из панели уведомлений</string>
     <string name="ok">Да</string>
     <string name="action_set_duration">Установка длительности вызовов</string>
     <string name="black_list">Черный список</string>
@@ -211,4 +211,11 @@
     <string name="reset_floating_window">Сбросить положение плавающего окна</string>
     <string name="restore_floating_window">Прикоснитесь для отображения плавающего окна</string>
     <string name="show_hud_remaining">Показывать остаток трафика на плавающем окне</string>
+    <string name="add_service">Дополнительные сервисы</string>
+    <string name="add_service_summary">Настройка дополнительных сервисов</string>
+    <string name="main_window">Главное окно</string>
+    <string name="statusbar">Статусбар и панель уведомлений</string>
+    <string name="theme">Тема</string>
+    <string name="visual">Внешний вид</string>
+    <string name="visual_summary">Выбор темы оформления и другое</string>
 </resources>

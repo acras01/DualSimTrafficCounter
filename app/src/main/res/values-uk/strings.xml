@@ -104,7 +104,7 @@
     <string name="round_traffic">Округляти трафік за сесію</string>
     <string name="crash_toast_text">Відправити звіт про помилку розробнику?</string>
     <string name="pref_disable_acra">Відправка звітів про помилки</string>
-    <string name="show_icon_in_statusbar">Іконка сервісу в статус барі (якщо сервіс зупиняється системою, спробйте лишити увімкненим)</string>
+    <string name="show_icon_in_statusbar">Іконка сервісу в статусбарі (якщо сервіс зупиняється системою, спробйте лишити увімкненим)</string>
     <string name="use_divider">Відображати роздільну лінію</string>
     <string name="detect_sim">Автовизначеня кылькосты SIM</string>
     <string name="set_sim_number">Якщо кількість SIM визначається не вірно, встановить іі в Налаштуваннях самостійно</string>
@@ -131,11 +131,11 @@
     <string name="name_sim1">Назва для SIM1</string>
     <string name="name_sim2">Назва для SIM2</string>
     <string name="name_sim3">Назва для SIM3</string>
-    <string name="show_logo">Лого операторів в статус барі</string>
+    <string name="show_logo">Лого операторів в статусбарі</string>
     <string name="go_to_settings">Перейти в Налаштування - Використання даних</string>
     <string name="ask_for_logo">Додати своє лого</string>
     <string name="ask_for_logo_sum">Лист розробнику з проханням додати своє лого</string>
-    <string name="show_info_status">Інформація про трафік в шторці</string>
+    <string name="show_info_status">Інформація про трафік в панелі повідомлень</string>
     <string name="on_off_not_supported">Не всі функції додатку на Вашому пристрої можуть бути доступними</string>
     <string name="remain">Залишок</string>
     <string name="show_remaining">Вiдображати залишок трафiку в панелi повiдомлень</string>
@@ -171,7 +171,7 @@
     <string name="white_list">Білий список</string>
     <string name="view_white_list">Перегляд та редагування білого списку</string>
     <string name="limit_title">Обмеження мобільного трафіку</string>
-    <string name="open_fragment">Відкривати зі шторки</string>
+    <string name="open_fragment">Відкривати з панелі повідомлень</string>
     <string name="ok">Так</string>
     <string name="action_set_duration">Встановлення тривалості дзвінків</string>
     <string name="black_list">Чорний список</string>
@@ -211,4 +211,11 @@
     <string name="reset_floating_window">Скинути положення палваючого вікна</string>
     <string name="restore_floating_window">Торкнитесь, щоб відобразити плаваюче вікно</string>
     <string name="show_hud_remaining">Відображати залишок трафіку на плаваючому вікні</string>
+    <string name="visual">Зовнішній вигляд</string>
+    <string name="visual_summary">Вибір теми оформлення та інше</string>
+    <string name="theme">Тема</string>
+    <string name="statusbar">Статусбар і панель повідомлень</string>
+    <string name="main_window">Головне вікно</string>
+    <string name="add_service_summary">Налаштування додаткових сервісів</string>
+    <string name="add_service">Додаткові сервіси</string>
 </resources>
