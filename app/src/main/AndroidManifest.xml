@@ -119,7 +119,7 @@
             android:enabled="true"
             android:exported="false">
         </service>
-        <service android:name=".utils.FloatingWindow"
+        <service android:name=".services.FloatingWindow"
             android:enabled="true"
             android:exported="false">
         </service>

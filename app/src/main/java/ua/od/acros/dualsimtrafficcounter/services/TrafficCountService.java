@@ -58,7 +58,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.FloatingWindow;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 import wei.mark.standout.StandOutWindow;

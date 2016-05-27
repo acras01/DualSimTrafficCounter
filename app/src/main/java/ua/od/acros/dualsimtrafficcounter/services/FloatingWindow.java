@@ -1,4 +1,4 @@
-package ua.od.acros.dualsimtrafficcounter.utils;
+package ua.od.acros.dualsimtrafficcounter.services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,6 +20,9 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import wei.mark.standout.StandOutWindow;
 import wei.mark.standout.constants.StandOutFlags;
 import wei.mark.standout.ui.Window;
@@ -85,44 +88,7 @@ public class FloatingWindow extends StandOutWindow {
         status.setText(changedText);
 	}
 
-	/*@Override
-	public String getPersistentNotificationTitle(int id) {
-		return getAppName();
-	}
-
-	@Override
-	public String getPersistentNotificationMessage(int id) {
-		return getString(R.string.close_floating_window);
-	}
-
-	// return an Intent that shows the FloatingWindow
-	@Override
-	public Intent getPersistentNotificationIntent(int id) {
-		return StandOutWindow.getShowIntent(this, FloatingWindow.class, id);
-	}
-
     @Override
-    public int getHiddenIcon() {
-        return R.drawable.ic_launcher_small;
-    }
-
-    @Override
-    public String getHiddenNotificationTitle(int id) {
-        return getAppName() + " Hidden";
-    }
-
-    @Override
-    public String getHiddenNotificationMessage(int id) {
-        return getString(R.string.restore_floating_window);
-    }
-
-    // return an Intent that restores the MultiWindow
-    @Override
-    public Intent getHiddenNotificationIntent(int id) {
-        return StandOutWindow.getShowIntent(this, getClass(), id);
-    }*/
-
-	@Override
 	public Animation getShowAnimation(int id) {
 		if (isExistingId(id)) {
 			// restore
@@ -193,10 +159,9 @@ public class FloatingWindow extends StandOutWindow {
         return new StandOutLayoutParams(id, StandOutLayoutParams.WRAP_CONTENT, StandOutLayoutParams.WRAP_CONTENT, x, y);
     }
 
-    // move the window by dragging the view
     @Override
     public int getFlags(int id) {
-        return super.getFlags(id) | StandOutFlags.FLAG_BODY_MOVE_ENABLE
+        return StandOutFlags.FLAG_BODY_MOVE_ENABLE
                 | StandOutFlags.FLAG_WINDOW_FOCUSABLE_DISABLE
                 | StandOutFlags.FLAG_WINDOW_HIDE_ENABLE
                 | StandOutFlags.FLAG_WINDOW_BRING_TO_FRONT_ON_TAP

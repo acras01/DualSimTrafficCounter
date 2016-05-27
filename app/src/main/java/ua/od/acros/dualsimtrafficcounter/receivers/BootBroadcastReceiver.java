@@ -14,7 +14,7 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.FloatingWindow;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindow;
 import wei.mark.standout.StandOutWindow;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {

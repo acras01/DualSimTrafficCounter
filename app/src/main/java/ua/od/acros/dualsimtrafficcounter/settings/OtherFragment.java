@@ -27,7 +27,7 @@ import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
-import ua.od.acros.dualsimtrafficcounter.utils.FloatingWindow;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindow;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import wei.mark.standout.StandOutWindow;
 
@@ -70,7 +70,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                             .putInt(Constants.PREF_OTHER[36], -1)
                             .putInt(Constants.PREF_OTHER[37], -1)
                             .apply();
-                    StandOutWindow.show(mContext, FloatingWindow.class, id);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false))
+                        StandOutWindow.show(mContext, FloatingWindow.class, id);
                     return true;
                 } else
                     return false;
