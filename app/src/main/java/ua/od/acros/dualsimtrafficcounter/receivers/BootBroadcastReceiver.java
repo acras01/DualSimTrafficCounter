@@ -14,7 +14,8 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.services.FloatingWindow;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import wei.mark.standout.StandOutWindow;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
@@ -34,8 +35,10 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             context.startService(new Intent(context, WatchDogService.class));
 
         //start FloatingWindow
-        if (prefs.getBoolean(Constants.PREF_OTHER[32], false))
-            StandOutWindow.show(context, FloatingWindow.class, prefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));
+        if (prefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+                ((prefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(context)) ||
+                        !prefs.getBoolean(Constants.PREF_OTHER[41], false)))
+            StandOutWindow.show(context, FloatingWindowService.class, prefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         DateTime alarmTime = new DateTime().withTimeAtStartOfDay();

@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +41,7 @@ import wei.mark.standout.ui.Window;
  * @author Mark Wei <markwei@gmail.com>
  * 
  */
-public class FloatingWindow extends StandOutWindow {
+public class FloatingWindowService extends StandOutWindow {
     private Context mContext;
     private SharedPreferences mPrefs;
 
@@ -81,10 +80,9 @@ public class FloatingWindow extends StandOutWindow {
 		View view = inflater.inflate(R.layout.floating_window, frame, true);
 		TextView status = (TextView) view.findViewById(R.id.tv);
         String changedText = DataFormat.formatData(mContext, 0L);
-        RelativeLayout back = (RelativeLayout) view.findViewById(R.id.rl);
         status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
+        status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
         status.setTextColor(mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text)));
-        back.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
         status.setText(changedText);
 	}
 
@@ -122,7 +120,7 @@ public class FloatingWindow extends StandOutWindow {
 					return;
 				}
                 if (mPrefs != null) {
-                    int newId = mPrefs.getInt(Constants.PREF_OTHER[38], -1);
+                    int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
                     if (newId == id) {
                         int[] location = new int[2];
                         window.getLocationOnScreen(location);
@@ -134,11 +132,10 @@ public class FloatingWindow extends StandOutWindow {
                 }
 				String changedText = DataFormat.formatData(mContext, data.getLong("total"));
 				TextView status = (TextView) window.findViewById(R.id.tv);
-                RelativeLayout back = (RelativeLayout) window.findViewById(R.id.rl);
 				status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
+                status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
                 status.setTextColor(mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text)));
-                back.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
-				status.setText(changedText);
+                status.setText(changedText);
 				break;
 			default:
 				Log.d("MultiWindow", "Unexpected data received.");
@@ -171,7 +168,7 @@ public class FloatingWindow extends StandOutWindow {
     @Override
     public boolean onClose(int id, Window window) {
         if (mPrefs != null) {
-            int newId = mPrefs.getInt(Constants.PREF_OTHER[38], -1);
+            int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
             if (newId == id) {
                 int[] location = new int[2];
                 window.getLocationOnScreen(location);

@@ -93,7 +93,15 @@
             android:title="@string/show_floating_window"
             android:summaryOn="@string/on"
             android:summaryOff="@string/off"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="hud_mobile_data"
+            android:title="@string/hud_mobile_data"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:defaultValue="false"
+            android:dependency="hud_service"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="hud_remain"
@@ -101,6 +109,14 @@
             android:summaryOn="@string/remain"
             android:summaryOff="@string/used"
             android:defaultValue="false"
+            android:dependency="hud_service"/>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="hud_move"
+            android:title="@string/hud_moveable"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off"
+            android:defaultValue="true"
             android:dependency="hud_service"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference
@@ -127,6 +143,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
             android:key="hud_reset"
+            android:dependency="hud_service"
             android:title="@string/reset_floating_window">
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 

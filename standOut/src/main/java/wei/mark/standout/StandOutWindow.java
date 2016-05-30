@@ -1770,7 +1770,8 @@ public abstract class StandOutWindow extends Service {
 		 */
 		public StandOutLayoutParams(int id) {
 
-            super(WRAP_CONTENT, WRAP_CONTENT, TYPE_SYSTEM_ALERT,
+            super(WRAP_CONTENT, WRAP_CONTENT,
+					PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("hud_move", true) ? TYPE_SYSTEM_ALERT : TYPE_SYSTEM_OVERLAY,
                     StandOutLayoutParams.FLAG_LAYOUT_IN_SCREEN
                             | StandOutLayoutParams.FLAG_NOT_TOUCH_MODAL
                             | StandOutLayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,

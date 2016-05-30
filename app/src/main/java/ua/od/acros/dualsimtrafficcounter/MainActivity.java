@@ -44,7 +44,7 @@ import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.services.FloatingWindow;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import wei.mark.standout.StandOutWindow;
 
@@ -183,8 +183,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false))
-            StandOutWindow.show(mContext, FloatingWindow.class, mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+                ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
+                        !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+            StandOutWindow.show(mContext, FloatingWindowService.class, mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));
 
         mAction = getIntent().getAction();
     }

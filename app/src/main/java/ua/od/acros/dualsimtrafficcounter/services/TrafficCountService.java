@@ -1581,7 +1581,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
             Bundle bundle = new Bundle();
             bundle.putLong("total", total);
-            StandOutWindow.sendData(mContext, FloatingWindow.class, mPrefs.getInt(Constants.PREF_OTHER[38], -1), Constants.FLOATING_WINDOW, bundle, null, -1);
+            StandOutWindow.sendData(mContext, FloatingWindowService.class,
+                    mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID), Constants.FLOATING_WINDOW, bundle, null, -1);
         }
     }
 

@@ -218,4 +218,6 @@
     <string name="theme">Тема</string>
     <string name="visual">Внешний вид</string>
     <string name="visual_summary">Выбор темы оформления и другое</string>
+    <string name="hud_moveable">Плавающее окно можно перемещать</string>
+    <string name="hud_mobile_data">Показывать только при активной передаче данных</string>
 </resources>

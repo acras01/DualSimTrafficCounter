@@ -218,4 +218,6 @@
     <string name="main_window">Головне вікно</string>
     <string name="add_service_summary">Налаштування додаткових сервісів</string>
     <string name="add_service">Додаткові сервіси</string>
+    <string name="hud_moveable">Плаваюче вікно можна переміщувати</string>
+    <string name="hud_mobile_data">Показувати тільки при активних мобільних даних</string>
 </resources>

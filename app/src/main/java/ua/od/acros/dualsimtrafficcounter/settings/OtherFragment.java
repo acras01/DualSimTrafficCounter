@@ -23,12 +23,13 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
-import ua.od.acros.dualsimtrafficcounter.services.FloatingWindow;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import wei.mark.standout.StandOutWindow;
 
 
@@ -63,15 +64,16 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 if (preference.getKey().equals("hud_reset")) {
-                    StandOutWindow.closeAll(mContext, FloatingWindow.class);
-                    int id = Math.abs(new Random().nextInt());
                     mPrefs.edit()
-                            .putInt(Constants.PREF_OTHER[38], id)
                             .putInt(Constants.PREF_OTHER[36], -1)
                             .putInt(Constants.PREF_OTHER[37], -1)
+                            .putBoolean(Constants.PREF_OTHER[40], true)
                             .apply();
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false))
-                        StandOutWindow.show(mContext, FloatingWindow.class, id);
+                    ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[40])).setChecked(true);
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+                            ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
+                                    !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+                        showFloatingWindow();
                     return true;
                 } else
                     return false;
@@ -160,21 +162,43 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 mContext.startService(new Intent(mContext, CallLoggerService.class));
             }
         }
+        boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
+        boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
+        boolean mobileData = MobileUtils.isMobileDataActive(mContext);
         if (key.equals(Constants.PREF_OTHER[32])) {
-            if (sharedPreferences.getBoolean(key, true)) {
-                int id = Math.abs(new Random().nextInt());
-                mPrefs.edit()
-                        .putInt(Constants.PREF_OTHER[38], id)
-                        .apply();
-                StandOutWindow.show(mContext, FloatingWindow.class, id);
-            } else {
-                int id = mPrefs.getInt(Constants.PREF_OTHER[38], -1);
-                if (id >= 0)
-                    StandOutWindow.close(mContext, FloatingWindow.class, id);
-                else
-                    StandOutWindow.closeAll(mContext, FloatingWindow.class);
-            }
+            if (floatingWindow) {
+                if ((!alwaysShow && mobileData) || alwaysShow)
+                    showFloatingWindow();
+            } else
+                closeFloatingWindow();
         }
+        if (key.equals(Constants.PREF_OTHER[40]) &&
+                ((!alwaysShow && mobileData) || alwaysShow))
+            showFloatingWindow();
+        if (key.equals(Constants.PREF_OTHER[41])) {
+            if (alwaysShow || mobileData)
+                showFloatingWindow();
+            else if (!MobileUtils.isMobileDataActive(mContext))
+                closeFloatingWindow();
+
+        }
+    }
+
+    private void showFloatingWindow() {
+        closeFloatingWindow();
+        int id = Math.abs(new Random().nextInt());
+        mPrefs.edit()
+                .putInt(Constants.PREF_OTHER[38], id)
+                .apply();
+        StandOutWindow.show(mContext, FloatingWindowService.class, id);
+    }
+
+    private void closeFloatingWindow() {
+        int id = mPrefs.getInt(Constants.PREF_OTHER[38], -1);
+        if (id >= 0)
+            StandOutWindow.close(mContext, FloatingWindowService.class, id);
+        else
+            StandOutWindow.closeAll(mContext, FloatingWindowService.class);
     }
 
     @Override
