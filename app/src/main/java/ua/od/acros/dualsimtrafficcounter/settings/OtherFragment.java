@@ -15,8 +15,6 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
-import java.util.Random;
-
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
@@ -30,7 +28,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import wei.mark.standout.StandOutWindow;
 
 
 public class OtherFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -73,7 +70,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
                             ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
                                     !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
-                        showFloatingWindow();
+                        FloatingWindowService.showFloatingWindow(mContext, mPrefs);
                     return true;
                 } else
                     return false;
@@ -168,37 +165,20 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         if (key.equals(Constants.PREF_OTHER[32])) {
             if (floatingWindow) {
                 if ((!alwaysShow && mobileData) || alwaysShow)
-                    showFloatingWindow();
+                    FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             } else
-                closeFloatingWindow();
+                FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
         }
         if (key.equals(Constants.PREF_OTHER[40]) &&
                 ((!alwaysShow && mobileData) || alwaysShow))
-            showFloatingWindow();
+            FloatingWindowService.showFloatingWindow(mContext, mPrefs);
         if (key.equals(Constants.PREF_OTHER[41])) {
             if (alwaysShow || mobileData)
-                showFloatingWindow();
+                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             else if (!MobileUtils.isMobileDataActive(mContext))
-                closeFloatingWindow();
+                FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
 
         }
-    }
-
-    private void showFloatingWindow() {
-        closeFloatingWindow();
-        int id = Math.abs(new Random().nextInt());
-        mPrefs.edit()
-                .putInt(Constants.PREF_OTHER[38], id)
-                .apply();
-        StandOutWindow.show(mContext, FloatingWindowService.class, id);
-    }
-
-    private void closeFloatingWindow() {
-        int id = mPrefs.getInt(Constants.PREF_OTHER[38], -1);
-        if (id >= 0)
-            StandOutWindow.close(mContext, FloatingWindowService.class, id);
-        else
-            StandOutWindow.closeAll(mContext, FloatingWindowService.class);
     }
 
     @Override

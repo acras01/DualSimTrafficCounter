@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Locale;
+import java.util.Random;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -179,5 +180,22 @@ public class FloatingWindowService extends StandOutWindow {
             }
         }
         return false;
+    }
+
+    public static void showFloatingWindow(Context context, SharedPreferences preferences) {
+        closeFloatingWindow(context, preferences);
+        int id = Math.abs(new Random().nextInt());
+        preferences.edit()
+                .putInt(Constants.PREF_OTHER[38], id)
+                .apply();
+        StandOutWindow.show(context, FloatingWindowService.class, id);
+    }
+
+    public static void closeFloatingWindow(Context context, SharedPreferences preferences) {
+        int id = preferences.getInt(Constants.PREF_OTHER[38], -1);
+        if (id >= 0)
+            StandOutWindow.close(context, FloatingWindowService.class, id);
+        else
+            StandOutWindow.closeAll(context, FloatingWindowService.class);
     }
 }
