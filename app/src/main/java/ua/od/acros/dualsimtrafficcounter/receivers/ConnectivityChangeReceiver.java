@@ -31,18 +31,23 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 closeFloatingWindow(context, prefs);
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 EventBus.getDefault().post(new NoConnectivityEvent());
-        } else if (MobileUtils.isMobileDataActive(context)) {
-            if (floatingWindow && alwaysShow)
-                showFloatingWindow(context, prefs);
-            if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
-                    !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
-                Intent i = new Intent(context, TrafficCountService.class);
-                i.setAction(intent.getAction());
-                i.putExtras(intent.getExtras());
-                i.setFlags(intent.getFlags());
-                context.startService(i);
-            } else if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
-                EventBus.getDefault().post(new MobileConnectionEvent());
+        } else {
+            if (MobileUtils.isMobileDataActive(context)) {
+                if (floatingWindow && alwaysShow)
+                    showFloatingWindow(context, prefs);
+                if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
+                        !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
+                    Intent i = new Intent(context, TrafficCountService.class);
+                    i.setAction(intent.getAction());
+                    i.putExtras(intent.getExtras());
+                    i.setFlags(intent.getFlags());
+                    context.startService(i);
+                } else if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                    EventBus.getDefault().post(new MobileConnectionEvent());
+            } else {
+                if (floatingWindow && alwaysShow)
+                    closeFloatingWindow(context, prefs);
+            }
         }
     }
 
