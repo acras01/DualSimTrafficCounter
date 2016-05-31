@@ -29,7 +29,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 EventBus.getDefault().post(new NoConnectivityEvent());
         } else {
-            if (MobileUtils.isMobileDataActive(context)) {
+            if (MobileUtils.hasActiveNetworkInfo(context) == 2) {
                 if (floatingWindow && alwaysShow)
                     FloatingWindowService.showFloatingWindow(context, prefs);
                 if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&

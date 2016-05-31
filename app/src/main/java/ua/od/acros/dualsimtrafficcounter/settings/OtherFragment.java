@@ -161,24 +161,17 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         }
         boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
-        boolean mobileData = MobileUtils.isMobileDataActive(mContext);
-        if (key.equals(Constants.PREF_OTHER[32])) {
-            if (floatingWindow) {
-                if ((!alwaysShow && mobileData) || alwaysShow)
-                    FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-            } else
-                FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
-        }
-        if (key.equals(Constants.PREF_OTHER[40]) &&
-                ((!alwaysShow && mobileData) || alwaysShow))
+        boolean mobileData = MobileUtils.hasActiveNetworkInfo(mContext) == 2;
+        boolean bool = (!alwaysShow && mobileData) || alwaysShow;
+        boolean show = false;
+        if (key.equals(Constants.PREF_OTHER[32]))
+            show = floatingWindow && bool;
+        if (key.equals(Constants.PREF_OTHER[40]) || key.equals(Constants.PREF_OTHER[41]))
+            show = bool;
+        if (show)
             FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-        if (key.equals(Constants.PREF_OTHER[41])) {
-            if (alwaysShow || mobileData)
-                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-            else if (!MobileUtils.isMobileDataActive(mContext))
-                FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
-
-        }
+        else
+            FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
     }
 
     @Override
