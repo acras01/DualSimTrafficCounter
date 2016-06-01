@@ -33,6 +33,7 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
 import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -289,6 +290,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         switch (item.getItemId()) {
             case R.id.action_service_start_stop:
                 if (mIsRunning) {
+                    FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
                     mContext.stopService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.service_disabled));
@@ -297,6 +299,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
                 }
                 else {
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+                            ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
+                                    !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+                        FloatingWindowService.showFloatingWindow(mContext, mPrefs);
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
                     mContext.startService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.tip));

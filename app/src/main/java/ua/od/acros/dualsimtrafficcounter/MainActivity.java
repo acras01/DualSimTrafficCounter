@@ -40,13 +40,12 @@ import ua.od.acros.dualsimtrafficcounter.fragments.TestFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficForDateFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.TrafficFragment;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import wei.mark.standout.StandOutWindow;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener, TrafficFragment.OnFragmentInteractionListener,
@@ -171,8 +170,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MobileUtils.getTelephonyManagerMethods(mContext);
 
-        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true)) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+                    ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
+                            !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             startService(new Intent(mContext, WatchDogService.class));
+        }
         if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
         if (!CustomApplication.isPackageExisted(XPOSED)) {
@@ -183,10 +187,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             startService(new Intent(mContext, CallLoggerService.class));
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
-                ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
-                        !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
-            StandOutWindow.show(mContext, FloatingWindowService.class, mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));
 
         mAction = getIntent().getAction();
     }
