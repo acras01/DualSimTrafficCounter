@@ -105,6 +105,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private long[] mLimits = new long[3];
     private boolean mLimitHasChanged = false;
     private Handler mHandler;
+    private boolean[] mFlashPreOverLimit;
 
     public TrafficCountService() {
     }
@@ -435,6 +436,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mHasPreLimitNotificationShown1 = false;
         mHasPreLimitNotificationShown2 = false;
         mHasPreLimitNotificationShown3 = false;
+        mFlashPreOverLimit = new boolean[] {false, false, false};
         mSIM1ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM1[27], false);
         mSIM2ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM2[27], false);
         mSIM3ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM3[27], false);
@@ -545,6 +547,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mHasPreLimitNotificationShown1 = false;
             mHasPreLimitNotificationShown2 = false;
             mHasPreLimitNotificationShown3 = false;
+            mFlashPreOverLimit = new boolean[] {false, false, false};
+
         }
         if (key.equals(Constants.PREF_SIM1[5]) || key.equals(Constants.PREF_SIM1[6]))
             mOperatorNames[0] = MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1);
@@ -818,6 +822,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             rx = tx = mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
                             mHasActionChosen1 = false;
+                            mFlashPreOverLimit[Constants.SIM1] = false;
                             mSIM1ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
@@ -845,6 +850,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
                             mHasActionChosen2 = false;
+                            mFlashPreOverLimit[Constants.SIM2] = false;
                             mSIM2ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
@@ -872,6 +878,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
                             mHasActionChosen3 = false;
+                            mFlashPreOverLimit[Constants.SIM3] = false;
                             mSIM3ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
@@ -916,6 +923,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[0]));
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[30], "0"))) {
                                 mHasPreLimitNotificationShown1 = true;
+                                mFlashPreOverLimit[Constants.SIM1] = true;
                                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
                                 showPreLimitToast(Constants.SIM1);
                             }
@@ -1073,6 +1081,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
                             mHasActionChosen1 = false;
+                            mFlashPreOverLimit[Constants.SIM1] = false;
                             mSIM1ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
@@ -1091,6 +1100,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             rx = tx = mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
                             mHasActionChosen2 = false;
+                            mFlashPreOverLimit[Constants.SIM2] = false;
                             mSIM2ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
@@ -1118,6 +1128,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
                             mHasActionChosen3 = false;
+                            mFlashPreOverLimit[Constants.SIM3] = false;
                             mSIM3ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
@@ -1162,6 +1173,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[1]));
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[30], "0"))) {
                                 mHasPreLimitNotificationShown2 = true;
+                                mFlashPreOverLimit[Constants.SIM2] = true;
                                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
                                 showPreLimitToast(Constants.SIM2);
                             }
@@ -1319,6 +1331,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mReceived1 = mTransmitted1 = 0;
                             mIsResetNeeded1 = false;
                             mHasActionChosen1 = false;
+                            mFlashPreOverLimit[Constants.SIM1] = false;
                             mSIM1ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
@@ -1346,6 +1359,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mReceived2 = mTransmitted2 = 0;
                             mIsResetNeeded2 = false;
                             mHasActionChosen2 = false;
+                            mFlashPreOverLimit[Constants.SIM2] = false;
                             mSIM2ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
@@ -1364,6 +1378,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             rx = tx = mReceived3 = mTransmitted3 = 0;
                             mIsResetNeeded3 = false;
                             mHasActionChosen3 = false;
+                            mFlashPreOverLimit[Constants.SIM3] = false;
                             mSIM3ContinueOverLimit = false;
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
@@ -1408,6 +1423,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[2]));
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[30], "0"))) {
                                 mHasPreLimitNotificationShown3 = true;
+                                mFlashPreOverLimit[Constants.SIM3] = true;
                                 ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
                                 showPreLimitToast(Constants.SIM3);
                             }
@@ -1581,6 +1597,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
             Bundle bundle = new Bundle();
             bundle.putLong("total", total);
+            bundle.putBoolean("flash", mFlashPreOverLimit[mActiveSIM]);
+            bundle.putLong(Constants.SPEEDRX, speedRX);
+            bundle.putLong(Constants.SPEEDTX, speedTX);
             StandOutWindow.sendData(mContext, FloatingWindowService.class,
                     mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID), Constants.FLOATING_WINDOW, bundle, null, -1);
         }

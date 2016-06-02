@@ -66,7 +66,7 @@ public class Constants {
             "sim3", "calls_stopped", "calllogger", "notification_tap", "calls_remain", //27
             "theme", "theme_auto", "traffic_reset", "calls_reset", "hud_service", //32
             "hud_textsize", "hud_textcolor", "hud_backcolor", "hud_x", "hud_y", //37
-            "hud_id", "hud_remain", "hud_move", "hud_mobile_data"}; //41
+            "hud_id", "hud_remain", "hud_move", "hud_mobile_data", "hud_speed"}; //42
     public static final String[] PREF_WIDGET_TRAFFIC = {"stub", "mNames", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10

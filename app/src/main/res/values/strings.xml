@@ -226,6 +226,7 @@
     <string name="statusbar">Statusbar and notifications</string>
     <string name="add_service">Additional services</string>
     <string name="add_service_summary">Setup additional services</string>
-    <string name="hud_moveable">Moveable floating window</string>
+    <string name="hud_moveable">Floating window under statusbar (moveable)</string>
     <string name="hud_mobile_data">Show only if mobile data active</string>
+    <string name="show_hud_speed">Show connection speed on floating window</string>
 </resources>
