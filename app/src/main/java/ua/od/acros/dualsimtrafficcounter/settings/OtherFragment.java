@@ -166,15 +166,17 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         boolean show = false;
         if (key.equals(Constants.PREF_OTHER[32]))
             show = floatingWindow && bool;
-        if (key.equals(Constants.PREF_OTHER[40]) || key.equals(Constants.PREF_OTHER[41]) ||
-                key.equals(Constants.PREF_OTHER[33]) || key.equals(Constants.PREF_OTHER[34]) ||
-                key.equals(Constants.PREF_OTHER[35]) || key.equals(Constants.PREF_OTHER[39]) ||
-                key.equals(Constants.PREF_OTHER[42]))
+        if (key.contains("hud") && !(key.equals(Constants.PREF_OTHER[32]) ||
+                key.equals(Constants.PREF_OTHER[36]) || key.equals(Constants.PREF_OTHER[37]) ||
+                key.equals(Constants.PREF_OTHER[38])))
             show = bool;
-        if (show)
-            FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-        else
-            FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
+        if (key.contains("hud") && !(key.equals(Constants.PREF_OTHER[36]) || key.equals(Constants.PREF_OTHER[37]) ||
+                key.equals(Constants.PREF_OTHER[38]))) {
+            if (show)
+                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
+            else
+                FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
+        }
     }
 
     @Override

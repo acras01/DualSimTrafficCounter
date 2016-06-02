@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -134,18 +133,24 @@ public class FloatingWindowService extends StandOutWindow {
                 }
                 long seconds = System.currentTimeMillis() / 1000L;
                 String changedText;
+                int textSize = Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10"));
                 if (mPrefs.getBoolean(Constants.PREF_OTHER[42], false) && seconds % 3 == 0) {
                     changedText = String.format(getResources().getString(R.string.speed),
                             DataFormat.formatData(mContext, data.getLong(Constants.SPEEDRX, 0L))) +
-                            " " + String.format(getResources().getString(R.string.speed),
+                            "\n" + String.format(getResources().getString(R.string.speed),
                             DataFormat.formatData(mContext, data.getLong(Constants.SPEEDTX, 0L)));
+                    textSize = (int) ((double) textSize * 0.5);
                 } else
                     changedText = DataFormat.formatData(mContext, data.getLong("total"));
 				TextView status = (TextView) window.findViewById(R.id.tv);
-				status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
+				status.setTextSize(textSize);
                 int textColor = mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text));
                 if (data.getBoolean("flash", false) && seconds % 2 == 0) {
-                    textColor = Color.WHITE - textColor;
+                    String alpha = Integer.toHexString(textColor).substring(0, 2);
+                    String color = Integer.toHexString(textColor).substring(2);
+                    textColor = 0xFFFFFF - Integer.parseInt(color, 16);
+                    color = alpha + Integer.toHexString(textColor);
+                    textColor = (int) Long.parseLong(color, 16);
                 }
                 status.setTextColor(textColor);
                 status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));

@@ -541,8 +541,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))
             mResetRuleHasChanged = true;
         if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[4]) ||
+                key.equals(Constants.PREF_SIM1[29]) || key.equals(Constants.PREF_SIM1[30]) ||
                 key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[4]) ||
-                key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4])) {
+                key.equals(Constants.PREF_SIM2[29]) || key.equals(Constants.PREF_SIM2[30]) ||
+                key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4]) ||
+                key.equals(Constants.PREF_SIM3[29]) || key.equals(Constants.PREF_SIM3[30])) {
             mLimitHasChanged = true;
             mHasPreLimitNotificationShown1 = false;
             mHasPreLimitNotificationShown2 = false;
