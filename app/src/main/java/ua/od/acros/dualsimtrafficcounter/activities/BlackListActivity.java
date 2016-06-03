@@ -76,10 +76,13 @@ public class BlackListActivity extends AppCompatActivity {
             bar.setTitle(getString(R.string.black_list));
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
+            List<ListItem> blackList = new ArrayList<>();
+            mAdapter = new BlackListAdapter(blackList);
+            recyclerView.setAdapter(mAdapter);
             new LoadContactsTask(recyclerView).execute();
         }
     }
@@ -126,7 +129,7 @@ public class BlackListActivity extends AppCompatActivity {
         }
     }
 
-    private class LoadContactsTask extends AsyncTask<Void, Void, BlackListAdapter> {
+    private class LoadContactsTask extends AsyncTask<Void, Void, List<ListItem>> {
 
         RecyclerView rv;
 
@@ -141,20 +144,19 @@ public class BlackListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected BlackListAdapter doInBackground(Void... params) {
+        protected List<ListItem> doInBackground(Void... params) {
             mList = CustomDatabaseHelper.readBlackList(mKey, mDbHelper);
             List<ListItem> blackList = new ArrayList<>();
             for (String number : mList)
                 blackList.add(new ListItem(number, false));
-            return new BlackListAdapter(blackList);
+            return blackList;
         }
 
         @Override
-        protected void onPostExecute(BlackListAdapter result) {
+        protected void onPostExecute(List<ListItem> result) {
             pb.setVisibility(View.GONE);
             if (result != null) {
-                mAdapter = result;
-                rv.setAdapter(mAdapter);
+                mAdapter.swapItems(result);
             }
         }
     }

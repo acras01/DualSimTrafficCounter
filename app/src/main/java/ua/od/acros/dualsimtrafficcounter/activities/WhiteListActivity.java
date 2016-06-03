@@ -79,9 +79,12 @@ public class WhiteListActivity extends AppCompatActivity {
             bar.setTitle(getString(R.string.white_list));
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
+            List<ListItem> whiteList = new ArrayList<>();
+            mAdapter = new WhiteListAdapter(whiteList);
+            recyclerView.setAdapter(mAdapter);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
             new LoadContactsTask(recyclerView).execute();
         }
@@ -142,7 +145,7 @@ public class WhiteListActivity extends AppCompatActivity {
         }
     }
 
-    private class LoadContactsTask extends AsyncTask<Void, Void, WhiteListAdapter> {
+    private class LoadContactsTask extends AsyncTask<Void, Void, List<ListItem>> {
 
         RecyclerView rv;
 
@@ -157,7 +160,7 @@ public class WhiteListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected WhiteListAdapter doInBackground(Void... params) {
+        protected List<ListItem> doInBackground(Void... params) {
             ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper);
             List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);
             List<String> numbers = new ArrayList<>();
@@ -172,15 +175,14 @@ public class WhiteListActivity extends AppCompatActivity {
                 listItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
                 i.remove();
             }
-            return new WhiteListAdapter(listItems);
+            return listItems;
         }
 
         @Override
-        protected void onPostExecute(WhiteListAdapter result) {
+        protected void onPostExecute(List<ListItem> result) {
             pb.setVisibility(View.GONE);
             if (result != null) {
-                mAdapter = result;
-                rv.setAdapter(mAdapter);
+                mAdapter.swapItems(result);
             }
         }
     }

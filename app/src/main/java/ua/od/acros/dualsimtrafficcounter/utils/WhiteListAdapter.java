@@ -101,4 +101,10 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
     public long getItemId(int position) {
         return position;
     }
+
+    public void swapItems(List<ListItem> list) {
+        if (list != null)
+            this.mList = list;
+        notifyDataSetChanged();
+    }
 }
