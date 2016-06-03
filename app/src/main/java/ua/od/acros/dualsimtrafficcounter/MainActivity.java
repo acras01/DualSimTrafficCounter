@@ -76,18 +76,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Bundle mState;
     private Intent mStarterIntent;
 
-    /*static {
-        SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-        else {
-            if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -367,15 +355,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     protected void onPostResume() {
         super.onPostResume();
         FragmentManager fm = getSupportFragmentManager();
@@ -465,11 +444,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mCallsItem.setEnabled(false);
             }
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     @Override

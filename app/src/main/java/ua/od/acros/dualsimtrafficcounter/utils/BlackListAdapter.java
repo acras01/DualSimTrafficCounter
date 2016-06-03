@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -47,7 +48,8 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
         ViewHolder viewHolder = new ViewHolder(v);
         final TextView textView = viewHolder.textView;
-        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox checkBox = viewHolder.checkBox;
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ((ListItem) buttonView.getTag()).setChecked(isChecked);
                 if (isChecked)
@@ -57,6 +59,19 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
 
             }
         });
+        View.OnClickListener click = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = ((ListItem) v.getTag()).isChecked();
+                ((ListItem) v.getTag()).setChecked(!isChecked);
+                checkBox.setChecked(!isChecked);
+                if (!isChecked)
+                    textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                else
+                    textView.setPaintFlags(0);
+            }
+        };
+        textView.setOnClickListener(click);
         return viewHolder;
     }
 
@@ -64,6 +79,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     @Override
     public void onBindViewHolder(BlackListAdapter.ViewHolder holder, int position) {
         holder.textView.setText(mList.get(position).getNumber());
+        holder.textView.setTag(mList.get(position));
         boolean checked = mList.get(position).isChecked();
         holder.checkBox.setTag(mList.get(position));
         holder.checkBox.setChecked(checked);

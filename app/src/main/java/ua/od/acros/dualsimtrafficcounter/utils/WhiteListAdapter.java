@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -44,18 +45,31 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
 
         // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
         ViewHolder viewHolder = new ViewHolder(v);
-        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CheckBox checkBox = viewHolder.checkBox;
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ((ListItem) buttonView.getTag()).setChecked(isChecked);
             }
         });
+        View.OnClickListener click = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = ((ListItem) v.getTag()).isChecked();
+                ((ListItem) v.getTag()).setChecked(!isChecked);
+                checkBox.setChecked(!isChecked);
+            }
+        };
+        viewHolder.txtViewName.setOnClickListener(click);
+        viewHolder.txtViewNumber.setOnClickListener(click);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(WhiteListAdapter.ViewHolder holder, int position) {
         holder.txtViewName.setText(mList.get(position).getName());
+        holder.txtViewName.setTag(mList.get(position));
         holder.txtViewNumber.setText(mList.get(position).getNumber());
+        holder.txtViewNumber.setTag(mList.get(position));
         holder.checkBox.setTag(mList.get(position));
         holder.checkBox.setChecked(mList.get(position).isChecked());
     }

@@ -63,7 +63,9 @@ public class BlackListActivity extends AppCompatActivity {
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         setContentView(R.layout.activity_recyclerview);
         pb = (ProgressBar) findViewById(R.id.progressBar);
-        pb.setVisibility(View.GONE);
+        if (pb != null) {
+            pb.setVisibility(View.GONE);
+        }
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         ActionBar bar = getSupportActionBar();
@@ -74,10 +76,12 @@ public class BlackListActivity extends AppCompatActivity {
             bar.setTitle(getString(R.string.black_list));
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        new LoadContactsTask(recyclerView).execute();
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(layoutManager);
+            new LoadContactsTask(recyclerView).execute();
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
