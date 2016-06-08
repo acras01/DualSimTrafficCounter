@@ -1711,25 +1711,19 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
                 mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
-                if (!mIsSIM2OverLimit && alertID == Constants.SIM1 && mSimQuantity >= 2) {
+                if (!mIsSIM2OverLimit && alertID == Constants.SIM1 && mSimQuantity >= 2)
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                    timerStart(Constants.COUNT);
-                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM1 && mSimQuantity == 3) {
+                else if (!mIsSIM3OverLimit && alertID == Constants.SIM1 && mSimQuantity == 3)
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                    timerStart(Constants.COUNT);
-                } else if (!mIsSIM1OverLimit && alertID == Constants.SIM2) {
+                else if (!mIsSIM1OverLimit && alertID == Constants.SIM2)
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                    timerStart(Constants.COUNT);
-                } else if (!mIsSIM3OverLimit && alertID == Constants.SIM2 && mSimQuantity == 3) {
+                else if (!mIsSIM3OverLimit && alertID == Constants.SIM2 && mSimQuantity == 3)
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                    timerStart(Constants.COUNT);
-                } else if (!mIsSIM1OverLimit && alertID == Constants.SIM3) {
+                else if (!mIsSIM1OverLimit && alertID == Constants.SIM3)
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                    timerStart(Constants.COUNT);
-                } else if (!mIsSIM2OverLimit && alertID == Constants.SIM3) {
+                else if (!mIsSIM2OverLimit && alertID == Constants.SIM3)
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                    timerStart(Constants.COUNT);
-                } else
+                else
                     choice = true;
             } catch (Exception e) {
                 e.printStackTrace();
