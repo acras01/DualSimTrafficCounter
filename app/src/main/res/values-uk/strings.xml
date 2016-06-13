@@ -221,4 +221,5 @@
     <string name="hud_moveable">Плаваюче вікно під статусбаром (можна переміщувати)</string>
     <string name="hud_mobile_data">Показувати тільки при активних мобільних даних</string>
     <string name="show_hud_speed">Відображати швидкість з\'єднання на плаваючому вікні</string>
+    <string name="count_only_incoming">Враховувати тільки вхідний трафік</string>
 </resources>

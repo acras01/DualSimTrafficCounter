@@ -33,6 +33,12 @@
             android:summaryOn="@string/on"
             android:summaryOff="@string/off" />
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="onlyreceived1"
+            android:title="@string/count_only_incoming"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="prelimit1"
@@ -223,6 +229,13 @@
             android:summaryOff="@string/off" />
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="onlyreceived2"
+            android:title="@string/count_only_incoming"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="prelimit2"
             android:title="@string/use_pre_limit_notification"
             android:defaultValue="false"
@@ -406,6 +419,13 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="autoenable3"
             android:title="@string/auto_enable_data_after_reset"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="onlyreceived3"
+            android:title="@string/count_only_incoming"
             android:defaultValue="false"
             android:summaryOn="@string/on"
             android:summaryOff="@string/off" />

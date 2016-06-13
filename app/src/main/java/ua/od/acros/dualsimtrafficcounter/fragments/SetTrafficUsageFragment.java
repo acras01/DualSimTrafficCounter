@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
@@ -17,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,11 +35,14 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     private EditText txInput, rxInput;
     private int mTXSpinnerSel, mRXSpinnerSel;
     private int mSimChecked = Constants.DISABLED;
-    private AppCompatSpinner rxSpinner;
+    private AppCompatSpinner rxSpinner, txSpinner;
     private String[] mOperatorNames;
     private AppCompatCheckBox total;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
+    private Boolean mOnlyReceived;
+    private SharedPreferences mPrefs;
+    private AppCompatButton buttonOk;
 
 
     public static SetTrafficUsageFragment newInstance() {
@@ -66,8 +69,10 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
         txInput = (EditText) view.findViewById(R.id.txamount);
+        txInput.setEnabled(false);
         rxInput = (EditText) view.findViewById(R.id.rxamount);
-        Spinner txSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnertx);
+        rxInput.setEnabled(false);
+        txSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnertx);
         rxSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnerrx);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
@@ -76,9 +81,9 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         sim2rb.setText(mOperatorNames[1]);
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         if (simQuantity == 1) {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
@@ -88,11 +93,17 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         total = (AppCompatCheckBox) view.findViewById(R.id.checktotal);
         total.setChecked(false);
         total.setOnCheckedChangeListener(this);
+        total.setEnabled(false);
         radioGroup.setOnCheckedChangeListener(this);
         txSpinner.setOnItemSelectedListener(this);
+        txSpinner.setEnabled(false);
         rxSpinner.setOnItemSelectedListener(this);
-        view.findViewById(R.id.buttonOK).setOnClickListener(this);
+        rxSpinner.setEnabled(false);
+        buttonOk = (AppCompatButton) view.findViewById(R.id.buttonOK);
+        buttonOk.setOnClickListener(this);
+        buttonOk.setEnabled(false);
         if (savedInstanceState != null) {
+            mOnlyReceived = savedInstanceState.getBoolean("received");
             switch (savedInstanceState.getInt("sim")) {
                 case Constants.SIM1:
                     sim1rb.setChecked(true);
@@ -109,6 +120,19 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
             total.setChecked(savedInstanceState.getBoolean("tot"));
             rxSpinner.setSelection(savedInstanceState.getInt("rxs"));
             txSpinner.setSelection(savedInstanceState.getInt("txs"));
+            if (mOnlyReceived != null) {
+                txInput.setEnabled(!mOnlyReceived);
+                txSpinner.setEnabled(!mOnlyReceived);
+                total.setEnabled(!mOnlyReceived);
+                if (total.isEnabled()) {
+                    rxInput.setEnabled(!total.isChecked());
+                    rxSpinner.setEnabled(!total.isChecked());
+                } else {
+                    rxInput.setEnabled(mOnlyReceived);
+                    rxSpinner.setEnabled(mOnlyReceived);
+                }
+            }
+            buttonOk.setEnabled(true);
         }
         return view;
     }
@@ -117,6 +141,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("sim", mSimChecked);
+        outState.putBoolean("received", mOnlyReceived);
         outState.putInt("rxs", mTXSpinnerSel);
         outState.putString("rx", rxInput.getText().toString());
         outState.putInt("txs", mRXSpinnerSel);
@@ -139,8 +164,10 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
                 String rx = "0";
                 if (!total.isChecked())
                     rx = rxInput.getText().toString();
-                SetTrafficEvent event = new SetTrafficEvent(txInput.getText().toString(),
-                        rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
+                String tx = "0";
+                if (mOnlyReceived != null && mOnlyReceived)
+                    tx = txInput.getText().toString();
+                SetTrafficEvent event = new SetTrafficEvent(tx, rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
                 EventBus.getDefault().post(event);
                 getActivity().onBackPressed();
             } else
@@ -152,17 +179,34 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
+        mOnlyReceived = null;
         switch (checkedId) {
             case R.id.sim1RB:
                 mSimChecked =  Constants.SIM1;
+                mOnlyReceived = mPrefs.getBoolean(Constants.PREF_SIM1[32], false);
                 break;
             case R.id.sim2RB:
                 mSimChecked =  Constants.SIM2;
+                mOnlyReceived = mPrefs.getBoolean(Constants.PREF_SIM2[32], false);
                 break;
             case R.id.sim3RB:
                 mSimChecked =  Constants.SIM3;
+                mOnlyReceived = mPrefs.getBoolean(Constants.PREF_SIM3[32], false);
                 break;
         }
+        if (mOnlyReceived != null) {
+            txInput.setEnabled(!mOnlyReceived);
+            txSpinner.setEnabled(!mOnlyReceived);
+            total.setEnabled(!mOnlyReceived);
+            if (total.isEnabled()) {
+                rxInput.setEnabled(!total.isChecked());
+                rxSpinner.setEnabled(!total.isChecked());
+            } else {
+                rxInput.setEnabled(mOnlyReceived);
+                rxSpinner.setEnabled(mOnlyReceived);
+            }
+        }
+        buttonOk.setEnabled(true);
     }
 
     @Override

@@ -77,6 +77,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             }
         });
         if (!CustomApplication.isPackageExisted(XPOSED)) {
+            getPreferenceScreen().removePreference(findPreference(Constants.PREF_OTHER[27]));
             callLogger.setChecked(false);
             callLogger.setEnabled(false);
             getPreferenceScreen().getSharedPreferences().edit()

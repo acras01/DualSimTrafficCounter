@@ -920,7 +920,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mTrafficData.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
-                        tot = tx + rx;
+                        if (mPrefs.getBoolean(Constants.PREF_SIM1[32], false))
+                            tot = rx;
+                        else
+                            tot = tx + rx;
                         mIsSIM1OverLimit = false;
                         if (mPrefs.getBoolean(Constants.PREF_SIM1[29], false) && !mHasPreLimitNotificationShown1 && !mHasActionChosen1) {
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[0]));
@@ -1170,7 +1173,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mTrafficData.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
-                        tot = tx + rx;
+                        if (mPrefs.getBoolean(Constants.PREF_SIM2[32], false))
+                            tot = rx;
+                        else
+                            tot = tx + rx;
                         mIsSIM2OverLimit = false;
                         if (mPrefs.getBoolean(Constants.PREF_SIM2[29], false) && !mHasPreLimitNotificationShown2 && !mHasActionChosen2) {
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[1]));
@@ -1420,7 +1426,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         mTrafficData.put(Constants.LAST_ACTIVE_SIM, mActiveSIM);
                         rx += diffrx;
                         tx += difftx;
-                        tot = tx + rx;
+                        if (mPrefs.getBoolean(Constants.PREF_SIM3[32], false))
+                            tot = rx;
+                        else
+                            tot = tx + rx;
                         mIsSIM3OverLimit = false;
                         if (mPrefs.getBoolean(Constants.PREF_SIM3[29], false) && !mHasPreLimitNotificationShown3 && !mHasActionChosen3) {
                             int left = (int) (100 * (1.0 - (double) tot / (double) mLimits[2]));

@@ -229,4 +229,5 @@
     <string name="hud_moveable">Floating window under statusbar (moveable)</string>
     <string name="hud_mobile_data">Show only if mobile data active</string>
     <string name="show_hud_speed">Show connection speed on floating window</string>
+    <string name="count_only_incoming">Count only incoming traffic</string>
 </resources>
