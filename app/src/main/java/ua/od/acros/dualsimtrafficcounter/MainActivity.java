@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mStarterIntent = getIntent();
         mState = savedInstanceState;
         mContext = CustomApplication.getAppContext();
-        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         if (savedInstanceState == null) {

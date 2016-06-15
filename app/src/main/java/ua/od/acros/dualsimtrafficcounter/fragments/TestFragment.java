@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatRadioButton;
@@ -60,7 +61,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
         sim2rb.setText(mOperatorNames[1]);
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mEdit = prefs.edit();
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));

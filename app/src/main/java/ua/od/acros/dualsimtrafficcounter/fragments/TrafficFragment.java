@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -82,7 +83,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
-        mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 

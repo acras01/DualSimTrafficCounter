@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -90,7 +91,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         }
 
         SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (icicle == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);

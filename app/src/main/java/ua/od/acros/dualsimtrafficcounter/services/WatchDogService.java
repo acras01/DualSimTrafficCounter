@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 
 import org.acra.ACRA;
 import org.joda.time.DateTime;
@@ -20,8 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class WatchDogService extends Service{
 
@@ -43,8 +44,8 @@ public class WatchDogService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mContext = CustomApplication.getAppContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         // cancel if already existed
         if (mTimer != null) {

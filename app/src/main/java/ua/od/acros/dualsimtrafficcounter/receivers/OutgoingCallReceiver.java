@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -16,7 +17,7 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) &&
                 !prefs.getBoolean(Constants.PREF_OTHER[24], true) && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
             Intent i = new Intent(context, CallLoggerService.class);

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRadioButton;
@@ -49,6 +50,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     private TextView RX, TX, RXN, TXN, TOT, TOTN, day, night;
     private String[] mOperatorNames = new String[3];
     private Context mContext;
+    private SharedPreferences mPrefs;
 
     public static TrafficForDateFragment newInstance() {
         return new TrafficForDateFragment();
@@ -81,9 +83,9 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
         bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
-        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
         AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
@@ -223,7 +225,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                 return null;
             else
                 return CustomDatabaseHelper.getDataForDate(CustomDatabaseHelper.getInstance(mContext),
-                        date, params[3], mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE));
+                        date, params[3], mPrefs);
         }
 
         @Override
@@ -239,7 +241,6 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                 }
                 bSetDate.setEnabled(true);
                 if (result != null && mSimChecked != Constants.NULL) {
-                    SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
                     String[] prefsConst = new String[Constants.PREF_SIM1.length];
                     switch (mSimChecked) {
                         case Constants.SIM1:
@@ -260,7 +261,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                     TX.setText(DataFormat.formatData(mContext, result.getLong("tx")));
                     TOT.setText(DataFormat.formatData(mContext, result.getLong("tot")));
 
-                    if (prefs.getBoolean(prefsConst[17], false)) {
+                    if (mPrefs.getBoolean(prefsConst[17], false)) {
                         RXN.setVisibility(View.VISIBLE);
                         TXN.setVisibility(View.VISIBLE);
                         TOTN.setVisibility(View.VISIBLE);

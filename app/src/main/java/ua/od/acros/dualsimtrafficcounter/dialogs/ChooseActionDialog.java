@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,9 +34,9 @@ public class ChooseActionDialog extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Context context = CustomApplication.getAppContext();
         mIsActive = true;
-        SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        final Context context = CustomApplication.getAppContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);

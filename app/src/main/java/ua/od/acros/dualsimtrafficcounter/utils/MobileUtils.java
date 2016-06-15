@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -273,7 +274,7 @@ public class MobileUtils {
                 }
             }
         } else {
-            SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -471,7 +472,7 @@ public class MobileUtils {
     }
 
     public static int getSimId(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -661,7 +662,7 @@ public class MobileUtils {
             if (name.size() > 0)
                 out = "Subscription " + name.size();
         } else {
-            SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -779,7 +780,7 @@ public class MobileUtils {
                     code.add(String.valueOf(si.getMcc()) + String.valueOf(si.getMnc()));
                 }
         } else {
-            SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -868,7 +869,7 @@ public class MobileUtils {
 
     public static ArrayList<String> getSimIMEI(Context context) {
         ArrayList<String> imei = new ArrayList<>();
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -1308,7 +1309,7 @@ public class MobileUtils {
     }
 
     public static void toggleMobileDataConnection(boolean swtch, Context context, int sim) throws Exception {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean mAlternative = prefs.getBoolean(Constants.PREF_OTHER[20], false);
         if (!swtch) {
             mLastActiveSIM = getActiveSIM(context);
@@ -1382,7 +1383,7 @@ public class MobileUtils {
     }
 
     public static String getName(Context context, String key1, String key2, int sim) {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (prefs.getBoolean(key1, true)) {
             ArrayList<String> names = getOperatorNames(context);
             return (names.size() > sim && names.get(sim) != null) ? names.get(sim) : context.getResources().getString(R.string.not_available);

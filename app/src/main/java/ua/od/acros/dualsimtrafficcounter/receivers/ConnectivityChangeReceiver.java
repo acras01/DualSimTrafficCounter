@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.preference.PreferenceManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,7 +21,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean floatingWindow = prefs.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !prefs.getBoolean(Constants.PREF_OTHER[41], false);
         boolean bool = floatingWindow && !alwaysShow;

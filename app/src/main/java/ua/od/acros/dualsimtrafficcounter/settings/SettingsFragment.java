@@ -3,6 +3,7 @@ package ua.od.acros.dualsimtrafficcounter.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +27,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context = CustomApplication.getAppContext();
-        mPrefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mSwitch = new NotificationSwitch(context, new SwitchCompat(context));
     }
 

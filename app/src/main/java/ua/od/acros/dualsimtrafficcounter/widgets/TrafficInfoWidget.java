@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -119,7 +120,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
 
         for (int i : ids) {
             SharedPreferences prefs = context.getSharedPreferences(i + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-            SharedPreferences prefsSIM = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences prefsSIM = PreferenceManager.getDefaultSharedPreferences(context);
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show mNames

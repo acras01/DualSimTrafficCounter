@@ -3,6 +3,7 @@ package ua.od.acros.dualsimtrafficcounter.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import ua.od.acros.dualsimtrafficcounter.settings.OtherFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.SettingsFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
@@ -30,12 +32,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        Context context = CustomApplication.getAppContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (savedInstanceState == null) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
+            if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
+                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);

@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -90,7 +91,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         EventBus.getDefault().register(this);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
-        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
         if (mCallsData.get(Constants.LAST_DATE).equals("")) {

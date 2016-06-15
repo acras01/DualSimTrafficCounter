@@ -13,6 +13,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
@@ -69,7 +70,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
-        mPrefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mCallDataReceiver = new BroadcastReceiver() {

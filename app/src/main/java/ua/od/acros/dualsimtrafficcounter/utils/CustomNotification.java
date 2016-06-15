@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
@@ -40,7 +41,7 @@ public class CustomNotification extends Notification {
     }
 
     public static Notification getNotification(Context context, String traffic, String calls) {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int mActiveSIM = TrafficCountService.getActiveSIM();
         if (mActiveSIM == Constants.DISABLED)
             mActiveSIM = TrafficCountService.getLastActiveSIM();
@@ -70,7 +71,7 @@ public class CustomNotification extends Notification {
     }
 
     private static int getOperatorLogoID(Context context, int sim) {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (prefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
             String[] pref = new String[Constants.PREF_SIM1.length];
             switch (sim) {

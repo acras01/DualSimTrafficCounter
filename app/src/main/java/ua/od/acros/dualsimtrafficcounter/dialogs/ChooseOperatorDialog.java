@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -18,6 +19,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ListEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoListEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 
 public class ChooseOperatorDialog extends AppCompatActivity {
 
@@ -26,7 +28,8 @@ public class ChooseOperatorDialog extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        final Context context = CustomApplication.getAppContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);

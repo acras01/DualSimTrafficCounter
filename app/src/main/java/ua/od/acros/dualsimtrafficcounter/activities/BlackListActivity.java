@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -42,7 +43,8 @@ public class BlackListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences prefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mContext = CustomApplication.getAppContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -55,7 +57,6 @@ public class BlackListActivity extends AppCompatActivity {
             // Now recreate for it to take effect
             recreate();
         }
-        mContext = CustomApplication.getAppContext();
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
