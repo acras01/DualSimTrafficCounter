@@ -62,12 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String EMAIL = "email";
     private static final String MTK = "mtk";
     private static final String XPOSED = "de.robv.android.xposed.installer";
-    private Fragment mTrafficForDate;
-    private static Fragment mTraffic;
-    private static Fragment mTest;
-    private Fragment mSetUsage;
-    private Fragment mCalls;
-    private Fragment mSetDuration;
     private boolean mNeedsReloadView = false;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
@@ -76,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String mAction;
     private Bundle mState;
     private Intent mStarterIntent;
+    private static Fragment mTraffic, mTest, mCalls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,12 +145,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             versionView.setText(String.format(getResources().getString(R.string.app_version), version));
         }
 
-        mTraffic = new TrafficFragment();
-        mTrafficForDate = new TrafficForDateFragment();
-        mTest = new TestFragment();
-        mSetUsage = new SetTrafficUsageFragment();
-        mSetDuration = new SetCallsDurationFragment();
-        mCalls = new CallsFragment();
+        if (savedInstanceState == null) {
+            mTraffic = new TrafficFragment();
+            mTest = new TestFragment();
+            mCalls = new CallsFragment();
+        }
 
         MobileUtils.getTelephonyManagerMethods(mContext);
 
@@ -415,9 +409,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
             mLastMenuItem = R.id.nav_traffic;
-        } else {
-            openFragment(mLastMenuItem);
-            setItemChecked(mLastMenuItem, true);
         }
     }
 
@@ -474,7 +465,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_traf_for_date:
                 mLastMenuItem = itemId;
-                newFragment = mTrafficForDate;
+                newFragment = new TrafficForDateFragment();
                 break;
             case R.id.nav_test:
                 mLastMenuItem = itemId;
@@ -482,11 +473,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_set_usage:
                 mLastMenuItem = itemId;
-                newFragment = mSetUsage;
+                newFragment = new SetTrafficUsageFragment();
                 break;
             case R.id.nav_set_duration:
                 mLastMenuItem = itemId;
-                newFragment = mSetDuration;
+                newFragment = new SetCallsDurationFragment();
                 break;
             case R.id.nav_settings:
                 setItemChecked(itemId, false);

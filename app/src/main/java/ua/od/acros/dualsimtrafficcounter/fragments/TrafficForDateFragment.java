@@ -109,14 +109,17 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         night = (TextView) view.findViewById(R.id.night);
         bOK = (AppCompatButton) view.findViewById(R.id.buttonOK);
         bOK.setOnClickListener(this);
+        bOK.setEnabled(false);
         bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
+        bSetDate.setEnabled(false);
         RXN.setVisibility(View.GONE);
         TXN.setVisibility(View.GONE);
         TOTN.setVisibility(View.GONE);
         night.setVisibility(View.GONE);
         if (savedInstanceState != null) {
-            switch (savedInstanceState.getInt("sim")) {
+            int sim = savedInstanceState.getInt("sim");
+            switch (sim) {
                 case Constants.SIM1:
                     sim1rb.setChecked(true);
                     break;
@@ -127,15 +130,19 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                     sim3rb.setChecked(true);
                     break;
             }
-            day.setText(savedInstanceState.getString("day"));
-            night.setText(savedInstanceState.getString("night"));
-            RX.setText(savedInstanceState.getString("rx"));
-            RXN.setText(savedInstanceState.getString("rxn"));
-            TX.setText(savedInstanceState.getString("tx"));
-            TXN.setText(savedInstanceState.getString("txn"));
-            TOT.setText(savedInstanceState.getString("tot"));
-            TOTN.setText(savedInstanceState.getString("totn"));
-            bSetDate.setText(savedInstanceState.getString("set"));
+            if (sim >= 0) {
+                day.setText(savedInstanceState.getString("day"));
+                night.setText(savedInstanceState.getString("night"));
+                RX.setText(savedInstanceState.getString("rx"));
+                RXN.setText(savedInstanceState.getString("rxn"));
+                TX.setText(savedInstanceState.getString("tx"));
+                TXN.setText(savedInstanceState.getString("txn"));
+                TOT.setText(savedInstanceState.getString("tot"));
+                TOTN.setText(savedInstanceState.getString("totn"));
+                bSetDate.setText(savedInstanceState.getString("set"));
+                bSetDate.setEnabled(true);
+                bOK.setEnabled(true);
+            }
         }
         // Inflate the layout for this fragment
         return view;
@@ -144,16 +151,18 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("sim", mSimChecked);
-        outState.putString("day", day.getText().toString());
-        outState.putString("night", night.getText().toString());
-        outState.putString("rx", RX.getText().toString());
-        outState.putString("tx", TX.getText().toString());
-        outState.putString("tot", TOT.getText().toString());
-        outState.putString("rxn", RXN.getText().toString());
-        outState.putString("txn", TXN.getText().toString());
-        outState.putString("totn", TOTN.getText().toString());
-        outState.putString("set", bSetDate.getText().toString());
+        if (isVisible()) {
+            outState.putInt("sim", mSimChecked);
+            outState.putString("day", day.getText().toString());
+            outState.putString("night", night.getText().toString());
+            outState.putString("rx", RX.getText().toString());
+            outState.putString("tx", TX.getText().toString());
+            outState.putString("tot", TOT.getText().toString());
+            outState.putString("rxn", RXN.getText().toString());
+            outState.putString("txn", TXN.getText().toString());
+            outState.putString("totn", TOTN.getText().toString());
+            outState.putString("set", bSetDate.getText().toString());
+        }
     }
 
     @Override
@@ -198,6 +207,8 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                 mSimChecked = Constants.SIM3;
                 break;
         }
+        bOK.setEnabled(true);
+        bSetDate.setEnabled(true);
     }
 
     public interface OnFragmentInteractionListener {

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
@@ -35,7 +36,8 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     private OnFragmentInteractionListener mListener;
     private int mSpinnerSel;
     private Context mContext;
-
+    private AppCompatButton buttonOk;
+    private AppCompatSpinner spinner;
 
     public static SetCallsDurationFragment newInstance() {
         return new SetCallsDurationFragment();
@@ -61,7 +63,8 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.duration_fragment, container, false);
         duration = (EditText) view.findViewById(R.id.duration);
-        AppCompatSpinner spinner = (AppCompatSpinner) view.findViewById(R.id.spinner);
+        duration.setEnabled(false);
+        spinner = (AppCompatSpinner) view.findViewById(R.id.spinner);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
@@ -80,9 +83,13 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
             sim3rb.setEnabled(false);
         radioGroup.setOnCheckedChangeListener(this);
         spinner.setOnItemSelectedListener(this);
-        view.findViewById(R.id.buttonOK).setOnClickListener(this);
+        spinner.setEnabled(false);
+        buttonOk = (AppCompatButton) view.findViewById(R.id.buttonOK);
+        buttonOk.setOnClickListener(this);
+        buttonOk.setEnabled(false);;
         if (savedInstanceState != null) {
-            switch (savedInstanceState.getInt("sim")) {
+            int sim = savedInstanceState.getInt("sim");
+            switch (sim) {
                 case Constants.SIM1:
                     sim1rb.setChecked(true);
                     break;
@@ -93,8 +100,13 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
                     sim3rb.setChecked(true);
                     break;
             }
-            duration.setText(savedInstanceState.getString("duration"));
-            spinner.setSelection(savedInstanceState.getInt("spinner"));
+            if (sim >= 0) {
+                duration.setText(savedInstanceState.getString("duration"));
+                duration.setEnabled(true);
+                spinner.setSelection(savedInstanceState.getInt("spinner"));
+                spinner.setEnabled(true);
+                buttonOk.setEnabled(true);
+            }
         }
         return view;
     }
@@ -102,9 +114,11 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("sim", mSimChecked);
-        outState.putInt("spinner", mSpinnerSel);
-        outState.putString("duration", duration.getText().toString());
+        if (isVisible()) {
+            outState.putInt("sim", mSimChecked);
+            outState.putInt("spinner", mSpinnerSel);
+            outState.putString("duration", duration.getText().toString());
+        }
     }
 
     @Override
@@ -139,6 +153,9 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
                 mSimChecked =  Constants.SIM3;
                 break;
         }
+        buttonOk.setEnabled(true);
+        duration.setEnabled(true);
+        spinner.setEnabled(true);
     }
 
     @Override

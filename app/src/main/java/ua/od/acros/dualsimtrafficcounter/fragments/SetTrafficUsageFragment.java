@@ -41,7 +41,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     private AppCompatCheckBox total;
     private OnFragmentInteractionListener mListener;
     private Context mContext;
-    private Boolean mOnlyReceived;
+    private boolean mOnlyReceived;
     private SharedPreferences mPrefs;
     private AppCompatButton buttonOk;
 
@@ -59,6 +59,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         super.onCreate(savedInstanceState);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
+        mOnlyReceived = false;
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -105,7 +106,8 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         buttonOk.setEnabled(false);
         if (savedInstanceState != null) {
             mOnlyReceived = savedInstanceState.getBoolean("received");
-            switch (savedInstanceState.getInt("sim")) {
+            int sim = savedInstanceState.getInt("sim");
+            switch (sim) {
                 case Constants.SIM1:
                     sim1rb.setChecked(true);
                     break;
@@ -116,12 +118,12 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
                     sim3rb.setChecked(true);
                     break;
             }
-            txInput.setText(savedInstanceState.getString("tx"));
-            rxInput.setText(savedInstanceState.getString("rx"));
-            total.setChecked(savedInstanceState.getBoolean("tot"));
-            rxSpinner.setSelection(savedInstanceState.getInt("rxs"));
-            txSpinner.setSelection(savedInstanceState.getInt("txs"));
-            if (mOnlyReceived != null) {
+            if (sim >= 0) {
+                txInput.setText(savedInstanceState.getString("tx"));
+                rxInput.setText(savedInstanceState.getString("rx"));
+                total.setChecked(savedInstanceState.getBoolean("tot"));
+                rxSpinner.setSelection(savedInstanceState.getInt("rxs"));
+                txSpinner.setSelection(savedInstanceState.getInt("txs"));
                 txInput.setEnabled(!mOnlyReceived);
                 txSpinner.setEnabled(!mOnlyReceived);
                 total.setEnabled(!mOnlyReceived);
@@ -132,8 +134,8 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
                     rxInput.setEnabled(mOnlyReceived);
                     rxSpinner.setEnabled(mOnlyReceived);
                 }
+                buttonOk.setEnabled(true);
             }
-            buttonOk.setEnabled(true);
         }
         return view;
     }
@@ -141,13 +143,15 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("sim", mSimChecked);
-        outState.putBoolean("received", mOnlyReceived);
-        outState.putInt("rxs", mTXSpinnerSel);
-        outState.putString("rx", rxInput.getText().toString());
-        outState.putInt("txs", mRXSpinnerSel);
-        outState.putString("tx", txInput.getText().toString());
-        outState.putBoolean("tot", total.isChecked());
+        if (isVisible()) {
+            outState.putInt("sim", mSimChecked);
+            outState.putBoolean("received", mOnlyReceived);
+            outState.putInt("rxs", mTXSpinnerSel);
+            outState.putString("rx", rxInput.getText().toString());
+            outState.putInt("txs", mRXSpinnerSel);
+            outState.putString("tx", txInput.getText().toString());
+            outState.putBoolean("tot", total.isChecked());
+        }
     }
 
     @Override
@@ -166,7 +170,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
                 if (!total.isChecked())
                     rx = rxInput.getText().toString();
                 String tx = "0";
-                if (mOnlyReceived != null && !mOnlyReceived)
+                if (!mOnlyReceived)
                     tx = txInput.getText().toString();
                 SetTrafficEvent event = new SetTrafficEvent(tx, rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
                 EventBus.getDefault().post(event);
@@ -180,32 +184,29 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        mOnlyReceived = null;
         switch (checkedId) {
             case R.id.sim1RB:
-                mSimChecked =  Constants.SIM1;
+                mSimChecked = Constants.SIM1;
                 mOnlyReceived = mPrefs.getBoolean(Constants.PREF_SIM1[32], false);
                 break;
             case R.id.sim2RB:
-                mSimChecked =  Constants.SIM2;
+                mSimChecked = Constants.SIM2;
                 mOnlyReceived = mPrefs.getBoolean(Constants.PREF_SIM2[32], false);
                 break;
             case R.id.sim3RB:
-                mSimChecked =  Constants.SIM3;
+                mSimChecked = Constants.SIM3;
                 mOnlyReceived = mPrefs.getBoolean(Constants.PREF_SIM3[32], false);
                 break;
         }
-        if (mOnlyReceived != null) {
-            txInput.setEnabled(!mOnlyReceived);
-            txSpinner.setEnabled(!mOnlyReceived);
-            total.setEnabled(!mOnlyReceived);
-            if (total.isEnabled()) {
-                rxInput.setEnabled(!total.isChecked());
-                rxSpinner.setEnabled(!total.isChecked());
-            } else {
-                rxInput.setEnabled(mOnlyReceived);
-                rxSpinner.setEnabled(mOnlyReceived);
-            }
+        txInput.setEnabled(!mOnlyReceived);
+        txSpinner.setEnabled(!mOnlyReceived);
+        total.setEnabled(!mOnlyReceived);
+        if (total.isEnabled()) {
+            rxInput.setEnabled(!total.isChecked());
+            rxSpinner.setEnabled(!total.isChecked());
+        } else {
+            rxInput.setEnabled(mOnlyReceived);
+            rxSpinner.setEnabled(mOnlyReceived);
         }
         buttonOk.setEnabled(true);
     }
