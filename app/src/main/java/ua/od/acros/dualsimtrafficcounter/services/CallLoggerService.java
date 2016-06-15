@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseOperatorDialog;
-import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.events.ListEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoListEvent;
@@ -274,30 +273,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         }
         CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
         refreshWidgetAndNotification(sim, duration);
-    }
-
-    @Subscribe
-    public void onMessageEvent(ClearCallsEvent event) {
-        DateTime now = new DateTime();
-        mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
-        mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
-        int sim = event.sim;
-        switch (sim) {
-            case Constants.SIM1:
-                mCallsData.put(Constants.CALLS1, 0L);
-                mCallsData.put(Constants.CALLS1_EX, 0L);
-                break;
-            case Constants.SIM2:
-                mCallsData.put(Constants.CALLS2, 0L);
-                mCallsData.put(Constants.CALLS2_EX, 0L);
-                break;
-            case Constants.SIM3:
-                mCallsData.put(Constants.CALLS3, 0L);
-                mCallsData.put(Constants.CALLS3_EX, 0L);
-                break;
-        }
-        CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
-        refreshWidgetAndNotification(sim, 0L);
     }
 
     @Subscribe

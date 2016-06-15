@@ -30,8 +30,8 @@ import org.greenrobot.eventbus.Subscribe;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.OnOffDialog;
-import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
@@ -545,7 +545,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.buttonClear1:
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
-                    EventBus.getDefault().post(new ClearTrafficEvent(Constants.SIM1));
+                    EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM1, 0, 0));
                 else {
                     mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
                     if (isNight[0]) {
@@ -572,7 +572,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.buttonClear2:
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
-                    EventBus.getDefault().post(new ClearTrafficEvent(Constants.SIM2));
+                    EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM2, 0, 0));
                 else {
                     mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
                     if (isNight[1]) {
@@ -599,7 +599,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.buttonClear3:
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
-                    EventBus.getDefault().post(new ClearTrafficEvent(Constants.SIM3));
+                    EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM3, 0, 0));
                 else {
                     mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
                     if (isNight[2]) {

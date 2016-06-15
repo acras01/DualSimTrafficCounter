@@ -30,7 +30,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
-import ua.od.acros.dualsimtrafficcounter.events.ClearCallsEvent;
+import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -259,7 +259,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         switch (v.getId()) {
             case R.id.buttonClear1:
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
-                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM1));
+                    EventBus.getDefault().post(new SetCallsEvent(Constants.SIM1, "0", 1));
                 else {
                     mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
                     mCallsData.put(Constants.CALLS1, 0L);
@@ -270,7 +270,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 break;
             case R.id.buttonClear2:
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
-                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM2));
+                    EventBus.getDefault().post(new SetCallsEvent(Constants.SIM2, "0", 1));
                 else {
                     mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
                     mCallsData.put(Constants.CALLS2, 0L);
@@ -281,7 +281,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 break;
             case R.id.buttonClear3:
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
-                    EventBus.getDefault().post(new ClearCallsEvent(Constants.SIM3));
+                    EventBus.getDefault().post(new SetCallsEvent(Constants.SIM3, "0", 1));
                 else {
                     mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
                     mCallsData.put(Constants.CALLS3, 0L);

@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -46,7 +47,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseActionDialog;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
-import ua.od.acros.dualsimtrafficcounter.events.ClearTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
@@ -130,7 +130,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mContext = CustomApplication.getAppContext();
         EventBus.getDefault().register(this);
 
-        mPrefs = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
@@ -217,28 +217,26 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mHasActionChosen3 = true;
                 break;
         }
+        mPrefs.edit().putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
+                .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
+                .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
+                .apply();
         try {
             switch (event.action) {
                 case Constants.CHANGE_ACTION:
-                    if (!mIsSIM2OverLimit && sim == Constants.SIM1) {
+                    if (!mIsSIM2OverLimit && sim == Constants.SIM1)
                         MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                        timerStart(Constants.COUNT);
-                    } else if (!mIsSIM3OverLimit && sim == Constants.SIM1) {
+                    else if (!mIsSIM3OverLimit && sim == Constants.SIM1)
                         MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                        timerStart(Constants.COUNT);
-                    } else if (!mIsSIM1OverLimit && sim == Constants.SIM2) {
+                    else if (!mIsSIM1OverLimit && sim == Constants.SIM2)
                         MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                        timerStart(Constants.COUNT);
-                    } else if (!mIsSIM3OverLimit && sim == Constants.SIM2) {
+                    else if (!mIsSIM3OverLimit && sim == Constants.SIM2)
                         MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                        timerStart(Constants.COUNT);
-                    } else if (!mIsSIM1OverLimit && sim == Constants.SIM3) {
+                    else if (!mIsSIM1OverLimit && sim == Constants.SIM3)
                         MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                        timerStart(Constants.COUNT);
-                    } else if (!mIsSIM2OverLimit && sim == Constants.SIM3) {
+                    else if (!mIsSIM2OverLimit && sim == Constants.SIM3)
                         MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                        timerStart(Constants.COUNT);
-                    } else
+                    else
                         timerStart(Constants.CHECK);
                     break;
                 case Constants.SETTINGS_ACTION:
@@ -268,8 +266,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mSIM3ContinueOverLimit = true;
                             break;
                     }
-                    if (mTaskResult.isCancelled())
-                        timerStart(Constants.COUNT);
+                    mPrefs.edit().putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                            .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
+                            .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
+                            .apply();
                     break;
                 case Constants.OFF_ACTION:
                     if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
@@ -287,6 +287,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                 mSIM3ContinueOverLimit = true;
                                 break;
                         }
+                        mPrefs.edit().putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                                .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
+                                .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
+                                .apply();
                     }
                     break;
             }
@@ -295,67 +299,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             ACRA.getErrorReporter().handleException(e);
         }
 
-    }
-
-    @Subscribe
-    public void onMessageEvent(ClearTrafficEvent event) {
-        if (mTaskResult != null) {
-            mTaskResult.cancel(false);
-            mTaskExecutor.shutdown();
-        }
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            ACRA.getErrorReporter().handleException(e);
-        }
-        mNowDate = DateTime.now();
-        mTrafficData.put(Constants.LAST_TIME, mNowDate.toString(mTimeFormat));
-        mTrafficData.put(Constants.LAST_DATE, mNowDate.toString(mDateFormat));
-        int sim = event.sim;
-        switch (sim) {
-            case Constants.SIM1:
-                if (mIsNight1) {
-                    mTrafficData.put(Constants.SIM1RX_N, 0L);
-                    mTrafficData.put(Constants.SIM1TX_N, 0L);
-                    mTrafficData.put(Constants.TOTAL1_N, 0L);
-                } else {
-                    mTrafficData.put(Constants.SIM1RX, 0L);
-                    mTrafficData.put(Constants.SIM1TX, 0L);
-                    mTrafficData.put(Constants.TOTAL1, 0L);
-                }
-                break;
-            case Constants.SIM2:
-                if (mIsNight2) {
-                    mTrafficData.put(Constants.SIM2RX_N, 0L);
-                    mTrafficData.put(Constants.SIM2TX_N, 0L);
-                    mTrafficData.put(Constants.TOTAL2_N, 0L);
-                } else {
-                    mTrafficData.put(Constants.SIM2RX, 0L);
-                    mTrafficData.put(Constants.SIM2TX, 0L);
-                    mTrafficData.put(Constants.TOTAL2, 0L);
-                }
-                break;
-            case Constants.SIM3:
-                if (mIsNight3) {
-                    mTrafficData.put(Constants.SIM3RX_N, 0L);
-                    mTrafficData.put(Constants.SIM3TX_N, 0L);
-                    mTrafficData.put(Constants.TOTAL3_N, 0L);
-                } else {
-                    mTrafficData.put(Constants.SIM3RX, 0L);
-                    mTrafficData.put(Constants.SIM3TX, 0L);
-                    mTrafficData.put(Constants.TOTAL3, 0L);
-                }
-                break;
-        }
-        CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
-        if (CustomApplication.isScreenOn()) {
-            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(Constants.STARTED_ID, buildNotification(sim));
-        }
-        if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0) && CustomApplication.isScreenOn())
-            sendDataBroadcast(0L, 0L);
-        timerStart(Constants.COUNT);
     }
 
     @Subscribe
@@ -525,16 +468,25 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 || key.equals(Constants.PREF_SIM1[4]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10])) {
             mSIM1ContinueOverLimit = false;
             mHasActionChosen1 = false;
+            mPrefs.edit().putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                    .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
+                    .apply();
         }
         if (key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[3])
                 || key.equals(Constants.PREF_SIM2[4]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]))  {
             mSIM2ContinueOverLimit = false;
             mHasActionChosen2 = false;
+            mPrefs.edit().putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
+                    .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
+                    .apply();
         }
         if (key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[3])
                 || key.equals(Constants.PREF_SIM3[4]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))  {
             mSIM3ContinueOverLimit = false;
             mHasActionChosen3 = false;
+            mPrefs.edit().putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
+                    .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
+                    .apply();
         }
         if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
@@ -830,6 +782,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .putString(Constants.PREF_SIM1[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM1);
@@ -858,6 +812,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .putString(Constants.PREF_SIM2[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM2);
@@ -886,6 +842,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .putString(Constants.PREF_SIM3[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM3);
@@ -937,7 +895,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     } else if (!mHasActionChosen1) {
                         mIsSIM1OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
-                            alertNotify(mActiveSIM);
+                            pushAlertNotification(mActiveSIM);
                         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
                                 (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
@@ -1092,6 +1050,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .putString(Constants.PREF_SIM1[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM1);
@@ -1111,6 +1071,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .putString(Constants.PREF_SIM2[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM2);
@@ -1139,6 +1101,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .putString(Constants.PREF_SIM3[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM3);
@@ -1190,7 +1154,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     } else if (!mHasActionChosen2) {
                         mIsSIM2OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
-                            alertNotify(mActiveSIM);
+                            pushAlertNotification(mActiveSIM);
                         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
                                 (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
@@ -1345,6 +1309,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                                     .putString(Constants.PREF_SIM1[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM1);
@@ -1373,6 +1339,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                                     .putString(Constants.PREF_SIM2[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM2);
@@ -1392,6 +1360,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mPrefs.edit()
                                     .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                                     .putString(Constants.PREF_SIM3[24], mNowDate.toString(mDateTimeFormat))
+                                    .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
+                                    .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
                                     .apply();
                             if (mPrefs.getBoolean(Constants.PREF_OTHER[30], false))
                                 pushResetNotification(Constants.SIM3);
@@ -1443,7 +1413,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     } else if (!mHasActionChosen3) {
                         mIsSIM3OverLimit = true;
                         if (mPrefs.getBoolean(Constants.PREF_OTHER[3], false))
-                            alertNotify(mActiveSIM);
+                            pushAlertNotification(mActiveSIM);
                         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
                                 (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()))
                             startCheck(mActiveSIM);
@@ -1494,13 +1464,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         });
     }
 
-    private void pushResetNotification(int simid) {
+    private void pushResetNotification(int simID) {
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
         String text = "";
         int id;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false)) {
             String[] pref = new String[Constants.PREF_SIM1.length];
-            switch (simid) {
+            switch (simID) {
                 case Constants.SIM1:
                     pref = Constants.PREF_SIM1;
                     text = mOperatorNames[0];
@@ -1515,7 +1485,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
             }
             if (mPrefs.getString(pref[23], "none").equals("auto"))
-                id = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, simid), "drawable", mContext.getPackageName());
+                id = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, simID), "drawable", mContext.getPackageName());
             else
                 id = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());
         } else
@@ -1535,7 +1505,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 .setLargeIcon(bm)
                 .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText(text);
-        nm.notify(simid + 1977, builder.build());
+        nm.notify(simID + 1977, builder.build());
     }
 
     private void writeToDataBase(long diffrx, long difftx, boolean emptyDB) {
@@ -1776,7 +1746,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
     }
 
-    private void alertNotify(int alertID) {
+    private void pushAlertNotification(int alertID) {
         Intent notificationIntent;
         if ((mPrefs.getBoolean(Constants.PREF_SIM1[7], true) && mIsSIM1OverLimit) ||
                 (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM2OverLimit) ||
