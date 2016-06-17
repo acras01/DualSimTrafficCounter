@@ -300,22 +300,33 @@ public class MobileUtils {
                         }
                 }
                 if (sim == Constants.DISABLED) {
-                    final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                    if (mTelephonyClass == null)
-                        try {
-                            mTelephonyClass = Class.forName(tm.getClass().getName());
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
+                    if (CustomApplication.isOldMtkDevice()) {
+                        for (int i = 0; i < simQuantity; i++) {
+                            int state = Constants.DISABLED;
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                if (mGetDataState == null)
+                                    mGetDataState = getMethod(c, GET_DATA, 1);
+                                state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            if (state == TelephonyManager.DATA_CONNECTED
+                                    || state == TelephonyManager.DATA_CONNECTING
+                                    || state == TelephonyManager.DATA_SUSPENDED) {
+                                sim = i;
+                                out = "getDataStateExInt " + sim;
+                                break;
+                            }
                         }
-                    if (mTelephonyClass != null) {
-                        if (CustomApplication.isOldMtkDevice()) {
+                        if (sim == Constants.DISABLED) {
                             for (int i = 0; i < simQuantity; i++) {
                                 int state = Constants.DISABLED;
                                 try {
                                     Class<?> c = Class.forName(MEDIATEK);
                                     if (mGetDataState == null)
                                         mGetDataState = getMethod(c, GET_DATA, 1);
-                                    state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
+                                    state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -323,32 +334,20 @@ public class MobileUtils {
                                         || state == TelephonyManager.DATA_CONNECTING
                                         || state == TelephonyManager.DATA_SUSPENDED) {
                                     sim = i;
-                                    out = "getDataStateExInt " + sim;
+                                    out = "getDataStateExLong " + sim;
                                     break;
                                 }
                             }
-                            if (sim == Constants.DISABLED) {
-                                for (int i = 0; i < simQuantity; i++) {
-                                    int state = Constants.DISABLED;
-                                    try {
-                                        Class<?> c = Class.forName(MEDIATEK);
-                                        if (mGetDataState == null)
-                                            mGetDataState = getMethod(c, GET_DATA, 1);
-                                        state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), (long) i);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    if (state == TelephonyManager.DATA_CONNECTED
-                                            || state == TelephonyManager.DATA_CONNECTING
-                                            || state == TelephonyManager.DATA_SUSPENDED) {
-                                        sim = i;
-                                        out = "getDataStateExLong " + sim;
-                                        break;
-                                    }
-                                }
-                            }
                         }
-                        if (sim == Constants.DISABLED) {
+                    } else {
+                        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                        if (mTelephonyClass == null)
+                            try {
+                                mTelephonyClass = Class.forName(tm.getClass().getName());
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        if (mTelephonyClass != null) {
                             for (int i = 0; i < simQuantity; i++) {
                                 int state = Constants.DISABLED;
                                 try {
@@ -459,9 +458,9 @@ public class MobileUtils {
                             }
                         }
                     }
-                } else
-                    sim = Constants.SIM1;
-            }
+                }
+            } else
+                sim = Constants.SIM1;
         }
         try {
             // to this path add a new directory path
