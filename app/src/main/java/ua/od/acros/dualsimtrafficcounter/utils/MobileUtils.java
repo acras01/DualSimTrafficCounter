@@ -1241,8 +1241,8 @@ public class MobileUtils {
     }
 
     public static boolean isMobileDataActive(Context context) {
-        return hasActiveNetworkInfo(context) == 2 || isMobileDataEnabledFromSettings(context)
-                || isMobileDataEnabledFromConnectivityManager(context) == 1;
+        return hasActiveNetworkInfo(context) == 2 && (isMobileDataEnabledFromSettings(context)
+                || isMobileDataEnabledFromConnectivityManager(context) == 1);
     }
 
     private static boolean isMobileDataEnabledFromSettings(Context context) {

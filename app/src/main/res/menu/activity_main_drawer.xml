@@ -43,6 +43,9 @@
             <item android:id="@+id/nav_4pda"
                 android:checkable="false"
                 android:title="@string/visit_4pda" />
+            <item android:id="@+id/nav_exit"
+                android:checkable="false"
+                android:title="@string/exit" />
         </menu>
     </item>
 

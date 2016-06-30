@@ -153,13 +153,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MobileUtils.getTelephonyManagerMethods(mContext);
 
-        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true)) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
-                    ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
-                            !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
-                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
+        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             startService(new Intent(mContext, WatchDogService.class));
-        }
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+                ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
+                        !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+            FloatingWindowService.showFloatingWindow(mContext, mPrefs);
         if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             startService(new Intent(mContext, TrafficCountService.class));
         if (!CustomApplication.isPackageExisted(XPOSED)) {
@@ -450,7 +449,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void openFragment(int itemId) {
         Fragment newFragment = null;
-        FragmentManager fm = getSupportFragmentManager();
         String tag = "";
         switch (itemId) {
             case R.id.nav_traffic:
@@ -495,8 +493,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 i2.setData(Uri.parse(url));
                 startActivity(i2);
                 break;
+            case R.id.nav_exit:
+                if (CustomApplication.isMyServiceRunning(WatchDogService.class))
+                    stopService(new Intent(mContext, WatchDogService.class));
+                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                    stopService(new Intent(mContext, TrafficCountService.class));
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
+                    stopService(new Intent(mContext, CallLoggerService.class));
+                FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
+                finish();
+                break;
         }
         if (newFragment != null) {
+            FragmentManager fm = getSupportFragmentManager();
             Fragment frg = fm.findFragmentByTag(tag);
             if (tag.equals("") || frg != null)
                 fm.beginTransaction()
