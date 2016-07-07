@@ -1127,13 +1127,21 @@ public class MobileUtils {
                                 out[0] += id + " " + exitcode + "\n";
                             }
                         };
+                        if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                            RootShell.getShell(true).add(new Command(0, "settings put global airplane_mode_on 1"));
+                            RootShell.getShell(true).add(new Command(0, "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"));
+                        }
                         RootShell.getShell(true).add(cmd);
-                        for (int i = 1; i < 31; i++) {
+                        /*for (int i = 1; i < 31; i++) {
                             sleep(1000);
                             if (oldState != isMobileDataActive(context)) {
                                 out[0] += i + " seconds\n";
                                 break;
                             }
+                        }*/
+                        if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                            RootShell.getShell(true).add(new Command(0, "settings put global airplane_mode_on 0"));
+                            RootShell.getShell(true).add(new Command(0, "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false"));
                         }
                     } else
                         return new Wrapper(context, 1);
