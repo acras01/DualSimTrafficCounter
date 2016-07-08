@@ -51,10 +51,11 @@ public class MobileUtils {
     private static final String GET_CALL = "getCallState";
     private static final String GET_DATA = "getDataState";
     private static final String GET_SUBID = "getSubIdBySlot";
+    private static final String PUT_SETTINGS = "settings put global airplane_mode_on ";
+    private static final String FLIGHT_MODE = "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state ";
     private static int mLastActiveSIM;
     private static ArrayList<Long> mSubIds = null;
     private static Class<?> mTelephonyClass = null;
-    private static Class<?> mSubscriptionManagerClass;
     private static Method mGetDeviceId = null;
     private static Method mGetNetworkOperatorName = null;
     private static Method mGetSimOperator = null;
@@ -63,8 +64,6 @@ public class MobileUtils {
     private static Method mGetSubIdBySlot = null;
     private static Method mGetITelephony = null;
     private static Method mFrom = null;
-    private static Method mGetDefaultDataSubscriptionInfo = null;
-    private static Method mGetDefaultDataSubId = null;
     private static Method mGetSimId = null;
 
     private static Method getMethod (Class c, String name, int params) {
@@ -208,7 +207,7 @@ public class MobileUtils {
             mSubIds = new ArrayList<>();
         int sim = Constants.DISABLED;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-            if (mSubscriptionManagerClass == null)
+            /*if (mSubscriptionManagerClass == null)
                 try {
                     mSubscriptionManagerClass = Class.forName("android.telephony.SubscriptionManager");
                 } catch (ClassNotFoundException e) {
@@ -264,10 +263,12 @@ public class MobileUtils {
                             }
                         }
                 }
-            }
+            }*/
             if (sim == Constants.DISABLED) {
                 try {
-                    sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
+                    int id = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
+                    SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                    sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
                     out = "getFromSettingsGlobal " + sim;
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
@@ -446,14 +447,6 @@ public class MobileUtils {
                                     }
                                 }
                             } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if (sim == Constants.DISABLED && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                            try {
-                                sim = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call") - 1;
-                                out = "getFromSettingsGlobal " + sim;
-                            } catch (Settings.SettingNotFoundException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1087,6 +1080,7 @@ public class MobileUtils {
             try {
                 if (oldState != swtch) {
                     int state = swtch ? 1 : 0;
+                    int id = -1;
                     // Get the value of the "TRANSACTION_setDataEnabled" field.
                     String transactionCode = getTransactionCode(context);
                     out[0] += transactionCode + "\n";
@@ -1098,7 +1092,8 @@ public class MobileUtils {
                             out[0] += sl.toString() + "\n";
                             for (SubscriptionInfo si : sl) {
                                 if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
-                                    command = "service call phone " + transactionCode + " i32 " + si.getSubscriptionId() + " i32 " + state;
+                                    id = si.getSubscriptionId();
+                                    command = "service call phone " + transactionCode + " i32 " + id + " i32 " + state;
                                     break;
                                 }
                             }
@@ -1128,8 +1123,9 @@ public class MobileUtils {
                             }
                         };
                         if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                            RootShell.getShell(true).add(new Command(0, "settings put global airplane_mode_on 1"));
-                            RootShell.getShell(true).add(new Command(0, "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"));
+                            RootShell.getShell(true).add(new Command(0, PUT_SETTINGS + 1));
+                            RootShell.getShell(true).add(new Command(0, FLIGHT_MODE + true));
+                            RootShell.getShell(true).add(new Command(0, "settings put global multi_sim_data_call " + id));
                         }
                         RootShell.getShell(true).add(cmd);
                         /*for (int i = 1; i < 31; i++) {
@@ -1140,8 +1136,8 @@ public class MobileUtils {
                             }
                         }*/
                         if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                            RootShell.getShell(true).add(new Command(0, "settings put global airplane_mode_on 0"));
-                            RootShell.getShell(true).add(new Command(0, "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false"));
+                            RootShell.getShell(true).add(new Command(0, PUT_SETTINGS + 0));
+                            RootShell.getShell(true).add(new Command(0, FLIGHT_MODE + false));
                         }
                     } else
                         return new Wrapper(context, 1);
