@@ -44,6 +44,7 @@ public class CustomApplication extends Application {
     private static Context mContext;
     private static Boolean mIsOldMtkDevice = null;
     private static Boolean mHasRoot = null;
+    private static Boolean mHasGeminiSupport = null;
     private static boolean mIsActivityVisible;
     private static Intent mSettingsIntent;
     private static boolean mIsDataUsageAvailable = true;
@@ -263,6 +264,13 @@ public class CustomApplication extends Application {
                     OLD_MTK_DEVICES.contains(System.getProperty("ro.mediatek.platform", "")) ||
                     OLD_MTK_DEVICES.contains(System.getProperty("ro.board.platform", ""));
         return mIsOldMtkDevice;
+    }
+
+    public static boolean hasGeminiSupport() {
+        if (mHasGeminiSupport == null)
+            mHasGeminiSupport = System.getProperty("ro.mediatek.gemini_support", "").equals("true") &&
+                    Build.VERSION.SDK_INT < 22;
+        return mHasGeminiSupport;
     }
 
     public static boolean hasRoot() {

@@ -862,6 +862,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX1;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX1;
+                    if (diffrx < 0)
+                        diffrx = 0;
+                    if (difftx < 0)
+                        difftx = 0;
 
                     speedRX = (long) (diffrx / (timeDelta / 1000F));
                     speedTX = (long) (difftx / (timeDelta / 1000F));
@@ -1121,6 +1125,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX2;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX2;
+                    if (diffrx < 0)
+                        diffrx = 0;
+                    if (difftx < 0)
+                        difftx = 0;
 
                     speedRX = (long) (diffrx / (timeDelta / 1000F));
                     speedTX = (long) (difftx / (timeDelta / 1000F));
@@ -1380,6 +1388,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX3;
                     long difftx = TrafficStats.getMobileTxBytes() - mStartTX3;
+                    if (diffrx < 0)
+                        diffrx = 0;
+                    if (difftx < 0)
+                        difftx = 0;
 
                     speedRX = (long) (diffrx / (timeDelta / 1000F));
                     speedTX = (long) (difftx / (timeDelta / 1000F));

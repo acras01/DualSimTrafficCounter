@@ -56,6 +56,7 @@ public class MobileUtils {
     private static int mLastActiveSIM;
     private static ArrayList<Long> mSubIds = null;
     private static Class<?> mTelephonyClass = null;
+    private static Method mGetDefaultDataSubscriptionInfo = null;
     private static Method mGetDeviceId = null;
     private static Method mGetNetworkOperatorName = null;
     private static Method mGetSimOperator = null;
@@ -65,6 +66,21 @@ public class MobileUtils {
     private static Method mGetITelephony = null;
     private static Method mFrom = null;
     private static Method mGetSimId = null;
+    private static Method mGetDefaultDataSubId = null;
+
+    public static final int NT_WCDMA_PREFERRED = 0;             // GSM/WCDMA (WCDMA preferred) (2g/3g)
+    public static final int NT_GSM_ONLY = 1;                    // GSM Only (2g)
+    public static final int NT_WCDMA_ONLY = 2;                  // WCDMA ONLY (3g)
+    public static final int NT_GSM_WCDMA_AUTO = 3;              // GSM/WCDMA Auto (2g/3g)
+    public static final int NT_CDMA_EVDO = 4;                   // CDMA/EVDO Auto (2g/3g)
+    public static final int NT_CDMA_ONLY = 5;                   // CDMA Only (2G)
+    public static final int NT_EVDO_ONLY = 6;                   // Evdo Only (3G)
+    public static final int NT_GLOBAL = 7;                      // GSM/WCDMA/CDMA Auto (2g/3g)
+    public static final int NT_LTE_CDMA_EVDO = 8;
+    public static final int NT_LTE_GSM_WCDMA = 9;
+    public static final int NT_LTE_CMDA_EVDO_GSM_WCDMA = 10;
+    public static final int NT_LTE_ONLY = 11;
+    public static final int NT_LTE_WCDMA = 12;
 
     private static Method getMethod (Class c, String name, int params) {
         Method[] cm = c.getDeclaredMethods();
@@ -207,15 +223,10 @@ public class MobileUtils {
             mSubIds = new ArrayList<>();
         int sim = Constants.DISABLED;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-            /*if (mSubscriptionManagerClass == null)
-                try {
-                    mSubscriptionManagerClass = Class.forName("android.telephony.SubscriptionManager");
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+            SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             try {
                 if (mGetDefaultDataSubscriptionInfo == null) {
-                    Method[] cm = mSubscriptionManagerClass.getDeclaredMethods();
+                    Method[] cm = sm.getClass().getDeclaredMethods();
                     for (Method m : cm) {
                         if (m.getName().equalsIgnoreCase("getDefaultDataSubscriptionInfo")) {
                             m.setAccessible(true);
@@ -224,7 +235,7 @@ public class MobileUtils {
                         }
                     }
                 }
-                SubscriptionInfo si = (SubscriptionInfo) mGetDefaultDataSubscriptionInfo.invoke(mSubscriptionManagerClass.getConstructor(android.content.Context.class).newInstance(context));
+                SubscriptionInfo si = (SubscriptionInfo) mGetDefaultDataSubscriptionInfo.invoke(sm);
                 sim = si.getSimSlotIndex();
                 out = "getDefaultDataSubscriptionInfo " + sim;
             } catch (Exception e) {
@@ -233,7 +244,7 @@ public class MobileUtils {
             if (sim == Constants.DISABLED) {
                 try {
                     if (mGetDefaultDataSubId == null) {
-                        Method[] cm = mSubscriptionManagerClass.getDeclaredMethods();
+                        Method[] cm = sm.getClass().getDeclaredMethods();
                         for (Method m : cm) {
                             if (m.getName().equalsIgnoreCase("getDefaultDataSubId")) {
                                 m.setAccessible(true);
@@ -242,7 +253,7 @@ public class MobileUtils {
                             }
                         }
                     }
-                    sim = (int) mGetDefaultDataSubId.invoke(mSubscriptionManagerClass.getConstructor(android.content.Context.class).newInstance(context)) - 1;
+                    sim = sm.getActiveSubscriptionInfo((int) mGetDefaultDataSubId.invoke(sm)).getSimSlotIndex();
                     out = "getDefaultDataSubId " + sim;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -252,7 +263,6 @@ public class MobileUtils {
                 final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
                 if (activeNetworkInfo != null) {
-                    SubscriptionManager sm = SubscriptionManager.from(context);
                     List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
                     if (sl != null)
                         for (int i = 0; i < sl.size(); i++) {
@@ -263,11 +273,10 @@ public class MobileUtils {
                             }
                         }
                 }
-            }*/
+            }
             if (sim == Constants.DISABLED) {
                 try {
                     int id = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
-                    SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
                     sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
                     out = "getFromSettingsGlobal " + sim;
                 } catch (Settings.SettingNotFoundException e) {
@@ -1302,14 +1311,19 @@ public class MobileUtils {
 
     private static boolean isNetworkTypeMobile(int networkType) {
         switch (networkType) {
-            case 0:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 10:
-            case 11:
-            case 12:
+            case NT_WCDMA_PREFERRED:
+            case NT_GSM_ONLY:
+            case NT_WCDMA_ONLY:
+            case NT_GSM_WCDMA_AUTO:
+            case NT_CDMA_EVDO:
+            case NT_CDMA_ONLY:
+            case NT_EVDO_ONLY:
+            case NT_GLOBAL:
+            case NT_LTE_CDMA_EVDO:
+            case NT_LTE_GSM_WCDMA:
+            case NT_LTE_CMDA_EVDO_GSM_WCDMA:
+            case NT_LTE_ONLY:
+            case NT_LTE_WCDMA:
             case 14:
             case 15:
                 return true;
