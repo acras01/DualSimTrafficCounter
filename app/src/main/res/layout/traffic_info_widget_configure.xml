@@ -254,6 +254,45 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/minus_layout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/show_minus"
+                    android:id="@+id/minustv"
+                    android:layout_toLeftOf="@+id/minus"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_alignParentStart="true" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/minus"
+                    android:checked="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/used"
+                    android:id="@+id/minus_summary"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/minus"
+                    android:layout_below="@+id/minustv"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/simFontSize"

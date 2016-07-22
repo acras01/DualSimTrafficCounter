@@ -2,6 +2,8 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.content.Context;
 
+import java.util.Locale;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class DataFormat {
@@ -11,12 +13,12 @@ public class DataFormat {
     private final static double GB = KB * MB;
 
     public static String formatData(Context mContext, long data) {
-        if (data < MB)
-            return (String.format("%.2f", data / KB)) + mContext.getString(R.string.kb);
-        else if (data > GB)
-            return (String.format("%.2f", data / GB)) + mContext.getString(R.string.gb);
+        if (Math.abs(data) < MB)
+            return (String.format(Locale.getDefault(), "%.2f", data / KB)) + mContext.getString(R.string.kb);
+        else if (Math.abs(data) > GB)
+            return (String.format(Locale.getDefault(), "%.2f", data / GB)) + mContext.getString(R.string.gb);
         else
-            return (String.format("%.2f", data / MB)) + mContext.getString(R.string.mb);
+            return (String.format(Locale.getDefault(), "%.2f", data / MB)) + mContext.getString(R.string.mb);
     }
 
     public static long getFormatLong(String data, int value) {
