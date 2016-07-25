@@ -1242,6 +1242,8 @@ public class MobileUtils {
                     if (m.getParameterTypes().length == 1)
                         m.invoke(connectivityManager, enabled);
                     else if (m.getParameterTypes().length == 2) {
+                        if (!enabled)
+                            sim = Constants.SIM1;
                         final Object[] params = {getSimIMEI(context).get(sim), enabled};
                         m.invoke(connectivityManager, params);
                     }
