@@ -224,4 +224,5 @@
     <string name="count_only_incoming">Учитывать только входящий трафик</string>
     <string name="exit">Выход с остановкой сервиса</string>
     <string name="show_minus">Показывать потребление трафика сверх лимита</string>
+    <string name="manual_sim">Автовыбор активной SIM</string>
 </resources>

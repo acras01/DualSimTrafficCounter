@@ -224,4 +224,5 @@
     <string name="count_only_incoming">Враховувати тільки вхідний трафік</string>
     <string name="exit">Зупинити сервіс та закрити</string>
     <string name="show_minus">Відображати споживання трафіку понад ліміт</string>
+    <string name="manual_sim">Автовибір активної SIM</string>
 </resources>

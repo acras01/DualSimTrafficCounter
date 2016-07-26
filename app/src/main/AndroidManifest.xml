@@ -73,6 +73,12 @@
             android:theme="@style/AppTheme.NoActionBar.Translucent">
         </activity>
         <activity
+            android:name=".dialogs.ChooseSimDialog"
+            android:label="@string/attention"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+        </activity>
+        <activity
             android:name=".dialogs.ChooseOperatorDialog"
             android:label="@string/title_activity_choose_operator_dialog"
             android:theme="@style/AppTheme.NoActionBar.Translucent">

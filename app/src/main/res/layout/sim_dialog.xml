@@ -29,16 +29,6 @@
             android:id="@+id/sim3RB"
             android:text="SIM3" />
 
-        <android.support.v7.widget.AppCompatRadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/offRB"
-            android:text="@string/off" />
     </RadioGroup>
-
-    <android.support.v7.widget.AppCompatCheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/close_activity"
-        android:id="@+id/checkBox" />
 </LinearLayout>
+

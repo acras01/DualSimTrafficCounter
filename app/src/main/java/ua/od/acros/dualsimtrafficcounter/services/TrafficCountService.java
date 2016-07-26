@@ -46,9 +46,11 @@ import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseActionDialog;
+import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseSimDialog;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
+import ua.od.acros.dualsimtrafficcounter.events.SetSimEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
@@ -167,7 +169,27 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTaskResult.cancel(false);
             mTaskExecutor.shutdown();
         }
-        timerStart(Constants.COUNT);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[43], true)) {
+            mActiveSIM = MobileUtils.getActiveSIM(mContext);
+            timerStart(Constants.COUNT);
+        } else {
+            Intent dialogIntent = new Intent(mContext, ChooseSimDialog.class);
+            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (!ChooseSimDialog.isActive())
+                mContext.startActivity(dialogIntent);
+        }
+    }
+
+    @Subscribe
+    public void onMessageEvent(SetSimEvent event) {
+        if (event.action != null) {
+            if (mTaskResult != null) {
+                mTaskResult.cancel(false);
+                mTaskExecutor.shutdown();
+            }
+            mActiveSIM = event.sim;
+            timerStart(Constants.COUNT);
+        }
     }
 
     @Subscribe
@@ -420,7 +442,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
 
         // schedule task
-        timerStart(Constants.COUNT);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[43], true)) {
+            mActiveSIM = MobileUtils.getActiveSIM(mContext);
+            timerStart(Constants.COUNT);
+        } else {
+            Intent dialogIntent = new Intent(mContext, ChooseSimDialog.class);
+            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (!ChooseSimDialog.isActive())
+                mContext.startActivity(dialogIntent);
+        }
 
         return START_STICKY;
     }
@@ -433,7 +463,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         TimerTask tTask = null;
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-        mActiveSIM = MobileUtils.getActiveSIM(mContext);
         CustomNotification.setIdNeedsChange(true);
         if (task == Constants.COUNT) {
             switch (mActiveSIM) {

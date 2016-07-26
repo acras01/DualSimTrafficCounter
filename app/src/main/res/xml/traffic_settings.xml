@@ -15,6 +15,13 @@
         android:summaryOn="@string/on"
         android:summaryOff="@string/off" />
 
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="manual_sim"
+        android:title="@string/manual_sim"
+        android:defaultValue="false"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off" />
+
     <PreferenceScreen
         android:title="@string/sim1_limit"
         android:key="traff_sim1" >

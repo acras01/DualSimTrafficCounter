@@ -232,4 +232,5 @@
     <string name="count_only_incoming">Count only incoming traffic</string>
     <string name="exit">Stop service and exit</string>
     <string name="show_minus">Show traffic consumption over limit</string>
+    <string name="manual_sim">Autoselect active SIM</string>
 </resources>

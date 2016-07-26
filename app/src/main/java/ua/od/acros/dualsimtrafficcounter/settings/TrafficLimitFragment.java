@@ -28,6 +28,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
@@ -478,6 +479,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
+
+        if (key.equals(Constants.PREF_OTHER[43])) {
+            if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                mContext.stopService(new Intent(mContext, TrafficCountService.class));
+            mContext.startService(new Intent(mContext, TrafficCountService.class));
+        }
 
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         DateTime alarmTime;
