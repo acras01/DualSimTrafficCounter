@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -50,7 +49,7 @@ public class ChooseSimDialog extends AppCompatActivity {
             recreate();
         }
         View view = View.inflate(this, R.layout.sim_dialog, null);
-        String[] operatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+        String[] operatorNames = new String[]{MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
@@ -61,22 +60,15 @@ public class ChooseSimDialog extends AppCompatActivity {
         sim2rb.setText(operatorNames[1]);
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && CustomApplication.hasRoot()) ||
-                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice())) {
-            int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                    : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            if (simQuantity == 1) {
-                sim2rb.setEnabled(false);
-                sim3rb.setEnabled(false);
-            }
-            if (simQuantity == 2)
-                sim3rb.setEnabled(false);
-        } else {
-            sim1rb.setEnabled(false);
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        if (simQuantity == 1) {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);
         }
-        final ColorStateList[] textColor = new ColorStateList[] {ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};
+        if (simQuantity == 2)
+            sim3rb.setEnabled(false);
+        final ColorStateList[] textColor = new ColorStateList[]{ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -118,7 +110,7 @@ public class ChooseSimDialog extends AppCompatActivity {
                 });
             }
         });
-        if(!this.isFinishing()){
+        if (!this.isFinishing()) {
             mDialog.show();
         }
     }
