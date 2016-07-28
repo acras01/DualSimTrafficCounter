@@ -8,6 +8,13 @@
         android:summaryOn="@string/on"
         android:summaryOff="@string/off" />
 
+    <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+        android:key="save_profiles_calls"
+        android:title="@string/save_profile_known"
+        android:defaultValue="false"
+        android:summaryOn="@string/on"
+        android:summaryOff="@string/off" />
+
     <PreferenceScreen
         android:title="@string/sim1_limit"
         android:key="calls_sim1" >
@@ -78,6 +85,12 @@
                 android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.BlackListActivity"
                 android:data="0">
             </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="save_profile_calls1"
+            android:title="@string/save_profile"
+            android:summary="@string/save_profile_sum">
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
     </PreferenceScreen>
@@ -154,6 +167,12 @@
             </intent>
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="save_profile_calls2"
+            android:title="@string/save_profile"
+            android:summary="@string/save_profile_sum">
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -226,6 +245,12 @@
                 android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.BlackListActivity"
                 android:data="2">
             </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="save_profile_calls3"
+            android:title="@string/save_profile"
+            android:summary="@string/save_profile_sum">
         </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
     </PreferenceScreen>

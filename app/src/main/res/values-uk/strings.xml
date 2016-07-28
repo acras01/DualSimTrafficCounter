@@ -225,4 +225,7 @@
     <string name="exit">Зупинити сервіс та закрити</string>
     <string name="show_minus">Відображати споживання трафіку понад ліміт</string>
     <string name="manual_sim">Автовибір активної SIM</string>
+    <string name="save_profile">Зберегти профіль</string>
+    <string name="save_profile_known">Зберігати профілі для відомих SIM</string>
+    <string name="save_profile_sum">Зберегти профіль для поточної SIM</string>
 </resources>

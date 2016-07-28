@@ -70,7 +70,7 @@ public class Constants {
             "theme", "theme_auto", "traffic_reset", "calls_reset", "hud_service", //32
             "hud_textsize", "hud_textcolor", "hud_backcolor", "hud_x", "hud_y", //37
             "hud_id", "hud_remain", "hud_move", "hud_mobile_data", "hud_speed", //42
-            "manual_sim"}; //43
+            "manual_sim", "save_profiles_traffic", "save_profiles_calls"}; //45
     public static final String[] PREF_WIDGET_TRAFFIC = {"stub", "mNames", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10
@@ -83,6 +83,14 @@ public class Constants {
             "user_pick1", "user_pick2", "user_pick3", //8
             "icon_size", "size", "text_color", "useback", //12
             "background_color", "showdiv", "showsim1","showsim2", "showsim3", "calls_remain"}; //18
+    public static final String[] PREF_SIM = {"stub", "limit", "value", "period", "round", "auto", //5
+            "name", "autooff", "prefer", "time", "day", "everydayonoff", "timeoff", "timeon", //13
+            "op_round", "op_limit", "op_value", "usenight", "limitnight", //18
+            "valuenight", "nighton", "nightoff", "nightround", "operator_logo", "reset", "needsreset", //25
+            "nextreset", "overlimit", "action_chosen", "prelimit", "prelimitpercent", "autoenable", //31
+            "onlyreceived"}; //32
+    public static final String[] PREF_SIM_CALLS = {"calls_stub", "calls_limit", "calls_period", "calls_round", //3
+            "calls_time", "calls_day", "calls_op_value", "calls_period", "calls_reset", "calls_needs_reset", "calls_lastreset"}; //10
     public static final String[] PREF_SIM1_CALLS = {"calls_stub", "calls_limit1", "calls_period1", "calls_round1", //3
             "calls_time1", "calls_day1", "calls_op_value1", "calls_period1", "calls_reset1", "calls_needs_reset1", "calls_lastreset1"}; //10
     public static final String[] PREF_SIM2_CALLS = {"calls_stub", "calls_limit2", "calls_period2", "calls_round2", //3

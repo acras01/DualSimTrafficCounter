@@ -233,4 +233,7 @@
     <string name="exit">Stop service and exit</string>
     <string name="show_minus">Show traffic consumption over limit</string>
     <string name="manual_sim">Autoselect active SIM</string>
+    <string name="save_profile_known">Save profiles for known SIMs</string>
+    <string name="save_profile">Save profile</string>
+    <string name="save_profile_sum">Save settings for current SIM</string>
 </resources>

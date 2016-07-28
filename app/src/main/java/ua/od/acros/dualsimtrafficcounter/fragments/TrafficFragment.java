@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -260,7 +261,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             mService.setTitle(R.string.action_start);
             mService.setIcon(R.drawable.ic_action_enable);
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) ||
+                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())) {
             mMobileData.setEnabled(false);
             mMobileData.setVisible(false);
         } else {

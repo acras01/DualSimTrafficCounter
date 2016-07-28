@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -51,13 +52,15 @@ public class ChooseActionDialog extends AppCompatActivity {
         }
         View view = View.inflate(this, R.layout.action_dialog, null);
         AppCompatRadioButton change = (AppCompatRadioButton) view.findViewById(R.id.actionchange);
+        AppCompatRadioButton off = (AppCompatRadioButton) view.findViewById(R.id.actionoff);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        if (((android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) ||
-                (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) ||
-                android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.LOLLIPOP) ||
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ||
+                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) ||
                 prefs.getBoolean(Constants.PREF_OTHER[10], true) || simQuantity == 1)
             change.setEnabled(false);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())
+            off.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         final ColorStateList[] textColor = new ColorStateList[] {ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};

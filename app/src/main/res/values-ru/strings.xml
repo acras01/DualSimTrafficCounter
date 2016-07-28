@@ -225,4 +225,7 @@
     <string name="exit">Выход с остановкой сервиса</string>
     <string name="show_minus">Показывать потребление трафика сверх лимита</string>
     <string name="manual_sim">Автовыбор активной SIM</string>
+    <string name="save_profile">Сохранить профиль</string>
+    <string name="save_profile_known">Сохранять профили для известных SIM</string>
+    <string name="save_profile_sum">Сохранить профиль для текущей SIM</string>
 </resources>

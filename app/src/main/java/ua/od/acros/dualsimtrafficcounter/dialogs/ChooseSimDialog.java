@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -68,6 +69,12 @@ public class ChooseSimDialog extends AppCompatActivity {
         }
         if (simQuantity == 2)
             sim3rb.setEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ||
+                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())) {
+            sim1rb.setEnabled(false);
+            sim2rb.setEnabled(false);
+            sim3rb.setEnabled(false);
+        }
         final ColorStateList[] textColor = new ColorStateList[]{ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

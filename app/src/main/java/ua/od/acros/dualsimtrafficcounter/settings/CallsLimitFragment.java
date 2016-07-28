@@ -34,6 +34,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
     private boolean mIsAttached = false;
+    private Preference save1, save2, save3;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -61,6 +62,19 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         opValue1 = (TwoLineListPreference) findPreference(Constants.PREF_SIM1_CALLS[6]);
         opValue2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
         opValue3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
+
+        save1 = findPreference("save_profile_calls1");
+        save2 = findPreference("save_profile_calls2");
+        save3 = findPreference("save_profile_calls3");
+
+        if (!mPrefs.getBoolean(Constants.PREF_OTHER[45], true)) {
+            if (save1 != null)
+                save1.setEnabled(false);
+            if (save2 != null)
+                save2.setEnabled(false);
+            if (save3 != null)
+                save3.setEnabled(false);
+        }
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
@@ -213,6 +227,15 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
+        if (key.equals(Constants.PREF_OTHER[45])) {
+            boolean state = sharedPreferences.getBoolean(key, true);
+            if (save1 != null)
+                save1.setEnabled(state);
+            if (save2 != null)
+                save2.setEnabled(state);
+            if (save3 != null)
+                save3.setEnabled(state);
+        }
     }
 
     @Override

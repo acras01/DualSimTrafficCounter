@@ -40,7 +40,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private TwoLineEditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
             round1, round2, round3, round1N, round2N, round3N,
             day1, day2, day3,
-            opLimit1, opLimit2, opLimit3;
+            opLimit1, opLimit2, opLimit3,
+            prelimitValue1, prelimitValue2, prelimitValue3;
     private TwoLineListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3, value1N, value2N, value3N;
     private TwoLineCheckPreference prefer1, prefer2, prefer3;
     private TwoLineListPreference everyday1, everyday2, everyday3;
@@ -49,7 +50,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private int mSimQuantity;
     private Context mContext;
     private boolean mIsAttached = false;
-    private TwoLineEditTextPreference prelimitValue1, prelimitValue2, prelimitValue3;
+    private Preference save1, save2, save3;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -149,9 +150,15 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             everyday2.setEnabled(false);
             everyday3.setEnabled(false);
         }
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
+            autoenable1.setChecked(false);
+            autoenable1.setEnabled(false);
+            autoenable2.setChecked(false);
+            autoenable2.setEnabled(false);
+            autoenable3.setChecked(false);
+            autoenable3.setEnabled(false);
             everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));
             everyday1.setEntryValues(getResources().getStringArray(R.array.onoff_values_LP));
             everyday2.setEntries(getResources().getStringArray(R.array.onoff_LP));
@@ -191,6 +198,18 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         if (getArguments() != null) {
             String sim = getArguments().getString("sim");
             SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
+        }
+
+        save1 = findPreference("save_profile_traffic1");
+        save2 = findPreference("save_profile_traffic2");
+        save3 = findPreference("save_profile_traffic3");
+        if (!mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
+            if (save1 != null)
+                save1.setEnabled(false);
+            if (save2 != null)
+                save2.setEnabled(false);
+            if (save3 != null)
+                save3.setEnabled(false);
         }
     }
 
@@ -479,6 +498,16 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
+
+        if (key.equals(Constants.PREF_OTHER[44])) {
+            boolean state = sharedPreferences.getBoolean(key, true);
+            if (save1 != null)
+                save1.setEnabled(state);
+            if (save2 != null)
+                save2.setEnabled(state);
+            if (save3 != null)
+                save3.setEnabled(state);
+        }
 
         if (key.equals(Constants.PREF_OTHER[43])) {
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
