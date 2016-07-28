@@ -47,6 +47,7 @@ public class MobileUtils {
     private static final String GENERIC = "android.telephony.TelephonyManager";
     private static final String GET_NAME = "getNetworkOperatorName";
     private static final String GET_IMEI = "getDeviceId";
+    private static final String GET_IMSI = "getSubscriberId";
     private static final String GET_CODE = "getSimOperator";
     private static final String GET_CALL = "getCallState";
     private static final String GET_DATA = "getDataState";
@@ -58,6 +59,7 @@ public class MobileUtils {
     private static Class<?> mTelephonyClass = null;
     private static Method mGetDefaultDataSubscriptionInfo = null;
     private static Method mGetDeviceId = null;
+    private static Method mGetSubscriberId = null;
     private static Method mGetNetworkOperatorName = null;
     private static Method mGetSimOperator = null;
     private static Method mGetCallState = null;
@@ -95,7 +97,7 @@ public class MobileUtils {
     }
 
     public static int isMultiSim(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
             List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
             if (sl != null)
@@ -111,7 +113,7 @@ public class MobileUtils {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-            if (mTelephonyClass != null) {
+            else {
                 if (CustomApplication.isOldMtkDevice()) {
                     try {
                         Class<?> c = Class.forName(MEDIATEK);
@@ -217,12 +219,12 @@ public class MobileUtils {
         }
     }
 
-    public static int getActiveSIM(Context context) {
+    public static int getActiveSimForData(Context context) {
         String out = " ";
         if (mSubIds == null)
             mSubIds = new ArrayList<>();
         int sim = Constants.DISABLED;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             try {
                 if (mGetDefaultDataSubscriptionInfo == null) {
@@ -479,7 +481,7 @@ public class MobileUtils {
         return sim;
     }
 
-    public static int getSimId(Context context) {
+    public static int getActiveSimForCall(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -490,10 +492,10 @@ public class MobileUtils {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        if (mTelephonyClass != null) {
+        else {
                 if (simQuantity > 1) {
                     int sim = Constants.DISABLED;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                         if (mGetCallState == null)
                             mGetCallState = getMethod(mTelephonyClass, GET_CALL, 1);
                         for (int i = 0; i < simQuantity; i++) {
@@ -507,7 +509,7 @@ public class MobileUtils {
                                 e.printStackTrace();
                             }
                         }
-                    } else if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                    } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                         if (CustomApplication.isOldMtkDevice()) {
                             try {
                                 Class<?> c = Class.forName(MEDIATEK);
@@ -635,8 +637,8 @@ public class MobileUtils {
                     return sim;
                 } else
                     return Constants.SIM1;
-            } else
-                return Constants.SIM1;
+            }
+        return Constants.SIM1;
     }
 
     private static ArrayList<Long> getSubIds(Class<?> telephonyClass, int simQuantity, Context context) {
@@ -660,7 +662,7 @@ public class MobileUtils {
     public static ArrayList<String> getOperatorNames(Context context) {
         String out = "";
         ArrayList<String> name = new ArrayList<>();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
             List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
             if (sl != null)
@@ -680,7 +682,7 @@ public class MobileUtils {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-            if (mTelephonyClass != null) {
+            else {
                 if (simQuantity > 1) {
                     if (CustomApplication.isOldMtkDevice()) {
                         try {
@@ -780,7 +782,7 @@ public class MobileUtils {
 
     public static ArrayList<String> getOperatorCodes(Context context) {
         ArrayList<String> code = new ArrayList<>();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
             List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
             if (sl != null)
@@ -793,12 +795,12 @@ public class MobileUtils {
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (mTelephonyClass == null)
-            try {
-                mTelephonyClass = Class.forName(tm.getClass().getName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (mTelephonyClass != null) {
+                try {
+                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            else {
                 if (simQuantity > 1) {
                     if (CustomApplication.isOldMtkDevice()) {
                         try {
@@ -875,36 +877,34 @@ public class MobileUtils {
         return code;
     }
 
-    public static ArrayList<String> getSimIMEI(Context context) {
+    public static ArrayList<String> getDeviceIds(Context context) {
         ArrayList<String> imei = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-            for (int i = 0; i < simQuantity; i++) {
-                imei.add(i, tm.getDeviceId(i));
-            }
-        else if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (mTelephonyClass == null)
             try {
-                if (mTelephonyClass == null)
-                    mTelephonyClass = Class.forName(tm.getClass().getName());
-                if (mGetDeviceId == null)
-                    mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
-                for (int i = 0; i < simQuantity; i++) {
-                    imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                }
-            } catch (Exception e) {
+                mTelephonyClass = Class.forName(tm.getClass().getName());
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        } else {
-            if (mTelephonyClass == null)
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                for (int i = 0; i < simQuantity; i++) {
+                    imei.add(i, tm.getDeviceId(i));
+                }
+            else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1) {
                 try {
-                    mTelephonyClass = Class.forName(tm.getClass().getName());
-                } catch (ClassNotFoundException e) {
+                    if (mGetDeviceId == null)
+                        mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
+                    for (int i = 0; i < simQuantity; i++) {
+                        imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            if (mTelephonyClass != null) {
+            } else {
                 if (simQuantity > 1) {
                     if (CustomApplication.isOldMtkDevice()) {
                         try {
@@ -1002,6 +1002,111 @@ public class MobileUtils {
             }
         }
         return imei;
+    }
+
+    public static ArrayList<String> getSimIds(Context context) {
+        ArrayList<String> imsi = new ArrayList<>();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
+                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (mTelephonyClass == null)
+            try {
+                mTelephonyClass = Class.forName(tm.getClass().getName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                if (mGetSubscriberId == null)
+                    mGetSubscriberId = getMethod(tm.getClass(), GET_IMSI, 1);
+                for (SubscriptionInfo si : sl) {
+                    try {
+                        imsi.add((String) mGetSubscriberId.invoke(tm.getClass().getConstructor(Context.class).newInstance(context), si.getSubscriptionId()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                if (simQuantity > 1) {
+                    if (CustomApplication.isOldMtkDevice()) {
+                        try {
+                            Class<?> c = Class.forName(MEDIATEK);
+                            if (mGetSubscriberId == null)
+                                mGetSubscriberId = getMethod(c, GET_IMSI, 1);
+                            for (int i = 0; i < simQuantity; i++) {
+                                imsi.add(i, (String) mGetSubscriberId.invoke(c.getConstructor(Context.class).newInstance(context), i));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (imsi.size() == 0) {
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                if (mGetSubscriberId == null)
+                                    mGetSubscriberId = getMethod(c, GET_IMSI, 1);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    imsi.add(i, (String) mGetSubscriberId.invoke(c.getConstructor(Context.class).newInstance(context), (long) i));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        if (imsi.size() == 0) {
+                            try {
+                                if (mSubIds == null)
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                if (mGetSubscriberId == null)
+                                    mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI, 1);
+                                for (long subId : mSubIds) {
+                                    String imeiCurr = (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
+                                    if (!imeiCurr.equals(""))
+                                        imsi.add(imeiCurr);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (imsi.size() == 0) {
+                            try {
+                                if (mGetSubscriberId == null)
+                                    mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI + "Ext", 1);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (imsi.size() == 0) {
+                            try {
+                                if (mFrom == null)
+                                    mFrom = getMethod(mTelephonyClass, "from", 2);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    final Object[] params = {context, i};
+                                    TelephonyManager mTelephonyStub = null;
+                                    if (mFrom != null) {
+                                        mTelephonyStub = (TelephonyManager) mFrom.invoke(tm, params);
+                                    }
+                                    if (mTelephonyStub != null) {
+                                        if (mGetSubscriberId == null)
+                                            mGetSubscriberId = getMethod(mTelephonyStub.getClass(), GET_IMSI, 1);
+                                        imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyStub.getClass().getConstructor(Context.class).newInstance(context), i));
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                } else
+                    imsi.add(tm.getDeviceId());
+            }
+        }
+        return imsi;
     }
 
     private static boolean getNetworkFromDB(Context context, String code, String apn) {
@@ -1178,7 +1283,7 @@ public class MobileUtils {
             int result = wrapper.result;
             switch (result) {
                 case 0:
-                    String out = "sim" + getActiveSIM(context) + " " + isMobileDataActive(context);
+                    String out = "sim" + getActiveSimForData(context) + " " + isMobileDataActive(context);
                     //Execution output
                     try {
                         File dir = new File(String.valueOf(context.getFilesDir()));
@@ -1244,7 +1349,7 @@ public class MobileUtils {
                     else if (m.getParameterTypes().length == 2) {
                         if (!enabled)
                             sim = Constants.SIM1;
-                        final Object[] params = {getSimIMEI(context).get(sim), enabled};
+                        final Object[] params = {getDeviceIds(context).get(sim), enabled};
                         m.invoke(connectivityManager, params);
                     }
                 }
@@ -1338,7 +1443,7 @@ public class MobileUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean mAlternative = prefs.getBoolean(Constants.PREF_OTHER[20], false);
         if (!swtch) {
-            mLastActiveSIM = getActiveSIM(context);
+            mLastActiveSIM = getActiveSimForData(context);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 new SetMobileNetworkFromLollipop().execute(context, mLastActiveSIM, false);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
@@ -1380,7 +1485,7 @@ public class MobileUtils {
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (isMobileDataActive(context))
-                    new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSIM(context), false);
+                    new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSimForData(context), false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, sim, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
                 setMobileDataEnabled(context, false, sim);

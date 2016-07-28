@@ -298,6 +298,102 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public static void createProfileTableForData(CustomDatabaseHelper db, String name) {
+        String dbName = "data_" + name;
+        if (db.getReadableDatabase().query(dbName, null, null, null, null, null, null) == null){
+            String DATABASE_CREATE_SCRIPT = "create table "
+                    + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                    + " text not null, " + "rx" + " long, " + "tx" + " long, "
+                    + "total" + " long, " + "period" + " integer,"
+                    + "rx_n" + " long, " + "tx_n" + " long, " + "total_n" + " long);";
+            db.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+        }
+    }
+
+    public static ContentValues readTrafficDataForSim(CustomDatabaseHelper db, String name) {
+        ContentValues cv = new ContentValues();
+        mSqLiteDatabase = db.getReadableDatabase();
+        String dbName = "data_" + name;
+        Cursor cursor = mSqLiteDatabase.query(dbName, new String[]{Constants.LAST_DATE, Constants.LAST_TIME,
+        "rx", "tx", "total", "rx_n", "tx_n", "total_n", "period"}, null, null, null, null, null);
+        if (cursor.moveToLast()) {
+            cv.put("rx", cursor.getLong(cursor.getColumnIndex("rx")));
+            cv.put("tx", cursor.getLong(cursor.getColumnIndex("tx")));
+            cv.put("total", cursor.getLong(cursor.getColumnIndex("total")));
+            cv.put("rx_n", cursor.getLong(cursor.getColumnIndex("rx_n")));
+            cv.put("tx_n", cursor.getLong(cursor.getColumnIndex("tx_n")));
+            cv.put("total_n", cursor.getLong(cursor.getColumnIndex("total_n")));
+            cv.put(Constants.LAST_TIME, cursor.getString(cursor.getColumnIndex(Constants.LAST_TIME)));
+            cv.put(Constants.LAST_DATE, cursor.getString(cursor.getColumnIndex(Constants.LAST_DATE)));
+            cv.put("period", cursor.getInt(cursor.getColumnIndex("period")));
+        } else {
+            cv.put("rx", 0L);
+            cv.put("tx", 0L);
+            cv.put("total", 0L);
+            cv.put("rx_n", 0L);
+            cv.put("tx_n", 0L);
+            cv.put("total_n", 0L);
+            cv.put(Constants.LAST_TIME, "");
+            cv.put(Constants.LAST_DATE, "");
+            cv.put("period", 0);
+        }
+        cursor.close();
+        return cv;
+    }
+
+    public static void writeTrafficDataForSim(ContentValues cv, CustomDatabaseHelper db, String name) {
+        mSqLiteDatabase = db.getWritableDatabase();
+        String dbName = "data_" + name;
+        String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
+        int id = mSqLiteDatabase.update(dbName, cv, filter, null);
+        if (id == 0)
+            mSqLiteDatabase.insert(dbName, null, cv);
+    }
+
+    public static void createProfileTableForCalls(CustomDatabaseHelper db, String name) {
+        String dbName = "calls_" + name;
+        try {
+            db.getReadableDatabase().query(dbName, null, null, null, null, null, null);
+        }catch (Exception e){
+            String DATABASE_CREATE_SCRIPT = "create table "
+                    + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                    + " text not null, " + "calls" + " long, " + "calls_ex" + " long, " + "period" + " integer);";
+            db.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+        }
+    }
+
+    public static ContentValues readCallsDataForSim(CustomDatabaseHelper dbHelper, String name) {
+        ContentValues cv = new ContentValues();
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
+        String dbName = "calls_" + name;
+        Cursor cursor = mSqLiteDatabase.query(dbName, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, "calls",
+                "calls_ex", "period"}, null, null, null, null, null);
+        if (cursor.moveToLast()) {
+            cv.put("calls", cursor.getLong(cursor.getColumnIndex("calls")));
+            cv.put("calls_ex", cursor.getLong(cursor.getColumnIndex("calls_ex")));
+            cv.put(Constants.LAST_TIME, cursor.getString(cursor.getColumnIndex(Constants.LAST_TIME)));
+            cv.put(Constants.LAST_DATE, cursor.getString(cursor.getColumnIndex(Constants.LAST_DATE)));
+            cv.put("period", cursor.getInt(cursor.getColumnIndex("period")));
+        } else {
+            cv.put("calls", 0L);
+            cv.put("calls_ex", 0L);
+            cv.put(Constants.LAST_TIME, "");
+            cv.put(Constants.LAST_DATE, "");
+            cv.put("period", 0);
+        }
+        cursor.close();
+        return cv;
+    }
+
+    public static void writeCallsDataForSim(ContentValues cv, CustomDatabaseHelper dbHelper, String name) {
+        mSqLiteDatabase = dbHelper.getWritableDatabase();
+        String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
+        String dbName = "calls_" + name;
+        int id = mSqLiteDatabase.update(dbName, cv, filter, null);
+        if (id == 0)
+            mSqLiteDatabase.insert(dbName, null, cv);
+    }
+
     public static ContentValues readTrafficData(CustomDatabaseHelper db) {
         ContentValues cv = new ContentValues();
         mSqLiteDatabase = db.getReadableDatabase();
@@ -376,13 +472,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
     public static boolean isTrafficTableEmpty(CustomDatabaseHelper db) {
         boolean result;
-        mSqLiteDatabase = db.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
-                Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
-                Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
-                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
-                Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
-                Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, null, null, null, null, null);
+        Cursor cursor = db.getReadableDatabase().query(DATA_TABLE, null, null, null, null, null, null);
         result = cursor != null && cursor.getCount() == 0;
         if (cursor != null) {
             cursor.close();
@@ -392,10 +482,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
     public static boolean isCallsTableEmpty(CustomDatabaseHelper db) {
         boolean result;
-        mSqLiteDatabase = db.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.CALLS1,
-                Constants.CALLS1_EX, Constants.CALLS2, Constants.CALLS2_EX, Constants.CALLS3, Constants.CALLS3_EX,
-                Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3}, null, null, null, null, null);
+        Cursor cursor = db.getReadableDatabase().query(CALLS_TABLE, null, null, null, null, null, null);
         result = cursor != null && cursor.getCount() == 0;
         if (cursor != null) {
             cursor.close();

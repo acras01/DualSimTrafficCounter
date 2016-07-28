@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
@@ -22,6 +24,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -35,12 +38,13 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     private SharedPreferences mPrefs;
     private boolean mIsAttached = false;
     private Preference save1, save2, save3;
+    private Context mContext;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        Context context = CustomApplication.getAppContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mContext = CustomApplication.getAppContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         addPreferencesFromResource(R.xml.calls_settings);
 
@@ -63,10 +67,19 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         opValue2 = (TwoLineListPreference) findPreference(Constants.PREF_SIM2_CALLS[6]);
         opValue3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3_CALLS[6]);
 
+        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
+        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
+
+        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+
+        ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
+        if (imsi == null || imsi.size() != simQuantity)
+            findPreference(Constants.PREF_OTHER[45]).setEnabled(false);
+
         save1 = findPreference("save_profile_calls1");
         save2 = findPreference("save_profile_calls2");
         save3 = findPreference("save_profile_calls3");
-
         if (!mPrefs.getBoolean(Constants.PREF_OTHER[45], true)) {
             if (save1 != null)
                 save1.setEnabled(false);
@@ -75,12 +88,6 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             if (save3 != null)
                 save3.setEnabled(false);
         }
-
-        PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
-        PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
-
-        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (simQuantity == 1) {
             getPreferenceScreen().removePreference(sim2);
@@ -235,6 +242,12 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 save2.setEnabled(state);
             if (save3 != null)
                 save3.setEnabled(state);
+            if (state) {
+                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+                ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
+                for (String s : imsi)
+                    CustomDatabaseHelper.createProfileTableForCalls(dbHelper, s);
+            }
         }
     }
 

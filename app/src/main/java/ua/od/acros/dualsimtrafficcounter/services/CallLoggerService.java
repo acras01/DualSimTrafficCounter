@@ -376,13 +376,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
-                if (!mIsOutgoing)
-                    switch (state) {
-                        case TelephonyManager.CALL_STATE_RINGING:
-                            mIsOutgoing = false;
-                            break;
-                        case TelephonyManager.CALL_STATE_OFFHOOK:
-                            final int sim = MobileUtils.getSimId(ctx);
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
+                    if (!mIsOutgoing)
+                        switch (state) {
+                            case TelephonyManager.CALL_STATE_RINGING:
+                                mIsOutgoing = false;
+                                break;
+                            case TelephonyManager.CALL_STATE_OFFHOOK:
+                                final int sim = MobileUtils.getActiveSimForCall(ctx);
                             /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
                             try {
                                 // to this path add a new directory path
@@ -398,35 +399,36 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }*/
-                            final ArrayList<String> whiteList = CustomDatabaseHelper.readWhiteList(sim, mDbHelper);
-                            final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper);
-                            if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
-                                mIsDialogShown = true;
-                                final Bundle bundle = new Bundle();
-                                bundle.putString("number", CallLoggerService.this.mNumber[0]);
-                                bundle.putInt("sim", sim);
-                                Intent dialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
-                                dialogIntent.putExtra("bundle", bundle);
-                                dialogIntent.putExtra("whitelist", whiteList);
-                                dialogIntent.putExtra("blacklist", blackList);
-                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                try {
-                                    TimeUnit.MILLISECONDS.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                mContext.startActivity(dialogIntent);
-                            } else if (blackList.contains(CallLoggerService.this.mNumber[0]))
-                                mIsOutgoing = true;
-                            break;
-                        case TelephonyManager.CALL_STATE_IDLE:
-                            mIsOutgoing = false;
-                            mIsDialogShown = false;
-                            break;
-                        default:
-                            mIsOutgoing = false;
-                            break;
-                    }
+                                final ArrayList<String> whiteList = CustomDatabaseHelper.readWhiteList(sim, mDbHelper);
+                                final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper);
+                                if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
+                                    mIsDialogShown = true;
+                                    final Bundle bundle = new Bundle();
+                                    bundle.putString("number", CallLoggerService.this.mNumber[0]);
+                                    bundle.putInt("sim", sim);
+                                    Intent dialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
+                                    dialogIntent.putExtra("bundle", bundle);
+                                    dialogIntent.putExtra("whitelist", whiteList);
+                                    dialogIntent.putExtra("blacklist", blackList);
+                                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    try {
+                                        TimeUnit.MILLISECONDS.sleep(500);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    mContext.startActivity(dialogIntent);
+                                } else if (blackList.contains(CallLoggerService.this.mNumber[0]))
+                                    mIsOutgoing = true;
+                                break;
+                            case TelephonyManager.CALL_STATE_IDLE:
+                                mIsOutgoing = false;
+                                mIsDialogShown = false;
+                                break;
+                            default:
+                                mIsOutgoing = false;
+                                break;
+                        }
+                }
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);
     }

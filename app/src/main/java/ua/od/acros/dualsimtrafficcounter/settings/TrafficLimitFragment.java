@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
@@ -31,6 +33,7 @@ import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -199,6 +202,10 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             String sim = getArguments().getString("sim");
             SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
         }
+
+        ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
+        if (imsi == null || imsi.size() != mSimQuantity)
+            findPreference(Constants.PREF_OTHER[44]).setEnabled(false);
 
         save1 = findPreference("save_profile_traffic1");
         save2 = findPreference("save_profile_traffic2");
@@ -507,6 +514,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 save2.setEnabled(state);
             if (save3 != null)
                 save3.setEnabled(state);
+            if (state) {
+                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+                ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
+                for (String s : imsi)
+                CustomDatabaseHelper.createProfileTableForData(dbHelper, s);
+            }
         }
 
         if (key.equals(Constants.PREF_OTHER[43])) {

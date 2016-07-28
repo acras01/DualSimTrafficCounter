@@ -74,7 +74,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                             if (XposedHelpers.callMethod(activeCall, "getState") == Enum.valueOf(enumCallState, "ACTIVE") &&
                                     !(Boolean) XposedHelpers.callMethod(conn, "isIncoming")) {
                                 String imei = (String) XposedHelpers.callMethod(fgPhone, "getDeviceId");
-                                ArrayList<String> id = MobileUtils.getSimIMEI(mContext);
+                                ArrayList<String> id = MobileUtils.getDeviceIds(mContext);
                                 int sim = Constants.DISABLED;
                                 for (int i = 0; i < id.size(); i++) {
                                     if (imei.equals(id.get(i)))
@@ -141,7 +141,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                         final boolean activeOutgoing = (callState == CALL_STATE_ACTIVE &&
                                                 mPreviousCallState == Enum.valueOf(enumInCallState, "OUTGOING"));
                                         if (activeOutgoing) {
-                                            sim[0] = MobileUtils.getSimId(mContext);
+                                            sim[0] = MobileUtils.getActiveSimForCall(mContext);
                                             start[0] = System.currentTimeMillis();
                                             XposedBridge.log("Outgoing call answered: " + sim[0]);
                                             Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
@@ -169,7 +169,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     Object call = XposedHelpers.callMethod(conn, "getCall");
                     Object phone = XposedHelpers.callMethod(call, "getPhone");
                     String imei = (String) XposedHelpers.callMethod(phone, "getDeviceId");
-                    ArrayList<String> id = MobileUtils.getSimIMEI(mContext);
+                    ArrayList<String> id = MobileUtils.getDeviceIds(mContext);
                     int sim = Constants.DISABLED;
                     for (int i = 0; i < id.size(); i++) {
                         if (imei.equals(id.get(i)))
