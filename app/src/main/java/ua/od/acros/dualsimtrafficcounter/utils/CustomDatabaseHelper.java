@@ -300,7 +300,9 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
     public static void createProfileTableForData(CustomDatabaseHelper db, String name) {
         String dbName = "data_" + name;
-        if (db.getReadableDatabase().query(dbName, null, null, null, null, null, null) == null){
+        try {
+            db.getReadableDatabase().query(dbName, null, null, null, null, null, null);
+        } catch (Exception e) {
             String DATABASE_CREATE_SCRIPT = "create table "
                     + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                     + " text not null, " + "rx" + " long, " + "tx" + " long, "
@@ -354,7 +356,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         String dbName = "calls_" + name;
         try {
             db.getReadableDatabase().query(dbName, null, null, null, null, null, null);
-        }catch (Exception e){
+        } catch (Exception e) {
             String DATABASE_CREATE_SCRIPT = "create table "
                     + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                     + " text not null, " + "calls" + " long, " + "calls_ex" + " long, " + "period" + " integer);";

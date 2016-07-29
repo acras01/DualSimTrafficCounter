@@ -43,19 +43,19 @@ public class Constants {
     public static final String CONTINUE_ACTION = "continue";
     public static final long NOTIFY_INTERVAL = 1000; // 1 second
     public static final String DATABASE_NAME = "mydatabase.db";
-    public static final String[] PREF_SIM1 = {"stub", "limit1", "value1", "period1", "round1", "auto1", //5
+    public static final String[] PREF_SIM1 = {"stub1", "limit1", "value1", "period1", "round1", "auto1", //5
             "name1", "autooff1", "prefer1", "time1", "day1", "everydayonoff1", "timeoff1", "timeon1", //13
             "op_round1", "op_limit1", "op_value1", "usenight1", "limitnight1", //18
             "valuenight1", "nighton1", "nightoff1", "nightround1", "operator_logo1", "reset1", "needsreset1", //25
             "nextreset1", "overlimit1", "action_chosen1", "prelimit1", "prelimitpercent1", "autoenable1", //31
             "onlyreceived1"}; //32
-    public static final String[] PREF_SIM2 = {"stub", "limit2", "value2", "period2", "round2", "auto2", //5
+    public static final String[] PREF_SIM2 = {"stub2", "limit2", "value2", "period2", "round2", "auto2", //5
             "name2", "autooff2", "prefer2", "time2", "day2", "everydayonoff2", "timeoff2", "timeon2", //13
             "op_round2", "op_limit2", "op_value2", "usenight2", "limitnight2", //18
             "valuenight2", "nighton2", "nightoff2", "nightround2", "operator_logo2", "reset2", "needsreset2", //25
             "nextreset2", "overlimit2", "action_chosen2", "prelimit2", "prelimitpercent2", "autoenable2", //31
             "onlyreceived2"}; //32
-    public static final String[] PREF_SIM3 = {"stub", "limit3", "value3", "period3", "round3", "auto3", //5
+    public static final String[] PREF_SIM3 = {"stub3", "limit3", "value3", "period3", "round3", "auto3", //5
             "name3", "autooff3", "prefer3", "time3", "day3", "everydayonoff3", "timeoff3", "timeon3", //13
             "op_round3", "op_limit31", "op_value3", "usenight3", "limitnight3", //18
             "valuenight3", "nighton3", "nightoff3", "nightround3", "operator_logo3", "reset3", "needsreset3", //25
@@ -83,19 +83,19 @@ public class Constants {
             "user_pick1", "user_pick2", "user_pick3", //8
             "icon_size", "size", "text_color", "useback", //12
             "background_color", "showdiv", "showsim1","showsim2", "showsim3", "calls_remain"}; //18
-    public static final String[] PREF_SIM = {"stub", "limit", "value", "period", "round", "auto", //5
+    public static final String[] PREF_SIM_DATA = {"stub", "limit", "value", "period", "round", "auto", //5
             "name", "autooff", "prefer", "time", "day", "everydayonoff", "timeoff", "timeon", //13
             "op_round", "op_limit", "op_value", "usenight", "limitnight", //18
             "valuenight", "nighton", "nightoff", "nightround", "operator_logo", "reset", "needsreset", //25
             "nextreset", "overlimit", "action_chosen", "prelimit", "prelimitpercent", "autoenable", //31
             "onlyreceived"}; //32
-    public static final String[] PREF_SIM_CALLS = {"calls_stub", "calls_limit", "calls_period", "calls_round", //3
+    public static final String[] PREF_SIM_CALLS = {"stub", "calls_limit", "calls_period", "calls_round", //3
             "calls_time", "calls_day", "calls_op_value", "calls_period", "calls_reset", "calls_needs_reset", "calls_lastreset"}; //10
-    public static final String[] PREF_SIM1_CALLS = {"calls_stub", "calls_limit1", "calls_period1", "calls_round1", //3
+    public static final String[] PREF_SIM1_CALLS = {"calls_stub1", "calls_limit1", "calls_period1", "calls_round1", //3
             "calls_time1", "calls_day1", "calls_op_value1", "calls_period1", "calls_reset1", "calls_needs_reset1", "calls_lastreset1"}; //10
-    public static final String[] PREF_SIM2_CALLS = {"calls_stub", "calls_limit2", "calls_period2", "calls_round2", //3
+    public static final String[] PREF_SIM2_CALLS = {"calls_stub2", "calls_limit2", "calls_period2", "calls_round2", //3
             "calls_time2", "calls_day2", "calls_op_value2", "calls_period2", "calls_reset2", "calls_needs_reset2", "calls_lastreset2"}; //10
-    public static final String[] PREF_SIM3_CALLS = {"calls_stub", "calls_limit3", "calls_period3", "calls_round3", //3
+    public static final String[] PREF_SIM3_CALLS = {"calls_stub3", "calls_limit3", "calls_period3", "calls_round3", //3
             "calls_time3", "calls_day3", "calls_op_value3", "calls_period3", "calls_reset3", "calls_needs_reset3", "calls_lastreset3"}; //10
     public static final int STARTED_ID = 101;
     public static final int SIM1 = 0;

@@ -47,7 +47,6 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
 
         auto3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[5]);
         name3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[6]);
-
         logo3 = (TwoLineListPreference) findPreference(Constants.PREF_SIM3[23]);
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");

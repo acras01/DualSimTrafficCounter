@@ -430,6 +430,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
         readFromDatabase();
+        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
+            DateTime dateTime = new DateTime();
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(mDateFormat));
+        }
 
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);;
@@ -456,6 +461,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private void readFromDatabase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
             mIMSI = MobileUtils.getSimIds(mContext);
+            CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(0));
             ContentValues cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
             mTrafficData.put(Constants.SIM1RX, (long) cv.get("rx"));
             mTrafficData.put(Constants.SIM1TX, (long) cv.get("tx"));
@@ -481,6 +487,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.TOTAL3_N, 0L);
             mTrafficData.put(Constants.PERIOD3, 0);
             if (mSimQuantity >= 2) {
+                CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(1));
                 cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
                 mTrafficData.put(Constants.SIM2RX, (long) cv.get("rx"));
                 mTrafficData.put(Constants.SIM2TX, (long) cv.get("tx"));
@@ -491,6 +498,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mTrafficData.put(Constants.PERIOD2, (int) cv.get("period"));
             }
             if (mSimQuantity == 3) {
+                CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(2));
                 cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(2));
                 mTrafficData.put(Constants.SIM3RX, (long) cv.get("rx"));
                 mTrafficData.put(Constants.SIM3TX, (long) cv.get("tx"));
@@ -1616,6 +1624,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void writeToDataBase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             ContentValues cv = new ContentValues();
             cv.put("rx", (long) mTrafficData.get(Constants.SIM1RX));
             cv.put("tx", (long) mTrafficData.get(Constants.SIM1TX));
@@ -1663,23 +1673,27 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         intent.putExtra(Constants.SPEEDRX, speedRX);
         intent.putExtra(Constants.SPEEDTX, speedTX);
         intent.putExtra(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
-        intent.putExtra(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
-        intent.putExtra(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
         intent.putExtra(Constants.SIM1TX, (long) mTrafficData.get(Constants.SIM1TX));
-        intent.putExtra(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
-        intent.putExtra(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
         intent.putExtra(Constants.TOTAL1, (long) mTrafficData.get(Constants.TOTAL1));
-        intent.putExtra(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
-        intent.putExtra(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
         intent.putExtra(Constants.SIM1RX_N, (long) mTrafficData.get(Constants.SIM1RX_N));
-        intent.putExtra(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
-        intent.putExtra(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
         intent.putExtra(Constants.SIM1TX_N, (long) mTrafficData.get(Constants.SIM1TX_N));
-        intent.putExtra(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
-        intent.putExtra(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
         intent.putExtra(Constants.TOTAL1_N, (long) mTrafficData.get(Constants.TOTAL1_N));
-        intent.putExtra(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
-        intent.putExtra(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
+        if (mSimQuantity >= 2) {
+            intent.putExtra(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
+            intent.putExtra(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
+            intent.putExtra(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
+            intent.putExtra(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
+            intent.putExtra(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
+            intent.putExtra(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
+        }
+        if (mSimQuantity == 3) {
+            intent.putExtra(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
+            intent.putExtra(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
+            intent.putExtra(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
+            intent.putExtra(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
+            intent.putExtra(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
+            intent.putExtra(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
+        }
         if (mActiveSIM == Constants.DISABLED)
             intent.putExtra(Constants.SIM_ACTIVE, mLastActiveSIM);
         else
@@ -1720,6 +1734,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             bundle.putBoolean("flash", mFlashPreOverLimit[mActiveSIM]);
             bundle.putLong(Constants.SPEEDRX, speedRX);
             bundle.putLong(Constants.SPEEDTX, speedTX);
+            if (!CustomApplication.isMyServiceRunning(FloatingWindowService.class))
+                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             StandOutWindow.sendData(mContext, FloatingWindowService.class,
                     mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID), Constants.FLOATING_WINDOW, bundle, null, -1);
         }
