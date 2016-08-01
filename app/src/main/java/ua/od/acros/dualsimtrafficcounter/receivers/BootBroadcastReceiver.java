@@ -11,13 +11,8 @@ import android.preference.PreferenceManager;
 
 import org.joda.time.DateTime;
 
-import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import wei.mark.standout.StandOutWindow;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
 
@@ -25,21 +20,21 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         //start CountService
-        if (!prefs.getBoolean(Constants.PREF_OTHER[5], false))
-            context.startService(new Intent(context, TrafficCountService.class));
+        /*if (!prefs.getBoolean(Constants.PREF_OTHER[5], false))
+            context.startService(new Intent(context, TrafficCountService.class));*/
         //start CallLoggerService
-        if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
-            context.startService(new Intent(context, CallLoggerService.class));
+        /*if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
+            context.startService(new Intent(context, CallLoggerService.class));*/
 
         //start WatchDogService
         if (prefs.getBoolean(Constants.PREF_OTHER[4], true))
             context.startService(new Intent(context, WatchDogService.class));
 
         //start FloatingWindow
-        if (prefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+        /*if (prefs.getBoolean(Constants.PREF_OTHER[32], false) &&
                 ((prefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(context)) ||
                         !prefs.getBoolean(Constants.PREF_OTHER[41], false)))
-            StandOutWindow.show(context, FloatingWindowService.class, prefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));
+            StandOutWindow.show(context, FloatingWindowService.class, prefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID));*/
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
