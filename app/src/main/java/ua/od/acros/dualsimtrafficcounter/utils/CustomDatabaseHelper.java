@@ -298,10 +298,10 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static ContentValues readTrafficDataForSim(CustomDatabaseHelper db, String name) {
+    public static ContentValues readTrafficDataForSim(CustomDatabaseHelper dbHelper, String name) {
         ContentValues cv = new ContentValues();
         String dbName = "data_" + name;
-        mSqLiteDatabase = db.getReadableDatabase();
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
         try {
             mSqLiteDatabase.query(dbName, null, null, null, null, null, null);
         } catch (Exception e) {
@@ -310,8 +310,8 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                     + " text not null, " + "rx" + " long, " + "tx" + " long, "
                     + "total" + " long, " + "period" + " integer,"
                     + "rx_n" + " long, " + "tx_n" + " long, " + "total_n" + " long);";
-            db.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
-            mSqLiteDatabase = db.getReadableDatabase();
+            dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+            mSqLiteDatabase = dbHelper.getReadableDatabase();
         }
         Cursor cursor = mSqLiteDatabase.query(dbName, new String[]{Constants.LAST_DATE, Constants.LAST_TIME,
         "rx", "tx", "total", "rx_n", "tx_n", "total_n", "period"}, null, null, null, null, null);
@@ -340,8 +340,8 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeTrafficDataForSim(ContentValues cv, CustomDatabaseHelper db, String name) {
-        mSqLiteDatabase = db.getWritableDatabase();
+    public static void writeTrafficDataForSim(ContentValues cv, CustomDatabaseHelper dbHelper, String name) {
+        mSqLiteDatabase = dbHelper.getWritableDatabase();
         String dbName = "data_" + name;
         String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
         int id = mSqLiteDatabase.update(dbName, cv, filter, null);
@@ -390,9 +390,9 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(dbName, null, cv);
     }
 
-    public static ContentValues readTrafficData(CustomDatabaseHelper db) {
+    public static ContentValues readTrafficData(CustomDatabaseHelper dbHelper) {
         ContentValues cv = new ContentValues();
-        mSqLiteDatabase = db.getReadableDatabase();
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
                 Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
                 Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
@@ -458,17 +458,17 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeTrafficData(ContentValues mMap, CustomDatabaseHelper db) {
-        mSqLiteDatabase = db.getWritableDatabase();
-        String filter = Constants.LAST_DATE + "='" + mMap.get(Constants.LAST_DATE) + "'";
-        int id = mSqLiteDatabase.update(DATA_TABLE, mMap, filter, null);
+    public static void writeTrafficData(ContentValues cv, CustomDatabaseHelper dbHelper) {
+        mSqLiteDatabase = dbHelper.getWritableDatabase();
+        String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
+        int id = mSqLiteDatabase.update(DATA_TABLE, cv, filter, null);
         if (id == 0)
-            mSqLiteDatabase.insert(DATA_TABLE, null, mMap);
+            mSqLiteDatabase.insert(DATA_TABLE, null, cv);
     }
 
-    public static boolean isTrafficTableEmpty(CustomDatabaseHelper db) {
+    public static boolean isTrafficTableEmpty(CustomDatabaseHelper dbHelper) {
         boolean result;
-        Cursor cursor = db.getReadableDatabase().query(DATA_TABLE, null, null, null, null, null, null);
+        Cursor cursor = dbHelper.getReadableDatabase().query(DATA_TABLE, null, null, null, null, null, null);
         result = cursor != null && cursor.getCount() == 0;
         if (cursor != null) {
             cursor.close();
@@ -476,9 +476,9 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public static boolean isCallsTableEmpty(CustomDatabaseHelper db) {
+    public static boolean isCallsTableEmpty(CustomDatabaseHelper dbHelper) {
         boolean result;
-        Cursor cursor = db.getReadableDatabase().query(CALLS_TABLE, null, null, null, null, null, null);
+        Cursor cursor = dbHelper.getReadableDatabase().query(CALLS_TABLE, null, null, null, null, null, null);
         result = cursor != null && cursor.getCount() == 0;
         if (cursor != null) {
             cursor.close();
@@ -486,13 +486,14 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public static Bundle getDataForDate(CustomDatabaseHelper db, String date, int sim, SharedPreferences prefs) {
+    public static Bundle getDataForDate(CustomDatabaseHelper dbHelper, String date, int sim,
+                                        SharedPreferences prefs, ArrayList<String> imsi) {
 
         ContentValues cv1 = new ContentValues();
         ContentValues cv2 = new ContentValues();
         Bundle out = new Bundle();
 
-        mSqLiteDatabase = db.getReadableDatabase();
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
 
         DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
         DateTime queried = fmtDate.parseDateTime(date);
@@ -502,289 +503,175 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
         String dayBeforeDate = queried.minusDays(1).toString(fmtDate);
 
-        Cursor cursorToDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
-                Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
-                Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
-                Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
-                Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N, Constants.SIM3RX_N, Constants.SIM3TX_N,
-                Constants.TOTAL3_N}, Constants.LAST_DATE + " = ?", new String[]{queried.toString(fmtDate)}, null, null, null);
-        if (cursorToDate.moveToLast()) {
-            cv1.put(Constants.SIM1RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX)));
-            cv1.put(Constants.SIM2RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX)));
-            cv1.put(Constants.SIM3RX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3RX)));
-            cv1.put(Constants.SIM1TX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1TX)));
-            cv1.put(Constants.SIM2TX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2TX)));
-            cv1.put(Constants.SIM3TX, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3TX)));
-            cv1.put(Constants.TOTAL1, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL1)));
-            cv1.put(Constants.TOTAL2, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2)));
-            cv1.put(Constants.TOTAL3, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3)));
-            cv1.put(Constants.PERIOD1, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD1)));
-            cv1.put(Constants.PERIOD2, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD2)));
-            cv1.put(Constants.PERIOD3, cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD3)));
-            cv1.put(Constants.SIM1RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX_N)));
-            cv1.put(Constants.SIM2RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX_N)));
-            cv1.put(Constants.SIM3RX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3RX_N)));
-            cv1.put(Constants.SIM1TX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1TX_N)));
-            cv1.put(Constants.SIM2TX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2TX_N)));
-            cv1.put(Constants.SIM3TX_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3TX_N)));
-            cv1.put(Constants.TOTAL1_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL1_N)));
-            cv1.put(Constants.TOTAL2_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2_N)));
-            cv1.put(Constants.TOTAL3_N, cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3_N)));
+        Cursor cursorToDate, cursorToDayBeforeDate;
+        if (imsi == null) {
+            cursorToDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
+                    Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
+                    Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
+                    Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
+                    Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N, Constants.SIM3RX_N, Constants.SIM3TX_N,
+                    Constants.TOTAL3_N}, Constants.LAST_DATE + " = ?", new String[]{queried.toString(fmtDate)}, null, null, null);
+            if (cursorToDate.moveToLast()) {
+                switch (sim) {
+                    case Constants.SIM1:
+                        cv1.put("rx", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX)));
+                        cv1.put("tx", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1TX)));
+                        cv1.put("total", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL1)));
+                        cv1.put("period", cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD1)));
+                        cv1.put("rx_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1RX_N)));
+                        cv1.put("tx_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM1TX_N)));
+                        cv1.put("total_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL1_N)));
+                        break;
+                    case Constants.SIM2:
+                        cv1.put("rx", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX)));
+                        cv1.put("tx", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2TX)));
+                        cv1.put("total", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2)));
+                        cv1.put("period", cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD2)));
+                        cv1.put("rx_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2RX_N)));
+                        cv1.put("tx_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM2TX_N)));
+                        cv1.put("total_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL2_N)));
+                        break;
+                    case Constants.SIM3:
+                        cv1.put("rx", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3RX)));
+                        cv1.put("tx", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3TX)));
+                        cv1.put("total", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3)));
+                        cv1.put("period", cursorToDate.getInt(cursorToDate.getColumnIndex(Constants.PERIOD3)));
+                        cv1.put("rx_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3RX_N)));
+                        cv1.put("tx_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.SIM3TX_N)));
+                        cv1.put("total_n", cursorToDate.getLong(cursorToDate.getColumnIndex(Constants.TOTAL3_N)));
+                        break;
+                }
+            }
+            cursorToDayBeforeDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
+                    Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
+                    Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
+                    Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
+                    Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N, Constants.SIM3RX_N, Constants.SIM3TX_N,
+                    Constants.TOTAL3_N}, Constants.LAST_DATE + " = ?", new String[]{dayBeforeDate}, null, null, null);
+            if (cursorToDayBeforeDate.moveToLast()) {
+                switch (sim) {
+                    case Constants.SIM1:
+                        cv2.put("rx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX)));
+                        cv2.put("tx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1TX)));
+                        cv2.put("total", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL1)));
+                        cv2.put("period", cursorToDayBeforeDate.getInt(cursorToDayBeforeDate.getColumnIndex(Constants.PERIOD1)));
+                        cv2.put("rx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX_N)));
+                        cv2.put("tx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1TX_N)));
+                        cv2.put("total_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL1_N)));
+                        break;
+                    case Constants.SIM2:
+                        cv2.put("rx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX)));
+                        cv2.put("tx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2TX)));
+                        cv2.put("total", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL2)));
+                        cv2.put("period", cursorToDayBeforeDate.getInt(cursorToDayBeforeDate.getColumnIndex(Constants.PERIOD2)));
+                        cv2.put("rx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX_N)));
+                        cv2.put("tx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2TX_N)));
+                        cv2.put("total_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL2_N)));
+                        break;
+                    case Constants.SIM3:
+                        cv2.put("rx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3RX)));
+                        cv2.put("tx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3TX)));
+                        cv2.put("total", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL3)));
+                        cv2.put("period", cursorToDayBeforeDate.getInt(cursorToDayBeforeDate.getColumnIndex(Constants.PERIOD3)));
+                        cv2.put("rx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3RX_N)));
+                        cv2.put("tx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3TX_N)));
+                        cv2.put("total_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL3_N)));
+                        break;
+                }
+            }
+        } else {
+            cursorToDate = mSqLiteDatabase.query("data_" + imsi.get(sim), new String[]{
+                            "rx", "tx", "total", "period", "rx_n", "tx_n", "total_n"}, Constants.LAST_DATE + " = ?",
+                    new String[]{queried.toString(fmtDate)}, null, null, null);
+            if (cursorToDate.moveToLast()) {
+                cv1.put("rx", cursorToDate.getLong(cursorToDate.getColumnIndex("rx")));
+                cv1.put("tx", cursorToDate.getLong(cursorToDate.getColumnIndex("tx")));
+                cv1.put("total", cursorToDate.getLong(cursorToDate.getColumnIndex("total")));
+                cv1.put("period", cursorToDate.getInt(cursorToDate.getColumnIndex("period")));
+                cv1.put("rx_n", cursorToDate.getLong(cursorToDate.getColumnIndex("rx_n")));
+                cv1.put("tx_n", cursorToDate.getLong(cursorToDate.getColumnIndex("tx_n")));
+                cv1.put("total_n", cursorToDate.getLong(cursorToDate.getColumnIndex("total_n")));
+            }
+            cursorToDayBeforeDate = mSqLiteDatabase.query("data_" + imsi.get(sim), new String[]{
+                            "rx", "tx", "total", "period", "rx_n", "tx_n", "total_n"}, Constants.LAST_DATE + " = ?",
+                    new String[]{dayBeforeDate}, null, null, null);
+            if (cursorToDayBeforeDate.moveToLast()) {
+                cv2.put("rx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex("rx")));
+                cv2.put("tx", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex("tx")));
+                cv2.put("total", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex("total")));
+                cv2.put("period", cursorToDayBeforeDate.getInt(cursorToDayBeforeDate.getColumnIndex("period")));
+                cv2.put("rx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex("rx_n")));
+                cv2.put("tx_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex("tx_n")));
+                cv2.put("total_n", cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex("total_n")));
+            }
         }
-        Cursor cursorToDayBeforeDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
-                Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
-                Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
-                Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
-                Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N, Constants.SIM3RX_N, Constants.SIM3TX_N,
-                Constants.TOTAL3_N}, Constants.LAST_DATE + " = ?", new String[]{dayBeforeDate}, null, null, null);
-        if (cursorToDayBeforeDate.moveToLast()) {
-            cv2.put(Constants.SIM1RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX)));
-            cv2.put(Constants.SIM2RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX)));
-            cv2.put(Constants.SIM3RX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3RX)));
-            cv2.put(Constants.SIM1TX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1TX)));
-            cv2.put(Constants.SIM2TX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2TX)));
-            cv2.put(Constants.SIM3TX, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3TX)));
-            cv2.put(Constants.TOTAL1, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL1)));
-            cv2.put(Constants.TOTAL2, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL2)));
-            cv2.put(Constants.TOTAL3, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL3)));
-            cv2.put(Constants.PERIOD1, cursorToDayBeforeDate.getInt(cursorToDayBeforeDate.getColumnIndex(Constants.PERIOD1)));
-            cv2.put(Constants.PERIOD2, cursorToDayBeforeDate.getInt(cursorToDayBeforeDate.getColumnIndex(Constants.PERIOD2)));
-            cv2.put(Constants.PERIOD3, cursorToDayBeforeDate.getInt(cursorToDayBeforeDate.getColumnIndex(Constants.PERIOD3)));
-            cv2.put(Constants.SIM1RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1RX_N)));
-            cv2.put(Constants.SIM2RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2RX_N)));
-            cv2.put(Constants.SIM3RX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3RX_N)));
-            cv2.put(Constants.SIM1TX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM1TX_N)));
-            cv2.put(Constants.SIM2TX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM2TX_N)));
-            cv2.put(Constants.SIM3TX_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.SIM3TX_N)));
-            cv2.put(Constants.TOTAL1_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL1_N)));
-            cv2.put(Constants.TOTAL2_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL2_N)));
-            cv2.put(Constants.TOTAL3_N, cursorToDayBeforeDate.getLong(cursorToDayBeforeDate.getColumnIndex(Constants.TOTAL3_N)));
-        }
+        String[] prefSim = new String[Constants.PREF_SIM1.length];
         switch (sim) {
             case Constants.SIM1:
-                switch (prefs.getString(Constants.PREF_SIM1[3], "0")) {
-                    case "0":
-                        if (cv1.size() > 0) {
-                            out.putLong("rx", (long) cv1.get(Constants.SIM1RX));
-                            out.putLong("tx", (long) cv1.get(Constants.SIM1TX));
-                            out.putLong("tot", (long) cv1.get(Constants.TOTAL1));
-                            out.putLong("rx_n", (long) cv1.get(Constants.SIM1RX_N));
-                            out.putLong("tx_n", (long) cv1.get(Constants.SIM1TX_N));
-                            out.putLong("tot_n", (long) cv1.get(Constants.TOTAL1_N));
-                        } else
-                            return null;
-                        break;
-                    case "1":
-                        if (queried.getDayOfMonth() != Integer.valueOf(prefs.getString(Constants.PREF_SIM1[10], "1")))
-                            if (cv1.size() > 0 && cv2.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM1RX) - (long) cv2.get(Constants.SIM1RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM1TX) - (long) cv2.get(Constants.SIM1TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL1) - (long) cv2.get(Constants.TOTAL1));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM1RX_N) - (long) cv2.get(Constants.SIM1RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM1TX_N) - (long) cv2.get(Constants.SIM1TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL1_N) - (long) cv2.get(Constants.TOTAL1_N));
-                            } else if (cv1.size() > 0 && cv2.size() == 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM1RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM1TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL1));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM1RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM1TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL1_N));
-                            } else
-                                return null;
-                        else {
-                            if (cv1.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM1RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM1TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL1));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM1RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM1TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL1_N));
-                            } else
-                                return null;
-                        }
-                        break;
-                    case "2":
-                        if ((int) cv1.get(Constants.PERIOD1) == 0) {
-                            if (cv1.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM1RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM1TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL1));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM1RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM1TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL1_N));
-                            } else
-                                return null;
-                        } else {
-                            if (cv1.size() > 0 && cv2.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM1RX) - (long) cv2.get(Constants.SIM1RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM1TX) - (long) cv2.get(Constants.SIM1TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL1) - (long) cv2.get(Constants.TOTAL1));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM1RX_N) - (long) cv2.get(Constants.SIM1RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM1TX_N) - (long) cv2.get(Constants.SIM1TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL1_N) - (long) cv2.get(Constants.TOTAL1_N));
-                            }  else if (cv1.size() > 0 && cv2.size() == 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM1RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM1TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL1));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM1RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM1TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL1_N));
-                            } else
-                                return null;
-                        }
-                        break;
-                }
+                prefSim = Constants.PREF_SIM1;
                 break;
             case Constants.SIM2:
-                switch (prefs.getString(Constants.PREF_SIM2[3], "0")) {
-                    case "0":
-                        if (cv1.size() > 0) {
-                            out.putLong("rx", (long) cv1.get(Constants.SIM2RX));
-                            out.putLong("tx", (long) cv1.get(Constants.SIM2TX));
-                            out.putLong("tot", (long) cv1.get(Constants.TOTAL2));
-                            out.putLong("rx_n", (long) cv1.get(Constants.SIM2RX_N));
-                            out.putLong("tx_n", (long) cv1.get(Constants.SIM2TX_N));
-                            out.putLong("tot_n", (long) cv1.get(Constants.TOTAL2_N));
-                        } else
-                            return null;
-                        break;
-                    case "1":
-                        if (queried.getDayOfMonth() != Integer.valueOf(prefs.getString(Constants.PREF_SIM2[10], "1")))
-                            if (cv1.size() > 0 && cv2.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM2RX) - (long) cv2.get(Constants.SIM2RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM2TX) - (long) cv2.get(Constants.SIM2TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL2) - (long) cv2.get(Constants.TOTAL2));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM2RX_N) - (long) cv2.get(Constants.SIM2RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM2TX_N) - (long) cv2.get(Constants.SIM2TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL2_N) - (long) cv2.get(Constants.TOTAL2_N));
-                            } else if (cv1.size() > 0 && cv2.size() == 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM2RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM2TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL2));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM2RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM2TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL2_N));
-                            } else
-                                return null;
-                        else {
-                            if (cv1.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM2RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM2TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL2));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM2RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM2TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL2_N));
-                            } else
-                                return null;
-                        }
-                        break;
-                    case "2":
-                        if ((int) cv1.get(Constants.PERIOD2) == 0)
-                            if (cv1.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM2RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM2TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL2));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM2RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM2TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL2_N));
-                            } else
-                                return null;
-                        else {
-                            if (cv1.size() > 0 && cv2.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM2RX) - (long) cv2.get(Constants.SIM2RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM2TX) - (long) cv2.get(Constants.SIM2TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL2) - (long) cv2.get(Constants.TOTAL2));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM2RX_N) - (long) cv2.get(Constants.SIM2RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM2TX_N) - (long) cv2.get(Constants.SIM2TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL2_N) - (long) cv2.get(Constants.TOTAL2_N));
-                            } else if (cv1.size() > 0 && cv2.size() == 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM2RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM2TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL2));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM2RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM2TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL2_N));
-                            } else
-                                return null;
-                        }
-                        break;
-                }
+                prefSim = Constants.PREF_SIM2;
                 break;
             case Constants.SIM3:
-                switch (prefs.getString(Constants.PREF_SIM3[3], "0")) {
-                    case "0":
-                        if (cv1.size() > 0) {
-                            out.putLong("rx", (long) cv1.get(Constants.SIM3RX));
-                            out.putLong("tx", (long) cv1.get(Constants.SIM3TX));
-                            out.putLong("tot", (long) cv1.get(Constants.TOTAL3));
-                            out.putLong("rx_n", (long) cv1.get(Constants.SIM3RX_N));
-                            out.putLong("tx_n", (long) cv1.get(Constants.SIM3TX_N));
-                            out.putLong("tot_n", (long) cv1.get(Constants.TOTAL3_N));
-                        } else
-                            return null;
-                        break;
-                    case "1":
-                        if (queried.getDayOfMonth() != Integer.valueOf(prefs.getString(Constants.PREF_SIM3[10], "1")))
-                            if (cv1.size() > 0 && cv2.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM3RX) - (long) cv2.get(Constants.SIM3RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM3TX) - (long) cv2.get(Constants.SIM3TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL3) - (long) cv2.get(Constants.TOTAL3));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM3RX_N) - (long) cv2.get(Constants.SIM3RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM3TX_N) - (long) cv2.get(Constants.SIM3TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL3_N) - (long) cv2.get(Constants.TOTAL3_N));
-                            } else if (cv1.size() > 0 && cv2.size() == 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM3RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM3TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL3));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM3RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM3TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL3_N));
-                            } else
-                                return null;
-                        else {
-                            if (cv1.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM3RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM3TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL3));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM3RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM3TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL3_N));
-                            } else
-                                return null;
-                        }
-                        break;
-                    case "2":
-                        if ((int) cv1.get(Constants.PERIOD3) == 0)
-                            if (cv1.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM3RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM3TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL3));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM3RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM3TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL3_N));
-                            } else
-                                return null;
-                        else {
-                            if (cv1.size() > 0 && cv2.size() > 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM3RX) - (long) cv2.get(Constants.SIM3RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM3TX) - (long) cv2.get(Constants.SIM3TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL3) - (long) cv2.get(Constants.TOTAL3));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM3RX_N) - (long) cv2.get(Constants.SIM3RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM3TX_N) - (long) cv2.get(Constants.SIM3TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL3_N) - (long) cv2.get(Constants.TOTAL3_N));
-                            } else if (cv1.size() > 0 && cv2.size() == 0) {
-                                out.putLong("rx", (long) cv1.get(Constants.SIM3RX));
-                                out.putLong("tx", (long) cv1.get(Constants.SIM3TX));
-                                out.putLong("tot", (long) cv1.get(Constants.TOTAL3));
-                                out.putLong("rx_n", (long) cv1.get(Constants.SIM3RX_N));
-                                out.putLong("tx_n", (long) cv1.get(Constants.SIM3TX_N));
-                                out.putLong("tot_n", (long) cv1.get(Constants.TOTAL3_N));
-                            } else
-                                return null;
-                        }
-                        break;
+                prefSim = Constants.PREF_SIM3;
+                break;
+        }
+        int choice = 0;
+        switch (prefs.getString(prefSim[3], "0")) {
+            case "0":
+                if (cv1.size() > 0)
+                    choice = 1;
+                else
+                    return null;
+                break;
+            case "1":
+                if (queried.getDayOfMonth() != Integer.valueOf(prefs.getString(prefSim[10], "1")))
+                    if (cv1.size() > 0 && cv2.size() > 0)
+                        choice = 2;
+                    else if (cv1.size() > 0 && cv2.size() == 0)
+                        choice = 1;
+                    else
+                        return null;
+                else {
+                    if (cv1.size() > 0)
+                        choice = 1;
+                    else
+                        return null;
                 }
+                break;
+            case "2":
+                if ((int) cv1.get("period") == 0)
+                    if (cv1.size() > 0)
+                        choice = 1;
+                    else
+                        return null;
+                else {
+                    if (cv1.size() > 0 && cv2.size() > 0)
+                        choice = 2;
+                    else if (cv1.size() > 0 && cv2.size() == 0)
+                        choice = 1;
+                    else
+                        return null;
+                }
+                break;
+        }
+        switch (choice) {
+            case 1:
+                out.putLong("rx", (long) cv1.get("rx"));
+                out.putLong("tx", (long) cv1.get("tx"));
+                out.putLong("tot", (long) cv1.get("total"));
+                out.putLong("rx_n", (long) cv1.get("rx_n"));
+                out.putLong("tx_n", (long) cv1.get("tx_n"));
+                out.putLong("tot_n", (long) cv1.get("total_n"));
+                break;
+            case 2:
+                out.putLong("rx", (long) cv1.get("rx") - (long) cv2.get("rx"));
+                out.putLong("tx", (long) cv1.get("tx") - (long) cv2.get("tx"));
+                out.putLong("tot", (long) cv1.get("total") - (long) cv2.get("total"));
+                out.putLong("rx_n", (long) cv1.get("rx_n") - (long) cv2.get("rx_n"));
+                out.putLong("tx_n", (long) cv1.get("tx_n") - (long) cv2.get("tx_n"));
+                out.putLong("tot_n", (long) cv1.get("total_n") - (long) cv2.get("total_n"));
                 break;
         }
         cursorToDate.close();
@@ -827,12 +714,12 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeCallsData(ContentValues mCalls, CustomDatabaseHelper dbHelper) {
+    public static void writeCallsData(ContentValues cv, CustomDatabaseHelper dbHelper) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
-        String filter = Constants.LAST_DATE + "='" + mCalls.get(Constants.LAST_DATE) + "'";
-        int id = mSqLiteDatabase.update(CALLS_TABLE, mCalls, filter, null);
+        String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
+        int id = mSqLiteDatabase.update(CALLS_TABLE, cv, filter, null);
         if (id == 0)
-            mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
+            mSqLiteDatabase.insert(CALLS_TABLE, null, cv);
     }
 
     public static void writeWhiteList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {

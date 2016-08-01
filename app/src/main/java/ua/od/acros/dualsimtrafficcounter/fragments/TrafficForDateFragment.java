@@ -27,6 +27,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -234,9 +235,13 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             String date = params[0] + "-" + params[1] + "-" + params[2];
             if (isCancelled())
                 return null;
-            else
+            else {
+                ArrayList<String> imsi = null;
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true))
+                    imsi = MobileUtils.getSimIds(mContext);
                 return CustomDatabaseHelper.getDataForDate(CustomDatabaseHelper.getInstance(mContext),
-                        date, params[3], mPrefs);
+                        date, params[3], mPrefs, imsi);
+            }
         }
 
         @Override
