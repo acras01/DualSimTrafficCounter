@@ -42,17 +42,18 @@ public class WhiteListActivity extends AppCompatActivity {
     private CustomDatabaseHelper mDbHelper;
     private ProgressBar pb;
     private WhiteListAdapter mAdapter;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = CustomApplication.getAppContext();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (savedInstanceState == null) {
-            if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -135,7 +136,10 @@ public class WhiteListActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            CustomDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDbHelper);
+            ArrayList<String> imsi = null;
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
+                imsi = MobileUtils.getSimIds(mContext);
+            CustomDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi);
             return true;
         }
 
@@ -162,7 +166,10 @@ public class WhiteListActivity extends AppCompatActivity {
 
         @Override
         protected List<ListItem> doInBackground(Void... params) {
-            ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper);
+            ArrayList<String> imsi = null;
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
+                imsi = MobileUtils.getSimIds(mContext);
+            ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper, imsi);
             List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);
             List<String> numbers = new ArrayList<>();
             for (ListItem item : listItems)

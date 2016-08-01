@@ -298,10 +298,12 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static void createProfileTableForData(CustomDatabaseHelper db, String name) {
+    public static ContentValues readTrafficDataForSim(CustomDatabaseHelper db, String name) {
+        ContentValues cv = new ContentValues();
         String dbName = "data_" + name;
+        mSqLiteDatabase = db.getReadableDatabase();
         try {
-            db.getReadableDatabase().query(dbName, null, null, null, null, null, null);
+            mSqLiteDatabase.query(dbName, null, null, null, null, null, null);
         } catch (Exception e) {
             String DATABASE_CREATE_SCRIPT = "create table "
                     + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
@@ -309,13 +311,8 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                     + "total" + " long, " + "period" + " integer,"
                     + "rx_n" + " long, " + "tx_n" + " long, " + "total_n" + " long);";
             db.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+            mSqLiteDatabase = db.getReadableDatabase();
         }
-    }
-
-    public static ContentValues readTrafficDataForSim(CustomDatabaseHelper db, String name) {
-        ContentValues cv = new ContentValues();
-        mSqLiteDatabase = db.getReadableDatabase();
-        String dbName = "data_" + name;
         Cursor cursor = mSqLiteDatabase.query(dbName, new String[]{Constants.LAST_DATE, Constants.LAST_TIME,
         "rx", "tx", "total", "rx_n", "tx_n", "total_n", "period"}, null, null, null, null, null);
         if (cursor.moveToLast()) {
@@ -352,22 +349,19 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(dbName, null, cv);
     }
 
-    public static void createProfileTableForCalls(CustomDatabaseHelper db, String name) {
+    public static ContentValues readCallsDataForSim(CustomDatabaseHelper dbHelper, String name) {
+        ContentValues cv = new ContentValues();
         String dbName = "calls_" + name;
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
         try {
-            db.getReadableDatabase().query(dbName, null, null, null, null, null, null);
+            mSqLiteDatabase.query(dbName, null, null, null, null, null, null);
         } catch (Exception e) {
             String DATABASE_CREATE_SCRIPT = "create table "
                     + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                     + " text not null, " + "calls" + " long, " + "calls_ex" + " long, " + "period" + " integer);";
-            db.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+            dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+            mSqLiteDatabase = dbHelper.getReadableDatabase();
         }
-    }
-
-    public static ContentValues readCallsDataForSim(CustomDatabaseHelper dbHelper, String name) {
-        ContentValues cv = new ContentValues();
-        mSqLiteDatabase = dbHelper.getReadableDatabase();
-        String dbName = "calls_" + name;
         Cursor cursor = mSqLiteDatabase.query(dbName, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, "calls",
                 "calls_ex", "period"}, null, null, null, null, null);
         if (cursor.moveToLast()) {
@@ -842,29 +836,37 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public static void writeWhiteList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
-        mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
                 if (imsi != null)
-                    table = imsi.get(0) + "white";
+                    table = "white_" + imsi.get(0);
                 else
                     table = WHITE_LIST_1;
                 break;
             case Constants.SIM2:
                 if (imsi != null)
-                    table = imsi.get(1) + "white";
+                    table = "white_" + imsi.get(1);
                 else
                     table = WHITE_LIST_2;
                 break;
             case Constants.SIM3:
                 if (imsi != null)
-                    table = imsi.get(2) + "white";
+                    table = "white_" + imsi.get(2);
                 else
                     table = WHITE_LIST_3;
                 break;
         }
         if (sim >= 0) {
+            mSqLiteDatabase = dbHelper.getReadableDatabase();
+            try {
+                mSqLiteDatabase.query(table, null, null, null, null, null, null);
+            } catch (Exception e) {
+                String DATABASE_CREATE_SCRIPT = "create table "
+                        + table + " (" + Constants.NUMBER + " text not null);";
+                mSqLiteDatabase = dbHelper.getWritableDatabase();
+                mSqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT);
+            }
             mSqLiteDatabase.execSQL("DELETE FROM " + table);
             for (String s : list) {
                 ContentValues cv = new ContentValues();
@@ -875,30 +877,38 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public static ArrayList<String> readWhiteList(int sim, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
-        ArrayList<String> list = new ArrayList<>();
-        mSqLiteDatabase = dbHelper.getReadableDatabase();
+        ArrayList<String> list = new ArrayList<>();        ;
         String table = "";
         switch (sim) {
             case Constants.SIM1:
                 if (imsi != null)
-                    table = imsi.get(0) + "white";
+                    table = "white_" + imsi.get(0);
                 else
                     table = WHITE_LIST_1;
                 break;
             case Constants.SIM2:
                 if (imsi != null)
-                    table = imsi.get(1) + "white";
+                    table = "white_" + imsi.get(1);
                 else
                     table = WHITE_LIST_2;
                 break;
             case Constants.SIM3:
                 if (imsi != null)
-                    table = imsi.get(2) + "white";
+                    table = "white_" + imsi.get(2);
                 else
                     table = WHITE_LIST_3;
                 break;
         }
         if (sim >= 0) {
+            mSqLiteDatabase = dbHelper.getReadableDatabase();
+            try {
+                mSqLiteDatabase.query(table, null, null, null, null, null, null);
+            } catch (Exception e) {
+                String DATABASE_CREATE_SCRIPT = "create table "
+                        + table + " (" + Constants.NUMBER + " text not null);";
+                dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+                mSqLiteDatabase = dbHelper.getReadableDatabase();
+            }
             try {
                 Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
                 if (cursor != null) {
@@ -917,29 +927,37 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public static void writeBlackList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
-        mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
                 if (imsi != null)
-                    table = imsi.get(0) + "black";
+                    table = "black_" + imsi.get(0);
                 else
                     table = BLACK_LIST_1;
                 break;
             case Constants.SIM2:
                 if (imsi != null)
-                    table = imsi.get(1) + "black";
+                    table = "black_" + imsi.get(1);
                 else
                     table = BLACK_LIST_2;
                 break;
             case Constants.SIM3:
                 if (imsi != null)
-                    table = imsi.get(2) + "black";
+                    table = "black_" + imsi.get(2);
                 else
                     table = BLACK_LIST_3;
                 break;
         }
         if (sim >= 0) {
+            mSqLiteDatabase = dbHelper.getReadableDatabase();
+            try {
+                mSqLiteDatabase.query(table, null, null, null, null, null, null);
+            } catch (Exception e) {
+                String DATABASE_CREATE_SCRIPT = "create table "
+                        + table + " (" + Constants.NUMBER + " text not null);";
+                mSqLiteDatabase = dbHelper.getWritableDatabase();
+                mSqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT);
+            }
             mSqLiteDatabase.execSQL("DELETE FROM " + table);
             for (String s : list) {
                 ContentValues cv = new ContentValues();
@@ -951,29 +969,37 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
     public static ArrayList<String> readBlackList(int sim, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
         ArrayList<String> list = new ArrayList<>();
-        mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
                 if (imsi != null)
-                    table = imsi.get(0) + "black";
+                    table = "black_" + imsi.get(0);
                 else
                     table = BLACK_LIST_1;
                 break;
             case Constants.SIM2:
                 if (imsi != null)
-                    table = imsi.get(1) + "black";
+                    table = "black_" + imsi.get(1);
                 else
                     table = BLACK_LIST_2;
                 break;
             case Constants.SIM3:
                 if (imsi != null)
-                    table = imsi.get(2) + "black";
+                    table = "black_" + imsi.get(2);
                 else
                     table = BLACK_LIST_3;
                 break;
         }
         if (sim >= 0) {
+            mSqLiteDatabase = dbHelper.getReadableDatabase();
+            try {
+                mSqLiteDatabase.query(table, null, null, null, null, null, null);
+            } catch (Exception e) {
+                String DATABASE_CREATE_SCRIPT = "create table "
+                        + table + " (" + Constants.NUMBER + " text not null);";
+                dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+                mSqLiteDatabase = dbHelper.getReadableDatabase();
+            }
             try {
                 Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
                 if (cursor != null) {

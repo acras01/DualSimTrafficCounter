@@ -39,17 +39,18 @@ public class BlackListActivity extends AppCompatActivity {
     private BlackListAdapter mAdapter;
     private ArrayList<String> mList;
     private ProgressBar pb;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = CustomApplication.getAppContext();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (savedInstanceState == null) {
-            if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -119,7 +120,10 @@ public class BlackListActivity extends AppCompatActivity {
                     i.remove();
                 }
             }
-            CustomDatabaseHelper.writeBlackList(mKey, mList, mDbHelper);
+            ArrayList<String> imsi = null;
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
+                imsi = MobileUtils.getSimIds(mContext);
+            CustomDatabaseHelper.writeBlackList(mKey, mList, mDbHelper, imsi);
             return true;
         }
 
@@ -146,7 +150,10 @@ public class BlackListActivity extends AppCompatActivity {
 
         @Override
         protected List<ListItem> doInBackground(Void... params) {
-            mList = CustomDatabaseHelper.readBlackList(mKey, mDbHelper);
+            ArrayList<String> imsi = null;
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
+                imsi = MobileUtils.getSimIds(mContext);
+            mList = CustomDatabaseHelper.readBlackList(mKey, mDbHelper, imsi);
             List<ListItem> blackList = new ArrayList<>();
             for (String number : mList)
                 blackList.add(new ListItem(number, false));

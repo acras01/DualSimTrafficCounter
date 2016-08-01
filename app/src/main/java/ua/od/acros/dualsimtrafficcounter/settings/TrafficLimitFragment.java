@@ -37,7 +37,6 @@ import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -574,12 +573,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 save2.setEnabled(state);
             if (save3 != null)
                 save3.setEnabled(state);
-            if (state) {
-                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-                ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
-                for (String s : imsi)
-                CustomDatabaseHelper.createProfileTableForData(dbHelper, s);
-            }
         }
 
         if (key.equals(Constants.PREF_OTHER[43])) {

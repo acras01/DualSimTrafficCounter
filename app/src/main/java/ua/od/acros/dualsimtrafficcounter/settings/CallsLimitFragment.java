@@ -252,12 +252,6 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 save2.setEnabled(state);
             if (save3 != null)
                 save3.setEnabled(state);
-            if (state) {
-                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-                ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
-                for (String s : imsi)
-                    CustomDatabaseHelper.createProfileTableForCalls(dbHelper, s);
-            }
         }
     }
 
@@ -312,8 +306,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             }
             editor.apply();
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-            CustomDatabaseHelper.writeBlackList(sim, CustomDatabaseHelper.readBlackList(sim, dbHelper, imsi), dbHelper, imsi);
-            CustomDatabaseHelper.writeWhiteList(sim, CustomDatabaseHelper.readWhiteList(sim, dbHelper, imsi), dbHelper, imsi);
+            CustomDatabaseHelper.writeBlackList(sim, CustomDatabaseHelper.readBlackList(sim, dbHelper, null), dbHelper, imsi);
+            CustomDatabaseHelper.writeWhiteList(sim, CustomDatabaseHelper.readWhiteList(sim, dbHelper, null), dbHelper, imsi);
             return  true;
         } else
             return false;

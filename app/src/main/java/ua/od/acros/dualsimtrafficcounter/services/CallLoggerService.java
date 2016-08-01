@@ -75,7 +75,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private boolean mLimitHasChanged;
     private long[] mLimits = new long[3];
     private BroadcastReceiver mCallAnsweredReceiver, mCallEndedReceiver;
-    private ArrayList<String> mIMSI;
+    private ArrayList<String> mIMSI = null;
 
     public CallLoggerService() {
     }
@@ -96,8 +96,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-        mIMSI = MobileUtils.getSimIds(mContext);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true)) {
+            mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
@@ -362,10 +362,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             int sim = bundle.getInt("sim");
             if (list != null) {
                 list.add(bundle.getString("number"));
-                if (bundle.getBoolean("black", false))
-                    CustomDatabaseHelper.writeBlackList(sim, list, mDbHelper);
-                else
-                    CustomDatabaseHelper.writeWhiteList(sim, list, mDbHelper);
+                if (bundle.getBoolean("black", false)) {
+                    CustomDatabaseHelper.writeBlackList(sim, list, mDbHelper, mIMSI);
+                } else {
+                    CustomDatabaseHelper.writeWhiteList(sim, list, mDbHelper, mIMSI);
+                }
                 return true;
             } else
                 return false;
@@ -466,8 +467,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }*/
-                                final ArrayList<String> whiteList = CustomDatabaseHelper.readWhiteList(sim, mDbHelper);
-                                final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper);
+                                final ArrayList<String> whiteList = CustomDatabaseHelper.readWhiteList(sim, mDbHelper, mIMSI);
+                                final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper, mIMSI);
                                 if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
                                     mIsDialogShown = true;
                                     final Bundle bundle = new Bundle();
@@ -768,7 +769,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
-            CustomDatabaseHelper.createProfileTableForCalls(mDbHelper, mIMSI.get(0));
             ContentValues cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(0));
             mCallsData.put(Constants.CALLS1, (long) cv.get("calls"));
             mCallsData.put(Constants.CALLS1_EX, (long) cv.get("calls_ex"));
@@ -782,14 +782,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, (String) cv.get(Constants.LAST_TIME));
             mCallsData.put(Constants.LAST_DATE, (String) cv.get(Constants.LAST_DATE));
             if (mSimQuantity >= 2) {
-                CustomDatabaseHelper.createProfileTableForCalls(mDbHelper, mIMSI.get(1));
                 cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(1));
                 mCallsData.put(Constants.CALLS2, (long) cv.get("calls"));
                 mCallsData.put(Constants.CALLS2_EX, (long) cv.get("calls_ex"));
                 mCallsData.put(Constants.PERIOD2, (int) cv.get("period"));
             }
             if (mSimQuantity == 3) {
-                CustomDatabaseHelper.createProfileTableForCalls(mDbHelper, mIMSI.get(2));
                 cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(2));
                 mCallsData.put(Constants.CALLS3, (long) cv.get("calls"));
                 mCallsData.put(Constants.CALLS3_EX, (long) cv.get("calls_ex"));

@@ -110,7 +110,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private boolean mLimitHasChanged = false;
     private Handler mHandler;
     private boolean[] mFlashPreOverLimit;
-    private ArrayList<String> mIMSI;
+    private ArrayList<String> mIMSI = null;
 
     public TrafficCountService() {
     }
@@ -514,7 +514,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
-            CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(0));
             ContentValues cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
             mTrafficData.put(Constants.SIM1RX, (long) cv.get("rx"));
             mTrafficData.put(Constants.SIM1TX, (long) cv.get("tx"));
@@ -538,7 +537,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.LAST_TIME, (String) cv.get(Constants.LAST_TIME));
             mTrafficData.put(Constants.LAST_DATE, (String) cv.get(Constants.LAST_DATE));
             if (mSimQuantity >= 2) {
-                CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(1));
                 cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
                 mTrafficData.put(Constants.SIM2RX, (long) cv.get("rx"));
                 mTrafficData.put(Constants.SIM2TX, (long) cv.get("tx"));
@@ -549,7 +547,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mTrafficData.put(Constants.PERIOD2, (int) cv.get("period"));
             }
             if (mSimQuantity == 3) {
-                CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(2));
                 cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(2));
                 mTrafficData.put(Constants.SIM3RX, (long) cv.get("rx"));
                 mTrafficData.put(Constants.SIM3TX, (long) cv.get("tx"));
