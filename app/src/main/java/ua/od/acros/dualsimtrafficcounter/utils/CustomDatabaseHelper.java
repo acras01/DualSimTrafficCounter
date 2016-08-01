@@ -841,18 +841,27 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(CALLS_TABLE, null, mCalls);
     }
 
-    public static void writeWhiteList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper) {
+    public static void writeWhiteList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
-                table = WHITE_LIST_1;
+                if (imsi != null)
+                    table = imsi.get(0) + "white";
+                else
+                    table = WHITE_LIST_1;
                 break;
             case Constants.SIM2:
-                table = WHITE_LIST_2;
+                if (imsi != null)
+                    table = imsi.get(1) + "white";
+                else
+                    table = WHITE_LIST_2;
                 break;
             case Constants.SIM3:
-                table = WHITE_LIST_3;
+                if (imsi != null)
+                    table = imsi.get(2) + "white";
+                else
+                    table = WHITE_LIST_3;
                 break;
         }
         if (sim >= 0) {
@@ -865,19 +874,28 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static ArrayList<String> readWhiteList(int sim, CustomDatabaseHelper dbHelper) {
+    public static ArrayList<String> readWhiteList(int sim, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
         ArrayList<String> list = new ArrayList<>();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
-                table = WHITE_LIST_1;
+                if (imsi != null)
+                    table = imsi.get(0) + "white";
+                else
+                    table = WHITE_LIST_1;
                 break;
             case Constants.SIM2:
-                table = WHITE_LIST_2;
+                if (imsi != null)
+                    table = imsi.get(1) + "white";
+                else
+                    table = WHITE_LIST_2;
                 break;
             case Constants.SIM3:
-                table = WHITE_LIST_3;
+                if (imsi != null)
+                    table = imsi.get(2) + "white";
+                else
+                    table = WHITE_LIST_3;
                 break;
         }
         if (sim >= 0) {
@@ -898,18 +916,27 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public static void writeBlackList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper) {
+    public static void writeBlackList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
-                table = BLACK_LIST_1;
+                if (imsi != null)
+                    table = imsi.get(0) + "black";
+                else
+                    table = BLACK_LIST_1;
                 break;
             case Constants.SIM2:
-                table = BLACK_LIST_2;
+                if (imsi != null)
+                    table = imsi.get(1) + "black";
+                else
+                    table = BLACK_LIST_2;
                 break;
             case Constants.SIM3:
-                table = BLACK_LIST_3;
+                if (imsi != null)
+                    table = imsi.get(2) + "black";
+                else
+                    table = BLACK_LIST_3;
                 break;
         }
         if (sim >= 0) {
@@ -922,19 +949,28 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static ArrayList<String> readBlackList(int sim, CustomDatabaseHelper dbHelper) {
+    public static ArrayList<String> readBlackList(int sim, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
         ArrayList<String> list = new ArrayList<>();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
         String table = "";
         switch (sim) {
             case Constants.SIM1:
-                table = BLACK_LIST_1;
+                if (imsi != null)
+                    table = imsi.get(0) + "black";
+                else
+                    table = BLACK_LIST_1;
                 break;
             case Constants.SIM2:
-                table = BLACK_LIST_2;
+                if (imsi != null)
+                    table = imsi.get(1) + "black";
+                else
+                    table = BLACK_LIST_2;
                 break;
             case Constants.SIM3:
-                table = BLACK_LIST_3;
+                if (imsi != null)
+                    table = imsi.get(2) + "black";
+                else
+                    table = BLACK_LIST_3;
                 break;
         }
         if (sim >= 0) {

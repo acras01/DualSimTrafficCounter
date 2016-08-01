@@ -281,32 +281,39 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         SharedPreferences prefSim = null;
         ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
         Map<String, ?> prefs = mPrefs.getAll();
-        String[] sim = new String[Constants.PREF_SIM_CALLS.length];
+        String[] keys = new String[Constants.PREF_SIM_CALLS.length];
+        int sim = Constants.DISABLED;
         switch (preference.getKey()) {
             case "save_profile_calls1":
                 prefSim = mContext.getSharedPreferences("calls_" + imsi.get(0), Context.MODE_PRIVATE);
-                sim = Constants.PREF_SIM1;
+                keys = Constants.PREF_SIM1_CALLS;
+                sim = Constants.SIM1;
                 break;
             case "save_profile_calls2":
                 prefSim = mContext.getSharedPreferences("calls_" + imsi.get(1), Context.MODE_PRIVATE);
-                sim = Constants.PREF_SIM2;
+                keys = Constants.PREF_SIM2_CALLS;
+                sim = Constants.SIM2;
                 break;
             case "save_profile_calls3":
                 prefSim = mContext.getSharedPreferences("calls_" + imsi.get(2), Context.MODE_PRIVATE);
-                sim = Constants.PREF_SIM3;
+                keys = Constants.PREF_SIM3_CALLS;
+                sim = Constants.SIM3;
                 break;
         }
         if (prefSim != null) {
             SharedPreferences.Editor editor = prefSim.edit();
-            Set<String> keys = prefs.keySet();
-            ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(sim));
-            for (String key : keys) {
+            Set<String> keySet = prefs.keySet();
+            ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
+            for (String key : keySet) {
                 if (simKeys.contains(key)) {
                     Object o = prefs.get(key);
                     CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 }
             }
             editor.apply();
+            CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+            CustomDatabaseHelper.writeBlackList(sim, CustomDatabaseHelper.readBlackList(sim, dbHelper, imsi), dbHelper, imsi);
+            CustomDatabaseHelper.writeWhiteList(sim, CustomDatabaseHelper.readWhiteList(sim, dbHelper, imsi), dbHelper, imsi);
             return  true;
         } else
             return false;
