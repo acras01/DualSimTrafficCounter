@@ -139,13 +139,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
+            mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = "data_" + imsi.get(0);
+            String name = "data_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -153,12 +153,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     for (int i = 0; i < prefs.size(); i++) {
                         String key = Constants.PREF_SIM_DATA[i] + 1;
                         Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                        putObject(editor, key, o);
+                        CustomApplication.putObject(editor, key, o);
                     }
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = "data_" + imsi.get(1);
+                name = "data_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -166,13 +166,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         for (int i = 0; i < prefs.size(); i++) {
                             String key = Constants.PREF_SIM_DATA[i] + 2;
                             Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                            putObject(editor, key, o);
+                            CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
                 }
             }
             if (mSimQuantity == 3) {
-                name = "data_" + imsi.get(2);
+                name = "data_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -180,7 +180,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         for (int i = 0; i < prefs.size(); i++) {
                             String key = Constants.PREF_SIM_DATA[i] + 3;
                             Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                            putObject(editor, key, o);
+                            CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
                 }
@@ -512,7 +512,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void readFromDatabase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
-            mIMSI = MobileUtils.getSimIds(mContext);
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(0));
             ContentValues cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
             mTrafficData.put(Constants.SIM1RX, (long) cv.get("rx"));
@@ -522,22 +523,20 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.SIM1TX_N, (long) cv.get("tx_n"));
             mTrafficData.put(Constants.TOTAL1_N, (long) cv.get("total_n"));
             mTrafficData.put(Constants.PERIOD1, (int) cv.get("period"));
+            mTrafficData.put(Constants.SIM2RX, 0L);
+            mTrafficData.put(Constants.SIM3RX, 0L);
+            mTrafficData.put(Constants.SIM2TX, 0L);
+            mTrafficData.put(Constants.SIM3TX, 0L);
+            mTrafficData.put(Constants.TOTAL2, 0L);
+            mTrafficData.put(Constants.TOTAL3, 0L);
+            mTrafficData.put(Constants.SIM2RX_N, 0L);
+            mTrafficData.put(Constants.SIM3RX_N, 0L);
+            mTrafficData.put(Constants.SIM2TX_N, 0L);
+            mTrafficData.put(Constants.SIM3TX_N, 0L);
+            mTrafficData.put(Constants.TOTAL2_N, 0L);
+            mTrafficData.put(Constants.TOTAL3_N, 0L);
             mTrafficData.put(Constants.LAST_TIME, (String) cv.get(Constants.LAST_TIME));
             mTrafficData.put(Constants.LAST_DATE, (String) cv.get(Constants.LAST_DATE));
-            mTrafficData.put(Constants.SIM2RX, 0L);
-            mTrafficData.put(Constants.SIM2TX, 0L);
-            mTrafficData.put(Constants.TOTAL2, 0L);
-            mTrafficData.put(Constants.SIM2RX_N, 0L);
-            mTrafficData.put(Constants.SIM2TX_N, 0L);
-            mTrafficData.put(Constants.TOTAL2_N, 0L);
-            mTrafficData.put(Constants.PERIOD2, 0);
-            mTrafficData.put(Constants.SIM3RX, 0L);
-            mTrafficData.put(Constants.SIM3TX, 0L);
-            mTrafficData.put(Constants.TOTAL3, 0L);
-            mTrafficData.put(Constants.SIM3RX_N, 0L);
-            mTrafficData.put(Constants.SIM3TX_N, 0L);
-            mTrafficData.put(Constants.TOTAL3_N, 0L);
-            mTrafficData.put(Constants.PERIOD3, 0);
             if (mSimQuantity >= 2) {
                 CustomDatabaseHelper.createProfileTableForData(mDbHelper, mIMSI.get(1));
                 cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
@@ -2027,15 +2026,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         }
         return ids;
-    }
-
-    private void putObject(SharedPreferences.Editor editor, String key, Object o) {
-        if (o == null)
-            editor.putString(key, "null");
-        else if (o instanceof String)
-            editor.putString(key, (String) o);
-        else if (o instanceof Boolean)
-            editor.putBoolean(key, (boolean) o);
     }
 
     @Override

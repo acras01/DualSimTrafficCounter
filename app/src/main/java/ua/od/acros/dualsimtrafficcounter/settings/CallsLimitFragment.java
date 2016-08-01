@@ -14,6 +14,9 @@ import android.text.InputFilter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -29,7 +32,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class CallsLimitFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceChangeListener {
+        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private TwoLineEditTextPreference limit1, limit2, limit3,
             day1, day2, day3, round1, round2, round3;
@@ -87,6 +90,13 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 save2.setEnabled(false);
             if (save3 != null)
                 save3.setEnabled(false);
+        }  else {
+            if (save1 != null)
+                save1.setOnPreferenceClickListener(this);
+            if (save2 != null)
+                save2.setOnPreferenceClickListener(this);
+            if (save3 != null)
+                save3.setOnPreferenceClickListener(this);
         }
 
         if (simQuantity == 1) {
@@ -264,5 +274,41 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         }
         Toast.makeText(getActivity(), R.string.check_input, Toast.LENGTH_LONG).show();
         return false;
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        SharedPreferences prefSim = null;
+        ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
+        Map<String, ?> prefs = mPrefs.getAll();
+        String[] sim = new String[Constants.PREF_SIM_CALLS.length];
+        switch (preference.getKey()) {
+            case "save_profile_calls1":
+                prefSim = mContext.getSharedPreferences("calls_" + imsi.get(0), Context.MODE_PRIVATE);
+                sim = Constants.PREF_SIM1;
+                break;
+            case "save_profile_calls2":
+                prefSim = mContext.getSharedPreferences("calls_" + imsi.get(1), Context.MODE_PRIVATE);
+                sim = Constants.PREF_SIM2;
+                break;
+            case "save_profile_calls3":
+                prefSim = mContext.getSharedPreferences("calls_" + imsi.get(2), Context.MODE_PRIVATE);
+                sim = Constants.PREF_SIM3;
+                break;
+        }
+        if (prefSim != null) {
+            SharedPreferences.Editor editor = prefSim.edit();
+            Set<String> keys = prefs.keySet();
+            ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(sim));
+            for (String key : keys) {
+                if (simKeys.contains(key)) {
+                    Object o = prefs.get(key);
+                    CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
+                }
+            }
+            editor.apply();
+            return  true;
+        } else
+            return false;
     }
 }

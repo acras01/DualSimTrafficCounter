@@ -278,4 +278,13 @@ public class CustomApplication extends Application {
             mHasRoot = RootShell.isRootAvailable() && RootShell.isAccessGiven();
         return mHasRoot;
     }
+
+    public static void putObject(SharedPreferences.Editor editor, String key, Object o) {
+        if (o == null)
+            editor.putString(key, "null");
+        else if (o instanceof String)
+            editor.putString(key, (String) o);
+        else if (o instanceof Boolean)
+            editor.putBoolean(key, (boolean) o);
+    }
 }

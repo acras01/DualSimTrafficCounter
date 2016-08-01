@@ -83,7 +83,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                     for (int i = 0; i < prefs.size(); i++) {
                         String key = Constants.PREF_SIM_DATA[i] + 1;
                         Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                        putObject(editor, key, o);
+                        CustomApplication.putObject(editor, key, o);
                     }
                 prefSim = null;
             }
@@ -96,7 +96,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         for (int i = 0; i < prefs.size(); i++) {
                             String key = Constants.PREF_SIM_DATA[i] + 2;
                             Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                            putObject(editor, key, o);
+                            CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
                 }
@@ -110,7 +110,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                         for (int i = 0; i < prefs.size(); i++) {
                             String key = Constants.PREF_SIM_DATA[i] + 3;
                             Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                            putObject(editor, key, o);
+                            CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
                 }
@@ -776,21 +776,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             for (String key : keys) {
                 if (simKeys.contains(key)) {
                     Object o = prefs.get(key);
-                    putObject(editor, key.substring(0, key.length() - 1), o);
+                    CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 }
             }
             editor.apply();
             return  true;
         } else
             return false;
-    }
-
-    private void putObject(SharedPreferences.Editor editor, String key, Object o) {
-        if (o == null)
-            editor.putString(key, "null");
-        else if (o instanceof String)
-            editor.putString(key, (String) o);
-        else if (o instanceof Boolean)
-            editor.putBoolean(key, (boolean) o);
     }
 }

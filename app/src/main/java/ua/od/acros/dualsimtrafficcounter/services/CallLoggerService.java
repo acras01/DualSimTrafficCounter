@@ -34,6 +34,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
@@ -74,6 +75,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private boolean mLimitHasChanged;
     private long[] mLimits = new long[3];
     private BroadcastReceiver mCallAnsweredReceiver, mCallEndedReceiver;
+    private ArrayList<String> mIMSI;
 
     public CallLoggerService() {
     }
@@ -92,8 +94,73 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mIMSI = MobileUtils.getSimIds(mContext);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true)) {
+            String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
+            SharedPreferences.Editor editor = mPrefs.edit();
+            SharedPreferences prefSim;
+            Map<String, ?> prefs;
+            String key;
+            String name = "calls_" + mIMSI.get(0);
+            if (new File(path + name + ".xml").exists()) {
+                prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                prefs = prefSim.getAll();
+                if (prefs.size() != 0)
+                    for (int i = 0; i < prefs.size(); i++) {
+                        if (Constants.PREF_SIM_CALLS[i].endsWith("x"))
+                            key = Constants.PREF_SIM_CALLS[i].substring(0, 5) + 1 + "_ex";
+                        else
+                            key = Constants.PREF_SIM_CALLS[i] + 1;
+                        Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                        CustomApplication.putObject(editor, key, o);
+                    }
+                prefSim = null;
+            }
+            if (mSimQuantity >= 2) {
+                name = "calls_" + mIMSI.get(1);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    if (prefs.size() != 0)
+                        for (int i = 0; i < prefs.size(); i++) {
+                            if (Constants.PREF_SIM_CALLS[i].endsWith("x"))
+                                key = Constants.PREF_SIM_CALLS[i].substring(0, 5) + 2 + "_ex";
+                            else
+                                key = Constants.PREF_SIM_CALLS[i] + 2;
+                            Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                            CustomApplication.putObject(editor, key, o);
+                        }
+                    prefSim = null;
+                }
+            }
+            if (mSimQuantity == 3) {
+                name = "calls_" + mIMSI.get(2);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    if (prefs.size() != 0)
+                        for (int i = 0; i < prefs.size(); i++) {
+
+                            if (Constants.PREF_SIM_CALLS[i].endsWith("x"))
+                                key = Constants.PREF_SIM_CALLS[i].substring(0, 5) + 3 + "_ex";
+                            else
+                                key = Constants.PREF_SIM_CALLS[i] + 3;
+                            Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                            CustomApplication.putObject(editor, key, o);
+                        }
+                    prefSim = null;
+                }
+            }
+            editor.apply();
+        }
+
+        mPrefs = null;
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+        mCallsData = new ContentValues();
+        readFromDatabase();
         if (mCallsData.get(Constants.LAST_DATE).equals("")) {
             DateTime dateTime = new DateTime();
             mCallsData.put(Constants.LAST_TIME, dateTime.toString(mTimeFormat));
@@ -111,7 +178,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             public void onReceive(Context context, Intent intent) {
                 if (mIsOutgoing) {
                     //final String[] out = {"Call Starts\n"};
-                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    readFromDatabase();
                     String lim, inter;
                     long currentDuration = 0;
                     int interval = 10;
@@ -252,7 +319,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Subscribe
     public void onMessageEvent(SetCallsEvent event) {
         if (mCallsData == null)
-            mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+            readFromDatabase();
         DateTime now = new DateTime();
         mCallsData.put(Constants.LAST_DATE, now.toString(mDateFormat));
         mCallsData.put(Constants.LAST_TIME, now.toString(mTimeFormat));
@@ -619,11 +686,44 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         super.onDestroy();
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
+        writeToDataBase();
         unregisterReceiver(mCallAnsweredReceiver);
         unregisterReceiver(mCallEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().unregister(this);
+    }
+
+    private void writeToDataBase() {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
+            ContentValues cv = new ContentValues();
+            cv.put("calls", (long) mCallsData.get(Constants.CALLS1));
+            cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS1_EX));
+            cv.put("period", (int) mCallsData.get(Constants.PERIOD1));
+            cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+            cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+            CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(0));
+            if (mSimQuantity >= 2) {
+                cv = new ContentValues();;
+                cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
+                cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS2_EX));
+                cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
+                cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+                cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+                CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(1));
+            }
+            if (mSimQuantity == 3) {
+                cv = new ContentValues();;
+                cv.put("calls", (long) mCallsData.get(Constants.CALLS3));
+                cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS3_EX));
+                cv.put("period", (int) mCallsData.get(Constants.PERIOD3));
+                cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+                cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+                CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(2));
+            }
+        } else
+            CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
     }
 
     private static int[] getWidgetIds() {
@@ -662,5 +762,40 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             lim3 = Long.valueOf(limit3) * Constants.MINUTE;
 
         return new long[] {lim1, lim2, lim3};
+    }
+
+    private void readFromDatabase() {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
+            CustomDatabaseHelper.createProfileTableForCalls(mDbHelper, mIMSI.get(0));
+            ContentValues cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(0));
+            mCallsData.put(Constants.CALLS1, (long) cv.get("calls"));
+            mCallsData.put(Constants.CALLS1_EX, (long) cv.get("calls_ex"));
+            mCallsData.put(Constants.PERIOD1, (int) cv.get("period"));
+            mCallsData.put(Constants.CALLS2, 0L);
+            mCallsData.put(Constants.CALLS2_EX, 0L);
+            mCallsData.put(Constants.PERIOD2, 0);
+            mCallsData.put(Constants.CALLS3, 0L);
+            mCallsData.put(Constants.CALLS3_EX, 0L);
+            mCallsData.put(Constants.PERIOD3, 0);
+            mCallsData.put(Constants.LAST_TIME, (String) cv.get(Constants.LAST_TIME));
+            mCallsData.put(Constants.LAST_DATE, (String) cv.get(Constants.LAST_DATE));
+            if (mSimQuantity >= 2) {
+                CustomDatabaseHelper.createProfileTableForCalls(mDbHelper, mIMSI.get(1));
+                cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(1));
+                mCallsData.put(Constants.CALLS2, (long) cv.get("calls"));
+                mCallsData.put(Constants.CALLS2_EX, (long) cv.get("calls_ex"));
+                mCallsData.put(Constants.PERIOD2, (int) cv.get("period"));
+            }
+            if (mSimQuantity == 3) {
+                CustomDatabaseHelper.createProfileTableForCalls(mDbHelper, mIMSI.get(2));
+                cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(2));
+                mCallsData.put(Constants.CALLS3, (long) cv.get("calls"));
+                mCallsData.put(Constants.CALLS3_EX, (long) cv.get("calls_ex"));
+                mCallsData.put(Constants.PERIOD3, (int) cv.get("period"));
+            }
+        } else
+            mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
     }
 }
