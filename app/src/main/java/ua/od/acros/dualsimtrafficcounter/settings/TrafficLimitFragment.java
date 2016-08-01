@@ -21,7 +21,9 @@ import org.joda.time.DateTime;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -77,15 +79,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
-                if (prefs.size() == Constants.PREF_SIM1.length)
-                    for (int i = 0; i < Constants.PREF_SIM1.length; i++) {
+                if (prefs.size() != 0)
+                    for (int i = 0; i < prefs.size(); i++) {
+                        String key = Constants.PREF_SIM_DATA[i] + 1;
                         Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                        if (o == null)
-                            editor.putString(Constants.PREF_SIM1[i], "");
-                        else if (o instanceof String)
-                            editor.putString(Constants.PREF_SIM1[i], (String) o);
-                        else if (o instanceof Boolean)
-                            editor.putBoolean(Constants.PREF_SIM1[i], (boolean) o);
+                        putObject(editor, key, o);
                     }
                 prefSim = null;
             }
@@ -94,15 +92,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
-                    if (prefs.size() == Constants.PREF_SIM2.length)
-                        for (int i = 0; i < Constants.PREF_SIM2.length; i++) {
+                    if (prefs.size() != 0)
+                        for (int i = 0; i < prefs.size(); i++) {
+                            String key = Constants.PREF_SIM_DATA[i] + 2;
                             Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                            if (o == null)
-                                editor.putString(Constants.PREF_SIM2[i], "");
-                            else if (o instanceof String)
-                                editor.putString(Constants.PREF_SIM2[i], (String) o);
-                            else if (o instanceof Boolean)
-                                editor.putBoolean(Constants.PREF_SIM2[i], (boolean) o);
+                            putObject(editor, key, o);
                         }
                     prefSim = null;
                 }
@@ -112,15 +106,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
-                    if (prefs.size() == Constants.PREF_SIM3.length)
-                        for (int i = 0; i < Constants.PREF_SIM1.length; i++) {
+                    if (prefs.size() != 0)
+                        for (int i = 0; i < prefs.size(); i++) {
+                            String key = Constants.PREF_SIM_DATA[i] + 3;
                             Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
-                            if (o == null)
-                                editor.putString(Constants.PREF_SIM3[i], "");
-                            else if (o instanceof String)
-                                editor.putString(Constants.PREF_SIM3[i], (String) o);
-                            else if (o instanceof Boolean)
-                                editor.putBoolean(Constants.PREF_SIM3[i], (boolean) o);
+                            putObject(editor, key, o);
                         }
                     prefSim = null;
                 }
@@ -781,18 +771,26 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
         if (prefSim != null) {
             SharedPreferences.Editor editor = prefSim.edit();
-            for (int i = 0; i < sim.length; i++) {
-                Object o = prefs.get(sim[i]);
-                if (o == null)
-                    editor.putString(Constants.PREF_SIM_DATA[i], "");
-                else if (o instanceof String)
-                    editor.putString(Constants.PREF_SIM_DATA[i], (String) o);
-                else if (o instanceof Boolean)
-                    editor.putBoolean(Constants.PREF_SIM_DATA[i], (boolean) o);
+            Set<String> keys = prefs.keySet();
+            ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(sim));
+            for (String key : keys) {
+                if (simKeys.contains(key)) {
+                    Object o = prefs.get(key);
+                    putObject(editor, key.substring(0, key.length() - 1), o);
+                }
             }
             editor.apply();
             return  true;
         } else
             return false;
+    }
+
+    private void putObject(SharedPreferences.Editor editor, String key, Object o) {
+        if (o == null)
+            editor.putString(key, "null");
+        else if (o instanceof String)
+            editor.putString(key, (String) o);
+        else if (o instanceof Boolean)
+            editor.putBoolean(key, (boolean) o);
     }
 }

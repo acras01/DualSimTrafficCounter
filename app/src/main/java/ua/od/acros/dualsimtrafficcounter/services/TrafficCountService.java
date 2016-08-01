@@ -37,6 +37,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -135,10 +136,61 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         EventBus.getDefault().register(this);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mPrefs.registerOnSharedPreferenceChangeListener(this);
-
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+
+        ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
+            String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
+            SharedPreferences.Editor editor = mPrefs.edit();
+            SharedPreferences prefSim;
+            Map<String, ?> prefs;
+            String name = "data_" + imsi.get(0);
+            if (new File(path + name + ".xml").exists()) {
+                prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                prefs = prefSim.getAll();
+                if (prefs.size() != 0)
+                    for (int i = 0; i < prefs.size(); i++) {
+                        String key = Constants.PREF_SIM_DATA[i] + 1;
+                        Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
+                        putObject(editor, key, o);
+                    }
+                prefSim = null;
+            }
+            if (mSimQuantity >= 2) {
+                name = "data_" + imsi.get(1);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    if (prefs.size() != 0)
+                        for (int i = 0; i < prefs.size(); i++) {
+                            String key = Constants.PREF_SIM_DATA[i] + 2;
+                            Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
+                            putObject(editor, key, o);
+                        }
+                    prefSim = null;
+                }
+            }
+            if (mSimQuantity == 3) {
+                name = "data_" + imsi.get(2);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    if (prefs.size() != 0)
+                        for (int i = 0; i < prefs.size(); i++) {
+                            String key = Constants.PREF_SIM_DATA[i] + 3;
+                            Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
+                            putObject(editor, key, o);
+                        }
+                    prefSim = null;
+                }
+            }
+            editor.apply();
+        }
+
+        mPrefs = null;
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mTrafficData = new ContentValues();
@@ -1975,6 +2027,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         }
         return ids;
+    }
+
+    private void putObject(SharedPreferences.Editor editor, String key, Object o) {
+        if (o == null)
+            editor.putString(key, "null");
+        else if (o instanceof String)
+            editor.putString(key, (String) o);
+        else if (o instanceof Boolean)
+            editor.putBoolean(key, (boolean) o);
     }
 
     @Override
