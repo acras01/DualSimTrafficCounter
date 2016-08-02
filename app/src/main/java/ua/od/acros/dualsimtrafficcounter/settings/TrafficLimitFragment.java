@@ -57,6 +57,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private Context mContext;
     private boolean mIsAttached = false;
     private Preference save1, save2, save3;
+    private ArrayList<String> mIMSI = null;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -64,17 +65,16 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-
-        ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
+            mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = "data_" + imsi.get(0);
+            String name = "data_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -87,7 +87,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = "data_" + imsi.get(1);
+                name = "data_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -101,7 +101,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 }
             }
             if (mSimQuantity == 3) {
-                name = "data_" + imsi.get(2);
+                name = "data_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -256,7 +256,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
         }
 
-        if (imsi == null || imsi.size() != mSimQuantity)
+        if (mIMSI == null || mIMSI.size() != mSimQuantity)
             findPreference(Constants.PREF_OTHER[44]).setEnabled(false);
 
         save1 = findPreference("save_profile_traffic1");
@@ -575,6 +575,23 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 save3.setEnabled(state);
         }
 
+        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], true)) {
+            int sim = Constants.DISABLED;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))
+                sim = Constants.SIM1;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2)).contains(key))
+                sim = Constants.SIM2;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
+                sim = Constants.SIM3;
+            if (sim >= 0) {
+                Map prefs = sharedPreferences.getAll();
+                Object o = prefs.get(key);
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("data_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
+                editor.apply();
+            }
+        }
+
         if (key.equals(Constants.PREF_OTHER[43])) {
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 mContext.stopService(new Intent(mContext, TrafficCountService.class));
@@ -744,36 +761,35 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        SharedPreferences prefSim = null;
-        ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
-        Map<String, ?> prefs = mPrefs.getAll();
-        String[] sim = new String[Constants.PREF_SIM_DATA.length];
-        switch (preference.getKey()) {
-            case "save_profile_traffic1":
-                prefSim = mContext.getSharedPreferences("data_" + imsi.get(0), Context.MODE_PRIVATE);
-                sim = Constants.PREF_SIM1;
-                break;
-            case "save_profile_traffic2":
-                prefSim = mContext.getSharedPreferences("data_" + imsi.get(1), Context.MODE_PRIVATE);
-                sim = Constants.PREF_SIM2;
-                break;
-            case "save_profile_traffic3":
-                prefSim = mContext.getSharedPreferences("data_" + imsi.get(2), Context.MODE_PRIVATE);
-                sim = Constants.PREF_SIM3;
-                break;
-        }
-        if (prefSim != null) {
-            SharedPreferences.Editor editor = prefSim.edit();
-            Set<String> keys = prefs.keySet();
-            ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(sim));
-            for (String key : keys) {
+        if (mIMSI != null) {
+            Map<String, ?> prefs = mPrefs.getAll();
+            String[] keys = new String[Constants.PREF_SIM_DATA.length];
+            int sim = Constants.DISABLED;
+            switch (preference.getKey()) {
+                case "save_profile_traffic1":
+                    keys = Constants.PREF_SIM1;
+                    sim = Constants.SIM1;
+                    break;
+                case "save_profile_traffic2":
+                    keys = Constants.PREF_SIM2;
+                    sim = Constants.SIM2;
+                    break;
+                case "save_profile_traffic3":
+                    keys = Constants.PREF_SIM3;
+                    sim = Constants.SIM3;
+                    break;
+            }
+            SharedPreferences.Editor editor = mContext.getSharedPreferences("data_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+            Set<String> keySet = prefs.keySet();
+            ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
+            for (String key : keySet) {
                 if (simKeys.contains(key)) {
                     Object o = prefs.get(key);
                     CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 }
             }
             editor.apply();
-            return  true;
+            return true;
         } else
             return false;
     }
