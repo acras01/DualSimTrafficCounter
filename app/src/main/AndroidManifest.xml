@@ -137,7 +137,7 @@
             android:name=".receivers.BootBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
@@ -153,7 +153,7 @@
             android:name=".receivers.OutgoingCallReceiver"
             android:enabled="true"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:priority="999">
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
@@ -161,7 +161,7 @@
             android:name=".receivers.ConnectivityChangeReceiver"
             android:enabled="true"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:priority="999">
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
