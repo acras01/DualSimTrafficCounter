@@ -500,7 +500,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private void setLabelText(int sim, String rx, String tx) {
         int swtch = MobileUtils.hasActiveNetworkInfo(mContext);
         switch (sim) {
-            default:
+            case Constants.DISABLED:
                 if (swtch== 0)
                     SIM.setText(R.string.data_dis);
                 else if (swtch == 1)
