@@ -256,8 +256,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             SettingsActivity.openPreferenceScreen(this, (PreferenceScreen) getPreferenceScreen().findPreference(sim));
         }
 
-        if (mIMSI == null || mIMSI.size() != mSimQuantity)
-            findPreference(Constants.PREF_OTHER[44]).setEnabled(false);
+        TwoLineCheckPreference save = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[44]);
+        if (save != null && (mIMSI == null || mIMSI.size() != mSimQuantity))
+            save.setEnabled(false);
 
         save1 = findPreference("save_profile_traffic1");
         save2 = findPreference("save_profile_traffic2");

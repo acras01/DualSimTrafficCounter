@@ -24,6 +24,7 @@ import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.TimePreferenceDialog;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -127,8 +128,9 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
-        if (mIMSI == null || mIMSI.size() != simQuantity)
-            findPreference(Constants.PREF_OTHER[45]).setEnabled(false);
+        TwoLineCheckPreference save = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[45]);
+        if (save != null && (mIMSI == null || mIMSI.size() != simQuantity))
+            save.setEnabled(false);
 
         save1 = findPreference("save_profile_calls1");
         save2 = findPreference("save_profile_calls2");
