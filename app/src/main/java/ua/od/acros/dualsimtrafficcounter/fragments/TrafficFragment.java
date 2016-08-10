@@ -462,7 +462,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         TOT3.setText(DataFormat.formatData(mContext, mIsNight[2] ? (long) mTrafficData.get(Constants.TOTAL3_N) :
                 (long) mTrafficData.get(Constants.TOTAL3)));
 
-        setLabelText((int) mTrafficData.get(Constants.LAST_ACTIVE_SIM), "0", "0");
+        setLabelText(mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED), "0", "0");
         
         SIM1.setText(mOperatorNames[0]);
         SIM2.setText(mOperatorNames[1]);
