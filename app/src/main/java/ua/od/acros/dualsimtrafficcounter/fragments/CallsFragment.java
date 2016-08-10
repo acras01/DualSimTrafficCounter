@@ -28,6 +28,9 @@ import android.widget.TextView;
 
 import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -52,6 +55,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private MenuItem mService;
     private boolean mIsRunning = false;
     private Context mContext;
+    private ArrayList<String> mIMSI = null;
 
     public static CallsFragment newInstance() {
         return new CallsFragment();
@@ -69,10 +73,20 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             mContext = CustomApplication.getAppContext();
         mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
-        mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
+            mIMSI = MobileUtils.getSimIds(mContext);
+        mCallsData = new ContentValues();
+        readFromDatabase();
+        if (mCallsData.get(Constants.LAST_DATE).equals("")) {
+            DateTime dateTime = new DateTime();
+            mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+            mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+        }
+
         mCallDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -262,10 +276,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM1, "0", 1));
                 else {
-                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    readFromDatabase();
                     mCallsData.put(Constants.CALLS1, 0L);
                     mCallsData.put(Constants.CALLS1_EX, 0L);
-                    CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
+                    writeToDataBase();
                 }
                 TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -273,10 +287,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM2, "0", 1));
                 else {
-                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    readFromDatabase();
                     mCallsData.put(Constants.CALLS2, 0L);
                     mCallsData.put(Constants.CALLS3_EX, 0L);
-                    CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
+                    writeToDataBase();
                 }
                 TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -284,10 +298,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM3, "0", 1));
                 else {
-                    mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+                    readFromDatabase();
                     mCallsData.put(Constants.CALLS3, 0L);
                     mCallsData.put(Constants.CALLS3_EX, 0L);
-                    CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
+                    writeToDataBase();
                 }
                 TOT3.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -437,5 +451,70 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
         if (key.equals(Constants.PREF_OTHER[25]))
             mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+    }
+
+    private void writeToDataBase() {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
+            ContentValues cv = new ContentValues();
+            cv.put("calls", (long) mCallsData.get(Constants.CALLS1));
+            cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS1_EX));
+            cv.put("period", (int) mCallsData.get(Constants.PERIOD1));
+            cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+            cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+            CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(0));
+            if (mSimQuantity >= 2) {
+                cv = new ContentValues();;
+                cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
+                cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS2_EX));
+                cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
+                cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+                cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+                CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(1));
+            }
+            if (mSimQuantity == 3) {
+                cv = new ContentValues();;
+                cv.put("calls", (long) mCallsData.get(Constants.CALLS3));
+                cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS3_EX));
+                cv.put("period", (int) mCallsData.get(Constants.PERIOD3));
+                cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+                cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+                CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(2));
+            }
+        } else
+            CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
+    }
+
+    private void readFromDatabase() {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
+            ContentValues cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(0));
+            mCallsData.put(Constants.CALLS1, (long) cv.get("calls"));
+            mCallsData.put(Constants.CALLS1_EX, (long) cv.get("calls_ex"));
+            mCallsData.put(Constants.PERIOD1, (int) cv.get("period"));
+            mCallsData.put(Constants.CALLS2, 0L);
+            mCallsData.put(Constants.CALLS2_EX, 0L);
+            mCallsData.put(Constants.PERIOD2, 0);
+            mCallsData.put(Constants.CALLS3, 0L);
+            mCallsData.put(Constants.CALLS3_EX, 0L);
+            mCallsData.put(Constants.PERIOD3, 0);
+            mCallsData.put(Constants.LAST_TIME, (String) cv.get(Constants.LAST_TIME));
+            mCallsData.put(Constants.LAST_DATE, (String) cv.get(Constants.LAST_DATE));
+            if (mSimQuantity >= 2) {
+                cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(1));
+                mCallsData.put(Constants.CALLS2, (long) cv.get("calls"));
+                mCallsData.put(Constants.CALLS2_EX, (long) cv.get("calls_ex"));
+                mCallsData.put(Constants.PERIOD2, (int) cv.get("period"));
+            }
+            if (mSimQuantity == 3) {
+                cv = CustomDatabaseHelper.readCallsDataForSim(mDbHelper, mIMSI.get(2));
+                mCallsData.put(Constants.CALLS3, (long) cv.get("calls"));
+                mCallsData.put(Constants.CALLS3_EX, (long) cv.get("calls_ex"));
+                mCallsData.put(Constants.PERIOD3, (int) cv.get("period"));
+            }
+        } else
+            mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
     }
 }

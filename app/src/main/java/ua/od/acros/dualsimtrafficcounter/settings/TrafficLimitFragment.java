@@ -68,7 +68,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
@@ -576,7 +576,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 save3.setEnabled(state);
         }
 
-        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], true)) {
+        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
             int sim = Constants.DISABLED;
             if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))
                 sim = Constants.SIM1;

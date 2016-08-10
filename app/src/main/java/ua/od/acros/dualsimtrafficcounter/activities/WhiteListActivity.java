@@ -137,7 +137,7 @@ public class WhiteListActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             ArrayList<String> imsi = null;
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi);
             return true;
@@ -167,7 +167,7 @@ public class WhiteListActivity extends AppCompatActivity {
         @Override
         protected List<ListItem> doInBackground(Void... params) {
             ArrayList<String> imsi = null;
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
             ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper, imsi);
             List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);

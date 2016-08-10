@@ -28,6 +28,9 @@ import android.widget.TextView;
 import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -62,6 +65,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
     private boolean mIsRunning = false;
     private Context mContext;
+    private ArrayList<String> mIMSI = null;
 
     public static TrafficFragment newInstance() {
         return new TrafficFragment();
@@ -83,10 +87,18 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
-        mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
+            mIMSI = MobileUtils.getSimIds(mContext);
+        mTrafficData = new ContentValues();
+        readFromDatabase();
+        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
+            DateTime dateTime = new DateTime();
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+        }
 
         mIsNight =  TrafficCountService.getIsNight();
 
@@ -428,7 +440,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         setButtonLimitText();
 
-        mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+        readFromDatabase();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                     (long) mTrafficData.get(Constants.SIM1RX)));
@@ -550,7 +562,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM1, 0, 0));
                 else {
-                    mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+                    readFromDatabase();
                     if (isNight[0]) {
                         mTrafficData.put(Constants.SIM1RX_N, 0L);
                         mTrafficData.put(Constants.SIM1TX_N, 0L);
@@ -560,7 +572,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                         mTrafficData.put(Constants.SIM1TX, 0L);
                         mTrafficData.put(Constants.TOTAL1, 0L);
                     }
-                    CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
+                    writeToDataBase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
@@ -577,7 +589,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM2, 0, 0));
                 else {
-                    mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+                    readFromDatabase();
                     if (isNight[1]) {
                         mTrafficData.put(Constants.SIM2RX_N, 0L);
                         mTrafficData.put(Constants.SIM2TX_N, 0L);
@@ -587,7 +599,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                         mTrafficData.put(Constants.SIM2TX, 0L);
                         mTrafficData.put(Constants.TOTAL2, 0L);
                     }
-                    CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
+                    writeToDataBase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
@@ -604,7 +616,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM3, 0, 0));
                 else {
-                    mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+                    readFromDatabase();
                     if (isNight[2]) {
                         mTrafficData.put(Constants.SIM3RX_N, 0L);
                         mTrafficData.put(Constants.SIM3TX_N, 0L);
@@ -614,7 +626,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                         mTrafficData.put(Constants.SIM3TX, 0L);
                         mTrafficData.put(Constants.TOTAL3, 0L);
                     }
-                    CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
+                    writeToDataBase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
@@ -776,5 +788,100 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         bLim1.setText(limit1);
         bLim2.setText(limit2);
         bLim3.setText(limit3);
+    }
+
+    private void readFromDatabase() {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
+            ContentValues cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
+            mTrafficData.put(Constants.SIM1RX, (long) cv.get("rx"));
+            mTrafficData.put(Constants.SIM1TX, (long) cv.get("tx"));
+            mTrafficData.put(Constants.TOTAL1, (long) cv.get("total"));
+            mTrafficData.put(Constants.SIM1RX_N, (long) cv.get("rx_n"));
+            mTrafficData.put(Constants.SIM1TX_N, (long) cv.get("tx_n"));
+            mTrafficData.put(Constants.TOTAL1_N, (long) cv.get("total_n"));
+            mTrafficData.put(Constants.PERIOD1, (int) cv.get("period"));
+            mTrafficData.put(Constants.SIM2RX, 0L);
+            mTrafficData.put(Constants.SIM3RX, 0L);
+            mTrafficData.put(Constants.SIM2TX, 0L);
+            mTrafficData.put(Constants.SIM3TX, 0L);
+            mTrafficData.put(Constants.TOTAL2, 0L);
+            mTrafficData.put(Constants.TOTAL3, 0L);
+            mTrafficData.put(Constants.SIM2RX_N, 0L);
+            mTrafficData.put(Constants.SIM3RX_N, 0L);
+            mTrafficData.put(Constants.SIM2TX_N, 0L);
+            mTrafficData.put(Constants.SIM3TX_N, 0L);
+            mTrafficData.put(Constants.TOTAL2_N, 0L);
+            mTrafficData.put(Constants.TOTAL3_N, 0L);
+            mTrafficData.put(Constants.LAST_TIME, (String) cv.get(Constants.LAST_TIME));
+            mTrafficData.put(Constants.LAST_DATE, (String) cv.get(Constants.LAST_DATE));
+            if (mSimQuantity >= 2) {
+                cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
+                mTrafficData.put(Constants.SIM2RX, (long) cv.get("rx"));
+                mTrafficData.put(Constants.SIM2TX, (long) cv.get("tx"));
+                mTrafficData.put(Constants.TOTAL2, (long) cv.get("total"));
+                mTrafficData.put(Constants.SIM2RX_N, (long) cv.get("rx_n"));
+                mTrafficData.put(Constants.SIM2TX_N, (long) cv.get("tx_n"));
+                mTrafficData.put(Constants.TOTAL2_N, (long) cv.get("total_n"));
+                mTrafficData.put(Constants.PERIOD2, (int) cv.get("period"));
+            }
+            if (mSimQuantity == 3) {
+                cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(2));
+                mTrafficData.put(Constants.SIM3RX, (long) cv.get("rx"));
+                mTrafficData.put(Constants.SIM3TX, (long) cv.get("tx"));
+                mTrafficData.put(Constants.TOTAL3, (long) cv.get("total"));
+                mTrafficData.put(Constants.SIM3RX_N, (long) cv.get("rx_n"));
+                mTrafficData.put(Constants.SIM3TX_N, (long) cv.get("tx_n"));
+                mTrafficData.put(Constants.TOTAL3_N, (long) cv.get("total_n"));
+                mTrafficData.put(Constants.PERIOD3, (int) cv.get("period"));
+            }
+        } else
+            mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+    }
+
+    private void writeToDataBase() {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
+            ContentValues cv = new ContentValues();
+            cv.put("rx", (long) mTrafficData.get(Constants.SIM1RX));
+            cv.put("tx", (long) mTrafficData.get(Constants.SIM1TX));
+            cv.put("total", (long) mTrafficData.get(Constants.TOTAL1));
+            cv.put("rx_n", (long) mTrafficData.get(Constants.SIM1RX_N));
+            cv.put("tx_n", (long) mTrafficData.get(Constants.SIM1TX_N));
+            cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL1_N));
+            cv.put("period", (int) mTrafficData.get(Constants.PERIOD1));
+            cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+            cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+            CustomDatabaseHelper.writeTrafficDataForSim(cv, mDbHelper, mIMSI.get(0));
+            if (mSimQuantity >= 2) {
+                cv = new ContentValues();;
+                cv.put("rx", (long) mTrafficData.get(Constants.SIM2RX));
+                cv.put("tx", (long) mTrafficData.get(Constants.SIM2TX));
+                cv.put("total", (long) mTrafficData.get(Constants.TOTAL2));
+                cv.put("rx_n", (long) mTrafficData.get(Constants.SIM2RX_N));
+                cv.put("tx_n", (long) mTrafficData.get(Constants.SIM2TX_N));
+                cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL2_N));
+                cv.put("period", (int) mTrafficData.get(Constants.PERIOD2));
+                cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                CustomDatabaseHelper.writeTrafficDataForSim(cv, mDbHelper, mIMSI.get(1));
+            }
+            if (mSimQuantity == 3) {
+                cv = new ContentValues();;
+                cv.put("rx", (long) mTrafficData.get(Constants.SIM3RX));
+                cv.put("tx", (long) mTrafficData.get(Constants.SIM3TX));
+                cv.put("total", (long) mTrafficData.get(Constants.TOTAL3));
+                cv.put("rx_n", (long) mTrafficData.get(Constants.SIM3RX_N));
+                cv.put("tx_n", (long) mTrafficData.get(Constants.SIM3TX_N));
+                cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL3_N));
+                cv.put("period", (int) mTrafficData.get(Constants.PERIOD3));
+                cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                CustomDatabaseHelper.writeTrafficDataForSim(cv, mDbHelper, mIMSI.get(2));
+            }
+        } else
+            CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
     }
 }

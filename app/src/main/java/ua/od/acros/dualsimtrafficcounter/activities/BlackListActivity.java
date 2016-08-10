@@ -121,7 +121,7 @@ public class BlackListActivity extends AppCompatActivity {
                 }
             }
             ArrayList<String> imsi = null;
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper.writeBlackList(mKey, mList, mDbHelper, imsi);
             return true;

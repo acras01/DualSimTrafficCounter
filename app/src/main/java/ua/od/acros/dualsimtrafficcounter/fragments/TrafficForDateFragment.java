@@ -237,7 +237,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                 return null;
             else {
                 ArrayList<String> imsi = null;
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[44], true))
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
                     imsi = MobileUtils.getSimIds(mContext);
                 return CustomDatabaseHelper.getDataForDate(CustomDatabaseHelper.getInstance(mContext),
                         date, params[3], mPrefs, imsi);

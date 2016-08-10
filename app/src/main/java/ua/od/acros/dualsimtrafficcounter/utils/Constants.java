@@ -1,5 +1,8 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 public class Constants {
     public static final int DATABASE_VERSION = 10;
     public static final String SIM1RX = "sim1rx";
@@ -132,4 +135,7 @@ public class Constants {
     public static final String OUTGOING_CALL_ENDED = "ua.od.acros.dualsimtrafficcounter.CALL_ENDED";
     public static final String RESET_ACTION = "ua.od.acros.dualsimtrafficcounter.RESET";
     public static final int FLOATING_WINDOW = 2011;
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern(TIME_FORMAT + ":ss");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT + " " + TIME_FORMAT);
 }
