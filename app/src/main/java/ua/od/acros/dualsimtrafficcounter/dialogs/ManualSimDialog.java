@@ -42,8 +42,8 @@ public class ManualSimDialog extends AppCompatActivity {
                 .setTitle(R.string.attention)
                 .setMessage(R.string.sim_not_defined)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog1, int id) {
-                        dialog1.cancel();
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
                     }
                 })
                 .create();
