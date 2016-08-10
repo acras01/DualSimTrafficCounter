@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -17,7 +16,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 public class ManualSimDialog extends AppCompatActivity {
 
     private static boolean mIsActive;
-    private Dialog mDialog;
+    private AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
