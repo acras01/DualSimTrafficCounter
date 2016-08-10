@@ -47,6 +47,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseActionDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseSimDialog;
+import ua.od.acros.dualsimtrafficcounter.dialogs.ManualSimDialog;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
@@ -224,7 +225,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         if (mPrefs.getBoolean(Constants.PREF_OTHER[43], true)) {
             mActiveSIM = MobileUtils.getActiveSimForData(mContext);
-            timerStart(Constants.COUNT);
+            if (mActiveSIM != Constants.DISABLED)
+                timerStart(Constants.COUNT);
+            else {
+                Intent dialogIntent = new Intent(mContext, ManualSimDialog.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (!ManualSimDialog.isActive())
+                    mContext.startActivity(dialogIntent);
+            }
         } else {
             Intent dialogIntent = new Intent(mContext, ChooseSimDialog.class);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
