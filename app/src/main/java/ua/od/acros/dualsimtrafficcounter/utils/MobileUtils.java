@@ -459,6 +459,19 @@ public class MobileUtils {
                                 e.printStackTrace();
                             }
                         }
+                        if (sim == Constants.DISABLED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            try {
+                                long id = Settings.Global.getLong(context.getContentResolver(), "multi_sim_data_call");
+                                Class c = Class.forName(" android.telephony.SubscriptionManager");
+                                Method m = getMethod(c, "getSlotId", 1);
+                                if (m != null) {
+                                    sim = (int) m.invoke(c.getConstructor(android.content.Context.class).newInstance(context), id);
+                                }
+                                out = "getFromSettingsGlobal " + sim;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             } else
