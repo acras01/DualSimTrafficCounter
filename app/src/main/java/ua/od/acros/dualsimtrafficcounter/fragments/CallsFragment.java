@@ -190,8 +190,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim2.setOnClickListener(this);
         bLim3.setOnClickListener(this);
 
-        mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
-        TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS1)));
+        readFromDatabase();
 
         long[] limit = setTotalText();
         TypedValue typedValue = new TypedValue();
@@ -200,20 +199,25 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{
                 android.R.attr.textColorPrimary});
         int primaryColor = arr.getColor(0, -1);
+
+        TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS1)));
         if ((long) mCallsData.get(Constants.CALLS1) >= limit[0])
             TOT1.setTextColor(Color.RED);
         else
             TOT1.setTextColor(primaryColor);
+
         TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS2)));
         if ((long) mCallsData.get(Constants.CALLS2) >= limit[1])
             TOT2.setTextColor(Color.RED);
         else
             TOT2.setTextColor(primaryColor);
+
         TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS3)));
         if ((long) mCallsData.get(Constants.CALLS3) >= limit[2])
             TOT3.setTextColor(Color.RED);
         else
             TOT3.setTextColor(primaryColor);
+
         arr.recycle();
 
         SIM1.setText(MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));

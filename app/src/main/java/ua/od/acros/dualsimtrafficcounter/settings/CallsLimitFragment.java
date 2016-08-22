@@ -129,7 +129,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
         TwoLineCheckPreference save = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[45]);
-        if (save != null && (mIMSI == null || mIMSI.size() != simQuantity))
+        if (save != null && (mIMSI == null || mIMSI.size() != simQuantity || mIMSI.contains(null)))
             save.setEnabled(false);
 
         save1 = findPreference("save_profile_calls1");

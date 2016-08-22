@@ -257,7 +257,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
 
         TwoLineCheckPreference save = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[44]);
-        if (save != null && (mIMSI == null || mIMSI.size() != mSimQuantity))
+        if (save != null && (mIMSI == null || mIMSI.size() != mSimQuantity || mIMSI.contains(null)))
             save.setEnabled(false);
 
         save1 = findPreference("save_profile_traffic1");
