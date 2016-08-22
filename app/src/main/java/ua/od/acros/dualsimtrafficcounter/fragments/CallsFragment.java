@@ -52,7 +52,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private int mSimQuantity;
     private OnFragmentInteractionListener mListener;
     private BroadcastReceiver mCallDataReceiver;
-    private MenuItem mService;
     private boolean mIsRunning = false;
     private Context mContext;
     private ArrayList<String> mIMSI = null;
@@ -334,7 +333,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.calls_menu, menu);
-        mService = menu.getItem(0);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -344,13 +342,15 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
-        if (mIsRunning) {
-            mService.setTitle(R.string.action_stop);
-            mService.setIcon(R.drawable.ic_action_disable);
-        }
-        else {
-            mService.setTitle(R.string.action_start);
-            mService.setIcon(R.drawable.ic_action_enable);
+        MenuItem service = menu.getItem(0);
+        if (service != null) {
+            if (mIsRunning) {
+                service.setTitle(R.string.action_stop);
+                service.setIcon(R.drawable.ic_action_disable);
+            } else {
+                service.setTitle(R.string.action_start);
+                service.setIcon(R.drawable.ic_action_enable);
+            }
         }
     }
 
@@ -365,7 +365,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     mContext.stopService(new Intent(mContext, CallLoggerService.class));
                     TIP.setText(getResources().getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
-                    mService.setIcon(R.drawable.ic_action_enable);
+                    item.setIcon(R.drawable.ic_action_enable);
                     mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], true).apply();
                 }
@@ -373,7 +373,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     mContext.startService(new Intent(mContext, CallLoggerService.class));
                     TIP.setText(getResources().getString(R.string.tip_calls));
                     item.setTitle(R.string.action_stop);
-                    mService.setIcon(R.drawable.ic_action_disable);
+                    item.setIcon(R.drawable.ic_action_disable);
                     mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
                 }

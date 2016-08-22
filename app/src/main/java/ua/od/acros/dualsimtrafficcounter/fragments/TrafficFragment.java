@@ -55,7 +55,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private ContentValues mTrafficData;
     private BroadcastReceiver mTrafficDataReceiver;
     private AppCompatButton bLim1, bLim2, bLim3;
-    private MenuItem mService, mMobileData;
     private CustomDatabaseHelper mDbHelper;
     private SharedPreferences mPrefs;
     private boolean mShowNightTraffic1, mShowNightTraffic2, mShowNightTraffic3;
@@ -241,8 +240,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.traffic_menu, menu);
-        mService = menu.getItem(0);
-        mMobileData = menu.getItem(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -252,33 +249,39 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
-        if (mIsRunning) {
-            mService.setTitle(R.string.action_stop);
-            mService.setIcon(R.drawable.ic_action_disable);
+        MenuItem service = menu.getItem(0);
+        if (service != null) {
+            if (mIsRunning) {
+                service.setTitle(R.string.action_stop);
+                service.setIcon(R.drawable.ic_action_disable);
+            } else {
+                service.setTitle(R.string.action_start);
+                service.setIcon(R.drawable.ic_action_enable);
+            }
         }
-        else {
-            mService.setTitle(R.string.action_start);
-            mService.setIcon(R.drawable.ic_action_enable);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) {
-            mMobileData.setEnabled(false);
-            mMobileData.setVisible(false);
-        } else {
-            switch (MobileUtils.hasActiveNetworkInfo(mContext)) {
-                case 0:
-                    mMobileData.setEnabled(true);
-                    mMobileData.setTitle(R.string.action_enable);
-                    mMobileData.setIcon(R.drawable.ic_action_mobile_on);
-                    break;
-                case 1:
-                    mMobileData.setEnabled(false);
-                    mMobileData.setIcon(R.drawable.ic_action_mobile_off);
-                    break;
-                case 2:
-                    mMobileData.setEnabled(true);
-                    mMobileData.setTitle(R.string.action_disable);
-                    mMobileData.setIcon(R.drawable.ic_action_mobile_off);
-                    break;
+
+        MenuItem mobileData = menu.getItem(1);
+        if (mobileData != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) {
+                mobileData.setEnabled(false);
+                mobileData.setVisible(false);
+            } else {
+                switch (MobileUtils.hasActiveNetworkInfo(mContext)) {
+                    case 0:
+                        mobileData.setEnabled(true);
+                        mobileData.setTitle(R.string.action_enable);
+                        mobileData.setIcon(R.drawable.ic_action_mobile_on);
+                        break;
+                    case 1:
+                        mobileData.setEnabled(false);
+                        mobileData.setIcon(R.drawable.ic_action_mobile_off);
+                        break;
+                    case 2:
+                        mobileData.setEnabled(true);
+                        mobileData.setTitle(R.string.action_disable);
+                        mobileData.setIcon(R.drawable.ic_action_mobile_off);
+                        break;
+                }
             }
         }
     }
@@ -296,7 +299,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     mContext.stopService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
-                    mService.setIcon(R.drawable.ic_action_enable);
+                    item.setIcon(R.drawable.ic_action_enable);
                     mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
                 }
                 else {
@@ -308,7 +311,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     mContext.startService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.tip));
                     item.setTitle(R.string.action_stop);
-                    mService.setIcon(R.drawable.ic_action_disable);
+                    item.setIcon(R.drawable.ic_action_disable);
                     mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
                 }
                 break;
