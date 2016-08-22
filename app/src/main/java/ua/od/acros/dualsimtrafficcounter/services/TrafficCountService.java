@@ -1913,10 +1913,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         boolean choice = false;
 
-        if (((sim == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (sim == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (sim == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
-                mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
+        if (mPrefs.getBoolean(keys[7], false) && mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
             try {
                 if (!mIsSIM2OverLimit && sim == Constants.SIM1 && mSimQuantity >= 2)
                     MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
@@ -1936,15 +1933,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
-        } else if (((sim == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (sim == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (sim == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true))) &&
-                !mPrefs.getBoolean(Constants.PREF_OTHER[10], true))
+        } else if (mPrefs.getBoolean(keys[7], false) && !mPrefs.getBoolean(Constants.PREF_OTHER[10], true))
             choice = true;
-        else if ((sim == Constants.SIM1 && !mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (sim == Constants.SIM2 && !mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (sim == Constants.SIM3 && !mPrefs.getBoolean(Constants.PREF_SIM3[7], true)) ||
-                (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM3OverLimit && mPrefs.getBoolean(Constants.PREF_OTHER[10], true))) {
+        else if (!mPrefs.getBoolean(keys[7], false) || (mIsSIM1OverLimit && mIsSIM2OverLimit &&
+                mIsSIM3OverLimit && mPrefs.getBoolean(Constants.PREF_OTHER[10], true))) {
             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
