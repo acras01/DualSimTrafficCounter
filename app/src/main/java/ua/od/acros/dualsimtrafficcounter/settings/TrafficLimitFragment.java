@@ -190,12 +190,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())) {
             changeSIM.setEnabled(false);
             changeSIM.setChecked(false);
-            autoff1.setChecked(false);
+            /*autoff1.setChecked(false);
             autoff1.setEnabled(false);
             autoff2.setChecked(false);
             autoff2.setEnabled(false);
             autoff3.setChecked(false);
-            autoff3.setEnabled(false);
+            autoff3.setEnabled(false);*/
             autoenable1.setChecked(false);
             autoenable1.setEnabled(false);
             autoenable2.setChecked(false);
