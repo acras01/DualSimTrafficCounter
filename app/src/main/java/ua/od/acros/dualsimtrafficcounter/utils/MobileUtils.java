@@ -1238,8 +1238,7 @@ public class MobileUtils {
                             }
                         };
                         if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                            RootShell.getShell(true).add(new Command(0, PUT_SETTINGS + 1));
-                            RootShell.getShell(true).add(new Command(0, FLIGHT_MODE + true));
+                            toggleFlightMode(true);
                             RootShell.getShell(true).add(new Command(0, "settings put global multi_sim_data_call " + id));
                         }
                         RootShell.getShell(true).add(cmd);
@@ -1250,10 +1249,8 @@ public class MobileUtils {
                                 break;
                             }
                         }*/
-                        if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                            RootShell.getShell(true).add(new Command(0, PUT_SETTINGS + 0));
-                            RootShell.getShell(true).add(new Command(0, FLIGHT_MODE + false));
-                        }
+                        if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+                            toggleFlightMode(false);
                     } else
                         return new Wrapper(context, 1);
                 }
@@ -1306,6 +1303,17 @@ public class MobileUtils {
                     Toast.makeText(context, R.string.execution_failed, Toast.LENGTH_LONG).show();
                     break;
             }
+        }
+    }
+
+    private static void toggleFlightMode(boolean state) {
+        try {
+            int mode = state ? 1 : 0;
+            RootShell.getShell(true).add(new Command(0, PUT_SETTINGS + mode));
+            RootShell.getShell(true).add(new Command(0, FLIGHT_MODE + state));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ACRA.getErrorReporter().handleException(e);
         }
     }
 
@@ -1447,9 +1455,9 @@ public class MobileUtils {
             mLastActiveSIM = getActiveSimForData(context);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 new SetMobileNetworkFromLollipop().execute(context, mLastActiveSIM, false);
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
-                setMobileDataEnabled(context, false, mLastActiveSIM);
-            } else {
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())
+                toggleFlightMode(true);
+            else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 localIntent.putExtra("simid", Constants.DISABLED);
                 context.sendBroadcast(localIntent);
@@ -1461,7 +1469,7 @@ public class MobileUtils {
                     new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, mLastActiveSIM, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
-                setMobileDataEnabled(context, false, mLastActiveSIM);
+                setMobileDataEnabled(context, true, sim);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
@@ -1489,7 +1497,7 @@ public class MobileUtils {
                     new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, getActiveSimForData(context), false);
                 new SetMobileNetworkFromLollipop().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, context, sim, true);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
-                setMobileDataEnabled(context, false, sim);
+                setMobileDataEnabled(context, true, sim);
             } else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {

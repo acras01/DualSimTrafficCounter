@@ -1913,37 +1913,44 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         boolean choice = false;
 
-        if (mPrefs.getBoolean(keys[7], false) && mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
-            try {
-                if (!mIsSIM2OverLimit && sim == Constants.SIM1 && mSimQuantity >= 2)
-                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                else if (!mIsSIM3OverLimit && sim == Constants.SIM1 && mSimQuantity == 3)
-                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                else if (!mIsSIM1OverLimit && sim == Constants.SIM2)
-                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                else if (!mIsSIM3OverLimit && sim == Constants.SIM2 && mSimQuantity == 3)
-                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
-                else if (!mIsSIM1OverLimit && sim == Constants.SIM3)
-                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
-                else if (!mIsSIM2OverLimit && sim == Constants.SIM3)
-                    MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
-                else
-                    choice = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
+            if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM3OverLimit) {
+                Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
+                dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (!ChooseActionDialog.isActive())
+                    mContext.startActivity(dialogIntent);
+            } else {
+                try {
+                    MobileUtils.toggleMobileDataConnection(false, mContext, Constants.DISABLED);
+                    if (!mIsSIM2OverLimit && sim == Constants.SIM1 && mSimQuantity >= 2)
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
+                    else if (!mIsSIM3OverLimit && sim == Constants.SIM1 && mSimQuantity == 3)
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
+                    else if (!mIsSIM1OverLimit && sim == Constants.SIM2)
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
+                    else if (!mIsSIM3OverLimit && sim == Constants.SIM2 && mSimQuantity == 3)
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM3);
+                    else if (!mIsSIM1OverLimit && sim == Constants.SIM3)
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM1);
+                    else if (!mIsSIM2OverLimit && sim == Constants.SIM3)
+                        MobileUtils.toggleMobileDataConnection(true, mContext, Constants.SIM2);
+                    else
+                        choice = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
+                }
             }
-        } else if (mPrefs.getBoolean(keys[7], false) && !mPrefs.getBoolean(Constants.PREF_OTHER[10], true))
-            choice = true;
-        else if (!mPrefs.getBoolean(keys[7], false) || (mIsSIM1OverLimit && mIsSIM2OverLimit &&
-                mIsSIM3OverLimit && mPrefs.getBoolean(Constants.PREF_OTHER[10], true))) {
+        } else {
             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if (!ChooseActionDialog.isActive())
                 mContext.startActivity(dialogIntent);
-        } else if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM2OverLimit)
             choice = true;
+        }
+
         if (choice) {
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_disable);
             Intent notificationIntent = new Intent(mContext, MainActivity.class);
@@ -1966,7 +1973,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
     }
 
-    private void pushAlertNotification(int alertID) {
+    private void pushAlertNotification(int sim) {
         Intent notificationIntent;
         if ((mPrefs.getBoolean(Constants.PREF_SIM1[7], true) && mIsSIM1OverLimit) ||
                 (mPrefs.getBoolean(Constants.PREF_SIM2[7], true) && mIsSIM2OverLimit) ||
@@ -1974,7 +1981,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             notificationIntent = new Intent(getApplicationContext(), SettingsActivity.class);
             notificationIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, TrafficLimitFragment.class.getName());
             notificationIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-            notificationIntent.putExtra(Constants.SIM_ACTIVE, alertID);
+            notificationIntent.putExtra(Constants.SIM_ACTIVE, sim);
         } else {
             final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
             notificationIntent = new Intent(Intent.ACTION_MAIN);
@@ -1988,16 +1995,16 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             builder.setDefaults(Notification.DEFAULT_VIBRATE);
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_alert);
         String opName;
-        if (alertID == Constants.SIM1)
+        if (sim == Constants.SIM1)
             opName = mOperatorNames[0];
-        else if (alertID == Constants.SIM2)
+        else if (sim == Constants.SIM2)
             opName = mOperatorNames[1];
         else
             opName = mOperatorNames[2];
         String txt;
-        if ((alertID == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
-                (alertID == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
-                (alertID == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true)))
+        if ((sim == Constants.SIM1 && mPrefs.getBoolean(Constants.PREF_SIM1[7], true)) ||
+                (sim == Constants.SIM2 && mPrefs.getBoolean(Constants.PREF_SIM2[7], true)) ||
+                (sim == Constants.SIM3 && mPrefs.getBoolean(Constants.PREF_SIM3[7], true)))
             txt = getString(R.string.data_dis);
         else
             txt = getString(R.string.data_dis_tip);
@@ -2017,7 +2024,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             n.sound = Uri.parse(mPrefs.getString(Constants.PREF_OTHER[1], ""));
             n.flags = Notification.FLAG_ONLY_ALERT_ONCE;
         }
-        nm.notify(alertID, n);
+        nm.notify(sim, n);
 
 
     }
