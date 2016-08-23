@@ -46,7 +46,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
 
     private TextView SIM1, SIM2, SIM3, TOT1, TOT2, TOT3, TIP;
     private ContentValues mCallsData;
-    private AppCompatButton bLim1, bLim2, bLim3;
+    private AppCompatButton bLim1, bLim2, bLim3, bClear1, bClear2, bClear3;
     private CustomDatabaseHelper mDbHelper;
     private SharedPreferences mPrefs;
     private int mSimQuantity;
@@ -55,6 +55,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private boolean mIsRunning = false;
     private Context mContext;
     private ArrayList<String> mIMSI = null;
+    private String[] mOperatorNames = new String[3];
 
     public static CallsFragment newInstance() {
         return new CallsFragment();
@@ -75,16 +76,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-
+        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
             mIMSI = MobileUtils.getSimIds(mContext);
         mCallsData = new ContentValues();
-        readFromDatabase();
-        if (mCallsData.get(Constants.LAST_DATE).equals("")) {
-            DateTime dateTime = new DateTime();
-            mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-            mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-        }
 
         mCallDataReceiver = new BroadcastReceiver() {
             @Override
@@ -151,18 +148,18 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim2 = (AppCompatButton) view.findViewById(R.id.limit2_calls);
         bLim3 = (AppCompatButton) view.findViewById(R.id.limit3_calls);
 
-        view.findViewById(R.id.buttonClear1).setOnClickListener(this);
-        view.findViewById(R.id.buttonClear2).setOnClickListener(this);
-        view.findViewById(R.id.buttonClear3).setOnClickListener(this);
+        bClear1 = (AppCompatButton) view.findViewById(R.id.buttonClear1);
+        bClear2 = (AppCompatButton) view.findViewById(R.id.buttonClear2);
+        bClear3 = (AppCompatButton) view.findViewById(R.id.buttonClear3);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             SIM2.setVisibility(View.GONE);
             TOT2.setVisibility(View.GONE);
-            view.findViewById(R.id.buttonClear2).setVisibility(View.GONE);
+            bClear2.setVisibility(View.GONE);
             bLim2.setVisibility(View.GONE);
             SIM3.setVisibility(View.GONE);
             TOT3.setVisibility(View.GONE);
-            view.findViewById(R.id.buttonClear3).setVisibility(View.GONE);
+            bClear3.setVisibility(View.GONE);
             bLim3.setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.sim2row).setVisibility(View.GONE);
@@ -172,7 +169,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 SIM2.setVisibility(View.VISIBLE);
                 TOT2.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.buttonClear2).setVisibility(View.VISIBLE);
+                bClear2.setVisibility(View.VISIBLE);
                 bLim2.setVisibility(View.VISIBLE);
             } else
                 view.findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
@@ -180,50 +177,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 SIM3.setVisibility(View.VISIBLE);
                 TOT3.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.buttonClear3).setVisibility(View.VISIBLE);
+                bClear3.setVisibility(View.VISIBLE);
                 bLim3.setVisibility(View.VISIBLE);
             } else
                 view.findViewById(R.id.sim3row).setVisibility(View.VISIBLE);
-
-        bLim1.setOnClickListener(this);
-        bLim2.setOnClickListener(this);
-        bLim3.setOnClickListener(this);
-
-        readFromDatabase();
-
-        long[] limit = setTotalText();
-        TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = getActivity().getTheme();
-        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
-        TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{
-                android.R.attr.textColorPrimary});
-        int primaryColor = arr.getColor(0, -1);
-
-        TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS1)));
-        if ((long) mCallsData.get(Constants.CALLS1) >= limit[0])
-            TOT1.setTextColor(Color.RED);
-        else
-            TOT1.setTextColor(primaryColor);
-
-        TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS2)));
-        if ((long) mCallsData.get(Constants.CALLS2) >= limit[1])
-            TOT2.setTextColor(Color.RED);
-        else
-            TOT2.setTextColor(primaryColor);
-
-        TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS3)));
-        if ((long) mCallsData.get(Constants.CALLS3) >= limit[2])
-            TOT3.setTextColor(Color.RED);
-        else
-            TOT3.setTextColor(primaryColor);
-
-        arr.recycle();
-
-        SIM1.setText(MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-        SIM2.setText(MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-        SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-
-        setButtonLimitText();
 
         // Inflate the layout for this fragment
         return view;
@@ -259,9 +216,51 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
+
+        readFromDatabase();
+
+        long[] limit = setTotalText();
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+        TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{
+                android.R.attr.textColorPrimary});
+        int primaryColor = arr.getColor(0, -1);
+
+        TOT1.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS1)));
+        if ((long) mCallsData.get(Constants.CALLS1) >= limit[0])
+            TOT1.setTextColor(Color.RED);
+        else
+            TOT1.setTextColor(primaryColor);
+        SIM1.setText(mOperatorNames[0]);
+        bLim1.setOnClickListener(this);
+        bClear1.setOnClickListener(this);
+        if (mSimQuantity >= 2) {
+            TOT2.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS2)));
+            if ((long) mCallsData.get(Constants.CALLS2) >= limit[1])
+                TOT2.setTextColor(Color.RED);
+            else
+                TOT2.setTextColor(primaryColor);
+            SIM2.setText(mOperatorNames[1]);
+            bLim2.setOnClickListener(this);
+            bClear2.setOnClickListener(this);
+        }
+        if (mSimQuantity == 3) {
+            TOT3.setText(DataFormat.formatCallDuration(mContext, (long) mCallsData.get(Constants.CALLS3)));
+            if ((long) mCallsData.get(Constants.CALLS3) >= limit[2])
+                TOT3.setTextColor(Color.RED);
+            else
+                TOT3.setTextColor(primaryColor);
+            SIM3.setText(mOperatorNames[2]);
+            bLim3.setOnClickListener(this);
+           bClear3.setOnClickListener(this);
+        }
+
+        arr.recycle();
+
         setButtonLimitText();
         CustomApplication.activityResumed();
     }
@@ -269,6 +268,16 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     @Override
     public void onPause() {
         super.onPause();
+        bLim1.setOnClickListener(null);
+        bClear1.setOnClickListener(this);
+        if (mSimQuantity >= 2) {
+            bLim2.setOnClickListener(null);
+            bClear2.setOnClickListener(this);
+        }
+        if (mSimQuantity == 3) {
+            bLim3.setOnClickListener(null);
+            bClear3.setOnClickListener(this);
+        }
         CustomApplication.activityPaused();
     }
 
@@ -520,5 +529,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             }
         } else
             mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+        if (mCallsData.get(Constants.LAST_DATE).equals("")) {
+            DateTime dateTime = new DateTime();
+            mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+            mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+        }
     }
 }

@@ -158,11 +158,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mCallsData = new ContentValues();
         readFromDatabase();
-        if (mCallsData.get(Constants.LAST_DATE).equals("")) {
-            DateTime dateTime = new DateTime();
-            mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-            mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-        }
         mLimits = getSIMLimits();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -792,5 +787,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             }
         } else
             mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
+        if (mCallsData.get(Constants.LAST_DATE).equals("")) {
+            DateTime dateTime = new DateTime();
+            mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+            mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+        }
     }
 }

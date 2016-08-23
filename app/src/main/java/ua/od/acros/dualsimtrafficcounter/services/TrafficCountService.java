@@ -191,11 +191,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mTrafficData = new ContentValues();
         readFromDatabase();
-        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
-            DateTime dateTime = new DateTime();
-            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-        }
 
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
@@ -568,6 +563,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         } else
             mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
+            DateTime dateTime = new DateTime();
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+        }
     }
 
     public static boolean[] getIsNight() {

@@ -54,7 +54,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
     private ContentValues mTrafficData;
     private BroadcastReceiver mTrafficDataReceiver;
-    private AppCompatButton bLim1, bLim2, bLim3;
+    private AppCompatButton bLim1, bLim2, bLim3, bClear1, bClear2, bClear3, bSet;
     private CustomDatabaseHelper mDbHelper;
     private SharedPreferences mPrefs;
     private boolean mShowNightTraffic1, mShowNightTraffic2, mShowNightTraffic3;
@@ -92,13 +92,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
             mIMSI = MobileUtils.getSimIds(mContext);
         mTrafficData = new ContentValues();
-        readFromDatabase();
-        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
-            DateTime dateTime = new DateTime();
-            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-        }
-
         mIsNight =  TrafficCountService.getIsNight();
 
         mTrafficDataReceiver = new BroadcastReceiver() {
@@ -223,11 +216,58 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
+
+        bSet.setOnClickListener(this);
+        readFromDatabase();
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+            RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
+                    (long) mTrafficData.get(Constants.SIM1RX)));
+            TX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1TX_N) :
+                    (long) mTrafficData.get(Constants.SIM1TX)));
+            if (mSimQuantity >= 2) {
+                RX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
+                        (long) mTrafficData.get(Constants.SIM2RX)));
+                TX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2TX_N) :
+                        (long) mTrafficData.get(Constants.SIM2TX)));
+            }
+            if (mSimQuantity == 3) {
+                RX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
+                        (long) mTrafficData.get(Constants.SIM3RX)));
+                TX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3TX_N) :
+                        (long) mTrafficData.get(Constants.SIM3TX)));
+            }
+        }
+        TOT1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.TOTAL1_N) :
+                (long) mTrafficData.get(Constants.TOTAL1)));
+        SIM1.setText(mOperatorNames[0]);
+        SIM1.setOnClickListener(this);
+        bLim1.setOnClickListener(this);
+        bClear1.setOnClickListener(this);
+        if (mSimQuantity >= 2) {
+            TOT2.setText(DataFormat.formatData(mContext, mIsNight[1] ? (long) mTrafficData.get(Constants.TOTAL2_N) :
+                    (long) mTrafficData.get(Constants.TOTAL2)));
+            SIM2.setText(mOperatorNames[1]);
+            SIM2.setOnClickListener(this);
+            bLim2.setOnClickListener(this);
+            bClear2.setOnClickListener(this);
+        }
+        if (mSimQuantity == 3) {
+            TOT3.setText(DataFormat.formatData(mContext, mIsNight[2] ? (long) mTrafficData.get(Constants.TOTAL3_N) :
+                    (long) mTrafficData.get(Constants.TOTAL3)));
+            SIM3.setText(mOperatorNames[2]);
+            SIM3.setOnClickListener(this);
+            bLim3.setOnClickListener(this);
+            bClear3.setOnClickListener(this);
+        }
+
         setButtonLimitText();
+
+        setLabelText(mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED), "0", "0");
+
         CustomApplication.activityResumed();
     }
 
@@ -235,6 +275,21 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     public void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+        bSet.setOnClickListener(null);
+        SIM1.setOnClickListener(null);
+        bLim1.setOnClickListener(null);
+        bClear1.setOnClickListener(null);
+        if (mSimQuantity >= 2) {
+            SIM2.setOnClickListener(null);
+            bLim2.setOnClickListener(null);
+            bClear2.setOnClickListener(null);
+        }
+        if (mSimQuantity == 3) {
+            SIM3.setOnClickListener(null);
+            bLim3.setOnClickListener(null);
+            bClear3.setOnClickListener(null);
+        }
+
         CustomApplication.activityPaused();
     }
 
@@ -363,10 +418,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         bLim2 = (AppCompatButton) view.findViewById(R.id.limit2);
         bLim3 = (AppCompatButton) view.findViewById(R.id.limit3);
 
-        view.findViewById(R.id.buttonClear1).setOnClickListener(this);
-        view.findViewById(R.id.buttonClear2).setOnClickListener(this);
-        view.findViewById(R.id.buttonClear3).setOnClickListener(this);
-        view.findViewById(R.id.settings).setOnClickListener(this);
+        bClear1 = (AppCompatButton) view.findViewById(R.id.buttonClear1);
+        bClear2 = (AppCompatButton) view.findViewById(R.id.buttonClear2);
+        bClear3 = (AppCompatButton) view.findViewById(R.id.buttonClear3);
+
+        bSet = (AppCompatButton) view.findViewById(R.id.settings);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
@@ -381,11 +437,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             }
             SIM2.setVisibility(View.GONE);
             TOT2.setVisibility(View.GONE);
-            view.findViewById(R.id.buttonClear2).setVisibility(View.GONE);
+            bClear2.setVisibility(View.GONE);
             bLim2.setVisibility(View.GONE);
             SIM3.setVisibility(View.GONE);
             TOT3.setVisibility(View.GONE);
-            view.findViewById(R.id.buttonClear3).setVisibility(View.GONE);
+            bClear3.setVisibility(View.GONE);
             bLim3.setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.sim2row).setVisibility(View.GONE);
@@ -401,7 +457,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 SIM2.setVisibility(View.VISIBLE);
                 TOT2.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.buttonClear2).setVisibility(View.VISIBLE);
+                bClear2.setVisibility(View.VISIBLE);
                 bLim2.setVisibility(View.VISIBLE);
             } else
                 view.findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
@@ -415,47 +471,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 }
                 SIM3.setVisibility(View.VISIBLE);
                 TOT3.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.buttonClear3).setVisibility(View.VISIBLE);
+                bClear3.setVisibility(View.VISIBLE);
                 bLim3.setVisibility(View.VISIBLE);
             } else
                 view.findViewById(R.id.sim3row).setVisibility(View.VISIBLE);
-
-        SIM1.setOnClickListener(this);
-        SIM2.setOnClickListener(this);
-        SIM3.setOnClickListener(this);
-        bLim1.setOnClickListener(this);
-        bLim2.setOnClickListener(this);
-        bLim3.setOnClickListener(this);
-
-        setButtonLimitText();
-
-        readFromDatabase();
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
-                    (long) mTrafficData.get(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1TX_N) :
-                    (long) mTrafficData.get(Constants.SIM1TX)));
-            RX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
-                    (long) mTrafficData.get(Constants.SIM2RX)));
-            TX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2TX_N) :
-                    (long) mTrafficData.get(Constants.SIM2TX)));
-            RX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
-                    (long) mTrafficData.get(Constants.SIM3RX)));
-            TX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3TX_N) :
-                    (long) mTrafficData.get(Constants.SIM3TX)));
-        }
-        TOT1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.TOTAL1_N) :
-                (long) mTrafficData.get(Constants.TOTAL1)));
-        TOT2.setText(DataFormat.formatData(mContext, mIsNight[1] ? (long) mTrafficData.get(Constants.TOTAL2_N) :
-                (long) mTrafficData.get(Constants.TOTAL2)));
-        TOT3.setText(DataFormat.formatData(mContext, mIsNight[2] ? (long) mTrafficData.get(Constants.TOTAL3_N) :
-                (long) mTrafficData.get(Constants.TOTAL3)));
-
-        setLabelText(mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED), "0", "0");
-        
-        SIM1.setText(mOperatorNames[0]);
-        SIM2.setText(mOperatorNames[1]);
-        SIM3.setText(mOperatorNames[2]);
 
         if (!CustomApplication.isDataUsageAvailable())
             view.findViewById(R.id.settings).setEnabled(false);
@@ -827,6 +846,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             }
         } else
             mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
+        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
+            DateTime dateTime = new DateTime();
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+        }
     }
 
     private void writeToDataBase() {

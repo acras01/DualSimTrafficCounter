@@ -393,12 +393,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     public static ContentValues readTrafficData(CustomDatabaseHelper dbHelper) {
         ContentValues cv = new ContentValues();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.LAST_ACTIVE_SIM,
-                Constants.LAST_RX, Constants.LAST_TX, Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1,
-                Constants.SIM2RX, Constants.SIM2TX, Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX,
-                Constants.TOTAL3, Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N,
-                Constants.SIM1TX_N, Constants.TOTAL1_N, Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N,
-                Constants.SIM3RX_N, Constants.SIM3TX_N, Constants.TOTAL3_N}, null, null, null, null, null);
+        Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, null, null, null, null, null, null);
         if (cursor.moveToLast()) {
             cv.put(Constants.SIM1RX, cursor.getLong(cursor.getColumnIndex(Constants.SIM1RX)));
             cv.put(Constants.SIM2RX, cursor.getLong(cursor.getColumnIndex(Constants.SIM2RX)));
@@ -505,12 +500,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursorToDate, cursorToDayBeforeDate;
         if (imsi == null) {
-            cursorToDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
-                    Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
-                    Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
-                    Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
-                    Constants.SIM2RX_N, Constants.SIM2TX_N, Constants.TOTAL2_N, Constants.SIM3RX_N, Constants.SIM3TX_N,
-                    Constants.TOTAL3_N}, Constants.LAST_DATE + " = ?", new String[]{queried.toString(fmtDate)}, null, null, null);
+            cursorToDate = mSqLiteDatabase.query(DATA_TABLE, null, Constants.LAST_DATE + " = ?", new String[]{queried.toString(fmtDate)}, null, null, null);
             if (cursorToDate.moveToLast()) {
                 switch (sim) {
                     case Constants.SIM1:
@@ -682,9 +672,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     public static ContentValues readCallsData(CustomDatabaseHelper dbHelper) {
         ContentValues cv = new ContentValues();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, Constants.CALLS1,
-                Constants.CALLS1_EX, Constants.CALLS2, Constants.CALLS2_EX, Constants.CALLS3, Constants.CALLS3_EX,
-                Constants.PERIOD1, Constants.PERIOD2, Constants.PERIOD3}, null, null, null, null, null);
+        Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, null, null, null, null, null, null);
         if (cursor.moveToLast()) {
             cv.put(Constants.CALLS1, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1)));
             cv.put(Constants.CALLS1_EX, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1_EX)));
