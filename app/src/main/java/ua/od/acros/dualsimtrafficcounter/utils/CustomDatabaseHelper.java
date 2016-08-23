@@ -8,6 +8,7 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -481,6 +482,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    @Nullable
     public static Bundle getDataForDate(CustomDatabaseHelper dbHelper, String date, int sim,
                                         SharedPreferences prefs, ArrayList<String> imsi) {
 
