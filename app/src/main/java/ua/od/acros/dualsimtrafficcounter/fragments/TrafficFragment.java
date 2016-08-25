@@ -355,7 +355,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     TIP.setText(getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     item.setIcon(R.drawable.ic_action_enable);
-                    mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
                 }
                 else {
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
@@ -367,13 +366,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                     TIP.setText(getString(R.string.tip));
                     item.setTitle(R.string.action_stop);
                     item.setIcon(R.drawable.ic_action_disable);
-                    mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
                 }
                 break;
             case R.id.action_mobile_data_on_off:
                 showDialog(Constants.ON_OFF);
                 break;
         }
+        mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
         return super.onOptionsItemSelected(item);
     }
 
