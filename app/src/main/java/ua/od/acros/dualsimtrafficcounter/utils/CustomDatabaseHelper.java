@@ -18,8 +18,6 @@ import java.util.ArrayList;
 
 public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATA_TABLE = "data";
-    private static final String CALLS_TABLE = "calls";
     private static final String WHITE_LIST_1 = "list1";
     private static final String WHITE_LIST_2 = "list2";
     private static final String WHITE_LIST_3 = "list3";
@@ -56,7 +54,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String DATABASE_CREATE_SCRIPT = "create table "
-                + DATA_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                + Constants.DATA_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                 + " text not null, " + Constants.LAST_ACTIVE_SIM + " integer, "
                 + Constants.LAST_RX + " long, " + Constants.LAST_TX + " long, "
                 + Constants.SIM1RX + " long, " + Constants.SIM1TX + " long, "
@@ -72,7 +70,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 + Constants.SIM3TX_N + " long, " + Constants.TOTAL3_N + " long);";
         db.execSQL(DATABASE_CREATE_SCRIPT);
         DATABASE_CREATE_SCRIPT = "create table "
-                + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                + Constants.CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                 + " text not null, " +  Constants.CALLS1 + " long, "
                 + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
                 + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
@@ -105,157 +103,157 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < Constants.DATABASE_VERSION) {
             if (oldVersion <= 1) {
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3RX + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3TX + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL3 + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.PERIOD1 + " integer;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.PERIOD2 + " integer;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.PERIOD3 + " integer;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM1RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM1TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL1_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM2RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM2TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL2_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL3_N + " long;";
                 db.execSQL(ALTER_TBL);
             }
             if (oldVersion <= 2) {
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.PERIOD1 + " integer;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.PERIOD2 + " integer;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.PERIOD3 + " integer;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM1RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM1TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL1_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM2RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM2TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL2_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL3_N + " long;";
                 db.execSQL(ALTER_TBL);
             }
             if (oldVersion <= 3) {
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM1RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM1TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL1_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM2RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM2TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL2_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3RX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.SIM3TX_N + " long;";
                 db.execSQL(ALTER_TBL);
                 ALTER_TBL =
-                        "ALTER TABLE " + DATA_TABLE +
+                        "ALTER TABLE " + Constants.DATA_TABLE +
                                 " ADD COLUMN " + Constants.TOTAL3_N + " long;";
                 db.execSQL(ALTER_TBL);
             }
             if (oldVersion <= 4) {
                 ALTER_TBL = "create table "
-                        + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                        + Constants.CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                         + " text not null, " + Constants.CALLS1 + " long, "
                         + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
                         + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
@@ -264,9 +262,9 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 db.execSQL(ALTER_TBL);
             }
             if (oldVersion <= 6) {
-                db.execSQL("DROP TABLE IF EXISTS " + CALLS_TABLE);
+                db.execSQL("DROP TABLE IF EXISTS " + Constants.CALLS_TABLE);
                 ALTER_TBL = "create table "
-                        + CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                        + Constants.CALLS_TABLE + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                         + " text not null, " + Constants.CALLS1 + " long, "
                         + Constants.CALLS1_EX + " long, " + Constants.CALLS2 + " long, "
                         + Constants.CALLS2_EX + " long, " + Constants.CALLS3 + " long, "
@@ -341,13 +339,12 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeTrafficDataForSim(ContentValues cv, CustomDatabaseHelper dbHelper, String name) {
+    public static void writeDataForSim(ContentValues cv, CustomDatabaseHelper dbHelper, String name) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
-        String dbName = "data_" + name;
         String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
-        int id = mSqLiteDatabase.update(dbName, cv, filter, null);
+        int id = mSqLiteDatabase.update(name, cv, filter, null);
         if (id == 0)
-            mSqLiteDatabase.insert(dbName, null, cv);
+            mSqLiteDatabase.insert(name, null, cv);
     }
 
     public static ContentValues readCallsDataForSim(CustomDatabaseHelper dbHelper, String name) {
@@ -382,19 +379,10 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeCallsDataForSim(ContentValues cv, CustomDatabaseHelper dbHelper, String name) {
-        mSqLiteDatabase = dbHelper.getWritableDatabase();
-        String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
-        String dbName = "calls_" + name;
-        int id = mSqLiteDatabase.update(dbName, cv, filter, null);
-        if (id == 0)
-            mSqLiteDatabase.insert(dbName, null, cv);
-    }
-
     public static ContentValues readTrafficData(CustomDatabaseHelper dbHelper) {
         ContentValues cv = new ContentValues();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(DATA_TABLE, null, null, null, null, null, null);
+        Cursor cursor = mSqLiteDatabase.query(Constants.DATA_TABLE, null, null, null, null, null, null);
         if (cursor.moveToLast()) {
             cv.put(Constants.SIM1RX, cursor.getLong(cursor.getColumnIndex(Constants.SIM1RX)));
             cv.put(Constants.SIM2RX, cursor.getLong(cursor.getColumnIndex(Constants.SIM2RX)));
@@ -454,12 +442,12 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeTrafficData(ContentValues cv, CustomDatabaseHelper dbHelper) {
+    public static void writeData(ContentValues cv, CustomDatabaseHelper dbHelper, String table) {
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
-        int id = mSqLiteDatabase.update(DATA_TABLE, cv, filter, null);
+        int id = mSqLiteDatabase.update(table, cv, filter, null);
         if (id == 0)
-            mSqLiteDatabase.insert(DATA_TABLE, null, cv);
+            mSqLiteDatabase.insert(table, null, cv);
     }
 
     public static boolean isTableEmpty(CustomDatabaseHelper dbHelper, String name, boolean type) {
@@ -499,7 +487,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursorToDate, cursorToDayBeforeDate;
         if (imsi == null) {
-            cursorToDate = mSqLiteDatabase.query(DATA_TABLE, null, Constants.LAST_DATE + " = ?", new String[]{queried.toString(fmtDate)}, null, null, null);
+            cursorToDate = mSqLiteDatabase.query(Constants.DATA_TABLE, null, Constants.LAST_DATE + " = ?", new String[]{queried.toString(fmtDate)}, null, null, null);
             if (cursorToDate.moveToLast()) {
                 switch (sim) {
                     case Constants.SIM1:
@@ -531,7 +519,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                         break;
                 }
             }
-            cursorToDayBeforeDate = mSqLiteDatabase.query(DATA_TABLE, new String[]{
+            cursorToDayBeforeDate = mSqLiteDatabase.query(Constants.DATA_TABLE, new String[]{
                     Constants.SIM1RX, Constants.SIM1TX, Constants.TOTAL1, Constants.SIM2RX, Constants.SIM2TX,
                     Constants.TOTAL2, Constants.SIM3RX, Constants.SIM3TX, Constants.TOTAL3, Constants.PERIOD1,
                     Constants.PERIOD2, Constants.PERIOD3, Constants.SIM1RX_N, Constants.SIM1TX_N, Constants.TOTAL1_N,
@@ -671,7 +659,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     public static ContentValues readCallsData(CustomDatabaseHelper dbHelper) {
         ContentValues cv = new ContentValues();
         mSqLiteDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = mSqLiteDatabase.query(CALLS_TABLE, null, null, null, null, null, null);
+        Cursor cursor = mSqLiteDatabase.query(Constants.CALLS_TABLE, null, null, null, null, null, null);
         if (cursor.moveToLast()) {
             cv.put(Constants.CALLS1, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1)));
             cv.put(Constants.CALLS1_EX, cursor.getLong(cursor.getColumnIndex(Constants.CALLS1_EX)));
@@ -701,36 +689,8 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeCallsData(ContentValues cv, CustomDatabaseHelper dbHelper) {
-        mSqLiteDatabase = dbHelper.getWritableDatabase();
-        String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
-        int id = mSqLiteDatabase.update(CALLS_TABLE, cv, filter, null);
-        if (id == 0)
-            mSqLiteDatabase.insert(CALLS_TABLE, null, cv);
-    }
-
-    public static void writeWhiteList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
-        String table = "";
-        switch (sim) {
-            case Constants.SIM1:
-                if (imsi != null)
-                    table = "white_" + imsi.get(0);
-                else
-                    table = WHITE_LIST_1;
-                break;
-            case Constants.SIM2:
-                if (imsi != null)
-                    table = "white_" + imsi.get(1);
-                else
-                    table = WHITE_LIST_2;
-                break;
-            case Constants.SIM3:
-                if (imsi != null)
-                    table = "white_" + imsi.get(2);
-                else
-                    table = WHITE_LIST_3;
-                break;
-        }
+    public static void writeList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi, String name) {
+        String table = getTableName(sim, imsi, name);
         if (sim >= 0) {
             mSqLiteDatabase = dbHelper.getReadableDatabase();
             try {
@@ -750,120 +710,9 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static ArrayList<String> readWhiteList(int sim, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
-        ArrayList<String> list = new ArrayList<>();        ;
-        String table = "";
-        switch (sim) {
-            case Constants.SIM1:
-                if (imsi != null)
-                    table = "white_" + imsi.get(0);
-                else
-                    table = WHITE_LIST_1;
-                break;
-            case Constants.SIM2:
-                if (imsi != null)
-                    table = "white_" + imsi.get(1);
-                else
-                    table = WHITE_LIST_2;
-                break;
-            case Constants.SIM3:
-                if (imsi != null)
-                    table = "white_" + imsi.get(2);
-                else
-                    table = WHITE_LIST_3;
-                break;
-        }
-        if (sim >= 0) {
-            mSqLiteDatabase = dbHelper.getReadableDatabase();
-            try {
-                mSqLiteDatabase.query(table, null, null, null, null, null, null);
-            } catch (Exception e) {
-                String DATABASE_CREATE_SCRIPT = "create table "
-                        + table + " (" + Constants.NUMBER + " text not null);";
-                dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
-                mSqLiteDatabase = dbHelper.getReadableDatabase();
-            }
-            try {
-                Cursor cursor = mSqLiteDatabase.query(table, new String[]{Constants.NUMBER}, null, null, null, null, null);
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    while (!cursor.isAfterLast()) {
-                        list.add(cursor.getString(cursor.getColumnIndex(Constants.NUMBER)));
-                        cursor.moveToNext();
-                    }
-                    cursor.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return list;
-    }
-
-    public static void writeBlackList(int sim, ArrayList<String> list, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
-        String table = "";
-        switch (sim) {
-            case Constants.SIM1:
-                if (imsi != null)
-                    table = "black_" + imsi.get(0);
-                else
-                    table = BLACK_LIST_1;
-                break;
-            case Constants.SIM2:
-                if (imsi != null)
-                    table = "black_" + imsi.get(1);
-                else
-                    table = BLACK_LIST_2;
-                break;
-            case Constants.SIM3:
-                if (imsi != null)
-                    table = "black_" + imsi.get(2);
-                else
-                    table = BLACK_LIST_3;
-                break;
-        }
-        if (sim >= 0) {
-            mSqLiteDatabase = dbHelper.getReadableDatabase();
-            try {
-                mSqLiteDatabase.query(table, null, null, null, null, null, null);
-            } catch (Exception e) {
-                String DATABASE_CREATE_SCRIPT = "create table "
-                        + table + " (" + Constants.NUMBER + " text not null);";
-                mSqLiteDatabase = dbHelper.getWritableDatabase();
-                mSqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT);
-            }
-            mSqLiteDatabase.delete(table, null, null);
-            for (String s : list) {
-                ContentValues cv = new ContentValues();
-                cv.put(Constants.NUMBER, s);
-                mSqLiteDatabase.insert(table, null, cv);
-            }
-        }
-    }
-
-    public static ArrayList<String> readBlackList(int sim, CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
+    public static ArrayList<String> readList(int sim, CustomDatabaseHelper dbHelper, ArrayList<String> imsi, String name) {
+        String table = getTableName(sim, imsi, name);
         ArrayList<String> list = new ArrayList<>();
-        String table = "";
-        switch (sim) {
-            case Constants.SIM1:
-                if (imsi != null)
-                    table = "black_" + imsi.get(0);
-                else
-                    table = BLACK_LIST_1;
-                break;
-            case Constants.SIM2:
-                if (imsi != null)
-                    table = "black_" + imsi.get(1);
-                else
-                    table = BLACK_LIST_2;
-                break;
-            case Constants.SIM3:
-                if (imsi != null)
-                    table = "black_" + imsi.get(2);
-                else
-                    table = BLACK_LIST_3;
-                break;
-        }
         if (sim >= 0) {
             mSqLiteDatabase = dbHelper.getReadableDatabase();
             try {
@@ -891,7 +740,44 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public static void deleteWhiteBlackListTables(CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
+    private static String getTableName(int sim, ArrayList<String> imsi, String name) {
+        String table = "";
+        switch (sim) {
+            case Constants.SIM1:
+                if (imsi != null)
+                    table = name + "_" + imsi.get(0);
+                else {
+                    if (name.contains("h"))
+                        table = WHITE_LIST_1;
+                    else
+                        table = BLACK_LIST_1;
+                }
+                break;
+            case Constants.SIM2:
+                if (imsi != null)
+                    table = name + "_" + imsi.get(1);
+                else {
+                    if (name.contains("h"))
+                        table = WHITE_LIST_2;
+                    else
+                        table = BLACK_LIST_2;
+                }
+                break;
+            case Constants.SIM3:
+                if (imsi != null)
+                    table = name + "_" + imsi.get(2);
+                else {
+                    if (name.contains("h"))
+                        table = WHITE_LIST_3;
+                    else
+                        table = BLACK_LIST_3;
+                }
+                break;
+        }
+        return table;
+    }
+
+    public static void deleteListTables(CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
         if (imsi != null) {
             int i = 1;
             for (String name : imsi) {
@@ -926,6 +812,18 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                     e.printStackTrace();
                 }
                 i++;
+            }
+        }
+    }
+
+    public static void deleteDataTable(CustomDatabaseHelper dbHelper, ArrayList<String> imsi, String table) {
+        for (String name : imsi) {
+            try {
+                mSqLiteDatabase = dbHelper.getWritableDatabase();
+                String DELETE = "DROP TABLE IF EXISTS " + table + "_" + name;
+                mSqLiteDatabase.execSQL(DELETE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

@@ -138,4 +138,6 @@ public class Constants {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern(TIME_FORMAT + ":ss");
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT + " " + TIME_FORMAT);
+    public static final String DATA_TABLE = "data";
+    public static final String CALLS_TABLE = "calls";
 }

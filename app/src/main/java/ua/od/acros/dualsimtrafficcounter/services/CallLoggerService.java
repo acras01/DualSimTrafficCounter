@@ -103,7 +103,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             SharedPreferences prefSim;
             Map<String, ?> prefs;
             String key;
-            String name = "calls_" + mIMSI.get(0);
+            String name = Constants.CALLS_TABLE + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -119,7 +119,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = "calls_" + mIMSI.get(1);
+                name = Constants.CALLS_TABLE + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -136,7 +136,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 }
             }
             if (mSimQuantity == 3) {
-                name = "calls_" + mIMSI.get(2);
+                name = Constants.CALLS_TABLE + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -160,7 +160,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mCallsData = new ContentValues();
-        readFromDatabase();
+        readCallsDataFromDatabase();
         mLimits = getSIMLimits();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -181,7 +181,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             public void onReceive(Context context, Intent intent) {
                 if (mIsOutgoing) {
                     //final String[] out = {"Call Starts\n"};
-                    readFromDatabase();
+                    readCallsDataFromDatabase();
                     String lim, inter;
                     long currentDuration = 0;
                     int interval = 10;
@@ -290,7 +290,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             duration = (long) mCallsData.get(Constants.CALLS3);
                             break;
                     }
-                    writeToDataBase();
+                    writeCallsDataToDataBase();
                     //Debug
                     if (mFile != null)
                         try {
@@ -333,7 +333,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Subscribe
     public void onMessageEvent(SetCallsEvent event) {
         if (mCallsData == null)
-            readFromDatabase();
+            readCallsDataFromDatabase();
         DateTime now = new DateTime();
         mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
         mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
@@ -353,7 +353,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 mCallsData.put(Constants.CALLS3_EX, duration);
                 break;
         }
-        writeToDataBase();
+        writeCallsDataToDataBase();
         //Debug
         if (mFile != null)
             try {
@@ -388,9 +388,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             if (list != null) {
                 list.add(bundle.getString("number"));
                 if (bundle.getBoolean("black", false)) {
-                    CustomDatabaseHelper.writeBlackList(sim, list, mDbHelper, mIMSI);
+                    CustomDatabaseHelper.writeList(sim, list, mDbHelper, mIMSI, "black");
                 } else {
-                    CustomDatabaseHelper.writeWhiteList(sim, list, mDbHelper, mIMSI);
+                    CustomDatabaseHelper.writeList(sim, list, mDbHelper, mIMSI, "white");
                 }
                 return true;
             } else
@@ -423,7 +423,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS1, 0L);
             mCallsData.put(Constants.CALLS1_EX, 0L);
-            writeToDataBase();
+            writeCallsDataToDataBase();
             //Debug
             if (mFile != null)
                 try {
@@ -448,7 +448,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS2, 0L);
             mCallsData.put(Constants.CALLS2_EX, 0L);
-            writeToDataBase();
+            writeCallsDataToDataBase();
             //Debug
             if (mFile != null)
                 try {
@@ -473,7 +473,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS3, 0L);
             mCallsData.put(Constants.CALLS3_EX, 0L);
-            writeToDataBase();
+            writeCallsDataToDataBase();
             //Debug
             if (mFile != null)
                 try {
@@ -525,8 +525,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }*/
-                                final ArrayList<String> whiteList = CustomDatabaseHelper.readWhiteList(sim, mDbHelper, mIMSI);
-                                final ArrayList<String> blackList = CustomDatabaseHelper.readBlackList(sim, mDbHelper, mIMSI);
+                                final ArrayList<String> whiteList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "white");
+                                final ArrayList<String> blackList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "black");
                                 if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
                                     mIsDialogShown = true;
                                     final Bundle bundle = new Bundle();
@@ -679,7 +679,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             id = R.drawable.ic_launcher_small;
         text = String.format(getResources().getString(R.string.calls_reset), text);
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        notificationIntent.setAction("calls");
+        notificationIntent.setAction(Constants.CALLS_TABLE);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -745,7 +745,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         super.onDestroy();
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        writeToDataBase();
+        writeCallsDataToDataBase();
         //Debug
         if (mFile != null)
             try {
@@ -763,7 +763,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         EventBus.getDefault().unregister(this);
     }
 
-    private void writeToDataBase() {
+    private void writeCallsDataToDataBase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
@@ -773,7 +773,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             cv.put("period", (int) mCallsData.get(Constants.PERIOD1));
             cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
             cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-            CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(0));
+            CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS_TABLE + "_" + mIMSI.get(0));
             if (mSimQuantity >= 2) {
                 cv = new ContentValues();;
                 cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
@@ -781,7 +781,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
                 cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(1));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS_TABLE + "_" + mIMSI.get(1));
             }
             if (mSimQuantity == 3) {
                 cv = new ContentValues();;
@@ -790,10 +790,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD3));
                 cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeCallsDataForSim(cv, mDbHelper, mIMSI.get(2));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS_TABLE + "_" + mIMSI.get(2));
             }
         } else
-            CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
+            CustomDatabaseHelper.writeData(mCallsData, mDbHelper, Constants.CALLS_TABLE);
     }
 
     private static int[] getWidgetIds() {
@@ -805,7 +805,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 int i = 0;
                 for (String aChildren : children) {
                     String[] str = aChildren.split("_");
-                    if (str.length > 0 && str[1].equalsIgnoreCase("calls") && str[2].equalsIgnoreCase("widget")) {
+                    if (str.length > 0 && str[1].equalsIgnoreCase(Constants.CALLS_TABLE) && str[2].equalsIgnoreCase("widget")) {
                         ids[i] = Integer.valueOf(aChildren.split("_")[0]);
                         i++;
                     }
@@ -834,7 +834,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         return new long[] {lim1, lim2, lim3};
     }
 
-    private void readFromDatabase() {
+    private void readCallsDataFromDatabase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);

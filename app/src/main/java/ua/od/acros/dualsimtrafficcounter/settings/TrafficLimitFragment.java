@@ -38,6 +38,7 @@ import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -75,7 +76,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = "data_" + mIMSI.get(0);
+            String name = Constants.DATA_TABLE + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -88,7 +89,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = "data_" + mIMSI.get(1);
+                name = Constants.DATA_TABLE + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -102,7 +103,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 }
             }
             if (mSimQuantity == 3) {
-                name = "data_" + mIMSI.get(2);
+                name = Constants.DATA_TABLE + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -575,6 +576,10 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 save2.setEnabled(state);
             if (save3 != null)
                 save3.setEnabled(state);
+            if (!sharedPreferences.getBoolean(key, false)) {
+                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+                CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.DATA_TABLE);
+            }
         }
 
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
@@ -588,7 +593,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             if (sim >= 0) {
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
-                SharedPreferences.Editor editor = mContext.getSharedPreferences("data_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
                 CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 editor.apply();
             }
@@ -791,7 +796,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                     sim = Constants.SIM3;
                     break;
             }
-            SharedPreferences.Editor editor = mContext.getSharedPreferences("data_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
             for (String key : keySet) {

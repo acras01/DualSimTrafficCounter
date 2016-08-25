@@ -139,7 +139,7 @@ public class WhiteListActivity extends AppCompatActivity {
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
-            CustomDatabaseHelper.writeWhiteList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi);
+            CustomDatabaseHelper.writeList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi, "white");
             return true;
         }
 
@@ -169,7 +169,7 @@ public class WhiteListActivity extends AppCompatActivity {
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
-            ArrayList<String> whiteList= CustomDatabaseHelper.readWhiteList(mKey, mDbHelper, imsi);
+            ArrayList<String> whiteList= CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "white");
             List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);
             List<String> numbers = new ArrayList<>();
             for (ListItem item : listItems)

@@ -141,7 +141,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = "data_" + mIMSI.get(0);
+            String name = Constants.DATA_TABLE + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -154,7 +154,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = "data_" + mIMSI.get(1);
+                name = Constants.DATA_TABLE + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -168,7 +168,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             }
             if (mSimQuantity == 3) {
-                name = "data_" + mIMSI.get(2);
+                name = Constants.DATA_TABLE + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -415,7 +415,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mTrafficData.put(Constants.SIM1TX, mTransmitted1);
                     mTrafficData.put(Constants.TOTAL1, mReceived1 + mTransmitted1);
                 }
-                CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
                 break;
             case Constants.SIM2:
                 mReceived2 = DataFormat.getFormatLong(event.rx, event.rxv);
@@ -429,7 +428,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mTrafficData.put(Constants.SIM2TX, mTransmitted2);
                     mTrafficData.put(Constants.TOTAL2, mReceived2 + mTransmitted2);
                 }
-                CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
                 break;
             case Constants.SIM3:
                 mReceived3 = DataFormat.getFormatLong(event.rx, event.rxv);
@@ -443,9 +441,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mTrafficData.put(Constants.SIM3TX, mTransmitted3);
                     mTrafficData.put(Constants.TOTAL3, mReceived3 + mTransmitted3);
                 }
-                CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
                 break;
         }
+        writeTrafficDataToDataBase();
         if (CustomApplication.isScreenOn()) {
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification(sim));
@@ -885,7 +883,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     checkIfResetNeeded();
 
-                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, "data", true);
+                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE, true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1146,7 +1144,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     checkIfResetNeeded();
 
-                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, "data", true);
+                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE, true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1407,7 +1405,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     checkIfResetNeeded();
 
-                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, "data", true);
+                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE, true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1678,7 +1676,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             cv.put("period", (int) mTrafficData.get(Constants.PERIOD1));
             cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
             cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-            CustomDatabaseHelper.writeTrafficDataForSim(cv, mDbHelper, mIMSI.get(0));
+            CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(0));
             if (mSimQuantity >= 2) {
                 cv = new ContentValues();;
                 cv.put("rx", (long) mTrafficData.get(Constants.SIM2RX));
@@ -1690,7 +1688,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 cv.put("period", (int) mTrafficData.get(Constants.PERIOD2));
                 cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeTrafficDataForSim(cv, mDbHelper, mIMSI.get(1));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(1));
             }
             if (mSimQuantity == 3) {
                 cv = new ContentValues();;
@@ -1703,10 +1701,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 cv.put("period", (int) mTrafficData.get(Constants.PERIOD3));
                 cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeTrafficDataForSim(cv, mDbHelper, mIMSI.get(2));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(2));
             }
         } else
-            CustomDatabaseHelper.writeTrafficData(mTrafficData, mDbHelper);
+            CustomDatabaseHelper.writeData(mTrafficData, mDbHelper, Constants.DATA_TABLE);
     }
 
     private void sendDataBroadcast(long speedRX, long speedTX) {

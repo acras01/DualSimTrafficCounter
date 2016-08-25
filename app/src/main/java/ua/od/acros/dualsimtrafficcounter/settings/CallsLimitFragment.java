@@ -307,7 +307,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 save3.setEnabled(state);
             if (!sharedPreferences.getBoolean(key, false)) {
                 CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-                CustomDatabaseHelper.deleteWhiteBlackListTables(dbHelper, mIMSI);
+                CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
+                CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS_TABLE);
             }
         }
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
@@ -385,9 +386,9 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             editor.apply();
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
             if (CustomDatabaseHelper.isTableEmpty(dbHelper, "black_" + mIMSI.get(sim), false))
-                CustomDatabaseHelper.writeBlackList(sim, CustomDatabaseHelper.readBlackList(sim, dbHelper, null), dbHelper, mIMSI);
+                CustomDatabaseHelper.writeList(sim, CustomDatabaseHelper.readList(sim, dbHelper, null, "black"), dbHelper, mIMSI, "black");
             if (CustomDatabaseHelper.isTableEmpty(dbHelper, "white_" + mIMSI.get(sim), false))
-                CustomDatabaseHelper.writeWhiteList(sim, CustomDatabaseHelper.readWhiteList(sim, dbHelper, null), dbHelper, mIMSI);
+                CustomDatabaseHelper.writeList(sim, CustomDatabaseHelper.readList(sim, dbHelper, null, "white"), dbHelper, mIMSI, "white");
             return true;
         }
 

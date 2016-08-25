@@ -123,7 +123,7 @@ public class BlackListActivity extends AppCompatActivity {
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
-            CustomDatabaseHelper.writeBlackList(mKey, mList, mDbHelper, imsi);
+            CustomDatabaseHelper.writeList(mKey, mList, mDbHelper, imsi, "black");
             return true;
         }
 
@@ -153,7 +153,7 @@ public class BlackListActivity extends AppCompatActivity {
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
                 imsi = MobileUtils.getSimIds(mContext);
-            mList = CustomDatabaseHelper.readBlackList(mKey, mDbHelper, imsi);
+            mList = CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "black");
             List<ListItem> blackList = new ArrayList<>();
             for (String number : mList)
                 blackList.add(new ListItem(number, false));
