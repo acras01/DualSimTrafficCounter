@@ -893,4 +893,43 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
         return list;
     }
+
+    public static void deleteWhiteBlackListTables(CustomDatabaseHelper dbHelper, ArrayList<String> imsi) {
+        if (imsi != null) {
+            int i = 1;
+            for (String name : imsi) {
+                try {
+                    mSqLiteDatabase = dbHelper.getReadableDatabase();
+                    Cursor cursor = mSqLiteDatabase.query("list" + i, null, null, null, null, null, null);
+                    mSqLiteDatabase = dbHelper.getWritableDatabase();
+                    if (cursor.getColumnCount() > 1) {
+                        String DELETE = "DROP TABLE IF EXISTS list" + i;
+                        mSqLiteDatabase.execSQL(DELETE);
+                        String DATABASE_CREATE_SCRIPT = "create table list"
+                                + i + " (" + Constants.NUMBER + " text not null);";
+                        mSqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT);
+                    } else
+                        mSqLiteDatabase.delete("list" + i, null, null);
+                    cursor.close();
+                    String COPY = "INSERT INTO list" + i + " SELECT * FROM white_" + name;
+                    mSqLiteDatabase.execSQL(COPY);
+                    String DELETE = "DROP TABLE IF EXISTS white_" + name;
+                    mSqLiteDatabase.execSQL(DELETE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    mSqLiteDatabase = dbHelper.getWritableDatabase();
+                    mSqLiteDatabase.delete("list" + i + "_b", null, null);
+                    String COPY = "INSERT INTO list" + i + "_b SELECT * FROM black_" + name;
+                    mSqLiteDatabase.execSQL(COPY);
+                    String DELETE = "DROP TABLE IF EXISTS black_" + name;
+                    mSqLiteDatabase.execSQL(DELETE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                i++;
+            }
+        }
+    }
 }

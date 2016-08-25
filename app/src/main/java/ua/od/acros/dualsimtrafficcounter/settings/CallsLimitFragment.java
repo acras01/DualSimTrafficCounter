@@ -56,8 +56,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
+        mIMSI = MobileUtils.getSimIds(mContext);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
-            mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
@@ -305,6 +305,10 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 save2.setEnabled(state);
             if (save3 != null)
                 save3.setEnabled(state);
+            if (!sharedPreferences.getBoolean(key, false)) {
+                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+                CustomDatabaseHelper.deleteWhiteBlackListTables(dbHelper, mIMSI);
+            }
         }
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
             int sim = Constants.DISABLED;
