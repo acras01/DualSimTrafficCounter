@@ -71,7 +71,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         setHasOptionsMenu(true);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
-        mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
@@ -219,6 +218,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
+
+        mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
 
         readCallsDataFromDatabase();
 
