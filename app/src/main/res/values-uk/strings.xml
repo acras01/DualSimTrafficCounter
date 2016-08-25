@@ -177,7 +177,7 @@
     <string name="black_list">Чорний список</string>
     <string name="view_black_list">Перегляд та редагування чорного списку</string>
     <string name="unknown">Невідомий</string>
-    <string name="saved">Список збережено!</string>
+    <string name="saved">Збережено!</string>
     <string name="info_widget_calls">Віджет DSTC (дзвінки)</string>
     <string name="deleted">Віджет видалено!</string>
     <string name="remain_calls">"Залишок: "</string>

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -763,10 +764,20 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     @Override
     public boolean onPreferenceClick(Preference preference) {
         if (mIMSI != null) {
+            new SaveTask().execute(preference);
+            return true;
+        } else
+            return false;
+    }
+
+    private class SaveTask extends AsyncTask<Preference, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Preference... params) {
             Map<String, ?> prefs = mPrefs.getAll();
             String[] keys = new String[Constants.PREF_SIM_DATA.length];
             int sim = Constants.DISABLED;
-            switch (preference.getKey()) {
+            switch (params[0].getKey()) {
                 case "save_profile_traffic1":
                     keys = Constants.PREF_SIM1;
                     sim = Constants.SIM1;
@@ -791,7 +802,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             }
             editor.apply();
             return true;
-        } else
-            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result)
+                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
     }
 }

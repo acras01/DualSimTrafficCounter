@@ -4,6 +4,7 @@ package ua.od.acros.dualsimtrafficcounter.settings;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -341,10 +342,20 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     @Override
     public boolean onPreferenceClick(Preference preference) {
         if (mIMSI != null) {
+            new SaveTask().execute(preference);
+            return true;
+        } else
+            return false;
+    }
+
+    private class SaveTask extends AsyncTask<Preference, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Preference... params) {
             Map<String, ?> prefs = mPrefs.getAll();
             String[] keys = new String[Constants.PREF_SIM_CALLS.length];
             int sim = Constants.DISABLED;
-            switch (preference.getKey()) {
+            switch (params[0].getKey()) {
                 case "save_profile_calls1":
                     keys = Constants.PREF_SIM1_CALLS;
                     sim = Constants.SIM1;
@@ -372,7 +383,12 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             CustomDatabaseHelper.writeBlackList(sim, CustomDatabaseHelper.readBlackList(sim, dbHelper, null), dbHelper, mIMSI);
             CustomDatabaseHelper.writeWhiteList(sim, CustomDatabaseHelper.readWhiteList(sim, dbHelper, null), dbHelper, mIMSI);
             return true;
-        } else
-            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result)
+                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
     }
 }

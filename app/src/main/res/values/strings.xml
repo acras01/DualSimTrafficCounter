@@ -185,7 +185,7 @@
     <string name="view_black_list">View and edit black list</string>
     <string name="title_activity_black_list" translatable="false">BlackListActivity</string>
     <string name="unknown">Unknown</string>
-    <string name="saved">List saved!</string>
+    <string name="saved">Saved!</string>
     <string name="info_widget_calls">DSTC widget (calls)</string>
     <string name="deleted">Widget deleted!</string>
     <string name="remain_calls">"Remaining: "</string>
