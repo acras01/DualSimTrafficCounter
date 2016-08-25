@@ -53,6 +53,7 @@ public class ChooseActionDialog extends AppCompatActivity {
         View view = View.inflate(this, R.layout.action_dialog, null);
         AppCompatRadioButton change = (AppCompatRadioButton) view.findViewById(R.id.actionchange);
         AppCompatRadioButton off = (AppCompatRadioButton) view.findViewById(R.id.actionoff);
+        AppCompatRadioButton mobileData = (AppCompatRadioButton) view.findViewById(R.id.actionmobiledata);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ||
@@ -61,6 +62,8 @@ public class ChooseActionDialog extends AppCompatActivity {
             change.setEnabled(false);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())
             off.setEnabled(false);
+        if (!CustomApplication.isDataUsageAvailable())
+            mobileData.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         final ColorStateList[] textColor = new ColorStateList[] {ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};

@@ -95,7 +95,7 @@
     <string name="use_watchdog">Включить сервис контроля</string>
     <string name="other_summary">Включение сервиса контроля и другое</string>
     <string name="watchdog_timer">Интервал проверки (не менее 1 мин)</string>
-    <string name="minute">" мин"</string>
+    <string name="minute">" мин."</string>
     <string name="use_background">Использовать цветную подложку</string>
     <string name="everyday_on_off">Ежедневное вкл./откл. передачи данных</string>
     <string name="time_off"> Время откл.</string>
@@ -149,7 +149,7 @@
     <string name="traffic">Передача данных</string>
     <string name="test">Тест</string>
     <string name="app_version">Версия %1$s</string>
-    <string name="seconds">%1$sс</string>
+    <string name="seconds">0мин. %1$sс</string>
     <string name="minutes_seconds">%1$sмин. %2$sс</string>
     <string name="calls_fragment">Статистика исходящих вызовов</string>
     <string name="calls">Исходящие вызовы</string>
@@ -158,7 +158,7 @@
     <string name="tariffication">Интервал тарификации</string>
     <string name="calls_limit_title">Ограничение исходящих вызовов</string>
     <string name="calls_limit_summary">Настройка ограничения исходящих вызовов</string>
-    <string name="minutes">%1$sмин</string>
+    <string name="minutes">%1$sмин.</string>
     <string name="tip_calls">Отображаемая длительность вызовов не является точной, а округлена в соответствии с интервалом тарификации</string>
     <string name="traffic_rest">%1$s (остаток): %2$s</string>
     <string name="body">Отладочная информация</string>
@@ -229,4 +229,5 @@
     <string name="save_profile_known">Сохранять профили для известных SIM</string>
     <string name="save_profile_sum">Сохранить профиль для текущей SIM</string>
     <string name="sim_not_defined">Приложение не может определить активную SIM-карту. Пожалуйста, выберите в настройках ручной выбор SIM</string>
+    <string name="enable_mobile_data">Пожалуйста, включите передачу данных!</string>
 </resources>

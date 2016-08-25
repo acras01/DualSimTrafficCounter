@@ -149,7 +149,7 @@
     <string name="traffic">Мобільні дані</string>
     <string name="test">Тест</string>
     <string name="app_version">Версія %1$s</string>
-    <string name="seconds">%1$sс</string>
+    <string name="seconds">0хв. %1$sс</string>
     <string name="minutes_seconds">%1$sхв. %2$sс</string>
     <string name="calls">Вихiднi дзвiнки</string>
     <string name="calls_fragment">Статистика вихiдних дзвiнкiв</string>
@@ -229,4 +229,5 @@
     <string name="save_profile_known">Зберігати профілі для відомих SIM</string>
     <string name="save_profile_sum">Зберегти профіль для поточної SIM</string>
     <string name="sim_not_defined">Додаток не може визначити активну SIM-карту. Будь ласка, оберіть в налаштуваннях ручний вибір SIM</string>
+    <string name="enable_mobile_data">Будь ласка, увімкніть мобільні дані!</string>
 </resources>

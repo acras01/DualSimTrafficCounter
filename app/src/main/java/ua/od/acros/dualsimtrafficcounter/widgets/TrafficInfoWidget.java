@@ -169,7 +169,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             String sizestrs = prefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.traffic_info_widget);
-            boolean[] isNight =  TrafficCountService.getIsNight();
+            boolean[] isNight =  TrafficCountService.getIsNightValues();
 
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))

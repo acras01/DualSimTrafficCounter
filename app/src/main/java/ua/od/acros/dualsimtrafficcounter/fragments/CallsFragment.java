@@ -220,7 +220,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
-        readFromDatabase();
+        readCallsDataFromDatabase();
 
         long[] limit = setTotalText();
         TypedValue typedValue = new TypedValue();
@@ -288,10 +288,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM1, "0", 1));
                 else {
-                    readFromDatabase();
+                    readCallsDataFromDatabase();
                     mCallsData.put(Constants.CALLS1, 0L);
                     mCallsData.put(Constants.CALLS1_EX, 0L);
-                    writeToDataBase();
+                    writeCallsDataToDataBase();
                 }
                 TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -299,10 +299,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM2, "0", 1));
                 else {
-                    readFromDatabase();
+                    readCallsDataFromDatabase();
                     mCallsData.put(Constants.CALLS2, 0L);
                     mCallsData.put(Constants.CALLS3_EX, 0L);
-                    writeToDataBase();
+                    writeCallsDataToDataBase();
                 }
                 TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -310,10 +310,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM3, "0", 1));
                 else {
-                    readFromDatabase();
+                    readCallsDataFromDatabase();
                     mCallsData.put(Constants.CALLS3, 0L);
                     mCallsData.put(Constants.CALLS3_EX, 0L);
-                    writeToDataBase();
+                    writeCallsDataToDataBase();
                 }
                 TOT3.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
@@ -466,7 +466,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
     }
 
-    private void writeToDataBase() {
+    private void writeCallsDataToDataBase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
@@ -499,7 +499,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             CustomDatabaseHelper.writeCallsData(mCallsData, mDbHelper);
     }
 
-    private void readFromDatabase() {
+    private void readCallsDataFromDatabase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);

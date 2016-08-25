@@ -33,6 +33,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -73,6 +75,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private long[] mLimits = new long[3];
     private BroadcastReceiver mCallAnsweredReceiver, mCallEndedReceiver;
     private ArrayList<String> mIMSI = null;
+    private File mFile;
 
     public CallLoggerService() {
     }
@@ -164,6 +167,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+
+        //Debug
+        File dir = new File(String.valueOf(mContext.getFilesDir()));
+        dir.mkdir();
+        // create the file in which we will write the contents
+        String fileName = "write_calls_data.txt";
+        mFile = new File(dir, fileName);
+
 
         mCallAnsweredReceiver = new BroadcastReceiver() {
             @Override
@@ -280,6 +291,17 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             break;
                     }
                     writeToDataBase();
+                    //Debug
+                    if (mFile != null)
+                        try {
+                            String out = "CallEndReceiver " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                            FileOutputStream os = new FileOutputStream(mFile, true);
+                            os.write(out.getBytes());
+                            os.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     refreshWidgetAndNotification(sim, duration);
                     /*String out = "Call Ends\n";
                     try {
@@ -332,6 +354,17 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 break;
         }
         writeToDataBase();
+        //Debug
+        if (mFile != null)
+            try {
+                String out = "SetCallsEvent " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                FileOutputStream os = new FileOutputStream(mFile, true);
+                os.write(out.getBytes());
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         refreshWidgetAndNotification(sim, duration);
     }
 
@@ -391,6 +424,17 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.CALLS1, 0L);
             mCallsData.put(Constants.CALLS1_EX, 0L);
             writeToDataBase();
+            //Debug
+            if (mFile != null)
+                try {
+                    String out = "StartTask1 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                    FileOutputStream os = new FileOutputStream(mFile, true);
+                    os.write(out.getBytes());
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             mIsResetNeeded1 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
@@ -405,6 +449,17 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.CALLS2, 0L);
             mCallsData.put(Constants.CALLS2_EX, 0L);
             writeToDataBase();
+            //Debug
+            if (mFile != null)
+                try {
+                    String out = "StartTask2 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                    FileOutputStream os = new FileOutputStream(mFile, true);
+                    os.write(out.getBytes());
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             mIsResetNeeded2 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
@@ -419,6 +474,17 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.CALLS3, 0L);
             mCallsData.put(Constants.CALLS3_EX, 0L);
             writeToDataBase();
+            //Debug
+            if (mFile != null)
+                try {
+                    String out = "StartTask3 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                    FileOutputStream os = new FileOutputStream(mFile, true);
+                    os.write(out.getBytes());
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             mIsResetNeeded3 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
@@ -680,6 +746,17 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         writeToDataBase();
+        //Debug
+        if (mFile != null)
+            try {
+                String out = "Destroy " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                FileOutputStream os = new FileOutputStream(mFile, true);
+                os.write(out.getBytes());
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         unregisterReceiver(mCallAnsweredReceiver);
         unregisterReceiver(mCallEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);

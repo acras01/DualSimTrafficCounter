@@ -15,8 +15,8 @@ android {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 14
         targetSdkVersion 16
-        versionCode 102
-        versionName '2.0.2'
+        versionCode 103
+        versionName '2.0.3'
         signingConfig signingConfigs.acras
         vectorDrawables.useSupportLibrary = true
     }
@@ -45,8 +45,8 @@ dependencies {
     compile 'com.android.support:preference-v7:24.2.0'
     compile 'com.android.support:design:24.2.0'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile project(':joda-time-2.8.2')
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'joda-time:joda-time:2.9.4'
     compile project(':acra')
     provided project(':XposedBridge')
     compile project(':RootShell')

@@ -155,7 +155,7 @@
     <string name="calculate">Calculate</string>
     <string name="test">Test</string>
     <string name="app_version">Version %1$s</string>
-    <string name="seconds">%1$ss</string>
+    <string name="seconds">0m %1$ss</string>
     <string name="minutes_seconds">%1$sm %2$ss</string>
     <string name="outgoing_duration">Duration of outgoing calls</string>
     <string name="tip_calls">Shown duration of calls is not exact but rounded in accordance with interval of tariffication</string>
@@ -237,4 +237,5 @@
     <string name="save_profile">Save profile</string>
     <string name="save_profile_sum">Save settings for current SIM</string>
     <string name="sim_not_defined">Application can\'t define active SIM. Please, choose manual SIM selection in Settings</string>
+    <string name="enable_mobile_data">Please, enable mobile data!</string>
 </resources>

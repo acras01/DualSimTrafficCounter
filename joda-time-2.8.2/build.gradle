@@ -1,2 +1,0 @@
-configurations.create("default")
-artifacts.add("default", file('joda-time-2.8.2.jar'))

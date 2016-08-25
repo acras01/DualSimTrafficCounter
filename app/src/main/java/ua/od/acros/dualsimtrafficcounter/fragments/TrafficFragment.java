@@ -80,7 +80,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         setHasOptionsMenu(true);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
-        mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -92,7 +91,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
             mIMSI = MobileUtils.getSimIds(mContext);
         mTrafficData = new ContentValues();
-        mIsNight =  TrafficCountService.getIsNight();
+        mIsNight =  TrafficCountService.getIsNightValues();
 
         mTrafficDataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -221,8 +220,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         EventBus.getDefault().register(this);
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
 
+        mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
         bSet.setOnClickListener(this);
-        readFromDatabase();
+        readTrafficDataFromDatabase();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
             RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                     (long) mTrafficData.get(Constants.SIM1RX)));
@@ -557,7 +557,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        boolean[] isNight =  TrafficCountService.getIsNight();
+        boolean[] isNight =  TrafficCountService.getIsNightValues();
         switch (v.getId()) {
             case R.id.settings:
                 try {
@@ -570,7 +570,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM1, 0, 0));
                 else {
-                    readFromDatabase();
+                    readTrafficDataFromDatabase();
                     if (isNight[0]) {
                         mTrafficData.put(Constants.SIM1RX_N, 0L);
                         mTrafficData.put(Constants.SIM1TX_N, 0L);
@@ -580,7 +580,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                         mTrafficData.put(Constants.SIM1TX, 0L);
                         mTrafficData.put(Constants.TOTAL1, 0L);
                     }
-                    writeToDataBase();
+                    writeTrafficDataToDataBase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
@@ -597,7 +597,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM2, 0, 0));
                 else {
-                    readFromDatabase();
+                    readTrafficDataFromDatabase();
                     if (isNight[1]) {
                         mTrafficData.put(Constants.SIM2RX_N, 0L);
                         mTrafficData.put(Constants.SIM2TX_N, 0L);
@@ -607,7 +607,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                         mTrafficData.put(Constants.SIM2TX, 0L);
                         mTrafficData.put(Constants.TOTAL2, 0L);
                     }
-                    writeToDataBase();
+                    writeTrafficDataToDataBase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
@@ -624,7 +624,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM3, 0, 0));
                 else {
-                    readFromDatabase();
+                    readTrafficDataFromDatabase();
                     if (isNight[2]) {
                         mTrafficData.put(Constants.SIM3RX_N, 0L);
                         mTrafficData.put(Constants.SIM3TX_N, 0L);
@@ -634,7 +634,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                         mTrafficData.put(Constants.SIM3TX, 0L);
                         mTrafficData.put(Constants.TOTAL3, 0L);
                     }
-                    writeToDataBase();
+                    writeTrafficDataToDataBase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
@@ -798,7 +798,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         bLim3.setText(limit3);
     }
 
-    private void readFromDatabase() {
+    private void readTrafficDataFromDatabase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
@@ -853,7 +853,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void writeToDataBase() {
+    private void writeTrafficDataToDataBase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
