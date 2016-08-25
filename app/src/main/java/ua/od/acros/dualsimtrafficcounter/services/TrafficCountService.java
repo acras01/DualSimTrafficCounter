@@ -885,7 +885,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     checkIfResetNeeded();
 
-                    boolean emptyDB = CustomDatabaseHelper.isTrafficTableEmpty(mDbHelper);
+                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, "data", true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1146,7 +1146,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     checkIfResetNeeded();
 
-                    boolean emptyDB = CustomDatabaseHelper.isTrafficTableEmpty(mDbHelper);
+                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, "data", true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1407,7 +1407,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                     checkIfResetNeeded();
 
-                    boolean emptyDB = CustomDatabaseHelper.isTrafficTableEmpty(mDbHelper);
+                    boolean emptyDB = CustomDatabaseHelper.isTableEmpty(mDbHelper, "data", true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);

@@ -462,24 +462,21 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
             mSqLiteDatabase.insert(DATA_TABLE, null, cv);
     }
 
-    public static boolean isTrafficTableEmpty(CustomDatabaseHelper dbHelper) {
-        boolean result;
-        Cursor cursor = dbHelper.getReadableDatabase().query(DATA_TABLE, null, null, null, null, null, null);
-        result = cursor != null && cursor.getCount() == 0;
-        if (cursor != null) {
-            cursor.close();
+    public static boolean isTableEmpty(CustomDatabaseHelper dbHelper, String name, boolean type) {
+        try {
+            boolean result;
+            Cursor cursor = dbHelper.getReadableDatabase().query(name, null, null, null, null, null, null);
+            if (type)
+                result = cursor == null || cursor.getCount() == 0;
+            else
+                result = cursor == null;
+            if (cursor != null) {
+                cursor.close();
+            }
+            return result;
+        } catch (Exception e) {
+            return true;
         }
-        return result;
-    }
-
-    public static boolean isCallsTableEmpty(CustomDatabaseHelper dbHelper) {
-        boolean result;
-        Cursor cursor = dbHelper.getReadableDatabase().query(CALLS_TABLE, null, null, null, null, null, null);
-        result = cursor != null && cursor.getCount() == 0;
-        if (cursor != null) {
-            cursor.close();
-        }
-        return result;
     }
 
     @Nullable
@@ -744,7 +741,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 mSqLiteDatabase = dbHelper.getWritableDatabase();
                 mSqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT);
             }
-            mSqLiteDatabase.execSQL("DELETE FROM " + table);
+            mSqLiteDatabase.delete(table, null, null);
             for (String s : list) {
                 ContentValues cv = new ContentValues();
                 cv.put(Constants.NUMBER, s);
@@ -835,7 +832,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 mSqLiteDatabase = dbHelper.getWritableDatabase();
                 mSqLiteDatabase.execSQL(DATABASE_CREATE_SCRIPT);
             }
-            mSqLiteDatabase.execSQL("DELETE FROM " + table);
+            mSqLiteDatabase.delete(table, null, null);
             for (String s : list) {
                 ContentValues cv = new ContentValues();
                 cv.put(Constants.NUMBER, s);

@@ -441,7 +441,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 mEdit.apply();
                 Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!CustomDatabaseHelper.isTrafficTableEmpty(CustomDatabaseHelper.getInstance(mContext))) {
+                if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(mContext), "data", true)) {
                     ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(mContext));
                     intent.putExtra(Constants.SPEEDRX, 0L);
                     intent.putExtra(Constants.SPEEDTX, 0L);

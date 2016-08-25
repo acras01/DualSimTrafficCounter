@@ -35,7 +35,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
         super.onUpdate(context, widgetManager, widgetId);
         Bundle bundle = new Bundle();
-        if (!CustomDatabaseHelper.isTrafficTableEmpty(CustomDatabaseHelper.getInstance(context))) {
+        if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(context), "data", true)) {
             ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(context));
             bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
             bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));

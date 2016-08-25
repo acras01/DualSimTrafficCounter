@@ -36,7 +36,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Bundle bundle = new Bundle();
-        if (!CustomDatabaseHelper.isCallsTableEmpty(CustomDatabaseHelper.getInstance(context))) {
+        if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(context), "calls", true)) {
             ContentValues dataMap = CustomDatabaseHelper.readCallsData(CustomDatabaseHelper.getInstance(context));
             bundle.putLong(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
             bundle.putLong(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
@@ -63,7 +63,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
             Bundle bundle = new Bundle();
-            if (!CustomDatabaseHelper.isCallsTableEmpty(CustomDatabaseHelper.getInstance(context))) {
+            if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(context), "calls", true)) {
                 ContentValues dataMap = CustomDatabaseHelper.readCallsData(CustomDatabaseHelper.getInstance(context));
                 bundle.putLong(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
                 bundle.putLong(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));

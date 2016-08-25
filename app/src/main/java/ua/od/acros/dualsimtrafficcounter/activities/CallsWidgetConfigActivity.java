@@ -343,7 +343,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 mEdit.apply();
                 Intent intent = new Intent(Constants.CALLS_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!CustomDatabaseHelper.isCallsTableEmpty(CustomDatabaseHelper.getInstance(mContext))) {
+                if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(mContext), "calls", true)) {
                     ContentValues dataMap = CustomDatabaseHelper.readCallsData(CustomDatabaseHelper.getInstance(mContext));
                     intent.putExtra(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
                     intent.putExtra(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
