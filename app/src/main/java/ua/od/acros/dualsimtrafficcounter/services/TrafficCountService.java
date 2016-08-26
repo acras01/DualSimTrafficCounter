@@ -506,21 +506,26 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
 
         // schedule task
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[43], true)) {
-            mActiveSIM = MobileUtils.getActiveSimForData(mContext);
-            if (mActiveSIM != Constants.DISABLED)
-                startNewTimerTask(Constants.COUNT);
-            else {
-                Intent dialogIntent = new Intent(mContext, ManualSimDialog.class);
+        if (mSimQuantity == 1) {
+            mActiveSIM = Constants.SIM1;
+            startNewTimerTask(Constants.COUNT);
+        } else {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[43], true)) {
+                mActiveSIM = MobileUtils.getActiveSimForData(mContext);
+                if (mActiveSIM != Constants.DISABLED)
+                    startNewTimerTask(Constants.COUNT);
+                else {
+                    Intent dialogIntent = new Intent(mContext, ManualSimDialog.class);
+                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    if (!ManualSimDialog.isActive())
+                        mContext.startActivity(dialogIntent);
+                }
+            } else {
+                Intent dialogIntent = new Intent(mContext, ChooseSimDialog.class);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (!ManualSimDialog.isActive())
+                if (!ChooseSimDialog.isActive())
                     mContext.startActivity(dialogIntent);
             }
-        } else {
-            Intent dialogIntent = new Intent(mContext, ChooseSimDialog.class);
-            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (!ChooseSimDialog.isActive())
-                mContext.startActivity(dialogIntent);
         }
 
         return START_STICKY;
