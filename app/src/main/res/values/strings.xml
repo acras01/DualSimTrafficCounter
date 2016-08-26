@@ -232,7 +232,7 @@
     <string name="count_only_incoming">Count only incoming traffic</string>
     <string name="exit">Stop service and exit</string>
     <string name="show_minus">Show traffic consumption over limit</string>
-    <string name="manual_sim">Autoselect active SIM</string>
+    <string name="manual_sim">Determine active SIM automatically</string>
     <string name="save_profile_known">Save profiles for known SIMs</string>
     <string name="save_profile">Save profile</string>
     <string name="save_profile_sum">Save settings for current SIM</string>
