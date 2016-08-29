@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -294,7 +295,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     //Debug
                     if (mFile != null)
                         try {
-                            String out = "CallEndReceiver " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                            String out = "CallEndReceiver " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
                             FileOutputStream os = new FileOutputStream(mFile, true);
                             os.write(out.getBytes());
                             os.close();
@@ -357,7 +358,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         //Debug
         if (mFile != null)
             try {
-                String out = "SetCallsEvent " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                String out = "SetCallsEvent " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
                 FileOutputStream os = new FileOutputStream(mFile, true);
                 os.write(out.getBytes());
                 os.close();
@@ -427,7 +428,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             //Debug
             if (mFile != null)
                 try {
-                    String out = "StartTask1 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                    String out = "StartTask1 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
                     FileOutputStream os = new FileOutputStream(mFile, true);
                     os.write(out.getBytes());
                     os.close();
@@ -452,7 +453,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             //Debug
             if (mFile != null)
                 try {
-                    String out = "StartTask2 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                    String out = "StartTask2 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
                     FileOutputStream os = new FileOutputStream(mFile, true);
                     os.write(out.getBytes());
                     os.close();
@@ -477,7 +478,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             //Debug
             if (mFile != null)
                 try {
-                    String out = "StartTask3 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                    String out = "StartTask3 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
                     FileOutputStream os = new FileOutputStream(mFile, true);
                     os.write(out.getBytes());
                     os.close();
@@ -574,6 +575,22 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
+            int sim = Constants.DISABLED;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1_CALLS)).contains(key))
+                sim = Constants.SIM1;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2_CALLS)).contains(key))
+                sim = Constants.SIM2;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3_CALLS)).contains(key))
+                sim = Constants.SIM3;
+            if (sim >= 0) {
+                Map prefs = sharedPreferences.getAll();
+                Object o = prefs.get(key);
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
+                editor.apply();
+            }
+        }
         if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5])) {
@@ -749,7 +766,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         //Debug
         if (mFile != null)
             try {
-                String out = "Destroy " + new DateTime().toString(Constants.DATE_TIME_FORMATTER);
+                String out = "Destroy " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
                 FileOutputStream os = new FileOutputStream(mFile, true);
                 os.write(out.getBytes());
                 os.close();

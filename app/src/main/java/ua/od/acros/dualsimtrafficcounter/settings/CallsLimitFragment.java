@@ -322,7 +322,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             if (sim >= 0) {
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
-                SharedPreferences.Editor editor = mContext.getSharedPreferences("calls_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
                 CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 editor.apply();
             }

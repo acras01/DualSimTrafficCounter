@@ -35,6 +35,7 @@ import org.joda.time.DateTimeFieldType;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -622,6 +623,22 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
+            int sim = Constants.DISABLED;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))
+                sim = Constants.SIM1;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2)).contains(key))
+                sim = Constants.SIM2;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
+                sim = Constants.SIM3;
+            if (sim >= 0) {
+                Map prefs = sharedPreferences.getAll();
+                Object o = prefs.get(key);
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
+                editor.apply();
+            }
+        }
         if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[3])
                 || key.equals(Constants.PREF_SIM1[4]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10])) {
             mSIM1ContinueOverLimit = false;
