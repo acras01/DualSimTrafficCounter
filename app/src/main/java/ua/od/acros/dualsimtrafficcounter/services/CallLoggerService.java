@@ -295,7 +295,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     //Debug
                     if (mFile != null)
                         try {
-                            String out = "CallEndReceiver " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
+                            String out = "CallEndReceiver " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + " " +
+                                    mCallsData.get(Constants.CALLS1) + " " + mCallsData.get(Constants.CALLS2) + " " + mCallsData.get(Constants.CALLS3) + "\n";
                             FileOutputStream os = new FileOutputStream(mFile, true);
                             os.write(out.getBytes());
                             os.close();
@@ -358,7 +359,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         //Debug
         if (mFile != null)
             try {
-                String out = "SetCallsEvent " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
+                String out = "SetCallsEvent " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + " " +
+                        mCallsData.get(Constants.CALLS1) + " " + mCallsData.get(Constants.CALLS2) + " " + mCallsData.get(Constants.CALLS3) + "\n";
                 FileOutputStream os = new FileOutputStream(mFile, true);
                 os.write(out.getBytes());
                 os.close();
@@ -428,7 +430,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             //Debug
             if (mFile != null)
                 try {
-                    String out = "StartTask1 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
+                    String out = "StartTask1 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + " " +
+                            mCallsData.get(Constants.CALLS1) + " " + mCallsData.get(Constants.CALLS2) + " " + mCallsData.get(Constants.CALLS3) + "\n";
                     FileOutputStream os = new FileOutputStream(mFile, true);
                     os.write(out.getBytes());
                     os.close();
@@ -453,7 +456,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             //Debug
             if (mFile != null)
                 try {
-                    String out = "StartTask2 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
+                    String out = "StartTask2 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + " " +
+                            mCallsData.get(Constants.CALLS1) + " " + mCallsData.get(Constants.CALLS2) + " " + mCallsData.get(Constants.CALLS3) + "\n";
                     FileOutputStream os = new FileOutputStream(mFile, true);
                     os.write(out.getBytes());
                     os.close();
@@ -478,7 +482,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             //Debug
             if (mFile != null)
                 try {
-                    String out = "StartTask3 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
+                    String out = "StartTask3 " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + " " +
+                            mCallsData.get(Constants.CALLS1) + " " + mCallsData.get(Constants.CALLS2) + " " + mCallsData.get(Constants.CALLS3) + "\n";
                     FileOutputStream os = new FileOutputStream(mFile, true);
                     os.write(out.getBytes());
                     os.close();
@@ -766,7 +771,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         //Debug
         if (mFile != null)
             try {
-                String out = "Destroy " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + "\n";
+                String out = "Destroy " + new DateTime().toString(Constants.DATE_TIME_FORMATTER) + " " +
+                        mCallsData.get(Constants.CALLS1) + " " + mCallsData.get(Constants.CALLS2) + " " + mCallsData.get(Constants.CALLS3) + "\n";
                 FileOutputStream os = new FileOutputStream(mFile, true);
                 os.write(out.getBytes());
                 os.close();
