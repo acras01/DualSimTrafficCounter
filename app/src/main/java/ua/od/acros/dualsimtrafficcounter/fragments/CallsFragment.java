@@ -1,6 +1,8 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -39,6 +41,7 @@ import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -222,6 +225,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
 
         readCallsDataFromDatabase();
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(Constants.STARTED_ID, buildNotification());
 
         long[] limit = setTotalText();
         TypedValue typedValue = new TypedValue();
@@ -534,5 +539,59 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
         }
+    }
+
+    private Notification buildNotification() {
+        long lim1 = Long.MAX_VALUE;
+        long lim2 = Long.MAX_VALUE;
+        long lim3 = Long.MAX_VALUE;
+        String limit1 = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "");
+        String limit2 = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "");
+        String limit3 = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "");
+        if (!limit1.equals(""))
+            lim1 = Long.valueOf(limit1) * Constants.MINUTE;
+        if (!limit2.equals(""))
+            lim2 = Long.valueOf(limit2) * Constants.MINUTE;
+        if (!limit3.equals(""))
+            lim3 = Long.valueOf(limit3) * Constants.MINUTE;
+
+        long tot1, tot2 = 0, tot3 = 0;
+        String text = "";
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
+            text = getString(R.string.remain_calls);
+            tot1 = lim1 - (long) mCallsData.get(Constants.CALLS1);
+            if (tot1 < 0)
+                tot1 = 0;
+            if (mSimQuantity >= 2) {
+                tot2 = lim2 - (long) mCallsData.get(Constants.CALLS2);
+                if (tot2 < 0)
+                    tot2 = 0;
+            }
+            if (mSimQuantity == 3) {
+                tot3 = lim3 - (long) mCallsData.get(Constants.CALLS3);
+                if (tot3 < 0)
+                    tot3 = 0;
+            }
+        } else {
+            tot1 = (long) mCallsData.get(Constants.CALLS1);
+            tot2 = (long) mCallsData.get(Constants.CALLS2);
+            tot3 = (long) mCallsData.get(Constants.CALLS3);
+        }
+
+        if (lim1 != Long.MAX_VALUE)
+            text += DataFormat.formatCallDuration(mContext, tot1);
+        else
+            text += getString(R.string.not_set);
+        if (mSimQuantity >= 2)
+            if (lim2 != Long.MAX_VALUE)
+                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot2);
+            else
+                text += "  ||  " + getString(R.string.not_set);
+        if (mSimQuantity == 3)
+            if (lim3 != Long.MAX_VALUE)
+                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
+            else
+                text += "  ||  " + getString(R.string.not_set);
+        return CustomNotification.getNotification(mContext, "", text);
     }
 }

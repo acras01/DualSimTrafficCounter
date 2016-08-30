@@ -106,6 +106,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private Handler mHandler;
     private boolean[] mFlashPreOverLimit;
     private ArrayList<String> mIMSI = null;
+    private CountDownTimer mTimer = null;
+    private Service mService = null;
 
     public TrafficCountService() {
     }
@@ -127,6 +129,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     public void onCreate() {
         super.onCreate();
 
+        mService = this;
         mContext = CustomApplication.getAppContext();
         EventBus.getDefault().register(this);
 
@@ -217,6 +220,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTaskResult.cancel(false);
             mTaskExecutor.shutdown();
         }
+        if (mTimer != null)
+            mTimer.cancel();
         if (mSimQuantity == 1) {
             mActiveSIM = Constants.SIM1;
             startNewTimerTask(Constants.COUNT);
@@ -278,8 +283,20 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mContext.stopService(new Intent(mContext, WatchDogService.class));
 
         writeTrafficDataToDataBase();
+        sendDataBroadcast(0L, 0L);
 
-        this.stopSelf();
+        mTimer = new CountDownTimer(10000, 10000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                mService.stopSelf();
+            }
+        };
+        mTimer.start();
     }
 
     @Subscribe
