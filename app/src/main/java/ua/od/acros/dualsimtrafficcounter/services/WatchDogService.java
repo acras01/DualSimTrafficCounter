@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
-import org.acra.ACRA;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -17,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -78,12 +76,7 @@ public class WatchDogService extends Service{
         @Override
         public void run() {
             if (mIsFirstRun) {
-                try {
-                    TimeUnit.MINUTES.sleep(Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    ACRA.getErrorReporter().handleException(e);
-                }
+                CustomApplication.sleep(60 * 1000 * Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")));
                 mIsFirstRun = false;
             }
             ContentValues cv = CustomDatabaseHelper.readTrafficData(mDbHelper);

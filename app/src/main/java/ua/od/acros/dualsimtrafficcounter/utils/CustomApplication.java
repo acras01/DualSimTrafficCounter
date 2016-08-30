@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -22,13 +23,17 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.joda.time.DateTime;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
+import ua.od.acros.dualsimtrafficcounter.widgets.CallsInfoWidget;
+import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 @ReportsCrashes(mailTo = "acras1@gmail.com",
         customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,
@@ -201,11 +206,11 @@ public class CustomApplication extends Application {
         return mIsActivityVisible;
     }
 
-    public static void activityResumed() {
+    public static void isActivityResumed() {
         mIsActivityVisible = true;
     }
 
-    public static void activityPaused() {
+    public static void isActivityPaused() {
         mIsActivityVisible = false;
     }
 
@@ -286,5 +291,39 @@ public class CustomApplication extends Application {
             editor.putString(key, (String) o);
         else if (o instanceof Boolean)
             editor.putBoolean(key, (boolean) o);
+    }
+
+    public static int[] getWidgetIds(String name) {
+        Class c;
+        if (name.equals(Constants.CALLS_TABLE))
+            c = CallsInfoWidget.class;
+        else
+            c = TrafficInfoWidget.class;
+        int[] ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, c));
+        if (ids.length == 0) {
+            try {
+                File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
+                String[] children = dir.list();
+                int i = 0;
+                for (String aChildren : children) {
+                    String[] str = aChildren.split("_");
+                    if (str.length > 0 && str[1].equalsIgnoreCase(name) && str[2].equalsIgnoreCase("widget")) {
+                        ids[i] = Integer.valueOf(aChildren.split("_")[0]);
+                        i++;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return ids;
+    }
+
+    public static void sleep(long time) {
+        try {
+            TimeUnit.MILLISECONDS.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

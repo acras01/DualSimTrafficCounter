@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -63,7 +62,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 import wei.mark.standout.StandOutWindow;
 
 
@@ -275,13 +273,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mPrefs.getString(Constants.PREF_SIM3[15], "1"), mPrefs.getString(Constants.PREF_SIM3[16], "0")));
 
         writeTrafficDataToDataBase();
-
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            ACRA.getErrorReporter().handleException(e);
-        }
+        CustomApplication.sleep(1000);
     }
 
     @Subscribe
@@ -454,7 +446,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification(sim));
         }
-        if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0) && CustomApplication.isScreenOn())
+        if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0) && CustomApplication.isScreenOn())
             sendDataBroadcast(0L, 0L);
         startNewTimerTask(Constants.COUNT);
     }
@@ -1103,7 +1095,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1364,7 +1356,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1625,7 +1617,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || getWidgetIds().length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
 
@@ -1736,7 +1728,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void sendDataBroadcast(long speedRX, long speedTX) {
         Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
-        intent.putExtra(Constants.WIDGET_IDS, getWidgetIds());
+        intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(Constants.DATA_TABLE));
         intent.putExtra(Constants.SPEEDRX, speedRX);
         intent.putExtra(Constants.SPEEDTX, speedTX);
         intent.putExtra(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
@@ -2036,27 +2028,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         nm.notify(sim, n);
 
 
-    }
-
-    private static int[] getWidgetIds() {
-        int[] ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, TrafficInfoWidget.class));
-        if (ids.length == 0) {
-            try {
-                File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
-                String[] children = dir.list();
-                int i = 0;
-                for (String aChildren : children) {
-                    String[] str = aChildren.split("_");
-                    if (str.length > 0 && str[1].equalsIgnoreCase("traffic") && str[2].equalsIgnoreCase("widget")) {
-                        ids[i] = Integer.valueOf(aChildren.split("_")[0]);
-                        i++;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return ids;
     }
 
     @Override

@@ -268,7 +268,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
         setLabelText(mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED), "0", "0");
 
-        CustomApplication.activityResumed();
+        CustomApplication.isActivityResumed();
     }
 
     @Override
@@ -290,7 +290,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
             bClear3.setOnClickListener(null);
         }
 
-        CustomApplication.activityPaused();
+        CustomApplication.isActivityPaused();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

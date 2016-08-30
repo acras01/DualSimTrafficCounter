@@ -263,7 +263,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         arr.recycle();
 
         setButtonLimitText();
-        CustomApplication.activityResumed();
+        CustomApplication.isActivityResumed();
     }
 
     @Override
@@ -279,7 +279,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             bLim3.setOnClickListener(null);
             bClear3.setOnClickListener(this);
         }
-        CustomApplication.activityPaused();
+        CustomApplication.isActivityPaused();
     }
 
     @Override

@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
@@ -1490,7 +1489,7 @@ public class MobileUtils {
                     localIntent.putExtra("simid", (long) mLastActiveSIM);
                 context.sendBroadcast(localIntent);
             }
-            sleep(1000);
+            CustomApplication.sleep(1000);
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (isMobileDataActive(context))
@@ -1519,7 +1518,7 @@ public class MobileUtils {
                 context.sendBroadcast(localIntent);
             }
         }
-        sleep(1000);
+        CustomApplication.sleep(1000);
     }
 
     public static String getName(Context context, String key1, String key2, int sim) {
@@ -1815,14 +1814,6 @@ public class MobileUtils {
             }
             os.close();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void  sleep(long time) {
-        try {
-            TimeUnit.MILLISECONDS.sleep(time);
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
