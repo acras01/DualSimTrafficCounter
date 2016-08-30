@@ -157,7 +157,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mCallsData = new ContentValues();
         readCallsDataFromDatabase();
-        mLimits = getSIMLimits();
+        mLimits = CustomApplication.getCallsSimLimitsValues();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -647,7 +647,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
             text = getString(R.string.remain_calls);
             if (mLimitHasChanged) {
-                mLimits = getSIMLimits();
+                mLimits = CustomApplication.getCallsSimLimitsValues();
                 mLimitHasChanged = false;
             }
             tot1 = mLimits[0] - (long) mCallsData.get(Constants.CALLS1);
@@ -729,23 +729,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             }
         } else
             CustomDatabaseHelper.writeData(mCallsData, mDbHelper, Constants.CALLS_TABLE);
-    }
-
-    private long[] getSIMLimits() {
-        long lim1 = Long.MAX_VALUE;
-        long lim2 = Long.MAX_VALUE;
-        long lim3 = Long.MAX_VALUE;
-        String limit1 = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "");
-        String limit2 = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "");
-        String limit3 = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "");
-        if (!limit1.equals(""))
-            lim1 = Long.valueOf(limit1) * Constants.MINUTE;
-        if (!limit2.equals(""))
-            lim2 = Long.valueOf(limit2) * Constants.MINUTE;
-        if (!limit3.equals(""))
-            lim3 = Long.valueOf(limit3) * Constants.MINUTE;
-
-        return new long[] {lim1, lim2, lim3};
     }
 
     private void readCallsDataFromDatabase() {

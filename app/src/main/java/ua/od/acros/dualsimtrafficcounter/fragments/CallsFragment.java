@@ -90,7 +90,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                long[] limit = getSimLimits();
+                long[] limit = CustomApplication.getCallsSimLimitsValues();
                 TypedValue typedValue = new TypedValue();
                 Resources.Theme theme = getActivity().getTheme();
                 theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -230,7 +230,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             nm.notify(Constants.STARTED_ID, buildNotification());
         }
 
-        long[] limit = getSimLimits();
+        long[] limit = CustomApplication.getCallsSimLimitsValues();
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -441,26 +441,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim3.setText(limit3);
     }
 
-    private long[] getSimLimits() {
-        long limit1, limit2, limit3;
-        try {
-            limit1 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
-        } catch (Exception e) {
-            limit1 = Long.MAX_VALUE;
-        }
-        try {
-            limit2 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
-        } catch (Exception e) {
-            limit2 = Long.MAX_VALUE;
-        }
-        try {
-            limit3 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
-        } catch (Exception e) {
-            limit3 = Long.MAX_VALUE;
-        }
-        return new long[]{limit1, limit2, limit3};
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_SIM1[5]) || key.equals(Constants.PREF_SIM1[6]))
@@ -544,7 +524,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     private Notification buildNotification() {
-        long[] limit = getSimLimits();
+        long[] limit = CustomApplication.getCallsSimLimitsValues();
         long tot1, tot2 = 0, tot3 = 0;
         String text = "";
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {

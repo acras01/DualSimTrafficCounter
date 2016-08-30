@@ -91,7 +91,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
             mIMSI = MobileUtils.getSimIds(mContext);
         mTrafficData = new ContentValues();
-        mIsNight =  TrafficCountService.getIsNightValues();
+        mIsNight =  CustomApplication.getIsNightState();
 
         mTrafficDataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -556,7 +556,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        boolean[] isNight =  TrafficCountService.getIsNightValues();
+        boolean[] isNight =  CustomApplication.getIsNightState();
         switch (v.getId()) {
             case R.id.settings:
                 try {
@@ -738,32 +738,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         String limit2 = mIsNight[1] ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
         String limit3 = mIsNight[2] ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
 
-        int value1;
-        if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
-            value1 = 0;
-        else
-            value1 = mIsNight[0] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
-        int value2;
-        if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
-            value2 = 0;
-        else
-            value2 = mIsNight[1] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
-        int value3;
-        if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
-            value3 = 0;
-        else
-            value3 = mIsNight[2] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
+        long[] limit = CustomApplication.getTrafficSimLimitsValues();
 
-        double lim1 = !limit1.equals("") ? DataFormat.getFormatLong(limit1, value1) : Double.MAX_VALUE;
-        double lim2 = !limit2.equals("") ? DataFormat.getFormatLong(limit2, value2) : Double.MAX_VALUE;
-        double lim3 = !limit3.equals("") ? DataFormat.getFormatLong(limit3, value3) : Double.MAX_VALUE;
-
-        limit1 = !limit1.equals("") ? DataFormat.formatData(mContext, (long) lim1) : getString(R.string.not_set);
-        limit2 = !limit2.equals("") ? DataFormat.formatData(mContext, (long) lim2) : getString(R.string.not_set);
-        limit3 = !limit3.equals("") ? DataFormat.formatData(mContext, (long) lim3) : getString(R.string.not_set);
+        limit1 = !limit1.equals("") ? DataFormat.formatData(mContext, (long) limit[0]) : getString(R.string.not_set);
+        limit2 = !limit2.equals("") ? DataFormat.formatData(mContext, (long) limit[1]) : getString(R.string.not_set);
+        limit3 = !limit3.equals("") ? DataFormat.formatData(mContext, (long) limit[2]) : getString(R.string.not_set);
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.period);

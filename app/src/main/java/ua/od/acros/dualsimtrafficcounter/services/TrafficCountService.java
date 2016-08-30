@@ -498,7 +498,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (mIsResetNeeded3)
             mResetTime3 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
 
-        mLimits = getSimLimitsValues();
+        mLimits = CustomApplication.getTrafficSimLimitsValues();
 
         mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
 
@@ -600,10 +600,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
             mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
         }
-    }
-
-    public static boolean[] getIsNightValues() {
-        return new boolean[]{mIsNight1, mIsNight2, mIsNight3};
     }
 
     private void startNewTimerTask(int task) {
@@ -722,52 +718,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
     }
 
-    private long[] getSimLimitsValues() {
-        String limit1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
-        String limit2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
-        String limit3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
-        String round1 = mIsNight1 ? mPrefs.getString(Constants.PREF_SIM1[22], "0") : mPrefs.getString(Constants.PREF_SIM1[4], "0");
-        String round2 = mIsNight2 ? mPrefs.getString(Constants.PREF_SIM2[22], "0") : mPrefs.getString(Constants.PREF_SIM2[4], "0");
-        String round3 = mIsNight3 ? mPrefs.getString(Constants.PREF_SIM3[22], "0") : mPrefs.getString(Constants.PREF_SIM3[4], "0");
-        int value1;
-        if (mPrefs.getString(Constants.PREF_SIM1[2], "").equals(""))
-            value1 = 0;
-        else
-            value1 = mIsNight1 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[2], ""));
-        int value2;
-        if (mPrefs.getString(Constants.PREF_SIM2[2], "").equals(""))
-            value2 = 0;
-        else
-            value2 = mIsNight2 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[2], ""));
-        int value3;
-        if (mPrefs.getString(Constants.PREF_SIM3[2], "").equals(""))
-            value3 = 0;
-        else
-            value3 = mIsNight3 ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
-                    Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
-        float valuer1;
-        float valuer2;
-        float valuer3;
-        long lim1 = Long.MAX_VALUE;
-        long lim2 = Long.MAX_VALUE;
-        long lim3 = Long.MAX_VALUE;
-        if (!limit1.equals("")) {
-            valuer1 = 1 - Float.valueOf(round1) / 100;
-            lim1 = (long) (valuer1 * DataFormat.getFormatLong(limit1, value1));
-        }
-        if (!limit2.equals("")) {
-            valuer2 = 1 - Float.valueOf(round2) / 100;
-            lim2 = (long) (valuer2 * DataFormat.getFormatLong(limit2, value2));
-        }
-        if (!limit3.equals("")) {
-            valuer3 = 1 - Float.valueOf(round3) / 100;
-            lim3 = (long) (valuer3 * DataFormat.getFormatLong(limit3, value3));
-        }
-        return new long[] {lim1, lim2, lim3};
-    }
-
     private void checkIfResetNeeded() {
         String[] simPref;
         if (DateTimeComparator.getDateOnlyInstance().compare(mNowDate, mLastDate) > 0 || mResetRuleHasChanged) {
@@ -819,7 +769,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             DateTime dt = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
 
             if (mLimitHasChanged) {
-                mLimits = getSimLimitsValues();
+                mLimits = CustomApplication.getTrafficSimLimitsValues();;
                 mLimitHasChanged = false;
             }
 
@@ -916,12 +866,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mLastDate = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
-                    if (mPrefs.getBoolean(Constants.PREF_SIM1[17], false)) {
-                        String timeON = mNowDate.toString(Constants.DATE_FORMATTER) + " " + mPrefs.getString(Constants.PREF_SIM1[20], "23:00");
-                        String timeOFF = mNowDate.toString(Constants.DATE_FORMATTER) + " " + mPrefs.getString(Constants.PREF_SIM1[21], "06:00");
-                        mIsNight1 = DateTimeComparator.getInstance().compare(mNowDate, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(mNowDate, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
-                    } else
-                        mIsNight1 = false;
+                    mIsNight1 = CustomApplication.getIsNightState()[0];
+                    mIsNight2 = CustomApplication.getIsNightState()[1];
+                    mIsNight3 = CustomApplication.getIsNightState()[2];
 
                     checkIfResetNeeded();
 
@@ -1062,7 +1009,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mStartTX1 = TrafficStats.getMobileTxBytes();
 
                     if (mLimitHasChanged) {
-                        mLimits = getSimLimitsValues();
+                        mLimits = CustomApplication.getTrafficSimLimitsValues();;
                         mLimitHasChanged = false;
                     }
 
@@ -1177,12 +1124,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mLastDate = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
-                    if (mPrefs.getBoolean(Constants.PREF_SIM2[17], false)) {
-                        String timeON = mNowDate.toString(Constants.DATE_FORMATTER) + " " + mPrefs.getString(Constants.PREF_SIM2[20], "23:00");
-                        String timeOFF = mNowDate.toString(Constants.DATE_FORMATTER) + " " + mPrefs.getString(Constants.PREF_SIM2[21], "06:00");
-                        mIsNight2 = DateTimeComparator.getInstance().compare(mNowDate, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(mNowDate, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
-                    } else
-                        mIsNight2 = false;
+                    mIsNight1 = CustomApplication.getIsNightState()[0];
+                    mIsNight2 = CustomApplication.getIsNightState()[1];
+                    mIsNight3 = CustomApplication.getIsNightState()[2];
 
                     checkIfResetNeeded();
 
@@ -1323,7 +1267,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mStartTX2 = TrafficStats.getMobileTxBytes();
 
                     if (mLimitHasChanged) {
-                        mLimits = getSimLimitsValues();
+                        mLimits = CustomApplication.getTrafficSimLimitsValues();;
                         mLimitHasChanged = false;
                     }
 
@@ -1438,12 +1382,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mLastDate = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
-                    if (mPrefs.getBoolean(Constants.PREF_SIM3[17], false)) {
-                        String timeON = mNowDate.toString(Constants.DATE_FORMATTER) + " " + mPrefs.getString(Constants.PREF_SIM3[20], "23:00");
-                        String timeOFF = mNowDate.toString(Constants.DATE_FORMATTER) + " " + mPrefs.getString(Constants.PREF_SIM3[21], "06:00");
-                        mIsNight3 = DateTimeComparator.getInstance().compare(mNowDate, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(mNowDate, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
-                    } else
-                        mIsNight3 = false;
+                    mIsNight1 = CustomApplication.getIsNightState()[0];
+                    mIsNight2 = CustomApplication.getIsNightState()[1];
+                    mIsNight3 = CustomApplication.getIsNightState()[2];
 
                     checkIfResetNeeded();
 
@@ -1584,7 +1525,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mStartTX3 = TrafficStats.getMobileTxBytes();
 
                     if (mLimitHasChanged) {
-                        mLimits = getSimLimitsValues();
+                        mLimits = CustomApplication.getTrafficSimLimitsValues();;
                         mLimitHasChanged = false;
                     }
 
@@ -1828,7 +1769,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         long tot1, tot2 = 0, tot3 = 0;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
             if (mLimitHasChanged) {
-                mLimits = getSimLimitsValues();
+                mLimits = CustomApplication.getTrafficSimLimitsValues();;
                 mLimitHasChanged = false;
             }
             tot1 = mIsNight1 ? mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1_N) : mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1);
