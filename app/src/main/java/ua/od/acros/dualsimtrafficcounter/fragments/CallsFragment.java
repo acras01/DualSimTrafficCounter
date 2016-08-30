@@ -90,7 +90,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                long[] limit = setTotalText();
+                long[] limit = getSimLimits();
                 TypedValue typedValue = new TypedValue();
                 Resources.Theme theme = getActivity().getTheme();
                 theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -225,10 +225,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
 
         readCallsDataFromDatabase();
-        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(Constants.STARTED_ID, buildNotification());
+        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.notify(Constants.STARTED_ID, buildNotification());
+        }
 
-        long[] limit = setTotalText();
+        long[] limit = getSimLimits();
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -439,7 +441,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         bLim3.setText(limit3);
     }
 
-    private long[] setTotalText() {
+    private long[] getSimLimits() {
         long limit1, limit2, limit3;
         try {
             limit1 = Long.valueOf(mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
@@ -542,33 +544,21 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     private Notification buildNotification() {
-        long lim1 = Long.MAX_VALUE;
-        long lim2 = Long.MAX_VALUE;
-        long lim3 = Long.MAX_VALUE;
-        String limit1 = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "");
-        String limit2 = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "");
-        String limit3 = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "");
-        if (!limit1.equals(""))
-            lim1 = Long.valueOf(limit1) * Constants.MINUTE;
-        if (!limit2.equals(""))
-            lim2 = Long.valueOf(limit2) * Constants.MINUTE;
-        if (!limit3.equals(""))
-            lim3 = Long.valueOf(limit3) * Constants.MINUTE;
-
+        long[] limit = getSimLimits();
         long tot1, tot2 = 0, tot3 = 0;
         String text = "";
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
             text = getString(R.string.remain_calls);
-            tot1 = lim1 - (long) mCallsData.get(Constants.CALLS1);
+            tot1 = limit[0] - (long) mCallsData.get(Constants.CALLS1);
             if (tot1 < 0)
                 tot1 = 0;
             if (mSimQuantity >= 2) {
-                tot2 = lim2 - (long) mCallsData.get(Constants.CALLS2);
+                tot2 = limit[1] - (long) mCallsData.get(Constants.CALLS2);
                 if (tot2 < 0)
                     tot2 = 0;
             }
             if (mSimQuantity == 3) {
-                tot3 = lim3 - (long) mCallsData.get(Constants.CALLS3);
+                tot3 = limit[2] - (long) mCallsData.get(Constants.CALLS3);
                 if (tot3 < 0)
                     tot3 = 0;
             }
@@ -578,17 +568,17 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             tot3 = (long) mCallsData.get(Constants.CALLS3);
         }
 
-        if (lim1 != Long.MAX_VALUE)
+        if (limit[0] != Long.MAX_VALUE)
             text += DataFormat.formatCallDuration(mContext, tot1);
         else
             text += getString(R.string.not_set);
         if (mSimQuantity >= 2)
-            if (lim2 != Long.MAX_VALUE)
+            if (limit[1] != Long.MAX_VALUE)
                 text += "  ||  " + DataFormat.formatCallDuration(mContext, tot2);
             else
                 text += "  ||  " + getString(R.string.not_set);
         if (mSimQuantity == 3)
-            if (lim3 != Long.MAX_VALUE)
+            if (limit[2] != Long.MAX_VALUE)
                 text += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
             else
                 text += "  ||  " + getString(R.string.not_set);
