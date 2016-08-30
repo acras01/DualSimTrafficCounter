@@ -153,22 +153,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MobileUtils.getTelephonyManagerMethods(mContext);
 
-        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
-            startService(new Intent(mContext, WatchDogService.class));
         if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
                 ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
                         !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
             FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false) &&
+                MobileUtils.isMobileDataActive(mContext))
             startService(new Intent(mContext, TrafficCountService.class));
+        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+            startService(new Intent(mContext, WatchDogService.class));
         if (!CustomApplication.isPackageExisted(XPOSED)) {
             mPrefs.edit()
                     .putBoolean(Constants.PREF_OTHER[24], true)
                     .putBoolean(Constants.PREF_OTHER[25], false)
                     .apply();
         }
-        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
-            startService(new Intent(mContext, CallLoggerService.class));
+
+        /*if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
+            startService(new Intent(mContext, CallLoggerService.class));*/
+
 
         mAction = getIntent().getAction();
     }

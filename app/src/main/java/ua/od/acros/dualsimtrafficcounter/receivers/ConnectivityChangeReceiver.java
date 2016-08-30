@@ -13,6 +13,7 @@ import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
 import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -33,6 +34,9 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new NoConnectivityEvent());
             } else {
+                //start WatchDogService
+                if (prefs.getBoolean(Constants.PREF_OTHER[4], true))
+                    context.startService(new Intent(context, WatchDogService.class));
                 if (bool)
                     FloatingWindowService.showFloatingWindow(context, prefs);
                 if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&

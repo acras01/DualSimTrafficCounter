@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 
 import org.joda.time.DateTime;
 
-import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
@@ -19,6 +18,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         //start CountService
         /*if (!prefs.getBoolean(Constants.PREF_OTHER[5], false))
             context.startService(new Intent(context, TrafficCountService.class));*/
@@ -27,8 +27,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             context.startService(new Intent(context, CallLoggerService.class));*/
 
         //start WatchDogService
-        if (prefs.getBoolean(Constants.PREF_OTHER[4], true))
-            context.startService(new Intent(context, WatchDogService.class));
+        /*if (prefs.getBoolean(Constants.PREF_OTHER[4], true))
+            context.startService(new Intent(context, WatchDogService.class));*/
 
         //start FloatingWindow
         /*if (prefs.getBoolean(Constants.PREF_OTHER[32], false) &&

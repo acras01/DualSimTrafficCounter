@@ -258,6 +258,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTaskResult.cancel(false);
             mTaskExecutor.shutdown();
         }
+
         mLastActiveSIM = mActiveSIM;
 
         if (mPrefs.getBoolean(Constants.PREF_SIM1[14], true) && mLastActiveSIM == Constants.SIM1)
@@ -272,8 +273,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.TOTAL3, DataFormat.getRoundLong((long) mTrafficData.get(Constants.TOTAL3),
                     mPrefs.getString(Constants.PREF_SIM3[15], "1"), mPrefs.getString(Constants.PREF_SIM3[16], "0")));
 
+        //stop WatchDogService
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+            mContext.stopService(new Intent(mContext, WatchDogService.class));
+
         writeTrafficDataToDataBase();
-        CustomApplication.sleep(1000);
+
+        this.stopSelf();
     }
 
     @Subscribe

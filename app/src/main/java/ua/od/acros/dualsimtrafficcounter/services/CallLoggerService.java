@@ -70,6 +70,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private long[] mLimits = new long[3];
     private BroadcastReceiver mCallAnsweredReceiver, mCallEndedReceiver;
     private ArrayList<String> mIMSI = null;
+    private Service mService = null;
 
     public CallLoggerService() {
     }
@@ -83,6 +84,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public void onCreate() {
         super.onCreate();
+        mService = this;
         mContext = CustomApplication.getAppContext();
         EventBus.getDefault().register(this);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -293,6 +295,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     } catch (IOException e) {
                         e.printStackTrace();
                     }*/
+                    mService.stopSelf();
                 }
             }
         };
@@ -437,7 +440,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     if (!mIsOutgoing)
                         switch (state) {
                             case TelephonyManager.CALL_STATE_RINGING:
-                                mIsOutgoing = false;
+                                mService.stopSelf();
                                 break;
                             case TelephonyManager.CALL_STATE_OFFHOOK:
                                 final int sim = MobileUtils.getActiveSimForCall(ctx);
