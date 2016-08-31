@@ -90,6 +90,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs.edit()
+                .putBoolean(Constants.PREF_OTHER[49], true)
+                .apply();
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
@@ -691,6 +694,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         super.onDestroy();
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
+        mPrefs.edit()
+                .putBoolean(Constants.PREF_OTHER[49], false)
+                .apply();
         writeCallsDataToDataBase();
         unregisterReceiver(mCallAnsweredReceiver);
         unregisterReceiver(mCallEndedReceiver);

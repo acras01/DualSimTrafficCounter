@@ -226,8 +226,9 @@
     <string name="show_minus">Відображати споживання трафіку понад ліміт</string>
     <string name="manual_sim">Автовизначення активної SIM</string>
     <string name="save_profile">Зберегти профіль</string>
-    <string name="save_profile_known">Зберігати профілі для відомих SIM</string>
+    <string name="save_profile_known">Використовувати профілі для відомих SIM</string>
     <string name="save_profile_sum">Зберегти профіль для поточної SIM</string>
     <string name="sim_not_defined">Додаток не може визначити активну SIM-карту. Будь ласка, оберіть в налаштуваннях ручний вибір SIM</string>
     <string name="enable_mobile_data">Будь ласка, увімкніть мобільні дані!</string>
+    <string name="auto_load_service">Закривати сервіс автоматично при вимкненні мобільних даних</string>
 </resources>

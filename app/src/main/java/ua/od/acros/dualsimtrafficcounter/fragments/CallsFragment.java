@@ -59,6 +59,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private Context mContext;
     private ArrayList<String> mIMSI = null;
     private String[] mOperatorNames = new String[3];
+    private MenuItem mService;
 
     public static CallsFragment newInstance() {
         return new CallsFragment();
@@ -76,6 +77,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             mContext = CustomApplication.getAppContext();
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -290,6 +292,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonClear1:
@@ -359,14 +367,14 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
-        MenuItem service = menu.getItem(0);
-        if (service != null) {
+        mService = menu.getItem(0);
+        if (mService != null) {
             if (mIsRunning) {
-                service.setTitle(R.string.action_stop);
-                service.setIcon(R.drawable.ic_action_disable);
+                mService.setTitle(R.string.action_stop);
+                mService.setIcon(R.drawable.ic_action_disable);
             } else {
-                service.setTitle(R.string.action_start);
-                service.setIcon(R.drawable.ic_action_enable);
+                mService.setTitle(R.string.action_start);
+                mService.setIcon(R.drawable.ic_action_enable);
             }
         }
     }
@@ -451,6 +459,16 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
         if (key.equals(Constants.PREF_OTHER[25]))
             mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+        if (key.equals(Constants.PREF_OTHER[49])) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                mService.setTitle(R.string.action_stop);
+                mService.setIcon(R.drawable.ic_action_disable);
+            } else {
+                mService.setTitle(R.string.action_start);
+                mService.setIcon(R.drawable.ic_action_enable);
+            }
+            mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+        }
     }
 
     private void writeCallsDataToDataBase() {

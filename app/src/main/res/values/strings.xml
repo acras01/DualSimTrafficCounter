@@ -233,9 +233,10 @@
     <string name="exit">Stop service and exit</string>
     <string name="show_minus">Show traffic consumption over limit</string>
     <string name="manual_sim">Determine active SIM automatically</string>
-    <string name="save_profile_known">Save profiles for known SIMs</string>
+    <string name="save_profile_known">Use profiles for known SIMs</string>
     <string name="save_profile">Save profile</string>
     <string name="save_profile_sum">Save settings for current SIM</string>
     <string name="sim_not_defined">Application can\'t define active SIM. Please, choose manual SIM selection in Settings</string>
     <string name="enable_mobile_data">Please, enable mobile data!</string>
+    <string name="auto_load_service">Auto load/unload service according to mobile data</string>
 </resources>

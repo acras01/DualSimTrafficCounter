@@ -134,6 +134,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         EventBus.getDefault().register(this);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs.edit()
+                .putBoolean(Constants.PREF_OTHER[48], true)
+                .apply();
+
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
@@ -285,18 +289,20 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         writeTrafficDataToDataBase();
         sendDataBroadcast(0L, 0L);
 
-        mTimer = new CountDownTimer(10000, 10000) {
-            @Override
-            public void onTick(long l) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[47], false)) {
+            mTimer = new CountDownTimer(10000, 10000) {
+                @Override
+                public void onTick(long l) {
 
-            }
+                }
 
-            @Override
-            public void onFinish() {
-                mService.stopSelf();
-            }
-        };
-        mTimer.start();
+                @Override
+                public void onFinish() {
+                    mService.stopSelf();
+                }
+            };
+            mTimer.start();
+        }
     }
 
     @Subscribe
@@ -313,7 +319,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mHasActionChosen3 = true;
                 break;
         }
-        mPrefs.edit().putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
+        mPrefs.edit()
+                .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                 .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                 .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
                 .apply();
@@ -370,7 +377,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mSIM3ContinueOverLimit = true;
                             break;
                     }
-                    mPrefs.edit().putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                    mPrefs.edit()
+                            .putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
                             .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
                             .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
                             .apply();
@@ -391,7 +399,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                 mSIM3ContinueOverLimit = true;
                                 break;
                         }
-                        mPrefs.edit().putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+                        mPrefs.edit()
+                                .putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
                                 .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
                                 .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
                                 .apply();
@@ -654,7 +663,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 || key.equals(Constants.PREF_SIM1[4]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10])) {
             mSIM1ContinueOverLimit = false;
             mHasActionChosen1 = false;
-            mPrefs.edit().putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
                     .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                     .apply();
         }
@@ -662,7 +672,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 || key.equals(Constants.PREF_SIM2[4]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]))  {
             mSIM2ContinueOverLimit = false;
             mHasActionChosen2 = false;
-            mPrefs.edit().putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
                     .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                     .apply();
         }
@@ -670,7 +681,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 || key.equals(Constants.PREF_SIM3[4]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))  {
             mSIM3ContinueOverLimit = false;
             mHasActionChosen3 = false;
-            mPrefs.edit().putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
                     .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
                     .apply();
         }
@@ -1014,7 +1026,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[0]) || mSIM1ContinueOverLimit) {
-                        mPrefs.edit().putInt(Constants.PREF_OTHER[46], mActiveSIM)
+                        mPrefs.edit()
+                                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
                                 .apply();
                         rx += diffrx;
                         tx += difftx;
@@ -1272,7 +1285,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[1]) || mSIM2ContinueOverLimit) {
-                        mPrefs.edit().putInt(Constants.PREF_OTHER[46], mActiveSIM)
+                        mPrefs.edit()
+                                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
                                 .apply();
                         rx += diffrx;
                         tx += difftx;
@@ -1530,7 +1544,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[2]) || mSIM3ContinueOverLimit) {
-                        mPrefs.edit().putInt(Constants.PREF_OTHER[46], mActiveSIM)
+                        mPrefs.edit()
+                                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
                                 .apply();
                         rx += diffrx;
                         tx += difftx;
@@ -1997,13 +2012,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPrefs.edit().putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
+        mPrefs.edit()
+                .putBoolean(Constants.PREF_SIM1[27], mSIM1ContinueOverLimit)
                 .putBoolean(Constants.PREF_SIM2[27], mSIM2ContinueOverLimit)
                 .putBoolean(Constants.PREF_SIM3[27], mSIM3ContinueOverLimit)
                 .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                 .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                 .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
                 .putInt(Constants.PREF_OTHER[46], mLastActiveSIM)
+                .putBoolean(Constants.PREF_OTHER[48], false)
                 .apply();
         if (mTaskResult != null) {
             mTaskResult.cancel(false);

@@ -24,7 +24,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean floatingWindow = prefs.getBoolean(Constants.PREF_OTHER[32], false);
-        boolean alwaysShow = !prefs.getBoolean(Constants.PREF_OTHER[41], false);
+        boolean alwaysShow = !prefs.getBoolean(Constants.PREF_OTHER[41], false) && !prefs.getBoolean(Constants.PREF_OTHER[47], false);
         boolean bool = floatingWindow && !alwaysShow;
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE) ||

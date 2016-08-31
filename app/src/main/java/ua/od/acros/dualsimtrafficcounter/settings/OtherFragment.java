@@ -31,7 +31,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 
 public class OtherFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceChangeListener {
+        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private TwoLineEditTextPreference timer, simQuantity, floatWindow;
 
@@ -56,34 +56,10 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         floatWindow = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[33]);
         floatWindow.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[47], false))
+            findPreference(Constants.PREF_OTHER[41]).setEnabled(false);
         TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
-        findPreference("hud_reset").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (preference.getKey().equals("hud_reset")) {
-                    mPrefs.edit()
-                            .putInt(Constants.PREF_OTHER[36], -1)
-                            .putInt(Constants.PREF_OTHER[37], -1)
-                            .putBoolean(Constants.PREF_OTHER[40], true)
-                            .apply();
-                    ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[40])).setChecked(true);
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
-                            ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
-                                    !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
-                        FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-                    return true;
-                } else
-                    return false;
-            }
-        });
-        if (!CustomApplication.isPackageExisted(XPOSED)) {
-            getPreferenceScreen().removePreference(findPreference(Constants.PREF_OTHER[27]));
-            callLogger.setChecked(false);
-            callLogger.setEnabled(false);
-            getPreferenceScreen().getSharedPreferences().edit()
-                    .putBoolean(Constants.PREF_OTHER[24], true)
-                    .apply();
-        }
+        findPreference("hud_reset").setOnPreferenceClickListener(this);
         if (mIsAttached)
             updateSummary();
     }
@@ -200,5 +176,23 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         }
         Toast.makeText(getActivity(), R.string.check_input, Toast.LENGTH_LONG).show();
         return false;
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        if (preference.getKey().equals("hud_reset")) {
+            mPrefs.edit()
+                    .putInt(Constants.PREF_OTHER[36], -1)
+                    .putInt(Constants.PREF_OTHER[37], -1)
+                    .putBoolean(Constants.PREF_OTHER[40], true)
+                    .apply();
+            ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[40])).setChecked(true);
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
+                    ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
+                            !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
+            return true;
+        } else
+            return false;
     }
 }

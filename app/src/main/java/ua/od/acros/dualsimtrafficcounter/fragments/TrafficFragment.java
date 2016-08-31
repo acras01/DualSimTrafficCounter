@@ -49,7 +49,7 @@ import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
 
-public class TrafficFragment extends Fragment implements View.OnClickListener {
+public class TrafficFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TextView SIM, TOT1, TOT2, TOT3, TX1, TX2, TX3, RX1, RX2, RX3, TIP, SIM1, SIM2, SIM3;
     private ContentValues mTrafficData;
@@ -65,6 +65,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
     private boolean mIsRunning = false;
     private Context mContext;
     private ArrayList<String> mIMSI = null;
+    private MenuItem mService;
 
     public static TrafficFragment newInstance() {
         return new TrafficFragment();
@@ -86,6 +87,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
@@ -293,6 +295,12 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         CustomApplication.isActivityPaused();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.traffic_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -304,14 +312,14 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
 
-        MenuItem service = menu.getItem(0);
-        if (service != null) {
+        mService = menu.getItem(0);
+        if (mService != null) {
             if (mIsRunning) {
-                service.setTitle(R.string.action_stop);
-                service.setIcon(R.drawable.ic_action_disable);
+                mService.setTitle(R.string.action_stop);
+                mService.setIcon(R.drawable.ic_action_disable);
             } else {
-                service.setTitle(R.string.action_start);
-                service.setIcon(R.drawable.ic_action_enable);
+                mService.setTitle(R.string.action_start);
+                mService.setIcon(R.drawable.ic_action_enable);
             }
         }
 
@@ -497,6 +505,20 @@ public class TrafficFragment extends Fragment implements View.OnClickListener {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Constants.PREF_OTHER[48])) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                mService.setTitle(R.string.action_stop);
+                mService.setIcon(R.drawable.ic_action_disable);
+            } else {
+                mService.setTitle(R.string.action_start);
+                mService.setIcon(R.drawable.ic_action_enable);
+            }
+            mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
         }
     }
 
