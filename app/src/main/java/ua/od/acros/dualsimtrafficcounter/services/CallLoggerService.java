@@ -341,11 +341,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     public void onMessageEvent(ListEvent event) {
         mIsOutgoing = event.bundle.getBoolean("black");
         new SaveListTask().execute(event.bundle);
+        if(!mIsOutgoing)
+            mService.stopSelf();
     }
 
     @Subscribe
     public void onMessageEvent(NoListEvent event) {
-        mIsOutgoing = false;
+        mService.stopSelf();
     }
 
     class SaveListTask extends AsyncTask<Bundle, Void, Boolean> {
@@ -458,7 +460,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             }*/
                         final ArrayList<String> whiteList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "white");
                         final ArrayList<String> blackList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "black");
-                        if (!whiteList.contains(CallLoggerService.this.mNumber[0]) && !blackList.contains(CallLoggerService.this.mNumber[0]) && !mIsDialogShown) {
+                        boolean white = whiteList.contains(CallLoggerService.this.mNumber[0]);
+                        boolean black = blackList.contains(CallLoggerService.this.mNumber[0]);
+                        if (!white && !black && !mIsDialogShown) {
                             mIsDialogShown = true;
                             final Bundle bundle = new Bundle();
                             bundle.putString("number", CallLoggerService.this.mNumber[0]);
