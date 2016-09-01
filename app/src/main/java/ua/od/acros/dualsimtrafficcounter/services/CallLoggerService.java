@@ -474,8 +474,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             CustomApplication.sleep(500);
                             mContext.startActivity(dialogIntent);
-                        } else if (blackList.contains(CallLoggerService.this.mNumber[0]))
+                        } else if (black)
                             mIsOutgoing = true;
+                        else if (white)
+                            mService.stopSelf();
                     }
                 }
             }
