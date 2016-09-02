@@ -638,9 +638,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     private Notification buildNotification() {
         long tot1, tot2 = 0, tot3 = 0;
-        String text = "";
+        String calls = "";
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
-            text = getString(R.string.remain_calls);
+            calls = getString(R.string.remain_calls);
             if (mLimitHasChanged) {
                 mLimits = CustomApplication.getCallsSimLimitsValues();
                 mLimitHasChanged = false;
@@ -665,20 +665,59 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         }
 
         if (mLimits[0] != Long.MAX_VALUE)
-            text += DataFormat.formatCallDuration(mContext, tot1);
+            calls += DataFormat.formatCallDuration(mContext, tot1);
         else
-            text += getString(R.string.not_set);
+            calls += getString(R.string.not_set);
         if (mSimQuantity >= 2)
             if (mLimits[1] != Long.MAX_VALUE)
-                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot2);
+                calls += "  ||  " + DataFormat.formatCallDuration(mContext, tot2);
             else
-                text += "  ||  " + getString(R.string.not_set);
+                calls += "  ||  " + getString(R.string.not_set);
         if (mSimQuantity == 3)
             if (mLimits[2] != Long.MAX_VALUE)
-                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
+                calls += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
             else
-                text += "  ||  " + getString(R.string.not_set);
-        return CustomNotification.getNotification(mContext, "", text);
+                calls += "  ||  " + getString(R.string.not_set);
+        String traffic = "";
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+            ContentValues cv;
+            boolean[] isNight = CustomApplication.getIsNightState();
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+                if (mIMSI == null)
+                    mIMSI = MobileUtils.getSimIds(mContext);
+                cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
+                tot1 = isNight[0] ? (long) cv.get("total_n") : (long) cv.get("total");
+                if (mSimQuantity >= 2) {
+                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
+                    tot2 = isNight[1] ? (long) cv.get("total_n") : (long) cv.get("total");
+                }
+                if (mSimQuantity == 3) {
+                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(2));
+                    tot3 = isNight[2] ? (long) cv.get("total_n") : (long) cv.get("total");
+                }
+            } else {
+                cv = CustomDatabaseHelper.readTrafficData(mDbHelper);
+                tot1 = isNight[0] ? (long) cv.get(Constants.TOTAL1_N) : (long) cv.get(Constants.TOTAL1);
+                tot2 = isNight[1] ? (long) cv.get(Constants.TOTAL2_N) : (long) cv.get(Constants.TOTAL2);
+                tot3 = isNight[2] ? (long) cv.get(Constants.TOTAL3_N) : (long) cv.get(Constants.TOTAL3);
+            }
+            long[] limits = CustomApplication.getTrafficSimLimitsValues();
+            if (limits[0] != Long.MAX_VALUE)
+                traffic = DataFormat.formatData(mContext, tot1);
+            else
+                traffic = getString(R.string.not_set);
+            if (mSimQuantity >= 2)
+                if (limits[1] != Long.MAX_VALUE)
+                    traffic += "  ||  " + DataFormat.formatData(mContext, tot2);
+                else
+                    traffic += "  ||  " + getString(R.string.not_set);
+            if (mSimQuantity == 3)
+                if (limits[2] != Long.MAX_VALUE)
+                    traffic += "  ||  " + DataFormat.formatData(mContext, tot3);
+                else
+                    traffic += "  ||  " + getString(R.string.not_set);
+        }
+        return CustomNotification.getNotification(mContext, traffic, calls);
     }
 
     @Override
