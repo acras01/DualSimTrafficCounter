@@ -2,6 +2,7 @@ package ua.od.acros.dualsimtrafficcounter.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,7 +53,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         super.onCreate(savedInstanceState);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
-        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+        mOperatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
     }
@@ -130,12 +131,14 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public void onClick(View view) {
         if (mSimChecked != Constants.DISABLED && !duration.getText().toString().equals("")) {
-            if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
-                SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
-                EventBus.getDefault().post(event);
-                getActivity().onBackPressed();
-            } else
-                Toast.makeText(mContext, R.string.service_stop, Toast.LENGTH_LONG).show();
+            boolean service = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+            if (!service)
+                mContext.startService(new Intent(mContext, CallLoggerService.class));
+            SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
+            EventBus.getDefault().post(event);
+            if (!service)
+                mContext.stopService(new Intent(mContext, CallLoggerService.class));
+            getActivity().onBackPressed();
         } else
             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
     }

@@ -2,6 +2,7 @@ package ua.od.acros.dualsimtrafficcounter.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
+import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -60,7 +62,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         mOnlyReceived = false;
-        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+        mOperatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
     }
@@ -165,18 +167,20 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
-            if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
-                String rx = "0";
-                if (!total.isChecked())
-                    rx = rxInput.getText().toString();
-                String tx = "0";
-                if (!mOnlyReceived)
-                    tx = txInput.getText().toString();
-                SetTrafficEvent event = new SetTrafficEvent(tx, rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
-                EventBus.getDefault().post(event);
-                getActivity().onBackPressed();
-            } else
-                Toast.makeText(mContext, R.string.service_stop, Toast.LENGTH_LONG).show();
+            boolean service = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+            if (!service)
+                mContext.startService(new Intent(mContext, TrafficCountService.class));
+            String rx = "0";
+            if (!total.isChecked())
+                rx = rxInput.getText().toString();
+            String tx = "0";
+            if (!mOnlyReceived)
+                tx = txInput.getText().toString();
+            SetTrafficEvent event = new SetTrafficEvent(tx, rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
+            EventBus.getDefault().post(event);
+            if (!service)
+                mContext.stopService(new Intent(mContext, TrafficCountService.class));
+            getActivity().onBackPressed();
         } else
             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
 
