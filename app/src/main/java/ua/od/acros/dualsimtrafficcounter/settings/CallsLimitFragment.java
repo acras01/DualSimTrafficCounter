@@ -386,10 +386,11 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             CustomApplication.putObject(editor, "stub", null);
             editor.apply();
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-            if (CustomDatabaseHelper.isTableEmpty(dbHelper, "black_" + mIMSI.get(sim), false))
-                CustomDatabaseHelper.writeList(sim, CustomDatabaseHelper.readList(sim, dbHelper, null, "black"), dbHelper, mIMSI, "black");
-            if (CustomDatabaseHelper.isTableEmpty(dbHelper, "white_" + mIMSI.get(sim), false))
-                CustomDatabaseHelper.writeList(sim, CustomDatabaseHelper.readList(sim, dbHelper, null, "white"), dbHelper, mIMSI, "white");
+            String[] list = new String[] {"black", "white"};
+            for (String name : list) {
+                if (CustomDatabaseHelper.isTableEmpty(dbHelper, name + "_" + mIMSI.get(sim), false))
+                    CustomDatabaseHelper.writeList(sim, CustomDatabaseHelper.readList(sim, dbHelper, null, name), dbHelper, mIMSI, name);
+            }
             return true;
         }
 
