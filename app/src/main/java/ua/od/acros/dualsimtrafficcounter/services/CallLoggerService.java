@@ -108,10 +108,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 prefs = prefSim.getAll();
                 if (prefs.size() != 0)
                     for (int i = 0; i < prefs.size(); i++) {
-                        if (Constants.PREF_SIM_CALLS[i].endsWith("x"))
-                            key = Constants.PREF_SIM_CALLS[i].substring(0, 5) + 1 + "_ex";
-                        else
-                            key = Constants.PREF_SIM_CALLS[i] + 1;
+                        key = Constants.PREF_SIM_CALLS[i] + 1;
                         Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
                         CustomApplication.putObject(editor, key, o);
                     }
@@ -124,10 +121,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
                         for (int i = 0; i < prefs.size(); i++) {
-                            if (Constants.PREF_SIM_CALLS[i].endsWith("x"))
-                                key = Constants.PREF_SIM_CALLS[i].substring(0, 5) + 2 + "_ex";
-                            else
-                                key = Constants.PREF_SIM_CALLS[i] + 2;
+                            key = Constants.PREF_SIM_CALLS[i] + 2;
                             Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
                             CustomApplication.putObject(editor, key, o);
                         }
@@ -141,11 +135,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
                         for (int i = 0; i < prefs.size(); i++) {
-
-                            if (Constants.PREF_SIM_CALLS[i].endsWith("x"))
-                                key = Constants.PREF_SIM_CALLS[i].substring(0, 5) + 3 + "_ex";
-                            else
-                                key = Constants.PREF_SIM_CALLS[i] + 3;
+                            key = Constants.PREF_SIM_CALLS[i] + 3;
                             Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
                             CustomApplication.putObject(editor, key, o);
                         }

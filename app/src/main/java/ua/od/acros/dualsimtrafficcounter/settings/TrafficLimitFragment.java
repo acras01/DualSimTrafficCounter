@@ -805,6 +805,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                     CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 }
             }
+            CustomApplication.putObject(editor, "stub", null);
             editor.apply();
             return true;
         }

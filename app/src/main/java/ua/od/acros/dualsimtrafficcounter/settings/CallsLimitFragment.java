@@ -374,7 +374,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                     sim = Constants.SIM3;
                     break;
             }
-            SharedPreferences.Editor editor = mContext.getSharedPreferences("calls_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
             for (String key : keySet) {
@@ -383,6 +383,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                     CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 }
             }
+            CustomApplication.putObject(editor, "stub", null);
             editor.apply();
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
             if (CustomDatabaseHelper.isTableEmpty(dbHelper, "black_" + mIMSI.get(sim), false))
