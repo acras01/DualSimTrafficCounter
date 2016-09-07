@@ -283,12 +283,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 for (int i = 0; i < mSimQuantity; i++) {
                     new SaveTask().execute(i);
                 }
-            } else {
-                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-                CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
-                CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS_TABLE);
-                CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS_TABLE);
-            }
+            } else
+                new DeleteTask().execute();
         }
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
             int sim = Constants.DISABLED;
@@ -365,6 +361,24 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         protected void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+            CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
+            CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS_TABLE);
+            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS_TABLE);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result)
+                Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -547,11 +547,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 for (int i = 0; i < mSimQuantity; i++) {
                     new SaveTask().execute(i);
                 }
-            } else {
-                CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-                CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.DATA_TABLE);
-                CustomApplication.deletePreferenceFile(mSimQuantity, Constants.DATA_TABLE);
-            }
+            } else
+                new DeleteTask().execute();
         }
 
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
@@ -781,6 +778,22 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         protected void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            CustomDatabaseHelper.deleteDataTable(CustomDatabaseHelper.getInstance(mContext), mIMSI, Constants.DATA_TABLE);
+            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.DATA_TABLE);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result)
+                Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
         }
     }
 }

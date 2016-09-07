@@ -179,7 +179,7 @@
     <string name="unknown">Неизвестный</string>
     <string name="saved">Сохранено!</string>
     <string name="info_widget_calls">Виджет DSTC (вызовы)</string>
-    <string name="deleted">Виджет удален!</string>
+    <string name="deleted">Удалено!</string>
     <string name="remain_calls">"Остаток: "</string>
     <string name="show_remaining_calls">Показывать остаток минут в панели уведомлений</string>
     <string name="show_remaining_calls_widget">Показывать остаток минут на виджете</string>
