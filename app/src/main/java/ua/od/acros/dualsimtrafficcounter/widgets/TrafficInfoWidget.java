@@ -13,11 +13,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
-import org.acra.ACRA;
 
 import java.io.File;
 
@@ -86,9 +83,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
             final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                deleteWidgetPreferences(context, new int[]{appWidgetId});
-            }
+            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
+                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
         } else if (action.equals(Constants.TRAFFIC_BROADCAST_ACTION) && widgetIds != null)
             updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
     }
@@ -683,32 +679,10 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         }
     }
 
-    private void deleteWidgetPreferences(Context context, int[] appWidgetIds) {
-        File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
-        String[] children = dir.list();
-        for (String aChildren : children) {
-            for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES))
-                    context.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
-        }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            ACRA.getErrorReporter().handleException(e);
-        }
-        for (String aChildren : children) {
-            for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES))
-                    if (new File(dir, aChildren).delete())
-                        Toast.makeText(context, R.string.deleted, Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
-        deleteWidgetPreferences(context, appWidgetIds);
+        CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.TRAFFIC_TAG);
     }
 
     @Override

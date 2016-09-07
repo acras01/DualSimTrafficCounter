@@ -101,15 +101,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String key;
             String name = Constants.CALLS_TABLE + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
                 if (prefs.size() != 0)
-                    for (int i = 0; i < prefs.size(); i++) {
-                        key = Constants.PREF_SIM_CALLS[i] + 1;
-                        Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                    for (String key : prefs.keySet()) {
+                        Object o = prefs.get(key);
+                        key = key + 1;
                         CustomApplication.putObject(editor, key, o);
                     }
                 prefSim = null;
@@ -120,9 +119,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
-                        for (int i = 0; i < prefs.size(); i++) {
-                            key = Constants.PREF_SIM_CALLS[i] + 2;
-                            Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 2;
                             CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
@@ -134,9 +133,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
-                        for (int i = 0; i < prefs.size(); i++) {
-                            key = Constants.PREF_SIM_CALLS[i] + 3;
-                            Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 3;
                             CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
@@ -270,7 +269,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             duration = (long) mCallsData.get(Constants.CALLS3);
                             break;
                     }
-                    writeCallsDataToDataBase();
+                    writeCallsDataToDatabase();
                     refreshWidgetAndNotification(sim, duration);
                     /*String out = "Call Ends\n";
                     try {
@@ -323,7 +322,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 mCallsData.put(Constants.CALLS3_EX, duration);
                 break;
         }
-        writeCallsDataToDataBase();
+        writeCallsDataToDatabase();
         refreshWidgetAndNotification(sim, duration);
     }
 
@@ -384,7 +383,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS1, 0L);
             mCallsData.put(Constants.CALLS1_EX, 0L);
-            writeCallsDataToDataBase();
+            writeCallsDataToDatabase();
             mIsResetNeeded1 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
@@ -398,7 +397,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS2, 0L);
             mCallsData.put(Constants.CALLS2_EX, 0L);
-            writeCallsDataToDataBase();
+            writeCallsDataToDatabase();
             mIsResetNeeded2 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
@@ -412,7 +411,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS3, 0L);
             mCallsData.put(Constants.CALLS3_EX, 0L);
-            writeCallsDataToDataBase();
+            writeCallsDataToDatabase();
             mIsResetNeeded3 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
@@ -504,6 +503,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 editor.apply();
             }
+        }
+        if (key.equals(Constants.PREF_OTHER[45])) {
+            writeCallsDataToDatabase();
+            readCallsDataFromDatabase();
         }
         if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
@@ -718,14 +721,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs.edit()
                 .putBoolean(Constants.PREF_OTHER[49], false)
                 .apply();
-        writeCallsDataToDataBase();
+        writeCallsDataToDatabase();
         unregisterReceiver(mCallAnsweredReceiver);
         unregisterReceiver(mCallEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().unregister(this);
     }
 
-    private void writeCallsDataToDataBase() {
+    private void writeCallsDataToDatabase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);

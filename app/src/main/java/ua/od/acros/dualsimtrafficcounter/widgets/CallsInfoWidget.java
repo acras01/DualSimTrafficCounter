@@ -13,11 +13,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
-import org.acra.ACRA;
 
 import java.io.File;
 
@@ -25,9 +22,10 @@ import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.CallsWidgetConfigActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 
 public class CallsInfoWidget extends AppWidgetProvider {
 
@@ -55,9 +53,8 @@ public class CallsInfoWidget extends AppWidgetProvider {
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
             final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                deleteWidgetPreferences(context, new int[]{appWidgetId});
-            }
+            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
+                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.CALLS_TAG);
         } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null) {
             mOperatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                     MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -336,29 +333,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
-        deleteWidgetPreferences(context, appWidgetIds);
-    }
-
-    private void deleteWidgetPreferences(Context context, int[] appWidgetIds) {
-        File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
-        String[] children = dir.list();
-        for (String aChildren : children) {
-            for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES))
-                    context.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
-        }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            ACRA.getErrorReporter().handleException(e);
-        }
-        for (String aChildren : children) {
-            for (int j : appWidgetIds)
-                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES))
-                    if (new File(dir, aChildren).delete())
-                        Toast.makeText(context, R.string.deleted, Toast.LENGTH_LONG).show();
-        }
+        CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.CALLS_TAG);
     }
 
     @Override

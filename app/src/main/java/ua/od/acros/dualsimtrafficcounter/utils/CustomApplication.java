@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.stericson.RootShell.RootShell;
 
@@ -375,23 +376,25 @@ public class CustomApplication extends Application {
         else
             value3 = isNight[2] ? Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[19], "")) :
                     Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[2], ""));
-        float valuer1;
-        float valuer2;
-        float valuer3;
-        long lim1 = Long.MAX_VALUE;
-        long lim2 = Long.MAX_VALUE;
-        long lim3 = Long.MAX_VALUE;
-        if (!limit1.equals("")) {
+        float valuer1, valuer2, valuer3;
+        long lim1, lim2, lim3;
+        try {
             valuer1 = 1 - Float.valueOf(round1) / 100;
             lim1 = (long) (valuer1 * DataFormat.getFormatLong(limit1, value1));
+        } catch (Exception e) {
+            lim1 = Long.MAX_VALUE;
         }
-        if (!limit2.equals("")) {
+        try {
             valuer2 = 1 - Float.valueOf(round2) / 100;
             lim2 = (long) (valuer2 * DataFormat.getFormatLong(limit2, value2));
+        } catch (Exception e) {
+            lim2 = Long.MAX_VALUE;
         }
-        if (!limit3.equals("")) {
+        try {
             valuer3 = 1 - Float.valueOf(round3) / 100;
             lim3 = (long) (valuer3 * DataFormat.getFormatLong(limit3, value3));
+        } catch (Exception e) {
+            lim3 = Long.MAX_VALUE;
         }
         return new long[] {lim1, lim2, lim3};
     }
@@ -419,5 +422,40 @@ public class CustomApplication extends Application {
             isNight3 = false;
 
         return new boolean[] {isNight1, isNight2, isNight3};
+    }
+
+    public static void deletePreferenceFile(int quantity, String name) {
+        File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
+        String[] children = dir.list();
+        for (String aChildren : children) {
+            for (int j = 0; j < quantity; j++) {
+                if (aChildren.contains(name))
+                    mContext.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
+            }
+        }
+        sleep(1000);
+        for (String aChildren : children) {
+            for (int j = 0; j < quantity; j++) {
+                if (aChildren.contains(name))
+                    new File(dir, aChildren).delete();
+            }
+        }
+    }
+
+    public static void deleteWidgetPreferenceFile(int[] ids, String name) {
+        File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
+        String[] children = dir.list();
+        for (String aChildren : children) {
+            for (int j : ids)
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + name + Constants.WIDGET_PREFERENCES))
+                    mContext.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
+        }
+        sleep(1000);
+        for (String aChildren : children) {
+            for (int j : ids)
+                if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + name + Constants.WIDGET_PREFERENCES))
+                    if (new File(dir, aChildren).delete())
+                        Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
+        }
     }
 }

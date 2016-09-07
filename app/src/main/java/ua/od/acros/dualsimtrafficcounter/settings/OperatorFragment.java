@@ -8,6 +8,11 @@ import android.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
@@ -26,12 +31,76 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     private TwoLineListPreference logo1, logo2, logo3;
     private SharedPreferences mPrefs;
     private boolean mIsAttached;
+    private Context mContext;
+    private ArrayList<String> mIMSI = null;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
-        Context context = CustomApplication.getAppContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mContext = CustomApplication.getAppContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+
+        mIMSI = MobileUtils.getSimIds(mContext);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+            String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
+            SharedPreferences.Editor editor = mPrefs.edit();
+            SharedPreferences prefSim;
+            Map<String, ?> prefs;
+            String[] keys;
+            String name = Constants.DATA_TABLE + "_" + mIMSI.get(0);
+            if (new File(path + name + ".xml").exists()) {
+                prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                prefs = prefSim.getAll();
+                keys = prefs.keySet().toArray(new String[prefs.size()]);
+                if (prefs.size() != 0)
+                    for (String key : prefs.keySet()) {
+                        if (key.equals(Constants.PREF_SIM_DATA[5]) || key.equals(Constants.PREF_SIM_DATA[6])) {
+                            Object o = prefs.get(key);
+                            key = key + 1;
+                            CustomApplication.putObject(editor, key, o);
+                        }
+                    }
+                prefSim = null;
+            }
+            if (simNumber >= 2) {
+                name = Constants.DATA_TABLE + "_" + mIMSI.get(1);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    keys = prefs.keySet().toArray(new String[prefs.size()]);
+                    if (prefs.size() != 0)
+                        for (String key : prefs.keySet()) {
+                            if (key.equals(Constants.PREF_SIM_DATA[5]) || key.equals(Constants.PREF_SIM_DATA[6])) {
+                                Object o = prefs.get(key);
+                                key = key + 2;
+                                CustomApplication.putObject(editor, key, o);
+                            }
+                        }
+                    prefSim = null;
+                }
+            }
+            if (simNumber == 3) {
+                name = Constants.DATA_TABLE + "_" + mIMSI.get(2);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    keys = prefs.keySet().toArray(new String[prefs.size()]);
+                    if (prefs.size() != 0)
+                        for (String key : prefs.keySet()) {
+                            if (key.equals(Constants.PREF_SIM_DATA[5]) || key.equals(Constants.PREF_SIM_DATA[6])) {
+                                Object o = prefs.get(key);
+                                key = key + 3;
+                                CustomApplication.putObject(editor, key, o);
+                            }
+                        }
+                    prefSim = null;
+                }
+            }
+            editor.apply();
+        }
 
         addPreferencesFromResource(R.xml.operator_settings);
 
@@ -51,9 +120,6 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("sim3");
-
-        int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         if (simNumber == 1) {
             getPreferenceScreen().removePreference(sim2);
@@ -126,5 +192,21 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
         if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
                 key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
             CustomNotification.setIdNeedsChange(true);
+        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
+            int sim = Constants.DISABLED;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))
+                sim = Constants.SIM1;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2)).contains(key))
+                sim = Constants.SIM2;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
+                sim = Constants.SIM3;
+            if (sim >= 0) {
+                Map prefs = sharedPreferences.getAll();
+                Object o = prefs.get(key);
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
+                editor.apply();
+            }
+        }
     }
 }

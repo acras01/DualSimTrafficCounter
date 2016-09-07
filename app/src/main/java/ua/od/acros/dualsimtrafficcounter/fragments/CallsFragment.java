@@ -363,10 +363,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
 
     @Override
     public void onPrepareOptionsMenu (Menu menu) {
-        /*MenuInflater inflater = new MenuInflater(mContext.getApplicationContext());
-        menu.clear();
-        onCreateOptionsMenu(menu, inflater);*/
-
         mService = menu.getItem(0);
         if (mService != null) {
             if (mIsRunning) {

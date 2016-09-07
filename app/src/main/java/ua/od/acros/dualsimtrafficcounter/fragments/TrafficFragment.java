@@ -325,7 +325,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
         MenuItem mobileData = menu.getItem(1);
         if (mobileData != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) {
+            if (!CustomApplication.isOldMtkDevice() &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !CustomApplication.hasRoot()) {
                 mobileData.setEnabled(false);
                 mobileData.setVisible(false);
             } else {
@@ -601,7 +602,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.SIM1TX, 0L);
                         mTrafficData.put(Constants.TOTAL1, 0L);
                     }
-                    writeTrafficDataToDataBase();
+                    writeTrafficDataToDatabase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
@@ -628,7 +629,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.SIM2TX, 0L);
                         mTrafficData.put(Constants.TOTAL2, 0L);
                     }
-                    writeTrafficDataToDataBase();
+                    writeTrafficDataToDatabase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
@@ -655,7 +656,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.SIM3TX, 0L);
                         mTrafficData.put(Constants.TOTAL3, 0L);
                     }
-                    writeTrafficDataToDataBase();
+                    writeTrafficDataToDatabase();
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
@@ -756,15 +757,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
     private void setButtonLimitText() {
 
-        String limit1 = mIsNight[0] ? mPrefs.getString(Constants.PREF_SIM1[18], "") : mPrefs.getString(Constants.PREF_SIM1[1], "");
-        String limit2 = mIsNight[1] ? mPrefs.getString(Constants.PREF_SIM2[18], "") : mPrefs.getString(Constants.PREF_SIM2[1], "");
-        String limit3 = mIsNight[2] ? mPrefs.getString(Constants.PREF_SIM3[18], "") : mPrefs.getString(Constants.PREF_SIM3[1], "");
-
+        String limit1, limit2, limit3;
         long[] limit = CustomApplication.getTrafficSimLimitsValues();
-
-        limit1 = !limit1.equals("") ? DataFormat.formatData(mContext, (long) limit[0]) : getString(R.string.not_set);
-        limit2 = !limit2.equals("") ? DataFormat.formatData(mContext, (long) limit[1]) : getString(R.string.not_set);
-        limit3 = !limit3.equals("") ? DataFormat.formatData(mContext, (long) limit[2]) : getString(R.string.not_set);
+        limit1 = limit[0] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[0]) : getString(R.string.not_set);
+        limit2 = limit[1] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[1]) : getString(R.string.not_set);
+        limit3 = limit[2] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[2]) : getString(R.string.not_set);
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.period);
@@ -853,7 +850,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         }
     }
 
-    private void writeTrafficDataToDataBase() {
+    private void writeTrafficDataToDatabase() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);

@@ -35,7 +35,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class CallsLimitFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+        Preference.OnPreferenceChangeListener {
 
     private TwoLineEditTextPreference limit1, limit2, limit3,
             day1, day2, day3, round1, round2, round3;
@@ -43,9 +43,9 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     private TimePreference time1, time2, time3;
     private SharedPreferences mPrefs;
     private boolean mIsAttached = false;
-    private Preference save1, save2, save3;
     private Context mContext;
     private ArrayList<String> mIMSI = null;
+    private int mSimQuantity;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -53,7 +53,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
         mIMSI = MobileUtils.getSimIds(mContext);
@@ -62,41 +62,41 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = "calls_" + mIMSI.get(0);
+            String name = Constants.CALLS_TABLE + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
                 if (prefs.size() != 0)
-                    for (int i = 0; i < prefs.size(); i++) {
-                        String key = Constants.PREF_SIM_CALLS[i] + 1;
-                        Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                    for (String key : prefs.keySet()) {
+                        Object o = prefs.get(key);
+                        key = key + 1;
                         CustomApplication.putObject(editor, key, o);
                     }
                 prefSim = null;
             }
-            if (simQuantity >= 2) {
-                name = "calls_" + mIMSI.get(1);
+            if (mSimQuantity >= 2) {
+                name = Constants.CALLS_TABLE + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
-                        for (int i = 0; i < prefs.size(); i++) {
-                            String key = Constants.PREF_SIM_CALLS[i] + 2;
-                            Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 2;
                             CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
                 }
             }
-            if (simQuantity == 3) {
-                name = "calls_" + mIMSI.get(2);
+            if (mSimQuantity == 3) {
+                name = Constants.CALLS_TABLE + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
-                        for (int i = 0; i < prefs.size(); i++) {
-                            String key = Constants.PREF_SIM_CALLS[i] + 3;
-                            Object o = prefs.get(Constants.PREF_SIM_CALLS[i]);
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 3;
                             CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
@@ -130,33 +130,14 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("calls_sim3");
 
         TwoLineCheckPreference save = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[45]);
-        if (save != null && (mIMSI == null || mIMSI.size() != simQuantity || mIMSI.contains(null)))
+        if (save != null && (mIMSI == null || mIMSI.size() != mSimQuantity || mIMSI.contains(null)))
             save.setEnabled(false);
 
-        save1 = findPreference("save_profile_calls1");
-        save2 = findPreference("save_profile_calls2");
-        save3 = findPreference("save_profile_calls3");
-        if (!mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
-            if (save1 != null)
-                save1.setEnabled(false);
-            if (save2 != null)
-                save2.setEnabled(false);
-            if (save3 != null)
-                save3.setEnabled(false);
-        }  else {
-            if (save1 != null)
-                save1.setOnPreferenceClickListener(this);
-            if (save2 != null)
-                save2.setOnPreferenceClickListener(this);
-            if (save3 != null)
-                save3.setOnPreferenceClickListener(this);
-        }
-
-        if (simQuantity == 1) {
+        if (mSimQuantity == 1) {
             getPreferenceScreen().removePreference(sim2);
             getPreferenceScreen().removePreference(sim3);
         }
-        if (simQuantity == 2) {
+        if (mSimQuantity == 2) {
             getPreferenceScreen().removePreference(sim3);
         }
         if (mIsAttached)
@@ -298,17 +279,15 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         if (mIsAttached)
             updateSummary();
         if (key.equals(Constants.PREF_OTHER[45])) {
-            boolean state = sharedPreferences.getBoolean(key, true);
-            if (save1 != null)
-                save1.setEnabled(state);
-            if (save2 != null)
-                save2.setEnabled(state);
-            if (save3 != null)
-                save3.setEnabled(state);
-            if (!sharedPreferences.getBoolean(key, false)) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                for (int i = 0; i < mSimQuantity; i++) {
+                    new SaveTask().execute(i);
+                }
+            } else {
                 CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
                 CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
                 CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS_TABLE);
+                CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS_TABLE);
             }
         }
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
@@ -344,34 +323,22 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         return false;
     }
 
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-        if (mIMSI != null) {
-            new SaveTask().execute(preference);
-            return true;
-        } else
-            return false;
-    }
-
-    private class SaveTask extends AsyncTask<Preference, Void, Boolean> {
+    private class SaveTask extends AsyncTask<Integer, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Preference... params) {
+        protected Boolean doInBackground(Integer... params) {
             Map<String, ?> prefs = mPrefs.getAll();
             String[] keys = new String[Constants.PREF_SIM_CALLS.length];
-            int sim = Constants.DISABLED;
-            switch (params[0].getKey()) {
-                case "save_profile_calls1":
+            int sim = params[0];
+            switch (sim) {
+                case Constants.SIM1:
                     keys = Constants.PREF_SIM1_CALLS;
-                    sim = Constants.SIM1;
                     break;
-                case "save_profile_calls2":
+                case Constants.SIM2:
                     keys = Constants.PREF_SIM2_CALLS;
-                    sim = Constants.SIM2;
                     break;
-                case "save_profile_calls3":
+                case Constants.SIM3:
                     keys = Constants.PREF_SIM3_CALLS;
-                    sim = Constants.SIM3;
                     break;
             }
             SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
@@ -386,7 +353,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             CustomApplication.putObject(editor, "stub", null);
             editor.apply();
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
-            String[] list = new String[] {"black", "white"};
+            String[] list = new String[]{"black", "white"};
             for (String name : list) {
                 if (CustomDatabaseHelper.isTableEmpty(dbHelper, name + "_" + mIMSI.get(sim), false))
                     CustomDatabaseHelper.writeList(sim, CustomDatabaseHelper.readList(sim, dbHelper, null, name), dbHelper, mIMSI, name);

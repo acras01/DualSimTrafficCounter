@@ -5,6 +5,7 @@
         android:key="changeSIM"
         android:title="@string/auto_change_text"
         android:defaultValue="false"
+        android:enabled="false"
         android:summaryOn="@string/on"
         android:summaryOff="@string/off" />
 
@@ -49,6 +50,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="autoenable1"
+            android:enabled="false"
             android:title="@string/auto_enable_data_after_reset"
             android:defaultValue="false"
             android:summaryOn="@string/on"
@@ -78,6 +80,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="autooff1"
+            android:enabled="false"
             android:title="@string/auto_off_text"
             android:defaultValue="true"
             android:summaryOn="@string/on"
@@ -131,10 +134,12 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
             android:key="everyday1"
+            android:enabled="false"
             android:title="@string/everyday_onoff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:key="everydayonoff1"
+            android:enabled="false"
             android:title="@string/everyday_on_off"
             android:entries="@array/onoff"
             android:entryValues="@array/onoff_values"
@@ -227,12 +232,6 @@
             android:dependency="usenight1"
             android:title="@string/time_off"/>
 
-            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
-                android:key="save_profile_traffic1"
-                android:title="@string/save_profile"
-                android:summary="@string/save_profile_sum">
-            </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
-
         </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
 
     </PreferenceScreen>
@@ -250,6 +249,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="autoenable2"
+            android:enabled="false"
             android:title="@string/auto_enable_data_after_reset"
             android:defaultValue="false"
             android:summaryOn="@string/on"
@@ -279,6 +279,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="autooff2"
+            android:enabled="false"
             android:title="@string/auto_off_text"
             android:defaultValue="true"
             android:summaryOn="@string/on"
@@ -332,10 +333,12 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
             android:key="everyday2"
+            android:enabled="false"
             android:title="@string/everyday_onoff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:key="everydayonoff2"
+            android:enabled="false"
             android:title="@string/everyday_on_off"
             android:entries="@array/onoff"
             android:entryValues="@array/onoff_values"
@@ -428,12 +431,6 @@
             android:dependency="usenight2"
             android:title="@string/time_off"/>
 
-            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
-                android:key="save_profile_traffic2"
-                android:title="@string/save_profile"
-                android:summary="@string/save_profile_sum">
-            </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
-
         </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
 
     </PreferenceScreen>
@@ -453,6 +450,7 @@
             android:key="autoenable3"
             android:title="@string/auto_enable_data_after_reset"
             android:defaultValue="false"
+            android:enabled="false"
             android:summaryOn="@string/on"
             android:summaryOff="@string/off" />
 
@@ -480,6 +478,7 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="autooff3"
+            android:enabled="false"
             android:title="@string/auto_off_text"
             android:defaultValue="true"
             android:summaryOn="@string/on"
@@ -533,10 +532,12 @@
 
         <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
             android:key="everyday3"
+            android:enabled="false"
             android:title="@string/everyday_onoff" >
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:key="everydayonoff3"
+            android:enabled="false"
             android:title="@string/everyday_on_off"
             android:entries="@array/onoff"
             android:entryValues="@array/onoff_values"
@@ -630,12 +631,6 @@
             android:title="@string/time_off"/>
 
         </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
-
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
-            android:key="save_profile_traffic3"
-            android:title="@string/save_profile"
-            android:summary="@string/save_profile_sum">
-        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
     </PreferenceScreen>
 

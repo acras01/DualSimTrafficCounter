@@ -43,7 +43,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+        Preference.OnPreferenceChangeListener {
 
     private TwoLineEditTextPreference limit1, limit2, limit3, limit1N, limit2N, limit3N,
             round1, round2, round3, round1N, round2N, round3N,
@@ -58,7 +58,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private int mSimQuantity;
     private Context mContext;
     private boolean mIsAttached = false;
-    private Preference save1, save2, save3;
     private ArrayList<String> mIMSI = null;
 
     @Override
@@ -81,9 +80,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
                 if (prefs.size() != 0)
-                    for (int i = 0; i < prefs.size(); i++) {
-                        String key = Constants.PREF_SIM_DATA[i] + 1;
-                        Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
+                    for (String key : prefs.keySet()) {
+                        Object o = prefs.get(key);
+                        key = key + 1;
                         CustomApplication.putObject(editor, key, o);
                     }
                 prefSim = null;
@@ -94,9 +93,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
-                        for (int i = 0; i < prefs.size(); i++) {
-                            String key = Constants.PREF_SIM_DATA[i] + 2;
-                            Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 2;
                             CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
@@ -108,9 +107,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
-                        for (int i = 0; i < prefs.size(); i++) {
-                            String key = Constants.PREF_SIM_DATA[i] + 3;
-                            Object o = prefs.get(Constants.PREF_SIM_DATA[i]);
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 3;
                             CustomApplication.putObject(editor, key, o);
                         }
                     prefSim = null;
@@ -188,38 +187,32 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
 
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !CustomApplication.hasRoot()) ||
-                (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())) {
-            changeSIM.setEnabled(false);
-            changeSIM.setChecked(false);
-            /*autoff1.setChecked(false);
-            autoff1.setEnabled(false);
-            autoff2.setChecked(false);
-            autoff2.setEnabled(false);
-            autoff3.setChecked(false);
-            autoff3.setEnabled(false);*/
-            autoenable1.setChecked(false);
-            autoenable1.setEnabled(false);
-            autoenable2.setChecked(false);
-            autoenable2.setEnabled(false);
-            autoenable3.setChecked(false);
-            autoenable3.setEnabled(false);
-            getPreferenceScreen().findPreference("everyday1").setEnabled(false);
-            getPreferenceScreen().findPreference("everyday2").setEnabled(false);
-            getPreferenceScreen().findPreference("everyday3").setEnabled(false);
-            everyday1.setEnabled(false);
-            everyday2.setEnabled(false);
-            everyday3.setEnabled(false);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()) {
+            changeSIM.setEnabled(true);
+            autoff1.setEnabled(true);
+            autoff2.setEnabled(true);
+            autoff3.setEnabled(true);
+            autoenable1.setEnabled(true);
+            autoenable2.setEnabled(true);
+            autoenable3.setEnabled(true);
+            getPreferenceScreen().findPreference("everyday1").setEnabled(true);
+            getPreferenceScreen().findPreference("everyday2").setEnabled(true);
+            getPreferenceScreen().findPreference("everyday3").setEnabled(true);
+            everyday1.setEnabled(true);
+            everyday2.setEnabled(true);
+            everyday3.setEnabled(true);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            changeSIM.setEnabled(false);
-            changeSIM.setChecked(false);
-            autoenable1.setChecked(false);
-            autoenable1.setEnabled(false);
-            autoenable2.setChecked(false);
-            autoenable2.setEnabled(false);
-            autoenable3.setChecked(false);
-            autoenable3.setEnabled(false);
+        if (!CustomApplication.isOldMtkDevice() &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && CustomApplication.hasRoot()) {
+            autoff1.setEnabled(true);
+            autoff2.setEnabled(true);
+            autoff3.setEnabled(true);
+            everyday1.setEnabled(true);
+            everyday2.setEnabled(true);
+            everyday3.setEnabled(true);
+            getPreferenceScreen().findPreference("everyday1").setEnabled(true);
+            getPreferenceScreen().findPreference("everyday2").setEnabled(true);
+            getPreferenceScreen().findPreference("everyday3").setEnabled(true);
             everyday1.setEntries(getResources().getStringArray(R.array.onoff_LP));
             everyday1.setEntryValues(getResources().getStringArray(R.array.onoff_values_LP));
             everyday2.setEntries(getResources().getStringArray(R.array.onoff_LP));
@@ -261,25 +254,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         TwoLineCheckPreference save = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[44]);
         if (save != null && (mIMSI == null || mIMSI.size() != mSimQuantity || mIMSI.contains(null)))
             save.setEnabled(false);
-
-        save1 = findPreference("save_profile_traffic1");
-        save2 = findPreference("save_profile_traffic2");
-        save3 = findPreference("save_profile_traffic3");
-        if (!mPrefs.getBoolean(Constants.PREF_OTHER[44], true)) {
-            if (save1 != null)
-                save1.setEnabled(false);
-            if (save2 != null)
-                save2.setEnabled(false);
-            if (save3 != null)
-                save3.setEnabled(false);
-        } else {
-            if (save1 != null)
-                save1.setOnPreferenceClickListener(this);
-            if (save2 != null)
-                save2.setOnPreferenceClickListener(this);
-            if (save3 != null)
-                save3.setOnPreferenceClickListener(this);
-        }
     }
 
     @Override
@@ -569,16 +543,14 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             updateSummary();
 
         if (key.equals(Constants.PREF_OTHER[44])) {
-            boolean state = sharedPreferences.getBoolean(key, true);
-            if (save1 != null)
-                save1.setEnabled(state);
-            if (save2 != null)
-                save2.setEnabled(state);
-            if (save3 != null)
-                save3.setEnabled(state);
-            if (!sharedPreferences.getBoolean(key, false)) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                for (int i = 0; i < mSimQuantity; i++) {
+                    new SaveTask().execute(i);
+                }
+            } else {
                 CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
                 CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.DATA_TABLE);
+                CustomApplication.deletePreferenceFile(mSimQuantity, Constants.DATA_TABLE);
             }
         }
 
@@ -766,34 +738,22 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         return false;
     }
 
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-        if (mIMSI != null) {
-            new SaveTask().execute(preference);
-            return true;
-        } else
-            return false;
-    }
-
-    private class SaveTask extends AsyncTask<Preference, Void, Boolean> {
+    private class SaveTask extends AsyncTask<Integer, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Preference... params) {
+        protected Boolean doInBackground(Integer... params) {
             Map<String, ?> prefs = mPrefs.getAll();
             String[] keys = new String[Constants.PREF_SIM_DATA.length];
-            int sim = Constants.DISABLED;
-            switch (params[0].getKey()) {
-                case "save_profile_traffic1":
+            int sim = params[0];
+            switch (sim) {
+                case Constants.SIM1:
                     keys = Constants.PREF_SIM1;
-                    sim = Constants.SIM1;
                     break;
-                case "save_profile_traffic2":
+                case Constants.SIM2:
                     keys = Constants.PREF_SIM2;
-                    sim = Constants.SIM2;
                     break;
-                case "save_profile_traffic3":
+                case Constants.SIM3:
                     keys = Constants.PREF_SIM3;
-                    sim = Constants.SIM3;
                     break;
             }
             SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
@@ -802,7 +762,14 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             for (String key : keySet) {
                 if (simKeys.contains(key)) {
                     Object o = prefs.get(key);
-                    CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
+                    key = key.substring(0, key.length() - 1);
+                    if (o == null) {
+                        if (key.equals(Constants.PREF_SIM_DATA[5]))
+                            o = true;
+                        else if (key.equals(Constants.PREF_SIM_DATA[6]))
+                            o = "";
+                    }
+                    CustomApplication.putObject(editor, key, o);
                 }
             }
             CustomApplication.putObject(editor, "stub", null);

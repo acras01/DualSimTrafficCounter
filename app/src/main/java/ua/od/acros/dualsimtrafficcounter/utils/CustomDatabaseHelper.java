@@ -297,23 +297,27 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static ContentValues readTrafficDataForSim(CustomDatabaseHelper dbHelper, String name) {
-        ContentValues cv = new ContentValues();
-        String dbName = "data_" + name;
-        mSqLiteDatabase = dbHelper.getReadableDatabase();
-        try {
-            mSqLiteDatabase.query(dbName, null, null, null, null, null, null);
-        } catch (Exception e) {
-            String DATABASE_CREATE_SCRIPT = "create table "
-                    + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+    private static void createTable(CustomDatabaseHelper dbHelper, String name) {
+        String DATABASE_CREATE_SCRIPT;
+        if (name.contains(Constants.DATA_TABLE))
+            DATABASE_CREATE_SCRIPT = "CREATE TABLE IF NOT EXISTS "
+                    + name + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
                     + " text not null, " + "rx" + " long, " + "tx" + " long, "
                     + "total" + " long, " + "period" + " integer,"
                     + "rx_n" + " long, " + "tx_n" + " long, " + "total_n" + " long);";
-            dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
-            mSqLiteDatabase = dbHelper.getReadableDatabase();
-        }
-        Cursor cursor = mSqLiteDatabase.query(dbName, new String[]{Constants.LAST_DATE, Constants.LAST_TIME,
-        "rx", "tx", "total", "rx_n", "tx_n", "total_n", "period"}, null, null, null, null, null);
+        else
+            DATABASE_CREATE_SCRIPT = "CREATE TABLE IF NOT EXISTS "
+                + name + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
+                + " text not null, " + "calls" + " long, " + "calls_ex" + " long, " + "period" + " integer);";
+        dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
+    }
+
+    public static ContentValues readTrafficDataForSim(CustomDatabaseHelper dbHelper, String name) {
+        ContentValues cv = new ContentValues();
+        String dbName = Constants.DATA_TABLE + "_" + name;
+        createTable(dbHelper, dbName);
+        mSqLiteDatabase = dbHelper.getReadableDatabase();
+        Cursor cursor = mSqLiteDatabase.query(dbName, null, null, null, null, null, null);
         if (cursor.moveToLast()) {
             cv.put("rx", cursor.getLong(cursor.getColumnIndex("rx")));
             cv.put("tx", cursor.getLong(cursor.getColumnIndex("tx")));
@@ -340,6 +344,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public static void writeDataForSim(ContentValues cv, CustomDatabaseHelper dbHelper, String name) {
+        createTable(dbHelper, name);
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
         int id = mSqLiteDatabase.update(name, cv, filter, null);
@@ -349,19 +354,10 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
     public static ContentValues readCallsDataForSim(CustomDatabaseHelper dbHelper, String name) {
         ContentValues cv = new ContentValues();
-        String dbName = "calls_" + name;
+        String dbName = Constants.CALLS_TABLE + "_" + name;
+        createTable(dbHelper, dbName);
         mSqLiteDatabase = dbHelper.getReadableDatabase();
-        try {
-            mSqLiteDatabase.query(dbName, null, null, null, null, null, null);
-        } catch (Exception e) {
-            String DATABASE_CREATE_SCRIPT = "create table "
-                    + dbName + " (" + Constants.LAST_DATE + " text not null, " + Constants.LAST_TIME
-                    + " text not null, " + "calls" + " long, " + "calls_ex" + " long, " + "period" + " integer);";
-            dbHelper.getWritableDatabase().execSQL(DATABASE_CREATE_SCRIPT);
-            mSqLiteDatabase = dbHelper.getReadableDatabase();
-        }
-        Cursor cursor = mSqLiteDatabase.query(dbName, new String[]{Constants.LAST_DATE, Constants.LAST_TIME, "calls",
-                "calls_ex", "period"}, null, null, null, null, null);
+        Cursor cursor = mSqLiteDatabase.query(dbName, null, null, null, null, null, null);
         if (cursor.moveToLast()) {
             cv.put("calls", cursor.getLong(cursor.getColumnIndex("calls")));
             cv.put("calls_ex", cursor.getLong(cursor.getColumnIndex("calls_ex")));
