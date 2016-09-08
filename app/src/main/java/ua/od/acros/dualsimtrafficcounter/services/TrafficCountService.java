@@ -652,14 +652,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 sim = Constants.SIM2;
             if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
                 sim = Constants.SIM3;
-            if (sim >= 0) {
+            if (sim >= 0 && sim < mIMSI.size()) {
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
+                key = key.substring(0, key.length() - 1);
                 SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
-                boolean operator = key.substring(0, key.length() - 1).equals(Constants.PREF_SIM_DATA[5]) ||
-                        key.substring(0, key.length() - 1).equals(Constants.PREF_SIM_DATA[6]);
+                boolean operator = key.equals(Constants.PREF_SIM_DATA[5]) ||
+                        key.equals(Constants.PREF_SIM_DATA[6]);
                 if (!operator)
-                    CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
+                    CustomApplication.putObject(editor, key, o);
                 editor.apply();
             }
         }
