@@ -58,19 +58,15 @@ public class OnOffDialog extends DialogFragment {
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice())) {
+        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice())) {
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            if (simQuantity == 1) {
-                sim2rb.setEnabled(false);
-                sim3rb.setEnabled(false);
-            }
-            if (simQuantity == 2)
-                sim3rb.setEnabled(false);
-        } else {
-            sim1rb.setEnabled(false);
-            sim2rb.setEnabled(false);
-            sim3rb.setEnabled(false);
+            if (simQuantity >= 1)
+                sim1rb.setEnabled(true);
+            if (simQuantity >= 2)
+                sim2rb.setEnabled(true);
+            if (simQuantity == 3)
+                sim3rb.setEnabled(true);
         }
         final ColorStateList[] textColor = {ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.colorAccent))};
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
