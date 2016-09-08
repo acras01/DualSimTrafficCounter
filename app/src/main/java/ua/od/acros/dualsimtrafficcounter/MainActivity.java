@@ -383,23 +383,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showDialog(MTK);
         } else if (mAction != null && mAction.equals("tap") && mState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
-                if (currentFragment != null && currentFragment instanceof TrafficFragment) {
-                    fm.beginTransaction()
-                            .replace(R.id.content_frame, currentFragment)
-                            .addToBackStack(Constants.TRAFFIC_TAG)
-                            .commit();
-                    setItemChecked(R.id.nav_traffic, true);
-                    mLastMenuItem = R.id.nav_traffic;
-                }
+                fm.beginTransaction()
+                        .replace(R.id.content_frame, mTraffic)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
+                        .commit();
+                setItemChecked(R.id.nav_traffic, true);
+                mLastMenuItem = R.id.nav_traffic;
             } else {
-                if (currentFragment != null && currentFragment instanceof CallsFragment) {
-                    fm.beginTransaction()
-                            .replace(R.id.content_frame, currentFragment)
-                            .addToBackStack(Constants.CALLS_TAG)
-                            .commit();
-                    setItemChecked(R.id.nav_calls, true);
-                    mLastMenuItem = R.id.nav_calls;
-                }
+                fm.beginTransaction()
+                        .replace(R.id.content_frame, mCalls)
+                        .addToBackStack(Constants.CALLS_TAG)
+                        .commit();
+                setItemChecked(R.id.nav_calls, true);
+                mLastMenuItem = R.id.nav_calls;
             }
         } else if (CustomApplication.isPackageExisted(XPOSED) && (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration) &&
                 !mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
