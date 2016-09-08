@@ -355,25 +355,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPostResume() {
         super.onPostResume();
         FragmentManager fm = getSupportFragmentManager();
+        Fragment currentFragment = fm.findFragmentById(R.id.content_frame);
         if (mNeedsRestart) {
             mNeedsRestart = false;
             finish();
             startActivity(mStarterIntent);
         } else if (mNeedsReloadView) {
-            if (mTraffic != null && mTraffic.isVisible())
+            if (currentFragment != null && currentFragment instanceof TrafficFragment) {
                 fm.beginTransaction()
-                        .detach(mTraffic)
-                        .attach(mTraffic)
+                        .detach(currentFragment)
+                        .attach(currentFragment)
                         .commit();
-            else {
-                mTraffic = new TrafficFragment();
-                fm.beginTransaction()
-                        .add(R.id.content_frame, mTraffic)
-                        .addToBackStack(Constants.TRAFFIC_TAG)
-                        .commit();
+
+                setItemChecked(R.id.nav_traffic, true);
+                mLastMenuItem = R.id.nav_traffic;
             }
-            setItemChecked(R.id.nav_traffic, true);
-            mLastMenuItem = R.id.nav_traffic;
         } else if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             mPrefs.edit()
                     .putBoolean(Constants.PREF_OTHER[9], false)
@@ -386,25 +382,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     !CustomApplication.isOldMtkDevice())
                 showDialog(MTK);
         } else if (mAction != null && mAction.equals("tap") && mState == null) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true) && mTraffic != null) {
-                fm.beginTransaction()
-                        .replace(R.id.content_frame, mTraffic)
-                        .addToBackStack(Constants.TRAFFIC_TAG)
-                        .commit();
-                setItemChecked(R.id.nav_traffic, true);
-                mLastMenuItem = R.id.nav_traffic;
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
+                if (currentFragment != null && currentFragment instanceof TrafficFragment) {
+                    fm.beginTransaction()
+                            .replace(R.id.content_frame, currentFragment)
+                            .addToBackStack(Constants.TRAFFIC_TAG)
+                            .commit();
+                    setItemChecked(R.id.nav_traffic, true);
+                    mLastMenuItem = R.id.nav_traffic;
+                }
             } else {
-                fm.beginTransaction()
-                        .replace(R.id.content_frame, mCalls)
-                        .addToBackStack(Constants.CALLS_TAG)
-                        .commit();
-                setItemChecked(R.id.nav_calls, true);
-                mLastMenuItem = R.id.nav_calls;
+                if (currentFragment != null && currentFragment instanceof CallsFragment) {
+                    fm.beginTransaction()
+                            .replace(R.id.content_frame, currentFragment)
+                            .addToBackStack(Constants.CALLS_TAG)
+                            .commit();
+                    setItemChecked(R.id.nav_calls, true);
+                    mLastMenuItem = R.id.nav_calls;
+                }
             }
         } else if (CustomApplication.isPackageExisted(XPOSED) && (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration) &&
                 !mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
-            Fragment currentFragment = fm.findFragmentById(R.id.content_frame);
             if (currentFragment instanceof CallsFragment) {
+                if (mTraffic == null)
+                    mTraffic = new TrafficFragment();
                 fm.beginTransaction()
                         .remove(currentFragment)
                         .replace(R.id.content_frame, mTraffic)
@@ -413,6 +414,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mLastMenuItem = R.id.nav_traffic;
             }
         } else if (mState == null) {
+            if (mTraffic == null)
+                mTraffic = new TrafficFragment();
             fm.beginTransaction()
                     .add(R.id.content_frame, mTraffic)
                     .addToBackStack(Constants.TRAFFIC_TAG)
