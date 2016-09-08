@@ -226,21 +226,27 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         bSet.setOnClickListener(this);
         readTrafficDataFromDatabase();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
-            RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
-                    (long) mTrafficData.get(Constants.SIM1RX)));
-            TX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1TX_N) :
-                    (long) mTrafficData.get(Constants.SIM1TX)));
+            if (RX1 != null)
+                RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
+                        (long) mTrafficData.get(Constants.SIM1RX)));
+            if (TX1 != null)
+                TX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1TX_N) :
+                        (long) mTrafficData.get(Constants.SIM1TX)));
             if (mSimQuantity >= 2) {
-                RX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
-                        (long) mTrafficData.get(Constants.SIM2RX)));
-                TX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2TX_N) :
-                        (long) mTrafficData.get(Constants.SIM2TX)));
+                if (RX2 != null)
+                    RX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
+                            (long) mTrafficData.get(Constants.SIM2RX)));
+                if (TX2 != null)
+                    TX2.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM2TX_N) :
+                            (long) mTrafficData.get(Constants.SIM2TX)));
             }
             if (mSimQuantity == 3) {
-                RX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
-                        (long) mTrafficData.get(Constants.SIM3RX)));
-                TX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3TX_N) :
-                        (long) mTrafficData.get(Constants.SIM3TX)));
+                if (RX3 != null)
+                    RX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
+                            (long) mTrafficData.get(Constants.SIM3RX)));
+                if (TX3 != null)
+                    TX3.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM3TX_N) :
+                            (long) mTrafficData.get(Constants.SIM3TX)));
             }
         }
         TOT1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.TOTAL1_N) :

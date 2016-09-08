@@ -359,11 +359,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mNeedsRestart = false;
             finish();
             startActivity(mStarterIntent);
-        } else if (mNeedsReloadView && mTraffic.isVisible()) {
-            fm.beginTransaction()
-                    .detach(mTraffic)
-                    .attach(mTraffic)
-                    .commit();
+        } else if (mNeedsReloadView) {
+            if (mTraffic != null && mTraffic.isVisible())
+                fm.beginTransaction()
+                        .detach(mTraffic)
+                        .attach(mTraffic)
+                        .commit();
+            else {
+                mTraffic = new TrafficFragment();
+                fm.beginTransaction()
+                        .add(R.id.content_frame, mTraffic)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
+                        .commit();
+            }
             setItemChecked(R.id.nav_traffic, true);
             mLastMenuItem = R.id.nav_traffic;
         } else if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
@@ -378,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     !CustomApplication.isOldMtkDevice())
                 showDialog(MTK);
         } else if (mAction != null && mAction.equals("tap") && mState == null) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true) && mTraffic != null) {
                 fm.beginTransaction()
                         .replace(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
@@ -441,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         openFragment(item.getItemId());
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null) {
