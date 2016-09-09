@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.OperatorFragment;
@@ -26,14 +28,16 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
     private static ActionBar mActionBar;
-    private static String mTag;
+    private static String mTag, mAction;
     private static PreferenceFragmentCompat mFragment;
+    private Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Context context = CustomApplication.getAppContext();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mAction = getIntent().getAction();
+        mContext = CustomApplication.getAppContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -115,6 +119,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         } else if (fragment instanceof SettingsFragment) {
             setResult(RESULT_OK, null);
             finish();
+            if (mAction != null && mAction.equals(Constants.SETTINGS_TAP)) {
+                Intent activityIntent = new Intent(mContext, MainActivity.class);
+                activityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(activityIntent);
+            }
         }
         else
             replaceFragments(SettingsFragment.class);

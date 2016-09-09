@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         } else {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-            if (fragment instanceof TrafficFragment)
+            if (fragment instanceof TrafficFragment || (mAction != null && mAction.equals(Constants.CALLS_TAP)))
                 finish();
             else {
                 getSupportFragmentManager()
@@ -470,6 +470,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void openFragment(int itemId) {
+        mAction = "";
         Fragment newFragment = null;
         String tag = "";
         switch (itemId) {

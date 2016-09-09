@@ -54,11 +54,13 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:process=":error_report"
-            android:theme="@style/AppTheme.Auto.Dialog"></activity>
+            android:theme="@style/AppTheme.Auto.Dialog">
+        </activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/action_settings"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -68,21 +70,25 @@
             android:name=".dialogs.ChooseActionDialog"
             android:label="@string/attention"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar.Translucent"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+        </activity>
         <activity
             android:name=".dialogs.ChooseSimDialog"
             android:label="@string/attention"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar.Translucent"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+        </activity>
         <activity
             android:name=".dialogs.ManualSimDialog"
             android:label="@string/attention"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar.Translucent"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+        </activity>
         <activity
             android:name=".dialogs.ChooseOperatorDialog"
             android:label="@string/title_activity_choose_operator_dialog"
-            android:theme="@style/AppTheme.NoActionBar.Translucent"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+        </activity>
         <activity
             android:name=".activities.TrafficWidgetConfigActivity"
             android:configChanges="orientation|screenSize"

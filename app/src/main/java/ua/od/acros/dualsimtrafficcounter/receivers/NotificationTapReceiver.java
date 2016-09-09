@@ -26,11 +26,14 @@ public class NotificationTapReceiver extends BroadcastReceiver {
                 break;
             case Constants.SETTINGS_TAP:
                 activityIntent = new Intent(context, SettingsActivity.class);
+                activityIntent.setAction(Constants.SETTINGS_TAP);
                 break;
         }
         if (activityIntent != null) {
             activityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(activityIntent);
+            Intent closePanelIntent = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            context.sendBroadcast(closePanelIntent);
         }
     }
 }
