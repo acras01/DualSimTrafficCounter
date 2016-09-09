@@ -18,9 +18,11 @@ public class NotificationTapReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
             case Constants.TRAFFIC_TAP:
                 activityIntent = new Intent(context, MainActivity.class);
+                activityIntent.setAction(Constants.TRAFFIC_TAP);
                 break;
             case Constants.CALLS_TAP:
                 activityIntent = new Intent(context, MainActivity.class);
+                activityIntent.setAction(Constants.CALLS_TAP);
                 break;
             case Constants.SETTINGS_TAP:
                 activityIntent = new Intent(context, SettingsActivity.class);

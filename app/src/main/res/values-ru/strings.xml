@@ -231,4 +231,6 @@
     <string name="sim_not_defined">Приложение не может определить активную SIM-карту. Пожалуйста, выберите в настройках ручной выбор SIM</string>
     <string name="enable_mobile_data">Пожалуйста, включите передачу данных!</string>
     <string name="auto_load_service">Выгружать сервис из памяти при отключенной передаче данных</string>
+    <string name="action_traffic">Трафик</string>
+    <string name="action_calls">Звонки</string>
 </resources>

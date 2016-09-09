@@ -239,4 +239,6 @@
     <string name="sim_not_defined">Application can\'t define active SIM. Please, choose manual SIM selection in Settings</string>
     <string name="enable_mobile_data">Please, enable mobile data!</string>
     <string name="auto_load_service">Auto load/unload service according to mobile data</string>
+    <string name="action_traffic">Traffic</string>
+    <string name="action_calls">Calls</string>
 </resources>

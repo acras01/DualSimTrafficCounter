@@ -114,6 +114,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             PendingIntent settPIntent = PendingIntent.getActivity(context, i, settIntent, 0);
 
             Intent intent = new Intent(context, MainActivity.class);
+            intent.setAction(Constants.CALLS_TAP);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, i, intent, 0);
 
             int dim = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE));

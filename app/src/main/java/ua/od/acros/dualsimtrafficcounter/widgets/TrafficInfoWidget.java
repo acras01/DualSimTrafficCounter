@@ -156,6 +156,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             PendingIntent settPIntent = PendingIntent.getActivity(context, i, settIntent, 0);
 
             Intent intent = new Intent(context, MainActivity.class);
+            intent.setAction(Constants.TRAFFIC_TAP);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, i, intent, 0);
 
             int dim = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE));

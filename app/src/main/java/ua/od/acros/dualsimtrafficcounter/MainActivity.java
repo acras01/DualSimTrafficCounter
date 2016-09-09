@@ -381,21 +381,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
                     !CustomApplication.isOldMtkDevice())
                 showDialog(MTK);
-        } else if (mAction != null && mAction.equals("tap") && mState == null) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[26], true)) {
+        } else if (mAction != null && mState == null) {
+            if (mAction.contains("dualsimtrafficcounter"))
+                switch (mAction) {
+                    case Constants.TRAFFIC_TAP:
+                        fm.beginTransaction()
+                                .replace(R.id.content_frame, mTraffic)
+                                .addToBackStack(Constants.TRAFFIC_TAG)
+                                .commit();
+                        setItemChecked(R.id.nav_traffic, true);
+                        mLastMenuItem = R.id.nav_traffic;
+                        break;
+                    case Constants.CALLS_TAP:
+                        fm.beginTransaction()
+                                .replace(R.id.content_frame, mCalls)
+                                .addToBackStack(Constants.CALLS_TAG)
+                                .commit();
+                        setItemChecked(R.id.nav_calls, true);
+                        mLastMenuItem = R.id.nav_calls;
+                        break;
+                }
+            else {
                 fm.beginTransaction()
                         .replace(R.id.content_frame, mTraffic)
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
                 mLastMenuItem = R.id.nav_traffic;
-            } else {
-                fm.beginTransaction()
-                        .replace(R.id.content_frame, mCalls)
-                        .addToBackStack(Constants.CALLS_TAG)
-                        .commit();
-                setItemChecked(R.id.nav_calls, true);
-                mLastMenuItem = R.id.nav_calls;
             }
         } else if (CustomApplication.isPackageExisted(XPOSED) && (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration) &&
                 !mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {

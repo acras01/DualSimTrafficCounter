@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.receivers.NotificationTapReceiver;
@@ -20,44 +21,47 @@ public class CustomNotification extends Notification {
     private static NotificationCompat.Builder mBuilder;
     private static boolean mIdChanged = false;
     private static boolean mPriorityChanged = false;
+    private final static int TAP = 19810506;
+    private static SharedPreferences mPrefs;
 
     private static NotificationCompat.Builder newInstance(Context context) {
         if (mBuilder == null) {
             mPriorityChanged = true;
-            final int TAP = 19810506;
+
             //traffic button
             Intent trafficIntent = new Intent(context, NotificationTapReceiver.class);
             trafficIntent.setAction(Constants.TRAFFIC_TAP);
             PendingIntent piTraffic = PendingIntent.getBroadcast(context, TAP, trafficIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            //calls button
-            Intent callsIntent = new Intent(context, NotificationTapReceiver.class);
-            callsIntent.setAction(Constants.CALLS_TAP);
-            PendingIntent piCalls = PendingIntent.getBroadcast(context, TAP, callsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            //settings button
-            Intent settingsIntent = new Intent(context, NotificationTapReceiver.class);
-            settingsIntent.setAction(Constants.SETTINGS_TAP);
-            PendingIntent piSettings = PendingIntent.getBroadcast(context, TAP, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            /*Intent notificationIntent = new Intent();
-            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);*/
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+
             mBuilder = new NotificationCompat.Builder(context)
-                    //.setContentIntent(contentIntent)
-                    .addAction(0, context.getString(R.string.traffic), piTraffic)
-                    .addAction(0, context.getString(R.string.calls), piCalls)
-                    .addAction(0, context.getString(R.string.action_settings), piSettings)
+                    .addAction(R.drawable.ic_action_traffic, context.getString(R.string.action_traffic), piTraffic)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setWhen(System.currentTimeMillis())
                     .setOngoing(true)
                     .setLargeIcon(bm)
                     .setContentTitle(context.getString(R.string.app_name));
+
+            //calls button
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false)) {
+                Intent callsIntent = new Intent(context, NotificationTapReceiver.class);
+                callsIntent.setAction(Constants.CALLS_TAP);
+                PendingIntent piCalls = PendingIntent.getBroadcast(context, TAP, callsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.addAction(R.drawable.ic_action_calls, context.getString(R.string.action_calls), piCalls);
+            }
+
+            //settings button
+            Intent settingsIntent = new Intent(context, NotificationTapReceiver.class);
+            settingsIntent.setAction(Constants.SETTINGS_TAP);
+            PendingIntent piSettings = PendingIntent.getBroadcast(context, TAP, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.addAction(R.drawable.ic_action_settings, context.getString(R.string.action_settings), piSettings);
         }
         return mBuilder;
     }
 
     public static Notification getNotification(Context context, String traffic, String calls) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         int mActiveSIM = TrafficCountService.getActiveSIM();
         if (mActiveSIM == Constants.DISABLED)
             mActiveSIM = TrafficCountService.getLastActiveSIM();
@@ -65,14 +69,6 @@ public class CustomNotification extends Notification {
             traffic = mTraffic;
         if (calls.equals(""))
             calls = mCalls;
-        String bigText;
-        if (!prefs.getBoolean(Constants.PREF_OTHER[24], false))
-            bigText = context.getString(R.string.traffic) + "\n" + traffic + "\n" +
-                    context.getString(R.string.calls) + "\n" + calls + "\n";
-        else
-            bigText = context.getString(R.string.traffic) + "\n" + traffic;
-        mTraffic = traffic;
-        mCalls = calls;
         NotificationCompat.Builder b = newInstance(context);
         if (mIdChanged) {
             mIdChanged = false;
@@ -80,15 +76,23 @@ public class CustomNotification extends Notification {
         }
         if (mPriorityChanged) {
             mPriorityChanged = false;
-            b.setPriority(prefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN);
+            b.setPriority(mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN);
         }
         b.setContentText(traffic);
+        String bigText;
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
+            bigText = context.getString(R.string.traffic) + "\n" + traffic + "\n" +
+                    context.getString(R.string.calls) + "\n" + calls + "\n";
+        else
+            bigText = context.getString(R.string.traffic) + "\n" + traffic;
+        mTraffic = traffic;
+        mCalls = calls;
         return new NotificationCompat.BigTextStyle(b).bigText(bigText).build();
     }
 
     private static int getOperatorLogoID(Context context, int sim) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
             String[] pref = new String[Constants.PREF_SIM1.length];
             switch (sim) {
                 case Constants.SIM1:
@@ -101,10 +105,10 @@ public class CustomNotification extends Notification {
                     pref = Constants.PREF_SIM3;
                     break;
             }
-            if (prefs.getString(pref[23], "none").equals("auto"))
+            if (mPrefs.getString(pref[23], "none").equals("auto"))
                 return context.getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, sim), "drawable", context.getPackageName());
             else
-                return context.getResources().getIdentifier(prefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
+                return context.getResources().getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
         } else
             return R.drawable.ic_launcher_small;
     }

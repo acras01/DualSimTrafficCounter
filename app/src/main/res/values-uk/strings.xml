@@ -231,4 +231,6 @@
     <string name="sim_not_defined">Додаток не може визначити активну SIM-карту. Будь ласка, оберіть в налаштуваннях ручний вибір SIM</string>
     <string name="enable_mobile_data">Будь ласка, увімкніть мобільні дані!</string>
     <string name="auto_load_service">Закривати сервіс автоматично при вимкненні мобільних даних</string>
+    <string name="action_traffic">Трафік</string>
+    <string name="action_calls">Дзвінки</string>
 </resources>
