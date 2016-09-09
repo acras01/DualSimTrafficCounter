@@ -147,7 +147,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = Constants.DATA_TABLE + "_" + mIMSI.get(0);
+            String name = Constants.TRAFFIC + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -160,7 +160,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = Constants.DATA_TABLE + "_" + mIMSI.get(1);
+                name = Constants.TRAFFIC + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -174,7 +174,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             }
             if (mSimQuantity == 3) {
-                name = Constants.DATA_TABLE + "_" + mIMSI.get(2);
+                name = Constants.TRAFFIC + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -479,7 +479,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification(sim));
         }
-        if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0) && CustomApplication.isScreenOn())
+        if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0) && CustomApplication.isScreenOn())
             sendDataBroadcast(0L, 0L);
         startNewTimerTask(Constants.COUNT);
     }
@@ -656,7 +656,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
                 key = key.substring(0, key.length() - 1);
-                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
                 boolean operator = key.equals(Constants.PREF_SIM_DATA[5]) ||
                         key.equals(Constants.PREF_SIM_DATA[6]);
                 if (!operator)
@@ -896,8 +896,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     checkIfResetNeeded();
 
                     boolean emptyDB = (mPrefs.getBoolean(Constants.PREF_OTHER[44], false) && mIMSI != null) ?
-                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(Constants.SIM1), false) :
-                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE, true);
+                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(Constants.SIM1), false) :
+                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.TRAFFIC, true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1091,7 +1091,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1157,8 +1157,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     checkIfResetNeeded();
 
                     boolean emptyDB = (mPrefs.getBoolean(Constants.PREF_OTHER[44], false) && mIMSI != null) ?
-                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(Constants.SIM2), false) :
-                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE, true);
+                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(Constants.SIM2), false) :
+                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.TRAFFIC, true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1352,7 +1352,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1418,8 +1418,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     checkIfResetNeeded();
 
                     boolean emptyDB = (mPrefs.getBoolean(Constants.PREF_OTHER[44], false) && mIMSI != null) ?
-                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(Constants.SIM3), false) :
-                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.DATA_TABLE, true);
+                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(Constants.SIM3), false) :
+                            CustomDatabaseHelper.isTableEmpty(mDbHelper, Constants.TRAFFIC, true);
 
                     if (emptyDB) {
                         mTrafficData.put(Constants.SIM1RX, 0L);
@@ -1613,7 +1613,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         }
                     }
 
-                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.DATA_TABLE).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
 
@@ -1691,7 +1691,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             cv.put("period", (int) mTrafficData.get(Constants.PERIOD1));
             cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
             cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-            CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(0));
+            CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(0));
             if (mSimQuantity >= 2) {
                 cv = new ContentValues();;
                 cv.put("rx", (long) mTrafficData.get(Constants.SIM2RX));
@@ -1703,7 +1703,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 cv.put("period", (int) mTrafficData.get(Constants.PERIOD2));
                 cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(1));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(1));
             }
             if (mSimQuantity == 3) {
                 cv = new ContentValues();;
@@ -1716,15 +1716,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 cv.put("period", (int) mTrafficData.get(Constants.PERIOD3));
                 cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.DATA_TABLE + "_" + mIMSI.get(2));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(2));
             }
         } else
-            CustomDatabaseHelper.writeData(mTrafficData, mDbHelper, Constants.DATA_TABLE);
+            CustomDatabaseHelper.writeData(mTrafficData, mDbHelper, Constants.TRAFFIC);
     }
 
     private void sendDataBroadcast(long speedRX, long speedTX) {
         Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
-        intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(Constants.DATA_TABLE));
+        intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(Constants.TRAFFIC));
         intent.putExtra(Constants.SPEEDRX, speedRX);
         intent.putExtra(Constants.SPEEDTX, speedTX);
         intent.putExtra(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));

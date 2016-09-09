@@ -10,8 +10,8 @@ import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
+import ua.od.acros.dualsimtrafficcounter.receivers.NotificationTapReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 
 public class CustomNotification extends Notification {
@@ -24,13 +24,29 @@ public class CustomNotification extends Notification {
     private static NotificationCompat.Builder newInstance(Context context) {
         if (mBuilder == null) {
             mPriorityChanged = true;
-            Intent notificationIntent = new Intent(context, MainActivity.class);
-            notificationIntent.setAction("tap");
+            final int TAP = 19810506;
+            //traffic button
+            Intent trafficIntent = new Intent(context, NotificationTapReceiver.class);
+            trafficIntent.setAction(Constants.TRAFFIC_TAP);
+            PendingIntent piTraffic = PendingIntent.getBroadcast(context, TAP, trafficIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //calls button
+            Intent callsIntent = new Intent(context, NotificationTapReceiver.class);
+            callsIntent.setAction(Constants.CALLS_TAP);
+            PendingIntent piCalls = PendingIntent.getBroadcast(context, TAP, callsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //settings button
+            Intent settingsIntent = new Intent(context, NotificationTapReceiver.class);
+            settingsIntent.setAction(Constants.SETTINGS_TAP);
+            PendingIntent piSettings = PendingIntent.getBroadcast(context, TAP, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            /*Intent notificationIntent = new Intent();
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);*/
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
             mBuilder = new NotificationCompat.Builder(context)
-                    .setContentIntent(contentIntent)
+                    //.setContentIntent(contentIntent)
+                    .addAction(0, context.getString(R.string.traffic), piTraffic)
+                    .addAction(0, context.getString(R.string.calls), piCalls)
+                    .addAction(0, context.getString(R.string.action_settings), piSettings)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setWhen(System.currentTimeMillis())
                     .setOngoing(true)

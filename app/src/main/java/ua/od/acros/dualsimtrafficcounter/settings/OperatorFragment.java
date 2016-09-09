@@ -50,7 +50,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
             SharedPreferences prefSim;
             Map<String, ?> prefs;
             String[] keys;
-            String name = Constants.DATA_TABLE + "_" + mIMSI.get(0);
+            String name = Constants.TRAFFIC + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -66,7 +66,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
                 prefSim = null;
             }
             if (simNumber >= 2) {
-                name = Constants.DATA_TABLE + "_" + mIMSI.get(1);
+                name = Constants.TRAFFIC + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -83,7 +83,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
                 }
             }
             if (simNumber == 3) {
-                name = Constants.DATA_TABLE + "_" + mIMSI.get(2);
+                name = Constants.TRAFFIC + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -203,7 +203,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
             if (sim >= 0) {
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
-                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.DATA_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
                 CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 editor.apply();
             }

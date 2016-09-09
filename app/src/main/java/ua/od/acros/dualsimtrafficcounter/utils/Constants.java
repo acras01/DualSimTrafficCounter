@@ -139,6 +139,9 @@ public class Constants {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern(TIME_FORMAT + ":ss");
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT + " " + TIME_FORMAT);
-    public static final String DATA_TABLE = "data";
-    public static final String CALLS_TABLE = "calls";
+    public static final String TRAFFIC = "data";
+    public static final String CALLS = "calls";
+    public static final String SETTINGS_TAP = "ua.od.acros.dualsimtrafficcounter.SETTINGS";
+    public static final String CALLS_TAP = "ua.od.acros.dualsimtrafficcounter.CALLS";
+    public static final String TRAFFIC_TAP = "ua.od.acros.dualsimtrafficcounter.TRAFFIC";
 }

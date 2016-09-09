@@ -62,7 +62,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = Constants.CALLS_TABLE + "_" + mIMSI.get(0);
+            String name = Constants.CALLS + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -75,7 +75,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = Constants.CALLS_TABLE + "_" + mIMSI.get(1);
+                name = Constants.CALLS + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -89,7 +89,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 }
             }
             if (mSimQuantity == 3) {
-                name = Constants.CALLS_TABLE + "_" + mIMSI.get(2);
+                name = Constants.CALLS + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -297,7 +297,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             if (sim >= 0) {
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
-                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
                 CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 editor.apply();
             }
@@ -337,7 +337,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                     keys = Constants.PREF_SIM3_CALLS;
                     break;
             }
-            SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
             for (String key : keySet) {
@@ -370,8 +370,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         protected Boolean doInBackground(Void... params) {
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
             CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
-            CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS_TABLE);
-            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS_TABLE);
+            CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS);
+            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS);
             return true;
         }
 

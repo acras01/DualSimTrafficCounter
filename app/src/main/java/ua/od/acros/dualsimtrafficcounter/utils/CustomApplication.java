@@ -298,7 +298,7 @@ public class CustomApplication extends Application {
 
     public static int[] getWidgetIds(String name) {
         Class c;
-        if (name.equals(Constants.CALLS_TABLE))
+        if (name.equals(Constants.CALLS))
             c = CallsInfoWidget.class;
         else
             c = TrafficInfoWidget.class;

@@ -101,7 +101,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String name = Constants.CALLS_TABLE + "_" + mIMSI.get(0);
+            String name = Constants.CALLS + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
@@ -114,7 +114,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 prefSim = null;
             }
             if (mSimQuantity >= 2) {
-                name = Constants.CALLS_TABLE + "_" + mIMSI.get(1);
+                name = Constants.CALLS + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -128,7 +128,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 }
             }
             if (mSimQuantity == 3) {
-                name = Constants.CALLS_TABLE + "_" + mIMSI.get(2);
+                name = Constants.CALLS + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
@@ -476,7 +476,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private void refreshWidgetAndNotification(int sim, long duration) {
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(Constants.STARTED_ID, buildNotification());
-        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS_TABLE);
+        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
         if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn()) || ids.length != 0) {
             Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
             callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
@@ -499,7 +499,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             if (sim >= 0) {
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
-                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS_TABLE + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
                 CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 editor.apply();
             }
@@ -573,7 +573,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(Constants.STARTED_ID, buildNotification());
-        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS_TABLE);
+        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
             i.putExtra(Constants.WIDGET_IDS, ids);
@@ -613,7 +613,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             id = R.drawable.ic_launcher_small;
         text = String.format(getResources().getString(R.string.calls_reset), text);
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        notificationIntent.setAction(Constants.CALLS_TABLE);
+        notificationIntent.setAction(Constants.CALLS);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -738,7 +738,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             cv.put("period", (int) mCallsData.get(Constants.PERIOD1));
             cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
             cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-            CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS_TABLE + "_" + mIMSI.get(0));
+            CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(0));
             if (mSimQuantity >= 2) {
                 cv = new ContentValues();;
                 cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
@@ -746,7 +746,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
                 cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS_TABLE + "_" + mIMSI.get(1));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(1));
             }
             if (mSimQuantity == 3) {
                 cv = new ContentValues();;
@@ -755,10 +755,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD3));
                 cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS_TABLE + "_" + mIMSI.get(2));
+                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(2));
             }
         } else
-            CustomDatabaseHelper.writeData(mCallsData, mDbHelper, Constants.CALLS_TABLE);
+            CustomDatabaseHelper.writeData(mCallsData, mDbHelper, Constants.CALLS);
     }
 
     private void readCallsDataFromDatabase() {
