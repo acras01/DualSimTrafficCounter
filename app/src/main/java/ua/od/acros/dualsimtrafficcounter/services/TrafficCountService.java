@@ -1073,23 +1073,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mTrafficData.put(Constants.SIM1TX_N, tx);
                             mTrafficData.put(Constants.TOTAL1_N, tot);
                         }
-                        mTrafficData.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        mTrafficData.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-                        DateTime dateTime = new DateTime();
-                        final long MB = 1024 * 1024;
-                        if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
-                                || emptyDB) {
-                            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-                            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-                            writeTrafficDataToDatabase();
-                        }
-                        if (CustomApplication.isScreenOn()) {
-                            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM1));
-                        }
+                        postDataChanges(mActiveSIM, diffrx, difftx, emptyDB);
                     }
 
-                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() ||
+                            CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 ||
+                                    mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1334,23 +1323,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mTrafficData.put(Constants.SIM2TX_N, tx);
                             mTrafficData.put(Constants.TOTAL2_N, tot);
                         }
-                        mTrafficData.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        mTrafficData.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-                        DateTime dateTime = new DateTime();
-                        final long MB = 1024 * 1024;
-                        if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
-                                || emptyDB) {
-                            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-                            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-                            writeTrafficDataToDatabase();
-                        }
-                        if (CustomApplication.isScreenOn()) {
-                            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM2));
-                        }
+                        postDataChanges(mActiveSIM, diffrx, difftx, emptyDB);
                     }
 
-                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() ||
+                            CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 ||
+                            mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1595,29 +1573,35 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             mTrafficData.put(Constants.SIM3TX_N, tx);
                             mTrafficData.put(Constants.TOTAL3_N, tot);
                         }
-                        mTrafficData.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
-                        mTrafficData.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
-                        DateTime dateTime = new DateTime();
-                        final long MB = 1024 * 1024;
-                        if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
-                                || emptyDB) {
-                            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-                            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-                            writeTrafficDataToDatabase();
-                        }
-                        if (CustomApplication.isScreenOn()) {
-                            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                            nm.notify(Constants.STARTED_ID, buildNotification(Constants.SIM3));
-                        }
+                        postDataChanges(mActiveSIM, diffrx, difftx, emptyDB);
                     }
 
-                    if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 || mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
+                    if ((CustomApplication.isActivityVisible() ||
+                            CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 ||
+                            mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
+            }
+        }
+    }
+
+    private void postDataChanges(int sim, long diffrx, long difftx, boolean emptyDB) {
+        mTrafficData.put(Constants.LAST_RX, TrafficStats.getMobileRxBytes());
+        mTrafficData.put(Constants.LAST_TX, TrafficStats.getMobileTxBytes());
+        DateTime dateTime = new DateTime();
+        final long MB = 1024 * 1024;
+        if ((diffrx + difftx > MB) || dateTime.get(DateTimeFieldType.secondOfMinute()) == 59
+                || emptyDB) {
+            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+            writeTrafficDataToDatabase();
+            if (CustomApplication.isScreenOn()) {
+                NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                nm.notify(Constants.STARTED_ID, buildNotification(sim));
             }
         }
     }
