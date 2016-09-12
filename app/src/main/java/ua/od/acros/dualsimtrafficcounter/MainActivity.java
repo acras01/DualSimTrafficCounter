@@ -113,8 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mNavigationView.setNavigationItemSelectedListener(this);
             //Prepare Navigation View Menu
             MenuItem mTestItem = mNavigationView.getMenu().findItem(R.id.nav_test);
-            if (CustomApplication.isOldMtkDevice() &&
-                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (CustomApplication.canSwitchSim()) {
                 mTestItem.setVisible(true);
                 mTestItem.setEnabled(true);
             } else {
@@ -214,8 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            if (CustomApplication.isOldMtkDevice() &&
-                                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                            if (CustomApplication.canSwitchSim()) {
                                 getActivity().getSupportFragmentManager()
                                         .beginTransaction()
                                         .replace(R.id.content_frame, mTest)
@@ -378,8 +376,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
                     !CustomApplication.hasRoot())
                 showDialog(ANDROID_5_0);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1 &&
-                    !CustomApplication.isOldMtkDevice())
+            if (!CustomApplication.canSwitchSim())
                 showDialog(MTK);
         } else if (mAction != null && mState == null) {
             if (mAction.contains("dualsimtrafficcounter"))

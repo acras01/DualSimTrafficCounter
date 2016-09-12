@@ -13,7 +13,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.TrafficStats;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -356,7 +355,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
                 case Constants.CONTINUE_ACTION:
                     if (!MobileUtils.isMobileDataActive(mContext)) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice())
+                        if (CustomApplication.canSwitchSim())
                             MobileUtils.toggleMobileDataConnection(true, mContext, sim);
                         else
                             mHandler.post(new Runnable() {
@@ -384,9 +383,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             .apply();
                     break;
                 case Constants.OFF_ACTION:
-                    if ((!CustomApplication.isOldMtkDevice() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
-                            CustomApplication.hasRoot()) || (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP &&
-                            CustomApplication.isOldMtkDevice()))
+                    MobileUtils.toggleMobileDataConnection(false, mContext, mActiveSIM);
+                    if (CustomApplication.canSwitchSim())
                         startNewTimerTask(Constants.CHECK);
                     else {
                         switch (mActiveSIM) {
@@ -1946,7 +1944,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         boolean choice = false;
 
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[10], true)) {
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[10], false)) {
             if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM3OverLimit) {
                 Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                 dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);

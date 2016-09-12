@@ -50,6 +50,7 @@ public class CustomApplication extends Application {
 
     private static Context mContext;
     private static Boolean mIsOldMtkDevice = null;
+    private static boolean mCanSwitchSim;
     private static Boolean mHasRoot = null;
     private static Boolean mHasGeminiSupport = null;
     private static boolean mIsActivityVisible;
@@ -83,6 +84,7 @@ public class CustomApplication extends Application {
         mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
+        mCanSwitchSim = isOldMtkDevice() && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
 
         //Reschedule alarms
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
@@ -457,5 +459,9 @@ public class CustomApplication extends Application {
                     if (new File(dir, aChildren).delete())
                         Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static boolean canSwitchSim() {
+        return mCanSwitchSim;
     }
 }

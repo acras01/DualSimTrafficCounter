@@ -331,8 +331,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
         MenuItem mobileData = menu.getItem(1);
         if (mobileData != null) {
-            if (!CustomApplication.isOldMtkDevice() &&
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !CustomApplication.hasRoot()) {
+            if (!CustomApplication.canSwitchSim() ||
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !CustomApplication.hasRoot())) {
                 mobileData.setEnabled(false);
                 mobileData.setVisible(false);
             } else {
