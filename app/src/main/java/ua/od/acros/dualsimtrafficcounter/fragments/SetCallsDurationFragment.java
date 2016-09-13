@@ -135,9 +135,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
             if (!service)
                 mContext.startService(new Intent(mContext, CallLoggerService.class));
             SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
-            EventBus.getDefault().post(event);
-            if (!service)
-                mContext.stopService(new Intent(mContext, CallLoggerService.class));
+            EventBus.getDefault().postSticky(event);
             getActivity().onBackPressed();
         } else
             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();

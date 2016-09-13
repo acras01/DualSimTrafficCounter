@@ -99,7 +99,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private boolean mHasActionChosen1, mHasActionChosen2, mHasActionChosen3,
             mHasPreLimitNotificationShown1, mHasPreLimitNotificationShown2, mHasPreLimitNotificationShown3,
             mSIM1ContinueOverLimit, mSIM2ContinueOverLimit, mSIM3ContinueOverLimit,
-            mIsResetNeeded3, mIsResetNeeded2, mIsResetNeeded1, mResetRuleHasChanged, mShowButtons, mIdChanged;
+            mIsResetNeeded3, mIsResetNeeded2, mIsResetNeeded1, mResetRuleHasChanged, mIdChanged;
     private long[] mLimits = new long[3];
     private boolean mLimitHasChanged = false;
     private Handler mHandler;
@@ -130,8 +130,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         mService = this;
         mContext = CustomApplication.getAppContext();
-        EventBus.getDefault().register(this);
-
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.edit()
                 .putBoolean(Constants.PREF_OTHER[48], true)
@@ -413,18 +411,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     }
 
-    @Subscribe
+    @Subscribe(sticky = true)
     public void onMessageEvent(SetTrafficEvent event) {
         if (mTaskResult != null) {
             mTaskResult.cancel(false);
             mTaskExecutor.shutdown();
         }
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            ACRA.getErrorReporter().handleException(e);
-        }
+        CustomApplication.sleep(1000);
         if (mTrafficData == null)
             readTrafficDataFromDatabase();
         mNowDate = DateTime.now();
@@ -480,12 +473,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0) && CustomApplication.isScreenOn())
             sendDataBroadcast(0L, 0L);
-        startNewTimerTask(Constants.COUNT);
+        EventBus.getDefault().removeStickyEvent(event);
+        if(!MobileUtils.isMobileDataActive(mContext))
+            mService.stopSelf();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         mHandler = new Handler();
         mHasPreLimitNotificationShown1 = false;
         mHasPreLimitNotificationShown2 = false;
@@ -510,7 +504,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mLimits = CustomApplication.getTrafficSimLimitsValues();
 
         mIdChanged = true;
-        mShowButtons = mPrefs.getBoolean(Constants.PREF_OTHER[50], true);
 
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -527,10 +520,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mLastActiveSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);;
 
         sendDataBroadcast(0L, 0L);
-
+        if (!MobileUtils.isMobileDataActive(mContext))
+            mService.stopSelf();
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
         mIdChanged = false;
-
         // schedule task
         if (mSimQuantity == 1) {
             mActiveSIM = Constants.SIM1;
@@ -553,7 +546,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mContext.startActivity(dialogIntent);
             }
         }
-
+        EventBus.getDefault().register(this);
         return START_STICKY;
     }
 

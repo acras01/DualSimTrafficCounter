@@ -26,7 +26,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
-import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -167,7 +166,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
-            boolean service = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+            boolean service = CustomApplication.isMyServiceRunning(TrafficCountService.class);
             if (!service)
                 mContext.startService(new Intent(mContext, TrafficCountService.class));
             String rx = "0";
@@ -177,9 +176,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
             if (!mOnlyReceived)
                 tx = txInput.getText().toString();
             SetTrafficEvent event = new SetTrafficEvent(tx, rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
-            EventBus.getDefault().post(event);
-            if (!service)
-                mContext.stopService(new Intent(mContext, TrafficCountService.class));
+            EventBus.getDefault().postSticky(event);
             getActivity().onBackPressed();
         } else
             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();

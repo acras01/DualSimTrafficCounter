@@ -87,7 +87,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         super.onCreate();
         mService = this;
         mContext = CustomApplication.getAppContext();
-        EventBus.getDefault().register(this);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -302,7 +301,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         startTask(mContext, event.number);
     }
 
-    @Subscribe
+    @Subscribe(sticky = true)
     public void onMessageEvent(SetCallsEvent event) {
         if (mCallsData == null)
             readCallsDataFromDatabase();
@@ -327,6 +326,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         }
         writeCallsDataToDatabase();
         refreshWidgetAndNotification(sim, duration);
+        EventBus.getDefault().removeStickyEvent(event);
+        if(!mIsOutgoing)
+            mService.stopSelf();
     }
 
     @Subscribe
@@ -367,7 +369,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
         }
     }
-
 
     private void startTask(Context context, String number) {
         DateTime now = DateTime.now();
@@ -586,15 +587,16 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startForeground(Constants.STARTED_ID, buildNotification());
-        mIdChanged = false;
+        EventBus.getDefault().register(this);
         int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
             i.putExtra(Constants.WIDGET_IDS, ids);
             sendBroadcast(i);
-        }
-
+        }        startForeground(Constants.STARTED_ID, buildNotification());
+        mIdChanged = false;
+        if (!mIsOutgoing)
+            mService.stopSelf();
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
             startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         return START_STICKY;

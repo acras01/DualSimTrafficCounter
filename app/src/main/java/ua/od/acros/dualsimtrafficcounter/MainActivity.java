@@ -156,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
                         !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
             FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[5], false) &&
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
+                !mPrefs.getBoolean(Constants.PREF_OTHER[5], false) &&
                 MobileUtils.isMobileDataActive(mContext))
             startService(new Intent(mContext, TrafficCountService.class));
         if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
@@ -168,8 +169,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .apply();
         }
 
-        /*if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
-            startService(new Intent(mContext, CallLoggerService.class));*/
+        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
+            startService(new Intent(mContext, CallLoggerService.class));
 
 
         mAction = getIntent().getAction();
