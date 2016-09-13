@@ -3,10 +3,15 @@ package ua.od.acros.dualsimtrafficcounter.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 
 public class NotificationTapReceiver extends BroadcastReceiver {
     public NotificationTapReceiver() {
@@ -27,6 +32,22 @@ public class NotificationTapReceiver extends BroadcastReceiver {
             case Constants.SETTINGS_TAP:
                 activityIntent = new Intent(context, SettingsActivity.class);
                 activityIntent.setAction(Constants.SETTINGS_TAP);
+                break;
+            case Constants.HIDE:
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                prefs.edit()
+                        .putBoolean(Constants.PREF_OTHER[50], !prefs.getBoolean(Constants.PREF_OTHER[50], true))
+                        .apply();
+                Intent i;
+                if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+                    i = new Intent(context, TrafficCountService.class);
+                    context.stopService(i);
+                    context.startService(i);
+                } else if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
+                    i = new Intent(context, CallLoggerService.class);
+                    context.stopService(i);
+                    context.startService(i);
+                }
                 break;
         }
         if (activityIntent != null) {

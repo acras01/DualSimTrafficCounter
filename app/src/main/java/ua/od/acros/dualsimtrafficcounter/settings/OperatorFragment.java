@@ -20,7 +20,6 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 
@@ -189,9 +188,6 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
-        if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
-                key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
-            CustomNotification.setIdNeedsChange(true);
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
             int sim = Constants.DISABLED;
             if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))

@@ -38,6 +38,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
@@ -576,6 +577,45 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 text += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
             else
                 text += "  ||  " + getString(R.string.not_set);
-        return CustomNotification.getNotification(mContext, "", text);
+        String traffic = "";
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+            ContentValues cv;
+            boolean[] isNight = CustomApplication.getIsNightState();
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+                if (mIMSI == null)
+                    mIMSI = MobileUtils.getSimIds(mContext);
+                cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
+                tot1 = isNight[0] ? (long) cv.get("total_n") : (long) cv.get("total");
+                if (mSimQuantity >= 2) {
+                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
+                    tot2 = isNight[1] ? (long) cv.get("total_n") : (long) cv.get("total");
+                }
+                if (mSimQuantity == 3) {
+                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(2));
+                    tot3 = isNight[2] ? (long) cv.get("total_n") : (long) cv.get("total");
+                }
+            } else {
+                cv = CustomDatabaseHelper.readTrafficData(mDbHelper);
+                tot1 = isNight[0] ? (long) cv.get(Constants.TOTAL1_N) : (long) cv.get(Constants.TOTAL1);
+                tot2 = isNight[1] ? (long) cv.get(Constants.TOTAL2_N) : (long) cv.get(Constants.TOTAL2);
+                tot3 = isNight[2] ? (long) cv.get(Constants.TOTAL3_N) : (long) cv.get(Constants.TOTAL3);
+            }
+            long[] limits = CustomApplication.getTrafficSimLimitsValues();
+            if (limits[0] != Long.MAX_VALUE)
+                traffic = DataFormat.formatData(mContext, tot1);
+            else
+                traffic = getString(R.string.not_set);
+            if (mSimQuantity >= 2)
+                if (limits[1] != Long.MAX_VALUE)
+                    traffic += "  ||  " + DataFormat.formatData(mContext, tot2);
+                else
+                    traffic += "  ||  " + getString(R.string.not_set);
+            if (mSimQuantity == 3)
+                if (limits[2] != Long.MAX_VALUE)
+                    traffic += "  ||  " + DataFormat.formatData(mContext, tot3);
+                else
+                    traffic += "  ||  " + getString(R.string.not_set);
+        }
+        return CustomNotification.getNotification(mContext, traffic, text, true);
     }
 }

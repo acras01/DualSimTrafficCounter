@@ -13,7 +13,7 @@ android {
     buildToolsVersion '24.0.1'
     defaultConfig {
         applicationId "ua.od.acros.dualsimtrafficcounter"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 16
         versionCode 105
         versionName '2.0.5'

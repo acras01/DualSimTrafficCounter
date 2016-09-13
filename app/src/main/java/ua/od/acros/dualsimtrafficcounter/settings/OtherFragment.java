@@ -25,7 +25,6 @@ import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -127,13 +126,15 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             }
         }
         if (key.equals(Constants.PREF_OTHER[12])) {
-            CustomNotification.setPriorityNeedsChange(true);
+            Intent i;
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
-                mContext.stopService(new Intent(mContext, TrafficCountService.class));
-                mContext.startService(new Intent(mContext, TrafficCountService.class));
+                i = new Intent(mContext, TrafficCountService.class);
+                mContext.stopService(i);
+                mContext.startService(i);
             } else if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
-                mContext.stopService(new Intent(mContext, CallLoggerService.class));
-                mContext.startService(new Intent(mContext, CallLoggerService.class));
+                i = new Intent(mContext, CallLoggerService.class);
+                mContext.stopService(i);
+                mContext.startService(i);
             }
         }
         boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);

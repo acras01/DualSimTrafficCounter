@@ -217,6 +217,7 @@
                 <action android:name="ua.od.acros.dualsimtrafficcounter.TRAFFIC" />
                 <action android:name="ua.od.acros.dualsimtrafficcounter.CALLS" />
                 <action android:name="ua.od.acros.dualsimtrafficcounter.SETTINGS" />
+                <action android:name="ua.od.acros.dualsimtrafficcounter.HIDE" />
             </intent-filter>
         </receiver>
     </application>

@@ -86,7 +86,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private static boolean mIsNight1 = false;
     private static boolean mIsNight2 = false;
     private static boolean mIsNight3 = false;
-    private int mSimQuantity, mPriority;
+    private int mSimQuantity;
     private static int mActiveSIM = Constants.DISABLED;
     private static int mLastActiveSIM = Constants.DISABLED;
     private DateTime mResetTime1, mResetTime2, mResetTime3, mLastDate, mNowDate;
@@ -99,7 +99,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private boolean mHasActionChosen1, mHasActionChosen2, mHasActionChosen3,
             mHasPreLimitNotificationShown1, mHasPreLimitNotificationShown2, mHasPreLimitNotificationShown3,
             mSIM1ContinueOverLimit, mSIM2ContinueOverLimit, mSIM3ContinueOverLimit,
-            mIsResetNeeded3, mIsResetNeeded2, mIsResetNeeded1, mResetRuleHasChanged;
+            mIsResetNeeded3, mIsResetNeeded2, mIsResetNeeded1, mResetRuleHasChanged, mShowButtons, mIdChanged;
     private long[] mLimits = new long[3];
     private boolean mLimitHasChanged = false;
     private Handler mHandler;
@@ -476,6 +476,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (CustomApplication.isScreenOn()) {
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification(sim));
+            mIdChanged = false;
         }
         if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0) && CustomApplication.isScreenOn())
             sendDataBroadcast(0L, 0L);
@@ -508,7 +509,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         mLimits = CustomApplication.getTrafficSimLimitsValues();
 
-        mPriority = mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_MIN;
+        mIdChanged = true;
+        mShowButtons = mPrefs.getBoolean(Constants.PREF_OTHER[50], true);
 
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -526,8 +528,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         sendDataBroadcast(0L, 0L);
 
-        CustomNotification.setIdNeedsChange(true);
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
+        mIdChanged = false;
 
         // schedule task
         if (mSimQuantity == 1) {
@@ -612,7 +614,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void startNewTimerTask(int task) {
         TimerTask tTask = null;
-        CustomNotification.setIdNeedsChange(true);
         if (task == Constants.COUNT) {
             switch (mActiveSIM) {
                 case Constants.SIM1:
@@ -661,6 +662,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     CustomApplication.putObject(editor, key, o);
                 editor.apply();
             }
+        }
+        if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
+                key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23])) {
+            mIdChanged = true;
+            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.notify(Constants.STARTED_ID, buildNotification(mActiveSIM));
+            mIdChanged = false;
         }
         if (key.equals(Constants.PREF_OTHER[44])) {
             if (sharedPreferences.getBoolean(key, false))
@@ -727,13 +735,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                 @Override
                 public void onFinish() {
-                    int sim;
-                    if (mActiveSIM == Constants.DISABLED)
-                        sim = mLastActiveSIM;
-                    else
-                        sim = mActiveSIM;
                     NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.notify(Constants.STARTED_ID, buildNotification(sim));
+                    nm.notify(Constants.STARTED_ID, buildNotification(mActiveSIM));
+                    mIdChanged = false;
                 }
             }.start();
         }
@@ -1602,6 +1606,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (CustomApplication.isScreenOn()) {
                 NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                 nm.notify(Constants.STARTED_ID, buildNotification(sim));
+                mIdChanged = false;
             }
         }
     }
@@ -1779,6 +1784,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     }
 
     private Notification buildNotification(int sim) {
+        if (sim == Constants.DISABLED)
+            sim = mLastActiveSIM;
         String traffic = "";
         long tot1, tot2 = 0, tot3 = 0;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
@@ -1895,7 +1902,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 calls += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
             else
                 calls += "  ||  " + getString(R.string.not_set);
-        return CustomNotification.getNotification(mContext, traffic, calls);
+
+        return CustomNotification.getNotification(mContext, traffic, calls, mIdChanged);
     }
 
     private void makePreCheckActions(int sim) {
@@ -1976,7 +1984,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     .setContentIntent(contentIntent)
                     .setSmallIcon(R.drawable.ic_disable_small)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                    .setPriority(mPriority)
                     .setLargeIcon(bm)
                     .setWhen(System.currentTimeMillis())
                     .setContentTitle(getString(R.string.service_stopped_title));
