@@ -35,6 +35,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.OnOffReceiver;
+import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -547,6 +548,18 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 }
             } else
                 new DeleteTask().execute();
+        }
+
+        if (key.equals(Constants.PREF_OTHER[47])) {
+            boolean autoLoad = sharedPreferences.getBoolean(key, false);
+            boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
+            boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
+            boolean mobileData = MobileUtils.hasActiveNetworkInfo(mContext) == 2;
+            boolean show = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));
+            if (floatingWindow && show)
+                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
+            else
+                FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
         }
 
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {

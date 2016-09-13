@@ -595,7 +595,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             sendBroadcast(i);
         }        startForeground(Constants.STARTED_ID, buildNotification());
         mIdChanged = false;
-        if (!mIsOutgoing)
+        if (!mIsOutgoing || mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
             mService.stopSelf();
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
             startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));

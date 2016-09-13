@@ -225,8 +225,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
-        mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
-
+        mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[49], true);
+        setOptionsMenuButton();
         readCallsDataFromDatabase();
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -271,9 +271,20 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         }
 
         arr.recycle();
-
         setButtonLimitText();
         CustomApplication.isActivityResumed();
+    }
+
+    private void setOptionsMenuButton() {
+        if (mService != null) {
+            if (mIsRunning) {
+                mService.setTitle(R.string.action_stop);
+                mService.setIcon(R.drawable.ic_action_disable);
+            } else {
+                mService.setTitle(R.string.action_start);
+                mService.setIcon(R.drawable.ic_action_enable);
+            }
+        }
     }
 
     @Override
@@ -289,13 +300,8 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             bLim3.setOnClickListener(null);
             bClear3.setOnClickListener(this);
         }
-        CustomApplication.isActivityPaused();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        CustomApplication.isActivityPaused();
     }
 
     @Override
@@ -365,15 +371,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     @Override
     public void onPrepareOptionsMenu (Menu menu) {
         mService = menu.getItem(0);
-        if (mService != null) {
-            if (mIsRunning) {
-                mService.setTitle(R.string.action_stop);
-                mService.setIcon(R.drawable.ic_action_disable);
-            } else {
-                mService.setTitle(R.string.action_start);
-                mService.setIcon(R.drawable.ic_action_enable);
-            }
-        }
+        setOptionsMenuButton();
     }
 
     @Override
@@ -399,7 +397,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 }
                 break;
         }
-        mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
         return super.onOptionsItemSelected(item);
     }
 
@@ -455,16 +452,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
             SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
         if (key.equals(Constants.PREF_OTHER[25]))
-            mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+            mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[49], true);
         if (key.equals(Constants.PREF_OTHER[49])) {
-            if (sharedPreferences.getBoolean(key, false)) {
-                mService.setTitle(R.string.action_stop);
-                mService.setIcon(R.drawable.ic_action_disable);
-            } else {
-                mService.setTitle(R.string.action_start);
-                mService.setIcon(R.drawable.ic_action_enable);
-            }
-            mIsRunning = CustomApplication.isMyServiceRunning(CallLoggerService.class);
+            mIsRunning = sharedPreferences.getBoolean(key, true);
+            setOptionsMenuButton();
         }
     }
 

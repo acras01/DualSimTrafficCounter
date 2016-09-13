@@ -222,7 +222,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         EventBus.getDefault().register(this);
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
 
-        mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
+        mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[48], true);
+        setOptionsMenuButton();
         bSet.setOnClickListener(this);
         readTrafficDataFromDatabase();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
@@ -297,14 +298,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             bLim3.setOnClickListener(null);
             bClear3.setOnClickListener(null);
         }
-
-        CustomApplication.isActivityPaused();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        CustomApplication.isActivityPaused();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -387,7 +382,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 showDialog(Constants.ON_OFF);
                 break;
         }
-        mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
         return super.onOptionsItemSelected(item);
     }
 
@@ -518,14 +512,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[48])) {
-            if (sharedPreferences.getBoolean(key, false)) {
-                mService.setTitle(R.string.action_stop);
-                mService.setIcon(R.drawable.ic_action_disable);
-            } else {
-                mService.setTitle(R.string.action_start);
-                mService.setIcon(R.drawable.ic_action_enable);
-            }
-            mIsRunning = CustomApplication.isMyServiceRunning(TrafficCountService.class);
+            mIsRunning = sharedPreferences.getBoolean(key, true);
+            setOptionsMenuButton();
         }
     }
 
@@ -758,6 +746,18 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 intent.putExtra("sim", sim);
                 startActivity(intent);
                 break;
+        }
+    }
+
+    private void setOptionsMenuButton() {
+        if (mService != null) {
+            if (mIsRunning) {
+                mService.setTitle(R.string.action_stop);
+                mService.setIcon(R.drawable.ic_action_disable);
+            } else {
+                mService.setTitle(R.string.action_start);
+                mService.setIcon(R.drawable.ic_action_enable);
+            }
         }
     }
 

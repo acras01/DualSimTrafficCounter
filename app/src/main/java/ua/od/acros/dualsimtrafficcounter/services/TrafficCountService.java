@@ -520,7 +520,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mLastActiveSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);;
 
         sendDataBroadcast(0L, 0L);
-        if (!MobileUtils.isMobileDataActive(mContext))
+        if (!MobileUtils.isMobileDataActive(mContext) || mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mService.stopSelf();
         startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
         mIdChanged = false;
