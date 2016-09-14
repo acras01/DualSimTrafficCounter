@@ -87,8 +87,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         super.onCreate();
         mService = this;
         mContext = CustomApplication.getAppContext();
-        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-        mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.edit()
                 .putBoolean(Constants.PREF_OTHER[49], true)
@@ -147,152 +145,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs = null;
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mIdChanged = true;
-        mCallsData = new ContentValues();
-        readCallsDataFromDatabase();
-        mLimits = CustomApplication.getCallsSimLimitsValues();
-        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
-                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
-                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
-
-        mCallAnsweredReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (mIsOutgoing) {
-                    //final String[] out = {"Call Starts\n"};
-                    readCallsDataFromDatabase();
-                    String lim, inter;
-                    long currentDuration = 0;
-                    int interval = 10;
-                    long limit = Long.MAX_VALUE;
-                    int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-                    switch (sim) {
-                        case Constants.SIM1:
-                            currentDuration = (long) mCallsData.get(Constants.CALLS1);
-                            lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
-                            inter = mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0");
-                            if (!inter.equals(""))
-                                interval = Integer.valueOf(inter) * Constants.SECOND;
-                            if (!lim.equals(""))
-                                limit = Long.valueOf(lim) * Constants.MINUTE;
-                            break;
-                        case Constants.SIM2:
-                            currentDuration = (long) mCallsData.get(Constants.CALLS2);
-                            lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
-                            inter = mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0");
-                            if (!inter.equals(""))
-                                interval = Integer.valueOf(inter) * Constants.SECOND;
-                            if (!lim.equals(""))
-                                limit = Long.valueOf(lim) * Constants.MINUTE;
-                            break;
-                        case Constants.SIM3:
-                            currentDuration = (long) mCallsData.get(Constants.CALLS3);
-                            lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
-                            inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
-                            if (!inter.equals(""))
-                                interval = Integer.valueOf(inter) * Constants.SECOND;
-                            if (!lim.equals(""))
-                                limit = Long.valueOf(lim) * Constants.MINUTE;
-                            break;
-                    }
-                    long timeToVibrate = limit - currentDuration - interval;
-                    if (timeToVibrate < 0)
-                        timeToVibrate = 0;
-                    //out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
-                    mCountTimer = new CountDownTimer(timeToVibrate, timeToVibrate) {
-                        public void onTick(long millisUntilFinished) {
-                            //out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
-                        }
-
-                        public void onFinish() {
-                            if (mVibrator.hasVibrator())
-                                vibrate(mVibrator, Constants.SECOND, Constants.SECOND / 2);
-                            //out[0] += "Limit reached\n";
-                        }
-                    }.start();
-                    /*try {
-                        // to this path add a new directory path
-                        File dir = new File(String.valueOf(mContext.getFilesDir()));
-                        // create this directory if not already created
-                        dir.mkdir();
-                        // create the file in which we will write the contents
-                        String fileName = "call_log.txt";
-                        File file = new File(dir, fileName);
-                        FileOutputStream os = new FileOutputStream(file, true);
-                        os.write(out[0].getBytes());
-                        os.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }*/
-                }
-            }
-        };
-        IntentFilter answer = new IntentFilter(Constants.OUTGOING_CALL_ANSWERED);
-        registerReceiver(mCallAnsweredReceiver, answer);
-
-        mCallEndedReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (mIsOutgoing) {
-                    mIsDialogShown = mIsOutgoing = false;
-                    if (mCountTimer != null)
-                        mCountTimer.cancel();
-                    mVibrator.cancel();
-                    int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-                    long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                    Toast.makeText(context, mOperatorNames[sim] + ": " +
-                            DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
-                    DateTime now = new DateTime();
-                    mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
-                    mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
-                    switch (sim) {
-                        case Constants.SIM1:
-                            mCallsData.put(Constants.CALLS1_EX, duration + (long) mCallsData.get(Constants.CALLS1_EX));
-                            if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
-                                duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                            mCallsData.put(Constants.CALLS1, duration + (long) mCallsData.get(Constants.CALLS1));
-                            duration = (long) mCallsData.get(Constants.CALLS1);
-                            break;
-                        case Constants.SIM2:
-                            mCallsData.put(Constants.CALLS2_EX, duration + (long) mCallsData.get(Constants.CALLS2_EX));
-                            if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
-                                duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                            mCallsData.put(Constants.CALLS2, duration + (long) mCallsData.get(Constants.CALLS2));
-                            duration = (long) mCallsData.get(Constants.CALLS2);
-                            break;
-                        case Constants.SIM3:
-                            mCallsData.put(Constants.CALLS3_EX, duration + (long) mCallsData.get(Constants.CALLS3_EX));
-                            if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
-                                duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
-                            mCallsData.put(Constants.CALLS3, duration + (long) mCallsData.get(Constants.CALLS3));
-                            duration = (long) mCallsData.get(Constants.CALLS3);
-                            break;
-                    }
-                    writeCallsDataToDatabase();
-                    refreshWidgetAndNotification(sim, duration);
-                    /*String out = "Call Ends\n";
-                    try {
-                        // to this path add a new directory path
-                        File dir = new File(String.valueOf(mContext.getFilesDir()));
-                        // create this directory if not already created
-                        dir.mkdir();
-                        // create the file in which we will write the contents
-                        String fileName = "call_log.txt";
-                        File file = new File(dir, fileName);
-                        FileOutputStream os = new FileOutputStream(file, true);
-                        os.write(out.getBytes());
-                        os.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }*/
-                    mService.stopSelf();
-                }
-            }
-        };
-        IntentFilter end = new IntentFilter(Constants.OUTGOING_CALL_ENDED);
-        registerReceiver(mCallEndedReceiver, end);
     }
 
     @Subscribe
@@ -586,14 +438,160 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        EventBus.getDefault().register(this);
         int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
             i.putExtra(Constants.WIDGET_IDS, ids);
             sendBroadcast(i);
         }
+        mDbHelper = CustomDatabaseHelper.getInstance(mContext);
+        mCallsData = new ContentValues();
+        readCallsDataFromDatabase();
+        EventBus.getDefault().register(this);
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+            mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+            mLimits = CustomApplication.getCallsSimLimitsValues();
+            mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                    MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                    MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
+
+            mCallAnsweredReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (mIsOutgoing) {
+                        //final String[] out = {"Call Starts\n"};
+                        readCallsDataFromDatabase();
+                        String lim, inter;
+                        long currentDuration = 0;
+                        int interval = 10;
+                        long limit = Long.MAX_VALUE;
+                        int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+                        switch (sim) {
+                            case Constants.SIM1:
+                                currentDuration = (long) mCallsData.get(Constants.CALLS1);
+                                lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
+                                inter = mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0");
+                                if (!inter.equals(""))
+                                    interval = Integer.valueOf(inter) * Constants.SECOND;
+                                if (!lim.equals(""))
+                                    limit = Long.valueOf(lim) * Constants.MINUTE;
+                                break;
+                            case Constants.SIM2:
+                                currentDuration = (long) mCallsData.get(Constants.CALLS2);
+                                lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
+                                inter = mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0");
+                                if (!inter.equals(""))
+                                    interval = Integer.valueOf(inter) * Constants.SECOND;
+                                if (!lim.equals(""))
+                                    limit = Long.valueOf(lim) * Constants.MINUTE;
+                                break;
+                            case Constants.SIM3:
+                                currentDuration = (long) mCallsData.get(Constants.CALLS3);
+                                lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
+                                inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
+                                if (!inter.equals(""))
+                                    interval = Integer.valueOf(inter) * Constants.SECOND;
+                                if (!lim.equals(""))
+                                    limit = Long.valueOf(lim) * Constants.MINUTE;
+                                break;
+                        }
+                        long timeToVibrate = limit - currentDuration - interval;
+                        if (timeToVibrate < 0)
+                            timeToVibrate = 0;
+                        //out[0] += String.valueOf(timeToVibrate / Constants.SECOND) + "\n";
+                        mCountTimer = new CountDownTimer(timeToVibrate, timeToVibrate) {
+                            public void onTick(long millisUntilFinished) {
+                                //out[0] += String.valueOf(millisUntilFinished / Constants.SECOND) + "\n";
+                            }
+
+                            public void onFinish() {
+                                if (mVibrator.hasVibrator())
+                                    vibrate(mVibrator, Constants.SECOND, Constants.SECOND / 2);
+                                //out[0] += "Limit reached\n";
+                            }
+                        }.start();
+                    /*try {
+                        // to this path add a new directory path
+                        File dir = new File(String.valueOf(mContext.getFilesDir()));
+                        // create this directory if not already created
+                        dir.mkdir();
+                        // create the file in which we will write the contents
+                        String fileName = "call_log.txt";
+                        File file = new File(dir, fileName);
+                        FileOutputStream os = new FileOutputStream(file, true);
+                        os.write(out[0].getBytes());
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+                    }
+                }
+            };
+            IntentFilter answer = new IntentFilter(Constants.OUTGOING_CALL_ANSWERED);
+            registerReceiver(mCallAnsweredReceiver, answer);
+
+            mCallEndedReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (mIsOutgoing) {
+                        mIsDialogShown = mIsOutgoing = false;
+                        if (mCountTimer != null)
+                            mCountTimer.cancel();
+                        mVibrator.cancel();
+                        int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
+                        long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
+                        Toast.makeText(context, mOperatorNames[sim] + ": " +
+                                DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
+                        DateTime now = new DateTime();
+                        mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
+                        mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
+                        switch (sim) {
+                            case Constants.SIM1:
+                                mCallsData.put(Constants.CALLS1_EX, duration + (long) mCallsData.get(Constants.CALLS1_EX));
+                                if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
+                                    duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
+                                mCallsData.put(Constants.CALLS1, duration + (long) mCallsData.get(Constants.CALLS1));
+                                duration = (long) mCallsData.get(Constants.CALLS1);
+                                break;
+                            case Constants.SIM2:
+                                mCallsData.put(Constants.CALLS2_EX, duration + (long) mCallsData.get(Constants.CALLS2_EX));
+                                if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
+                                    duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
+                                mCallsData.put(Constants.CALLS2, duration + (long) mCallsData.get(Constants.CALLS2));
+                                duration = (long) mCallsData.get(Constants.CALLS2);
+                                break;
+                            case Constants.SIM3:
+                                mCallsData.put(Constants.CALLS3_EX, duration + (long) mCallsData.get(Constants.CALLS3_EX));
+                                if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
+                                    duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
+                                mCallsData.put(Constants.CALLS3, duration + (long) mCallsData.get(Constants.CALLS3));
+                                duration = (long) mCallsData.get(Constants.CALLS3);
+                                break;
+                        }
+                        writeCallsDataToDatabase();
+                        refreshWidgetAndNotification(sim, duration);
+                    /*String out = "Call Ends\n";
+                    try {
+                        // to this path add a new directory path
+                        File dir = new File(String.valueOf(mContext.getFilesDir()));
+                        // create this directory if not already created
+                        dir.mkdir();
+                        // create the file in which we will write the contents
+                        String fileName = "call_log.txt";
+                        File file = new File(dir, fileName);
+                        FileOutputStream os = new FileOutputStream(file, true);
+                        os.write(out.getBytes());
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+                        mService.stopSelf();
+                    }
+                }
+            };
+            IntentFilter end = new IntentFilter(Constants.OUTGOING_CALL_ENDED);
+            registerReceiver(mCallEndedReceiver, end);
+            mIdChanged = true;
             startForeground(Constants.STARTED_ID, buildNotification());
             mIdChanged = false;
             startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));

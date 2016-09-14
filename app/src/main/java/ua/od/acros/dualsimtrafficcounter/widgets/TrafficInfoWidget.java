@@ -17,6 +17,7 @@ import android.widget.RemoteViews;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -25,54 +26,121 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class TrafficInfoWidget extends AppWidgetProvider {
+
+    private ArrayList<String> mIMSI;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
         super.onUpdate(context, widgetManager, widgetId);
         Bundle bundle = new Bundle();
-        if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(context), "data", true)) {
-            ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(context));
-            bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-            bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-            bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-            bundle.putLong(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-            bundle.putLong(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-            bundle.putLong(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-            bundle.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-            bundle.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-            bundle.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-            bundle.putLong(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
-            bundle.putLong(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
-            bundle.putLong(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
-            bundle.putLong(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
-            bundle.putLong(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
-            bundle.putLong(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
-            bundle.putLong(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
-            bundle.putLong(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
-            bundle.putLong(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-            bundle.putInt(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(context);
+        ContentValues dataMap;
+        boolean emptyDB;
+        if (prefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(context);
+            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.TRAFFIC + "_" +
+                    mIMSI.get(Constants.SIM1), false);
+            if (!emptyDB) {
+                dataMap = CustomDatabaseHelper.readTrafficDataForSim(dbHelper, mIMSI.get(0));
+                bundle.putLong(Constants.SIM1RX, (long) dataMap.get("rx"));
+                bundle.putLong(Constants.SIM1TX, (long) dataMap.get("tx"));
+                bundle.putLong(Constants.TOTAL1, (long) dataMap.get("total"));
+                bundle.putLong(Constants.SIM1RX_N, (long) dataMap.get("rx_n"));
+                bundle.putLong(Constants.SIM1TX_N, (long) dataMap.get("tx_n"));
+                bundle.putLong(Constants.TOTAL1_N, (long) dataMap.get("total_n"));
+            } else {
+                bundle.putLong(Constants.SIM1RX, 0L);
+                bundle.putLong(Constants.SIM1TX, 0L);
+                bundle.putLong(Constants.TOTAL1, 0L);
+                bundle.putLong(Constants.SIM1RX_N, 0L);
+                bundle.putLong(Constants.SIM1TX_N, 0L);
+                bundle.putLong(Constants.TOTAL1_N, 0L);
+            }
+            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.TRAFFIC + "_" +
+                    mIMSI.get(Constants.SIM2), false);
+            if (!emptyDB) {
+                dataMap = CustomDatabaseHelper.readTrafficDataForSim(dbHelper, mIMSI.get(1));
+                bundle.putLong(Constants.SIM2RX, (long) dataMap.get("rx"));
+                bundle.putLong(Constants.SIM2TX, (long) dataMap.get("tx"));
+                bundle.putLong(Constants.TOTAL2, (long) dataMap.get("total"));
+                bundle.putLong(Constants.SIM2RX_N, (long) dataMap.get("rx_n"));
+                bundle.putLong(Constants.SIM2TX_N, (long) dataMap.get("tx_n"));
+                bundle.putLong(Constants.TOTAL2_N, (long) dataMap.get("total_n"));
+            } else {
+                bundle.putLong(Constants.SIM2RX, 0L);
+                bundle.putLong(Constants.SIM2TX, 0L);
+                bundle.putLong(Constants.TOTAL2, 0L);
+                bundle.putLong(Constants.SIM2RX_N, 0L);
+                bundle.putLong(Constants.SIM2TX_N, 0L);
+                bundle.putLong(Constants.TOTAL2_N, 0L);
+            }
+            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.TRAFFIC + "_" +
+                    mIMSI.get(Constants.SIM3), false);
+            if (!emptyDB) {
+                dataMap = CustomDatabaseHelper.readTrafficDataForSim(dbHelper, mIMSI.get(2));
+                bundle.putLong(Constants.SIM3RX, (long) dataMap.get("rx"));
+                bundle.putLong(Constants.SIM3TX, (long) dataMap.get("tx"));
+                bundle.putLong(Constants.TOTAL3, (long) dataMap.get("total"));
+                bundle.putLong(Constants.SIM3RX_N, (long) dataMap.get("rx_n"));
+                bundle.putLong(Constants.SIM3TX_N, (long) dataMap.get("tx_n"));
+                bundle.putLong(Constants.TOTAL3_N, (long) dataMap.get("total_n"));
+            } else {
+                bundle.putLong(Constants.SIM3RX, 0L);
+                bundle.putLong(Constants.SIM3TX, 0L);
+                bundle.putLong(Constants.TOTAL3, 0L);
+                bundle.putLong(Constants.SIM3RX_N, 0L);
+                bundle.putLong(Constants.SIM3TX_N, 0L);
+                bundle.putLong(Constants.TOTAL3_N, 0L);
+            }
         } else {
-            bundle.putLong(Constants.SIM1RX, 0L);
-            bundle.putLong(Constants.SIM2RX, 0L);
-            bundle.putLong(Constants.SIM3RX, 0L);
-            bundle.putLong(Constants.SIM1TX, 0L);
-            bundle.putLong(Constants.SIM2TX, 0L);
-            bundle.putLong(Constants.SIM3TX, 0L);
-            bundle.putLong(Constants.TOTAL1, 0L);
-            bundle.putLong(Constants.TOTAL2, 0L);
-            bundle.putLong(Constants.TOTAL3, 0L);
-            bundle.putLong(Constants.SIM1RX_N, 0L);
-            bundle.putLong(Constants.SIM2RX_N, 0L);
-            bundle.putLong(Constants.SIM3RX_N, 0L);
-            bundle.putLong(Constants.SIM1TX_N, 0L);
-            bundle.putLong(Constants.SIM2TX_N, 0L);
-            bundle.putLong(Constants.SIM3TX_N, 0L);
-            bundle.putLong(Constants.TOTAL1_N, 0L);
-            bundle.putLong(Constants.TOTAL2_N, 0L);
-            bundle.putLong(Constants.TOTAL3_N, 0L);
-            bundle.putInt(Constants.SIM_ACTIVE, 0);
+            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS, true);
+            if (!emptyDB) {
+                dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(context));
+                bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
+                bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
+                bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
+                bundle.putLong(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
+                bundle.putLong(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
+                bundle.putLong(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
+                bundle.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
+                bundle.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
+                bundle.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
+                bundle.putLong(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
+                bundle.putLong(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
+                bundle.putLong(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
+                bundle.putLong(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
+                bundle.putLong(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
+                bundle.putLong(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
+                bundle.putLong(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
+                bundle.putLong(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
+                bundle.putLong(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
+                bundle.putInt(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
+            } else {
+                bundle.putLong(Constants.SIM1RX, 0L);
+                bundle.putLong(Constants.SIM2RX, 0L);
+                bundle.putLong(Constants.SIM3RX, 0L);
+                bundle.putLong(Constants.SIM1TX, 0L);
+                bundle.putLong(Constants.SIM2TX, 0L);
+                bundle.putLong(Constants.SIM3TX, 0L);
+                bundle.putLong(Constants.TOTAL1, 0L);
+                bundle.putLong(Constants.TOTAL2, 0L);
+                bundle.putLong(Constants.TOTAL3, 0L);
+                bundle.putLong(Constants.SIM1RX_N, 0L);
+                bundle.putLong(Constants.SIM2RX_N, 0L);
+                bundle.putLong(Constants.SIM3RX_N, 0L);
+                bundle.putLong(Constants.SIM1TX_N, 0L);
+                bundle.putLong(Constants.SIM2TX_N, 0L);
+                bundle.putLong(Constants.SIM3TX_N, 0L);
+                bundle.putLong(Constants.TOTAL1_N, 0L);
+                bundle.putLong(Constants.TOTAL2_N, 0L);
+                bundle.putLong(Constants.TOTAL3_N, 0L);
+                bundle.putInt(Constants.SIM_ACTIVE, 0);
+            }
         }
         updateWidget(context, widgetManager, widgetId, bundle);
     }
