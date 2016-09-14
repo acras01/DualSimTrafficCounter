@@ -737,8 +737,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 .putBoolean(Constants.PREF_OTHER[49], false)
                 .apply();
         writeCallsDataToDatabase();
-        unregisterReceiver(mCallAnsweredReceiver);
-        unregisterReceiver(mCallEndedReceiver);
+        if (mCallAnsweredReceiver != null)
+            unregisterReceiver(mCallAnsweredReceiver);
+        if (mCallEndedReceiver != null)
+            unregisterReceiver(mCallEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().unregister(this);
     }
