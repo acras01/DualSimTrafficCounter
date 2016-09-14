@@ -21,9 +21,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -56,11 +53,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private int mSimQuantity;
     private OnFragmentInteractionListener mListener;
     private BroadcastReceiver mCallDataReceiver;
-    private boolean mIsRunning = false;
     private Context mContext;
     private ArrayList<String> mIMSI = null;
     private String[] mOperatorNames = new String[3];
-    private MenuItem mService;
 
     public static CallsFragment newInstance() {
         return new CallsFragment();
@@ -225,8 +220,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
-        mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[49], true);
-        setOptionsMenuButton();
         readCallsDataFromDatabase();
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -269,22 +262,10 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             bLim3.setOnClickListener(this);
            bClear3.setOnClickListener(this);
         }
-
         arr.recycle();
+        TIP.setText(getResources().getString(R.string.tip_calls));
         setButtonLimitText();
         CustomApplication.isActivityResumed();
-    }
-
-    private void setOptionsMenuButton() {
-        if (mService != null) {
-            if (mIsRunning) {
-                mService.setTitle(R.string.action_stop);
-                mService.setIcon(R.drawable.ic_action_disable);
-            } else {
-                mService.setTitle(R.string.action_start);
-                mService.setIcon(R.drawable.ic_action_enable);
-            }
-        }
     }
 
     @Override
@@ -363,43 +344,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         }
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.calls_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu (Menu menu) {
-        mService = menu.getItem(0);
-        setOptionsMenuButton();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_service_start_stop:
-                if (mIsRunning) {
-                    mContext.stopService(new Intent(mContext, CallLoggerService.class));
-                    TIP.setText(getResources().getString(R.string.service_disabled));
-                    item.setTitle(R.string.action_start);
-                    item.setIcon(R.drawable.ic_action_enable);
-                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], true).apply();
-                }
-                else {
-                    mContext.startService(new Intent(mContext, CallLoggerService.class));
-                    TIP.setText(getResources().getString(R.string.tip_calls));
-                    item.setTitle(R.string.action_stop);
-                    item.setIcon(R.drawable.ic_action_disable);
-                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[24], false).apply();
-                }
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onCallsFragmentInteraction(Uri uri);
@@ -451,12 +395,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             SIM2.setText(MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
         if (key.equals(Constants.PREF_SIM3[5]) || key.equals(Constants.PREF_SIM3[6]))
             SIM3.setText(MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-        if (key.equals(Constants.PREF_OTHER[25]))
-            mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[49], true);
-        if (key.equals(Constants.PREF_OTHER[49])) {
-            mIsRunning = sharedPreferences.getBoolean(key, true);
-            setOptionsMenuButton();
-        }
     }
 
     private void writeCallsDataToDataBase() {

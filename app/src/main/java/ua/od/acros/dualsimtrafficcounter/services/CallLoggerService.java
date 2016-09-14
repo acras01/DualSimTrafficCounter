@@ -71,7 +71,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private BroadcastReceiver mCallAnsweredReceiver, mCallEndedReceiver;
     private ArrayList<String> mIMSI = null;
     private Service mService = null;
-    private boolean mShowButtons, mIdChanged;
+    private boolean mIdChanged;
 
     public CallLoggerService() {
     }
@@ -148,7 +148,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mIdChanged = true;
-        mShowButtons = mPrefs.getBoolean(Constants.PREF_OTHER[50], true);
         mCallsData = new ContentValues();
         readCallsDataFromDatabase();
         mLimits = CustomApplication.getCallsSimLimitsValues();
@@ -593,12 +592,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
             i.putExtra(Constants.WIDGET_IDS, ids);
             sendBroadcast(i);
-        }        startForeground(Constants.STARTED_ID, buildNotification());
-        mIdChanged = false;
-        if (!mIsOutgoing || mPrefs.getBoolean(Constants.PREF_OTHER[24], true))
-            mService.stopSelf();
-        if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
+        }
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+            startForeground(Constants.STARTED_ID, buildNotification());
+            mIdChanged = false;
             startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
+        } else
+            mService.stopSelf();
         return START_STICKY;
     }
 

@@ -170,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!CustomApplication.isMyServiceRunning(CallLoggerService.class))
             startService(new Intent(mContext, CallLoggerService.class));
 
-
         mAction = getIntent().getAction();
     }
 
