@@ -755,7 +755,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             cv.put("period", (int) mCallsData.get(Constants.PERIOD1));
             cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
             cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-            CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(0));
+            CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(0));
             if (mSimQuantity >= 2) {
                 cv = new ContentValues();;
                 cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
@@ -763,7 +763,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
                 cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(1));
+                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(1));
             }
             if (mSimQuantity == 3) {
                 cv = new ContentValues();;
@@ -772,7 +772,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD3));
                 cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
                 cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeDataForSim(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(2));
+                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(2));
             }
         } else
             CustomDatabaseHelper.writeData(mCallsData, mDbHelper, Constants.CALLS);

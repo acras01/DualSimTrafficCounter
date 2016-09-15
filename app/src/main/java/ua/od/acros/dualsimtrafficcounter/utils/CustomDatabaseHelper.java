@@ -343,15 +343,6 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    public static void writeDataForSim(ContentValues cv, CustomDatabaseHelper dbHelper, String name) {
-        createTable(dbHelper, name);
-        mSqLiteDatabase = dbHelper.getWritableDatabase();
-        String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
-        int id = mSqLiteDatabase.update(name, cv, filter, null);
-        if (id == 0)
-            mSqLiteDatabase.insert(name, null, cv);
-    }
-
     public static ContentValues readCallsDataForSim(CustomDatabaseHelper dbHelper, String name) {
         ContentValues cv = new ContentValues();
         String dbName = Constants.CALLS + "_" + name;
@@ -439,6 +430,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public static void writeData(ContentValues cv, CustomDatabaseHelper dbHelper, String table) {
+        createTable(dbHelper, table);
         mSqLiteDatabase = dbHelper.getWritableDatabase();
         String filter = Constants.LAST_DATE + "='" + cv.get(Constants.LAST_DATE) + "'";
         int id = mSqLiteDatabase.update(table, cv, filter, null);
