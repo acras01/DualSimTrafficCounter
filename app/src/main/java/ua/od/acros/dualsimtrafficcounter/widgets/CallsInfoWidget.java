@@ -34,13 +34,13 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        //super.onUpdate(context, appWidgetManager, appWidgetIds);
         updateWidget(context, appWidgetManager, appWidgetIds, readData(context));
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
+        //super.onReceive(context, intent);
         String action = intent.getAction();
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
@@ -357,15 +357,15 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
-        // When the user deletes the widget, delete the preference associated with it.
+        // When the user deletes the widget, delete the preference associated with it
         CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.CALLS_TAG);
+        //super.onDeleted(context, appWidgetIds);
     }
 
     @Override
     public void onDisabled(Context context) {
-        super.onDisabled(context);
         Picasso.with(context).shutdown();
+        //super.onDisabled(context);
     }
 }
 
