@@ -1,7 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,7 +37,6 @@ import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -441,57 +439,6 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 mEdit.apply();
                 Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(mContext), "data", true)) {
-                    ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(mContext));
-                    intent.putExtra(Constants.SPEEDRX, 0L);
-                    intent.putExtra(Constants.SPEEDTX, 0L);
-                    intent.putExtra(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-                    intent.putExtra(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-                    intent.putExtra(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-                    intent.putExtra(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-                    intent.putExtra(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-                    intent.putExtra(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-                    intent.putExtra(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-                    intent.putExtra(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-                    intent.putExtra(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-                    intent.putExtra(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
-                    intent.putExtra(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
-                    intent.putExtra(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
-                    intent.putExtra(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
-                    intent.putExtra(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
-                    intent.putExtra(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
-                    intent.putExtra(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
-                    intent.putExtra(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
-                    intent.putExtra(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-                    intent.putExtra(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
-                    intent.putExtra(Constants.OPERATOR1, MobileUtils.getName(this, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                    if (mSimQuantity >= 2)
-                        intent.putExtra(Constants.OPERATOR2, MobileUtils.getName(this, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                    if (mSimQuantity == 3)
-                        intent.putExtra(Constants.OPERATOR3, MobileUtils.getName(this, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                } else {
-                    intent.putExtra(Constants.SPEEDRX, 0L);
-                    intent.putExtra(Constants.SPEEDTX, 0L);
-                    intent.putExtra(Constants.SIM1RX, 0L);
-                    intent.putExtra(Constants.SIM2RX, 0L);
-                    intent.putExtra(Constants.SIM3RX, 0L);
-                    intent.putExtra(Constants.SIM1TX, 0L);
-                    intent.putExtra(Constants.SIM2TX, 0L);
-                    intent.putExtra(Constants.SIM3TX, 0L);
-                    intent.putExtra(Constants.TOTAL1, 0L);
-                    intent.putExtra(Constants.TOTAL2, 0L);
-                    intent.putExtra(Constants.TOTAL3, 0L);
-                    intent.putExtra(Constants.SIM1RX_N, 0L);
-                    intent.putExtra(Constants.SIM2RX_N, 0L);
-                    intent.putExtra(Constants.SIM3RX_N, 0L);
-                    intent.putExtra(Constants.SIM1TX_N, 0L);
-                    intent.putExtra(Constants.SIM2TX_N, 0L);
-                    intent.putExtra(Constants.SIM3TX_N, 0L);
-                    intent.putExtra(Constants.TOTAL1_N, 0L);
-                    intent.putExtra(Constants.TOTAL2_N, 0L);
-                    intent.putExtra(Constants.TOTAL3_N, 0L);
-                    intent.putExtra(Constants.SIM_ACTIVE, 0);
-                }
                 sendBroadcast(intent);
                 setResult(RESULT_OK, mResultValueIntent);
                 finish();

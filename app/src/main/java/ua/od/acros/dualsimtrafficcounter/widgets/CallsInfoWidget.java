@@ -30,11 +30,11 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class CallsInfoWidget extends AppWidgetProvider {
 
-    private String[] mOperatorNames;
     private ArrayList<String> mIMSI;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
         updateWidget(context, appWidgetManager, appWidgetIds, readData(context));
     }
 
@@ -47,12 +47,8 @@ public class CallsInfoWidget extends AppWidgetProvider {
             final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
                 CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.CALLS_TAG);
-        } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null) {
-            mOperatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
-                    MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
-                    MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
+        } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null)
             updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, readData(context));
-        }
     }
 
     private Bundle readData(Context context) {
@@ -131,6 +127,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
                 edit.apply();
             }
+            String[] operatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                    MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                    MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
             Intent settIntent = new Intent(context, CallsWidgetConfigActivity.class);
             Bundle extras = new Bundle();
             extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, i);
@@ -166,7 +165,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM1, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.operSIM1, mOperatorNames[0]);
+                    updateViews.setTextViewText(R.id.operSIM1, operatorNames[0]);
                 }
 
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
@@ -225,7 +224,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM2, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.operSIM2, mOperatorNames[1]);
+                    updateViews.setTextViewText(R.id.operSIM2, operatorNames[1]);
                 }
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
                     if (!prefs.getBoolean(Constants.PREF_WIDGET_CALLS[7], false))
@@ -292,7 +291,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[1], true)) {
                     updateViews.setViewVisibility(R.id.operSIM3, View.VISIBLE);
-                    updateViews.setTextViewText(R.id.operSIM3, mOperatorNames[2]);
+                    updateViews.setTextViewText(R.id.operSIM3, operatorNames[2]);
                 }
 
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {

@@ -1,7 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,7 +37,6 @@ import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
@@ -343,21 +341,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 mEdit.apply();
                 Intent intent = new Intent(Constants.CALLS_BROADCAST_ACTION);
                 intent.putExtra(Constants.WIDGET_IDS, new int[]{mWidgetID});
-                if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(mContext), "calls", true)) {
-                    ContentValues dataMap = CustomDatabaseHelper.readCallsData(CustomDatabaseHelper.getInstance(mContext));
-                    intent.putExtra(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
-                    intent.putExtra(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
-                    intent.putExtra(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
-                    intent.putExtra(Constants.OPERATOR1, MobileUtils.getName(this, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));
-                    if (mSimQuantity >= 2)
-                        intent.putExtra(Constants.OPERATOR2, MobileUtils.getName(this, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2));
-                    if (mSimQuantity == 3)
-                        intent.putExtra(Constants.OPERATOR3, MobileUtils.getName(this, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3));
-                } else {
-                    intent.putExtra(Constants.CALLS1, 0L);
-                    intent.putExtra(Constants.CALLS2, 0L);
-                    intent.putExtra(Constants.CALLS3, 0L);
-                }
                 sendBroadcast(intent);
                 setResult(RESULT_OK, mResultValueIntent);
                 finish();
