@@ -35,22 +35,12 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Bundle bundle = new Bundle();
-        if (!CustomDatabaseHelper.isTableEmpty(CustomDatabaseHelper.getInstance(context), "calls", true)) {
-            ContentValues dataMap = CustomDatabaseHelper.readCallsData(CustomDatabaseHelper.getInstance(context));
-            bundle.putLong(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
-            bundle.putLong(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
-            bundle.putLong(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
-        } else {
-            bundle.putLong(Constants.CALLS1, 0L);
-            bundle.putLong(Constants.CALLS2, 0L);
-            bundle.putLong(Constants.CALLS3, 0L);
-        }
-        updateWidget(context, appWidgetManager, appWidgetIds, bundle);
+        updateWidget(context, appWidgetManager, appWidgetIds, readData(context));
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
         String action = intent.getAction();
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
@@ -61,21 +51,27 @@ public class CallsInfoWidget extends AppWidgetProvider {
             mOperatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                     MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
-            Bundle bundle = new Bundle();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(context);
-            ContentValues dataMap;
-            boolean emptyDB;
-            if (prefs.getBoolean(Constants.PREF_OTHER[45], false)) {
-                if (mIMSI == null)
-                    mIMSI = MobileUtils.getSimIds(context);
-                emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS + "_" +
-                        mIMSI.get(Constants.SIM1), false);
-                if (!emptyDB) {
-                    dataMap = CustomDatabaseHelper.readCallsDataForSim(dbHelper, mIMSI.get(0));
-                    bundle.putLong(Constants.CALLS1, (long) dataMap.get("calls"));
-                } else
-                    bundle.putLong(Constants.CALLS1, 0L);
+            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, readData(context));
+        }
+    }
+
+    private Bundle readData(Context context) {
+        Bundle bundle = new Bundle();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(context);
+        ContentValues dataMap;
+        boolean emptyDB;
+        if (prefs.getBoolean(Constants.PREF_OTHER[45], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(context);
+            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS + "_" +
+                    mIMSI.get(Constants.SIM1), false);
+            if (!emptyDB) {
+                dataMap = CustomDatabaseHelper.readCallsDataForSim(dbHelper, mIMSI.get(0));
+                bundle.putLong(Constants.CALLS1, (long) dataMap.get("calls"));
+            } else
+                bundle.putLong(Constants.CALLS1, 0L);
+            if (mIMSI.size() >= 2) {
                 emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS + "_" +
                         mIMSI.get(Constants.SIM2), false);
                 if (!emptyDB) {
@@ -83,6 +79,8 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     bundle.putLong(Constants.CALLS2, (long) dataMap.get("calls"));
                 } else
                     bundle.putLong(Constants.CALLS2, 0L);
+            }
+            if (mIMSI.size() == 3) {
                 emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS + "_" +
                         mIMSI.get(Constants.SIM3), false);
                 if (!emptyDB) {
@@ -90,30 +88,24 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     bundle.putLong(Constants.CALLS3, (long) dataMap.get("calls"));
                 } else
                     bundle.putLong(Constants.CALLS3, 0L);
-            } else {
-                emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS, true);
-                if (!emptyDB) {
-                    dataMap = CustomDatabaseHelper.readCallsData(dbHelper);
-                    bundle.putLong(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
-                    bundle.putLong(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
-                    bundle.putLong(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
-                } else {
-                    bundle.putLong(Constants.CALLS1, 0L);
-                    bundle.putLong(Constants.CALLS2, 0L);
-                    bundle.putLong(Constants.CALLS3, 0L);
-                }
             }
-            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, bundle);
+        } else {
+            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS, true);
+            if (!emptyDB) {
+                dataMap = CustomDatabaseHelper.readCallsData(dbHelper);
+                bundle.putLong(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
+                bundle.putLong(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
+                bundle.putLong(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
+            } else {
+                bundle.putLong(Constants.CALLS1, 0L);
+                bundle.putLong(Constants.CALLS2, 0L);
+                bundle.putLong(Constants.CALLS3, 0L);
+            }
         }
+        return bundle;
     }
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
-        if (bundle.size() == 0) {
-            ContentValues dataMap = CustomDatabaseHelper.readCallsData(CustomDatabaseHelper.getInstance(context));
-            bundle.putLong(Constants.CALLS1, (long) dataMap.get(Constants.CALLS1));
-            bundle.putLong(Constants.CALLS2, (long) dataMap.get(Constants.CALLS2));
-            bundle.putLong(Constants.CALLS3, (long) dataMap.get(Constants.CALLS3));
-        }
         for (int i : ids) {
             SharedPreferences prefs = context.getSharedPreferences(i + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences prefsSIM = PreferenceManager.getDefaultSharedPreferences(context);
@@ -366,18 +358,15 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
         // When the user deletes the widget, delete the preference associated with it.
         CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.CALLS_TAG);
     }
 
     @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
-
-    @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
+        super.onDisabled(context);
+        Picasso.with(context).shutdown();
     }
 }
 

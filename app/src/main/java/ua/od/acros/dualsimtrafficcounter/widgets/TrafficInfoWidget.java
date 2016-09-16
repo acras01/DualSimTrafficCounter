@@ -35,6 +35,23 @@ public class TrafficInfoWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
         super.onUpdate(context, widgetManager, widgetId);
+        updateWidget(context, widgetManager, widgetId, readData(context));
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        String action = intent.getAction();
+        int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
+        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
+            final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
+                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
+        } else if (action.equals(Constants.TRAFFIC_BROADCAST_ACTION) && widgetIds != null)
+            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
+    }
+
+    private Bundle readData(Context context) {
         Bundle bundle = new Bundle();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(context);
@@ -61,41 +78,45 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 bundle.putLong(Constants.SIM1TX_N, 0L);
                 bundle.putLong(Constants.TOTAL1_N, 0L);
             }
-            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.TRAFFIC + "_" +
-                    mIMSI.get(Constants.SIM2), false);
-            if (!emptyDB) {
-                dataMap = CustomDatabaseHelper.readTrafficDataForSim(dbHelper, mIMSI.get(1));
-                bundle.putLong(Constants.SIM2RX, (long) dataMap.get("rx"));
-                bundle.putLong(Constants.SIM2TX, (long) dataMap.get("tx"));
-                bundle.putLong(Constants.TOTAL2, (long) dataMap.get("total"));
-                bundle.putLong(Constants.SIM2RX_N, (long) dataMap.get("rx_n"));
-                bundle.putLong(Constants.SIM2TX_N, (long) dataMap.get("tx_n"));
-                bundle.putLong(Constants.TOTAL2_N, (long) dataMap.get("total_n"));
-            } else {
-                bundle.putLong(Constants.SIM2RX, 0L);
-                bundle.putLong(Constants.SIM2TX, 0L);
-                bundle.putLong(Constants.TOTAL2, 0L);
-                bundle.putLong(Constants.SIM2RX_N, 0L);
-                bundle.putLong(Constants.SIM2TX_N, 0L);
-                bundle.putLong(Constants.TOTAL2_N, 0L);
+            if (mIMSI.size() >= 2) {
+                emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.TRAFFIC + "_" +
+                        mIMSI.get(Constants.SIM2), false);
+                if (!emptyDB) {
+                    dataMap = CustomDatabaseHelper.readTrafficDataForSim(dbHelper, mIMSI.get(1));
+                    bundle.putLong(Constants.SIM2RX, (long) dataMap.get("rx"));
+                    bundle.putLong(Constants.SIM2TX, (long) dataMap.get("tx"));
+                    bundle.putLong(Constants.TOTAL2, (long) dataMap.get("total"));
+                    bundle.putLong(Constants.SIM2RX_N, (long) dataMap.get("rx_n"));
+                    bundle.putLong(Constants.SIM2TX_N, (long) dataMap.get("tx_n"));
+                    bundle.putLong(Constants.TOTAL2_N, (long) dataMap.get("total_n"));
+                } else {
+                    bundle.putLong(Constants.SIM2RX, 0L);
+                    bundle.putLong(Constants.SIM2TX, 0L);
+                    bundle.putLong(Constants.TOTAL2, 0L);
+                    bundle.putLong(Constants.SIM2RX_N, 0L);
+                    bundle.putLong(Constants.SIM2TX_N, 0L);
+                    bundle.putLong(Constants.TOTAL2_N, 0L);
+                }
             }
-            emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.TRAFFIC + "_" +
-                    mIMSI.get(Constants.SIM3), false);
-            if (!emptyDB) {
-                dataMap = CustomDatabaseHelper.readTrafficDataForSim(dbHelper, mIMSI.get(2));
-                bundle.putLong(Constants.SIM3RX, (long) dataMap.get("rx"));
-                bundle.putLong(Constants.SIM3TX, (long) dataMap.get("tx"));
-                bundle.putLong(Constants.TOTAL3, (long) dataMap.get("total"));
-                bundle.putLong(Constants.SIM3RX_N, (long) dataMap.get("rx_n"));
-                bundle.putLong(Constants.SIM3TX_N, (long) dataMap.get("tx_n"));
-                bundle.putLong(Constants.TOTAL3_N, (long) dataMap.get("total_n"));
-            } else {
-                bundle.putLong(Constants.SIM3RX, 0L);
-                bundle.putLong(Constants.SIM3TX, 0L);
-                bundle.putLong(Constants.TOTAL3, 0L);
-                bundle.putLong(Constants.SIM3RX_N, 0L);
-                bundle.putLong(Constants.SIM3TX_N, 0L);
-                bundle.putLong(Constants.TOTAL3_N, 0L);
+            if (mIMSI.size() >= 3) {
+                emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.TRAFFIC + "_" +
+                        mIMSI.get(Constants.SIM3), false);
+                if (!emptyDB) {
+                    dataMap = CustomDatabaseHelper.readTrafficDataForSim(dbHelper, mIMSI.get(2));
+                    bundle.putLong(Constants.SIM3RX, (long) dataMap.get("rx"));
+                    bundle.putLong(Constants.SIM3TX, (long) dataMap.get("tx"));
+                    bundle.putLong(Constants.TOTAL3, (long) dataMap.get("total"));
+                    bundle.putLong(Constants.SIM3RX_N, (long) dataMap.get("rx_n"));
+                    bundle.putLong(Constants.SIM3TX_N, (long) dataMap.get("tx_n"));
+                    bundle.putLong(Constants.TOTAL3_N, (long) dataMap.get("total_n"));
+                } else {
+                    bundle.putLong(Constants.SIM3RX, 0L);
+                    bundle.putLong(Constants.SIM3TX, 0L);
+                    bundle.putLong(Constants.TOTAL3, 0L);
+                    bundle.putLong(Constants.SIM3RX_N, 0L);
+                    bundle.putLong(Constants.SIM3TX_N, 0L);
+                    bundle.putLong(Constants.TOTAL3_N, 0L);
+                }
             }
         } else {
             emptyDB = CustomDatabaseHelper.isTableEmpty(dbHelper, Constants.CALLS, true);
@@ -142,46 +163,12 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 bundle.putInt(Constants.SIM_ACTIVE, 0);
             }
         }
-        updateWidget(context, widgetManager, widgetId, bundle);
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
-        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
-            final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
-                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
-        } else if (action.equals(Constants.TRAFFIC_BROADCAST_ACTION) && widgetIds != null)
-            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
+        return bundle;
     }
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
-
-        if (bundle.size() == 0) {
-            ContentValues dataMap = CustomDatabaseHelper.readTrafficData(CustomDatabaseHelper.getInstance(context));
-            bundle.putLong(Constants.SIM1RX, (long) dataMap.get(Constants.SIM1RX));
-            bundle.putLong(Constants.SIM2RX, (long) dataMap.get(Constants.SIM2RX));
-            bundle.putLong(Constants.SIM3RX, (long) dataMap.get(Constants.SIM3RX));
-            bundle.putLong(Constants.SIM1TX, (long) dataMap.get(Constants.SIM1TX));
-            bundle.putLong(Constants.SIM2TX, (long) dataMap.get(Constants.SIM2TX));
-            bundle.putLong(Constants.SIM3TX, (long) dataMap.get(Constants.SIM3TX));
-            bundle.putLong(Constants.TOTAL1, (long) dataMap.get(Constants.TOTAL1));
-            bundle.putLong(Constants.TOTAL2, (long) dataMap.get(Constants.TOTAL2));
-            bundle.putLong(Constants.TOTAL3, (long) dataMap.get(Constants.TOTAL3));
-            bundle.putLong(Constants.SIM1RX_N, (long) dataMap.get(Constants.SIM1RX_N));
-            bundle.putLong(Constants.SIM2RX_N, (long) dataMap.get(Constants.SIM2RX_N));
-            bundle.putLong(Constants.SIM3RX_N, (long) dataMap.get(Constants.SIM3RX_N));
-            bundle.putLong(Constants.SIM1TX_N, (long) dataMap.get(Constants.SIM1TX_N));
-            bundle.putLong(Constants.SIM2TX_N, (long) dataMap.get(Constants.SIM2TX_N));
-            bundle.putLong(Constants.SIM3TX_N, (long) dataMap.get(Constants.SIM3TX_N));
-            bundle.putLong(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
-            bundle.putLong(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
-            bundle.putLong(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-            bundle.putInt(Constants.LAST_ACTIVE_SIM, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
-        }
-
+        if (bundle.size() == 0)
+            bundle = readData(context);
         for (int i : ids) {
             SharedPreferences prefs = context.getSharedPreferences(i + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences prefsSIM = PreferenceManager.getDefaultSharedPreferences(context);
@@ -750,14 +737,15 @@ public class TrafficInfoWidget extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
         // When the user deletes the widget, delete the preference associated with it.
         CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.TRAFFIC_TAG);
     }
 
     @Override
     public void onDisabled(Context context) {
-        Picasso.with(context).shutdown();
         super.onDisabled(context);
+        Picasso.with(context).shutdown();
     }
 }
 
