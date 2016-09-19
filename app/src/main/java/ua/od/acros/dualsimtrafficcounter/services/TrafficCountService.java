@@ -116,10 +116,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public static int getLastActiveSIM() {
-        return mLastActiveSIM;
-    }
-
     public static int getActiveSIM() {
         return mActiveSIM;
     }
@@ -629,6 +625,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     tTask = new CountTimerTask3();
                     break;
             }
+            mPrefs.edit()
+                    .putInt(Constants.PREF_OTHER[46], mActiveSIM)
+                    .apply();
         } else
             tTask = new CheckTimerTask();
         if (mTaskResult == null || mTaskResult.isCancelled())
@@ -1038,9 +1037,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[0]) || mSIM1ContinueOverLimit) {
-                        mPrefs.edit()
-                                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
-                                .apply();
                         rx += diffrx;
                         tx += difftx;
                         if (mPrefs.getBoolean(Constants.PREF_SIM1[32], false))
@@ -1288,9 +1284,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[1]) || mSIM2ContinueOverLimit) {
-                        mPrefs.edit()
-                                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
-                                .apply();
                         rx += diffrx;
                         tx += difftx;
                         if (mPrefs.getBoolean(Constants.PREF_SIM2[32], false))
@@ -1538,9 +1531,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((tot <= mLimits[2]) || mSIM3ContinueOverLimit) {
-                        mPrefs.edit()
-                                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
-                                .apply();
                         rx += diffrx;
                         tx += difftx;
                         if (mPrefs.getBoolean(Constants.PREF_SIM3[32], false))
@@ -2058,7 +2048,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                 .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                 .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
-                .putInt(Constants.PREF_OTHER[46], mLastActiveSIM)
+                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
                 .putBoolean(Constants.PREF_OTHER[48], false)
                 .apply();
         if (mTaskResult != null) {
