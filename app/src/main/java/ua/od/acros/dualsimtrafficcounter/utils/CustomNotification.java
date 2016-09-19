@@ -54,16 +54,20 @@ public class CustomNotification extends Notification {
 
     public static Notification getNotification(Context context, String traffic, String calls, boolean id) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int mActiveSIM = TrafficCountService.getActiveSIM();
-        if (mActiveSIM == Constants.DISABLED)
-            mActiveSIM = TrafficCountService.getLastActiveSIM();
+        int activeSIM;
+        if(CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+            activeSIM = TrafficCountService.getActiveSIM();
+            if (activeSIM == Constants.DISABLED)
+                activeSIM = TrafficCountService.getLastActiveSIM();
+        } else
+            activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
         if (traffic.equals(""))
             traffic = mTraffic;
         if (calls.equals(""))
             calls = mCalls;
         NotificationCompat.Builder b = newInstance(context);
         if (id)
-            b.setSmallIcon(getOperatorLogoID(context, mActiveSIM));
+            b.setSmallIcon(getOperatorLogoID(context, activeSIM));
         b.setPriority(mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX :
                 NotificationCompat.PRIORITY_MIN);
         b.setContentText(traffic);

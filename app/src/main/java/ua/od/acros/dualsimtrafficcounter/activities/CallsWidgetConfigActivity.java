@@ -49,7 +49,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
     private final int KEY_ICON = 1;
     private int mDim;
     private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private int mSimQuantity;
     private SharedPreferences.Editor mEdit;
     private Context mContext;
     private int mTextColor;
@@ -101,7 +100,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             // Now recreate for it to take effect
             recreate();
         }
-        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefsWidget.getString(Constants.PREF_OTHER[14], "1"));
         mEdit = prefsWidget.edit();
         if (prefsWidget.getAll().size() == 0) {
@@ -120,11 +119,11 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             mEdit.putInt(Constants.PREF_WIDGET_CALLS[13], Color.TRANSPARENT); //Background color
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[14], true); //Show divider
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[15], true); //Show SIM1
-            if (mSimQuantity >= 2)
+            if (simQuantity >= 2)
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[16], true); //Show SIM2
             else
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[16], false);
-            if (mSimQuantity == 3)
+            if (simQuantity == 3)
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
             else
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], false);
@@ -195,20 +194,20 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         backColorL = (RelativeLayout) findViewById(R.id.backColorLayout);
 
         onOff(logoL1, icons.isChecked());
-        onOff(logoL2, mSimQuantity >= 2 && icons.isChecked());
-        onOff(logoL3, mSimQuantity == 3 && icons.isChecked());
+        onOff(logoL2, simQuantity >= 2 && icons.isChecked());
+        onOff(logoL3, simQuantity == 3 && icons.isChecked());
         onOff(backColorL, back.isChecked());
 
         showSimSum = (TextView) findViewById(R.id.simChooseSum);
         String sum = "";
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[15], true))
             sum = "SIM1";
-        if (mSimQuantity >= 2 && prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[16], true))
+        if (simQuantity >= 2 && prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[16], true))
             if (sum.equals(""))
                 sum = "SIM2";
             else
                 sum += ", SIM2";
-        if (mSimQuantity == 3 && prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[17], true))
+        if (simQuantity == 3 && prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[17], true))
             if (sum.equals(""))
                 sum = "SIM3";
             else

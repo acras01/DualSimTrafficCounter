@@ -59,7 +59,6 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
     private final int KEY_ICON = 1;
     private final int KEY_TEXT_S = 2;
     private final int KEY_ICON_S = 3;
-    private int mSimQuantity;
     private int mDim;
     private String mUserPickedImage;
     private boolean[] mSim;
@@ -102,7 +101,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             // Now recreate for it to take effect
             recreate();
         }
-        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(prefsWidget.getString(Constants.PREF_OTHER[14], "1"));
 
         mEdit = prefsWidget.edit();
@@ -125,11 +124,11 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);//Speed text size
             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE);//Speed arrows size
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true);//show sim1
-            if (mSimQuantity >= 2)
+            if (simQuantity >= 2)
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true);//show sim2
             else
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[19], false);
-            if (mSimQuantity == 3)
+            if (simQuantity == 3)
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true);//Show sim3
             else
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[20], false);
@@ -178,8 +177,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             icons.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true));
             icons.setOnCheckedChangeListener(this);
             onOff(logoL1, icons.isChecked());
-            onOff(logoL2, mSimQuantity >= 2 && icons.isChecked());
-            onOff(logoL3, mSimQuantity == 3 && icons.isChecked());
+            onOff(logoL2, simQuantity >= 2 && icons.isChecked());
+            onOff(logoL3, simQuantity == 3 && icons.isChecked());
             onOff(simLogoL, icons.isChecked());
             if (icons.isChecked())
                 iconsSum.setText(R.string.on);
@@ -316,12 +315,12 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         String sum = "";
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true))
             sum = "SIM1";
-        if (mSimQuantity >= 2 && prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true))
+        if (simQuantity >= 2 && prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true))
             if (sum.equals(""))
                 sum = "SIM2";
             else
                 sum += ", SIM2";
-        if (mSimQuantity == 3 && prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true))
+        if (simQuantity == 3 && prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true))
             if (sum.equals(""))
                 sum = "SIM3";
             else
