@@ -1656,42 +1656,43 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
             ContentValues cv = new ContentValues();
-            cv.put("rx", (long) mTrafficData.get(Constants.SIM1RX));
-            cv.put("tx", (long) mTrafficData.get(Constants.SIM1TX));
-            cv.put("total", (long) mTrafficData.get(Constants.TOTAL1));
-            cv.put("rx_n", (long) mTrafficData.get(Constants.SIM1RX_N));
-            cv.put("tx_n", (long) mTrafficData.get(Constants.SIM1TX_N));
-            cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL1_N));
-            cv.put("period", (int) mTrafficData.get(Constants.PERIOD1));
-            cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
-            cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-            CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(0));
-            if (mSimQuantity >= 2) {
-                cv = new ContentValues();;
-                cv.put("rx", (long) mTrafficData.get(Constants.SIM2RX));
-                cv.put("tx", (long) mTrafficData.get(Constants.SIM2TX));
-                cv.put("total", (long) mTrafficData.get(Constants.TOTAL2));
-                cv.put("rx_n", (long) mTrafficData.get(Constants.SIM2RX_N));
-                cv.put("tx_n", (long) mTrafficData.get(Constants.SIM2TX_N));
-                cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL2_N));
-                cv.put("period", (int) mTrafficData.get(Constants.PERIOD2));
-                cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
-                cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(1));
+            switch (mActiveSIM) {
+                case Constants.SIM1:
+                    cv.put("rx", (long) mTrafficData.get(Constants.SIM1RX));
+                    cv.put("tx", (long) mTrafficData.get(Constants.SIM1TX));
+                    cv.put("total", (long) mTrafficData.get(Constants.TOTAL1));
+                    cv.put("rx_n", (long) mTrafficData.get(Constants.SIM1RX_N));
+                    cv.put("tx_n", (long) mTrafficData.get(Constants.SIM1TX_N));
+                    cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL1_N));
+                    cv.put("period", (int) mTrafficData.get(Constants.PERIOD1));
+                    cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                    cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                    break;
+                case Constants.SIM2:
+                    cv.put("rx", (long) mTrafficData.get(Constants.SIM2RX));
+                    cv.put("tx", (long) mTrafficData.get(Constants.SIM2TX));
+                    cv.put("total", (long) mTrafficData.get(Constants.TOTAL2));
+                    cv.put("rx_n", (long) mTrafficData.get(Constants.SIM2RX_N));
+                    cv.put("tx_n", (long) mTrafficData.get(Constants.SIM2TX_N));
+                    cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL2_N));
+                    cv.put("period", (int) mTrafficData.get(Constants.PERIOD2));
+                    cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                    cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                    break;
+                case Constants.SIM3:
+                    cv.put("rx", (long) mTrafficData.get(Constants.SIM3RX));
+                    cv.put("tx", (long) mTrafficData.get(Constants.SIM3TX));
+                    cv.put("total", (long) mTrafficData.get(Constants.TOTAL3));
+                    cv.put("rx_n", (long) mTrafficData.get(Constants.SIM3RX_N));
+                    cv.put("tx_n", (long) mTrafficData.get(Constants.SIM3TX_N));
+                    cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL3_N));
+                    cv.put("period", (int) mTrafficData.get(Constants.PERIOD3));
+                    cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
+                    cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
+                    break;
             }
-            if (mSimQuantity == 3) {
-                cv = new ContentValues();;
-                cv.put("rx", (long) mTrafficData.get(Constants.SIM3RX));
-                cv.put("tx", (long) mTrafficData.get(Constants.SIM3TX));
-                cv.put("total", (long) mTrafficData.get(Constants.TOTAL3));
-                cv.put("rx_n", (long) mTrafficData.get(Constants.SIM3RX_N));
-                cv.put("tx_n", (long) mTrafficData.get(Constants.SIM3TX_N));
-                cv.put("total_n", (long) mTrafficData.get(Constants.TOTAL3_N));
-                cv.put("period", (int) mTrafficData.get(Constants.PERIOD3));
-                cv.put(Constants.LAST_TIME, (String) mTrafficData.get(Constants.LAST_TIME));
-                cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(2));
-            }
+            if (mActiveSIM != Constants.DISABLED)
+                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(mActiveSIM));
         } else
             CustomDatabaseHelper.writeData(mTrafficData, mDbHelper, Constants.TRAFFIC);
     }

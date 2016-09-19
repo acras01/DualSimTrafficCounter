@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,6 +28,8 @@ public class WatchDogService extends Service{
     private CustomDatabaseHelper mDbHelper;
     private Timer mTimer;
     private boolean mIsFirstRun;
+    private ArrayList<String> mIMSI;
+    private long mInterval;
 
     public WatchDogService() {
     }
@@ -42,6 +45,7 @@ public class WatchDogService extends Service{
         super.onCreate();
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mInterval = Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")) * 60 * 1000;
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         // cancel if already existed
         if (mTimer != null) {
@@ -58,7 +62,7 @@ public class WatchDogService extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
         mIsFirstRun = true;
         // schedule task
-        mTimer.scheduleAtFixedRate(new WatchDogTask(), 0, Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")) * 60 * 1000);
+        mTimer.scheduleAtFixedRate(new WatchDogTask(), 0, mInterval);
         return START_STICKY;
     }
 
@@ -73,21 +77,65 @@ public class WatchDogService extends Service{
     private class WatchDogTask extends TimerTask {
         @Override
         public void run() {
-            long interval = 60 * 1000 * Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1"));
             if (mIsFirstRun) {
-                CustomApplication.sleep(interval);
+                CustomApplication.sleep(mInterval);
                 mIsFirstRun = false;
             }
-            ContentValues cv = CustomDatabaseHelper.readTrafficData(mDbHelper);
-            DateTime now = new DateTime();
-            if (cv.get(Constants.LAST_DATE).equals("")) {
-                cv.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
-                cv.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
-            }
-            String lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
+            ContentValues cv;
+            String lastUpdate = "";
+            DateTime now = new DateTime(), last = null;
             DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
-            DateTime last = fmt.parseDateTime(lastUpdate);
-
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+                DateTime t1 = null, t2 = null, t3 = null;
+                if (mIMSI == null)
+                    mIMSI = MobileUtils.getSimIds(mContext);
+                cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
+                lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
+                try {
+                    t1 = fmt.parseDateTime(lastUpdate);
+                } catch (Exception e) {
+                }
+                if (mIMSI.size() >= 2) {
+                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
+                    lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
+                    try {
+                    t2 = fmt.parseDateTime(lastUpdate);
+                    } catch (Exception e) {
+                    }
+                }
+                if (mIMSI.size() >= 3) {
+                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
+                    lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
+                    try {
+                        t3 = fmt.parseDateTime(lastUpdate);
+                    } catch (Exception e) {
+                    }
+                }
+                if (t1 != null && t2 != null) {
+                    if (t1.isAfter(t2))
+                        last = t1;
+                    else
+                        last= t2;
+                } else if (t2 != null)
+                    last = t2;
+                else if (t1 != null)
+                    last = t1;
+                if (t3 != null && last != null) {
+                    if (t3.isAfter(last))
+                        last = t3;
+                } else if (t3 != null)
+                    last = t3;
+                if (last == null)
+                    last = now;
+            } else {
+                cv = CustomDatabaseHelper.readTrafficData(mDbHelper);
+                if (cv.get(Constants.LAST_DATE).equals("")) {
+                    cv.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
+                    cv.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
+                }
+                lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
+                last = fmt.parseDateTime(lastUpdate);
+            }
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
                     (MobileUtils.isMobileDataActive(mContext) &&
                             MobileUtils.getActiveSimForData(mContext) > Constants.DISABLED) &&

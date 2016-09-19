@@ -57,7 +57,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private ContentValues mCallsData;
     private String[] mOperatorNames = new String[3];
     private SharedPreferences mPrefs;
-    private int mSimQuantity;
+    private int mSimQuantity, mLastActiveSIM;
     private CountDownTimer mCountTimer;
     private Vibrator mVibrator;
     private boolean mIsResetNeeded3 = false;
@@ -160,6 +160,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
         mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
         int sim = event.sim;
+        mLastActiveSIM = sim;
         long duration = DataFormat.getDuration(event.calls, event.callsv);
         switch (sim) {
             case Constants.SIM1:
@@ -175,7 +176,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 mCallsData.put(Constants.CALLS3_EX, duration);
                 break;
         }
-        writeCallsDataToDatabase();
+        writeCallsDataToDatabase(sim);
         refreshWidgetAndNotification(sim, duration);
         EventBus.getDefault().removeStickyEvent(event);
         if(!mIsOutgoing)
@@ -238,7 +239,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS1, 0L);
             mCallsData.put(Constants.CALLS1_EX, 0L);
-            writeCallsDataToDatabase();
+            writeCallsDataToDatabase(Constants.SIM1);
             mIsResetNeeded1 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
@@ -252,7 +253,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS2, 0L);
             mCallsData.put(Constants.CALLS2_EX, 0L);
-            writeCallsDataToDatabase();
+            writeCallsDataToDatabase(Constants.SIM2);
             mIsResetNeeded2 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
@@ -266,7 +267,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS3, 0L);
             mCallsData.put(Constants.CALLS3_EX, 0L);
-            writeCallsDataToDatabase();
+            writeCallsDataToDatabase(Constants.SIM3);
             mIsResetNeeded3 = false;
             mPrefs.edit()
                     .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
@@ -287,6 +288,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
                     if (!mIsOutgoing && state == TelephonyManager.CALL_STATE_OFFHOOK) {
                         final int sim = MobileUtils.getActiveSimForCall(ctx);
+                        mLastActiveSIM = sim;
                             /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
                             try {
                                 // to this path add a new directory path
@@ -361,7 +363,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             }
         }
         if (key.equals(Constants.PREF_OTHER[45])) {
-            writeCallsDataToDatabase();
+            writeCallsDataToDatabase(mLastActiveSIM);
             readCallsDataFromDatabase();
         }
         if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
@@ -568,7 +570,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 duration = (long) mCallsData.get(Constants.CALLS3);
                                 break;
                         }
-                        writeCallsDataToDatabase();
+                        writeCallsDataToDatabase(sim);
                         refreshWidgetAndNotification(sim, duration);
                     /*String out = "Call Ends\n";
                     try {
@@ -736,7 +738,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs.edit()
                 .putBoolean(Constants.PREF_OTHER[49], false)
                 .apply();
-        writeCallsDataToDatabase();
+        writeCallsDataToDatabase(mLastActiveSIM);
         if (mCallAnsweredReceiver != null)
             unregisterReceiver(mCallAnsweredReceiver);
         if (mCallEndedReceiver != null)
@@ -745,35 +747,35 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         EventBus.getDefault().unregister(this);
     }
 
-    private void writeCallsDataToDatabase() {
+    private void writeCallsDataToDatabase(int sim) {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
             ContentValues cv = new ContentValues();
-            cv.put("calls", (long) mCallsData.get(Constants.CALLS1));
-            cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS1_EX));
-            cv.put("period", (int) mCallsData.get(Constants.PERIOD1));
-            cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
-            cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-            CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(0));
-            if (mSimQuantity >= 2) {
-                cv = new ContentValues();;
-                cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
-                cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS2_EX));
-                cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
-                cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
-                cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(1));
+            switch (sim) {
+                case Constants.SIM1:
+                    cv.put("calls", (long) mCallsData.get(Constants.CALLS1));
+                    cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS1_EX));
+                    cv.put("period", (int) mCallsData.get(Constants.PERIOD1));
+                    cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+                    cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+                    break;
+                case Constants.SIM2:
+                    cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
+                    cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS2_EX));
+                    cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
+                    cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+                    cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
+                    break;
+                case Constants.SIM3:
+                    cv.put("calls", (long) mCallsData.get(Constants.CALLS3));
+                    cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS3_EX));
+                    cv.put("period", (int) mCallsData.get(Constants.PERIOD3));
+                    cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
+                    cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
             }
-            if (mSimQuantity == 3) {
-                cv = new ContentValues();;
-                cv.put("calls", (long) mCallsData.get(Constants.CALLS3));
-                cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS3_EX));
-                cv.put("period", (int) mCallsData.get(Constants.PERIOD3));
-                cv.put(Constants.LAST_TIME, (String) mCallsData.get(Constants.LAST_TIME));
-                cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
-                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(2));
-            }
+            if (sim != Constants.DISABLED)
+                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(sim));
         } else
             CustomDatabaseHelper.writeData(mCallsData, mDbHelper, Constants.CALLS);
     }

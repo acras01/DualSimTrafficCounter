@@ -23,6 +23,7 @@ import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
+import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
@@ -125,6 +126,11 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
             }
         }
+        if (key.equals(Constants.PREF_OTHER[12]) && CustomApplication.isMyServiceRunning(WatchDogService.class)) {
+            Intent i = new Intent(mContext, WatchDogService.class);
+            mContext.stopService(i);
+            mContext.startService(i);
+        }
         if (key.equals(Constants.PREF_OTHER[12])) {
             Intent i;
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
@@ -141,7 +147,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
         boolean mobileData = MobileUtils.hasActiveNetworkInfo(mContext) == 2;
-        boolean bool = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));;
+        boolean bool = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));
         boolean show = false;
         if (key.equals(Constants.PREF_OTHER[32]))
             show = floatingWindow && bool;
