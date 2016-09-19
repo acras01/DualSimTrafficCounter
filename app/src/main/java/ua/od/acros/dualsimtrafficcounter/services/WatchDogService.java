@@ -12,8 +12,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -75,22 +73,21 @@ public class WatchDogService extends Service{
     private class WatchDogTask extends TimerTask {
         @Override
         public void run() {
+            long interval = 60 * 1000 * Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1"));
             if (mIsFirstRun) {
-                CustomApplication.sleep(60 * 1000 * Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")));
+                CustomApplication.sleep(interval);
                 mIsFirstRun = false;
             }
             ContentValues cv = CustomDatabaseHelper.readTrafficData(mDbHelper);
+            DateTime now = new DateTime();
             if (cv.get(Constants.LAST_DATE).equals("")) {
-                Calendar myCalendar = Calendar.getInstance();
-                SimpleDateFormat formatDate = new SimpleDateFormat(Constants.DATE_FORMAT, getResources().getConfiguration().locale);
-                SimpleDateFormat formatTime = new SimpleDateFormat(Constants.TIME_FORMAT + ":ss", getResources().getConfiguration().locale);
-                cv.put(Constants.LAST_TIME, formatTime.format(myCalendar.getTime()));
-                cv.put(Constants.LAST_DATE, formatDate.format(myCalendar.getTime()));
+                cv.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
+                cv.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
             }
             String lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
             DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
             DateTime last = fmt.parseDateTime(lastUpdate);
-            DateTime now = new DateTime();
+
             if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
                     (MobileUtils.isMobileDataActive(mContext) &&
                             MobileUtils.getActiveSimForData(mContext) > Constants.DISABLED) &&

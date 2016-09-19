@@ -20,12 +20,12 @@
         "source": "D:\\android\\Development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\drawable\\abc_ic_go_search_api_material.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\drawable\\abc_edit_text_material.xml",
-        "source": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\drawable\\abc_edit_text_material.xml"
-    },
-    {
         "merged": "D:\\android\\Development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\drawable\\abc_item_background_holo_light.xml",
         "source": "D:\\android\\Development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\drawable\\abc_item_background_holo_light.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\drawable\\abc_edit_text_material.xml",
+        "source": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\24.1.1\\res\\drawable\\abc_edit_text_material.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\drawable\\abc_switch_thumb_material.xml",
