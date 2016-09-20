@@ -70,8 +70,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        mIMSI = MobileUtils.getSimIds(mContext);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
@@ -571,6 +572,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
                 sim = Constants.SIM3;
             if (sim >= 0) {
+                if (mIMSI == null)
+                    mIMSI = MobileUtils.getSimIds(mContext);
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
                 SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
@@ -764,6 +767,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                     keys = Constants.PREF_SIM3;
                     break;
             }
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
@@ -796,6 +801,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper.deleteDataTable(CustomDatabaseHelper.getInstance(mContext), mIMSI, Constants.TRAFFIC);
             CustomApplication.deletePreferenceFile(mSimQuantity, Constants.TRAFFIC);
             return true;

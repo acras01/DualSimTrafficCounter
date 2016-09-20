@@ -1023,13 +1023,14 @@ public class MobileUtils {
             List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
             if (mGetSubscriberId == null)
                 mGetSubscriberId = getMethod(tm.getClass(), GET_IMSI, 1);
-            for (SubscriptionInfo si : sl) {
-                try {
-                    imsi.add((String) mGetSubscriberId.invoke(tm.getClass().getConstructor(Context.class).newInstance(context), si.getSubscriptionId()));
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (sl != null)
+                for (SubscriptionInfo si : sl) {
+                    try {
+                        imsi.add((String) mGetSubscriberId.invoke(tm.getClass().getConstructor(Context.class).newInstance(context), si.getSubscriptionId()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
         } else {
             if (simQuantity > 1) {
                 if (CustomApplication.isOldMtkDevice()) {

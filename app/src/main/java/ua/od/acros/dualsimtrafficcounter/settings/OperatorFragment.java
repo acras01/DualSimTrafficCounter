@@ -42,18 +42,16 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
         int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        mIMSI = MobileUtils.getSimIds(mContext);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
+            mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
             Map<String, ?> prefs;
-            String[] keys;
             String name = Constants.TRAFFIC + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
                 prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
-                keys = prefs.keySet().toArray(new String[prefs.size()]);
                 if (prefs.size() != 0)
                     for (String key : prefs.keySet()) {
                         if (key.equals(Constants.PREF_SIM_DATA[5]) || key.equals(Constants.PREF_SIM_DATA[6])) {
@@ -69,7 +67,6 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
-                    keys = prefs.keySet().toArray(new String[prefs.size()]);
                     if (prefs.size() != 0)
                         for (String key : prefs.keySet()) {
                             if (key.equals(Constants.PREF_SIM_DATA[5]) || key.equals(Constants.PREF_SIM_DATA[6])) {
@@ -86,7 +83,6 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
                 if (new File(path + name + ".xml").exists()) {
                     prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
-                    keys = prefs.keySet().toArray(new String[prefs.size()]);
                     if (prefs.size() != 0)
                         for (String key : prefs.keySet()) {
                             if (key.equals(Constants.PREF_SIM_DATA[5]) || key.equals(Constants.PREF_SIM_DATA[6])) {

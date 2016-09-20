@@ -56,8 +56,9 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
 
-        mIMSI = MobileUtils.getSimIds(mContext);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
             SharedPreferences.Editor editor = mPrefs.edit();
             SharedPreferences prefSim;
@@ -295,6 +296,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3_CALLS)).contains(key))
                 sim = Constants.SIM3;
             if (sim >= 0) {
+                if (mIMSI == null)
+                    mIMSI = MobileUtils.getSimIds(mContext);
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
                 SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
@@ -337,6 +340,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                     keys = Constants.PREF_SIM3_CALLS;
                     break;
             }
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
@@ -368,6 +373,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
             CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
             CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS);
