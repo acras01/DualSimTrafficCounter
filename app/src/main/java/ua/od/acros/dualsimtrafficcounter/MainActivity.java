@@ -421,9 +421,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (itemId) {
             case R.id.nav_traffic:
                 mLastMenuItem = itemId;
+                newFragment = new TrafficFragment();
                 break;
             case R.id.nav_calls:
                 mLastMenuItem = itemId;
+                newFragment = new CallsFragment();
                 break;
             case R.id.nav_traf_for_date:
                 mLastMenuItem = itemId;
