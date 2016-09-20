@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -34,6 +35,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
+import ua.od.acros.dualsimtrafficcounter.dialogs.CustomDialog;
+import ua.od.acros.dualsimtrafficcounter.events.CustomDialogEvent;
 import ua.od.acros.dualsimtrafficcounter.fragments.CallsFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.SetCallsDurationFragment;
 import ua.od.acros.dualsimtrafficcounter.fragments.SetTrafficUsageFragment;
@@ -55,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SetCallsDurationFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_CODE = 1981;
-    private static Context mContext;
-    private static SharedPreferences mPrefs;
+    private Context mContext;
+    private SharedPreferences mPrefs;
     private static final String FIRST_RUN = "first_run";
     private static final String ANDROID_5_0 = "API21";
     private static final String EMAIL = "email";
@@ -65,12 +68,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean mNeedsReloadView = false;
     private boolean mNeedsRestart = false;
     private MenuItem mCallsItem;
-    private static NavigationView mNavigationView;
-    private static int mLastMenuItem;
+    private NavigationView mNavigationView;
+    private int mLastMenuItem;
     private String mAction;
     private Bundle mState;
     private Intent mStarterIntent;
-    private static Fragment mTraffic, mTest, mCalls;
+    private Fragment mTraffic, mTest, mCalls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +174,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startService(new Intent(mContext, CallLoggerService.class));
 
         mAction = getIntent().getAction();
+        EventBus.getDefault().register(this);
+    }
+
+    @Subscribe
+    public void onMessageEvent(CustomDialogEvent event) {
+        if (CustomApplication.canSwitchSim()) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, mTest)
+                    .commit();
+            setItemChecked(R.id.nav_test, true);
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, mTraffic)
+                    .addToBackStack(Constants.TRAFFIC_TAG)
+                    .commit();
+            setItemChecked(R.id.nav_traffic, true);
+        }
     }
 
     @Override
@@ -189,63 +211,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
             }
-        }
-    }
-
-    public static class CustomDialog extends DialogFragment {
-        public static CustomDialog newInstance(String key) {
-            CustomDialog d = new CustomDialog();
-            Bundle b = new Bundle();
-            b.putString("key", key);
-            d.setArguments(b);
-            return d;
-        }
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                    .setCancelable(false)
-                    .setTitle(R.string.attention)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            if (CustomApplication.canSwitchSim()) {
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .replace(R.id.content_frame, mTest)
-                                        .commit();
-                                setItemChecked(R.id.nav_test, true);
-                                mLastMenuItem = R.id.nav_test;
-                            } else {
-                                getActivity().getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .replace(R.id.content_frame, mTraffic)
-                                        .addToBackStack(Constants.TRAFFIC_TAG)
-                                        .commit();
-                                setItemChecked(R.id.nav_traffic, true);
-                                mLastMenuItem = R.id.nav_traffic;
-                            }
-                        }
-                    })
-                    .create();
-            String key = getArguments().getString("key");
-            if (key != null) {
-                switch (key) {
-                    case FIRST_RUN:
-                        dialog.setMessage(getString(R.string.set_sim_number));
-                        break;
-                    case MTK:
-                        dialog.setMessage(getString(R.string.on_off_not_supported));
-                        break;
-                    case ANDROID_5_0:
-                        dialog.setMessage(getString(R.string.need_root));
-                        break;
-                }
-            }
-            dialog.setCanceledOnTouchOutside(false);
-            return dialog;
         }
     }
 
@@ -364,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
 
                 setItemChecked(R.id.nav_traffic, true);
-                mLastMenuItem = R.id.nav_traffic;
             }
         } else if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
             mPrefs.edit()
@@ -385,7 +349,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 .addToBackStack(Constants.TRAFFIC_TAG)
                                 .commit();
                         setItemChecked(R.id.nav_traffic, true);
-                        mLastMenuItem = R.id.nav_traffic;
                         break;
                     case Constants.CALLS_TAP:
                         fm.beginTransaction()
@@ -393,7 +356,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 .addToBackStack(Constants.CALLS_TAG)
                                 .commit();
                         setItemChecked(R.id.nav_calls, true);
-                        mLastMenuItem = R.id.nav_calls;
                         break;
                 }
             else {
@@ -402,7 +364,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
-                mLastMenuItem = R.id.nav_traffic;
             }
         } else if (CustomApplication.isPackageExisted(XPOSED) && (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration) &&
                 !mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
@@ -414,7 +375,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.content_frame, mTraffic)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
-                mLastMenuItem = R.id.nav_traffic;
             }
         } else if (mState == null) {
             if (mTraffic == null)
@@ -424,7 +384,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .addToBackStack(Constants.TRAFFIC_TAG)
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
-            mLastMenuItem = R.id.nav_traffic;
         }
     }
 
@@ -545,9 +504,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setItemChecked(mLastMenuItem, true);
     }
 
-    private static void setItemChecked(int id, boolean checked) {
+    private void setItemChecked(int id, boolean checked) {
         mNavigationView.setCheckedItem(id);
         mNavigationView.getMenu().findItem(id).setChecked(checked);
+        mLastMenuItem = id;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
