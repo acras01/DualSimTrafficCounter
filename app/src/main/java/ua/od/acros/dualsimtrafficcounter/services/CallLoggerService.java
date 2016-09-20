@@ -330,8 +330,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     private void refreshWidgetAndNotification(int sim, long duration) {
-        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(Constants.STARTED_ID, buildNotification(true));
+        updateNotification();
         int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
         if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn()) || ids.length != 0) {
             Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
@@ -414,17 +413,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
                 @Override
                 public void onFinish() {
-                    NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.notify(Constants.STARTED_ID, buildNotification(true));
+                    updateNotification();
                 }
             }.start();
         }
         if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
             if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
-                    key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23])) {
-                NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                nm.notify(Constants.STARTED_ID, buildNotification(true));
-            }
+                    key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
+                updateNotification();
         }
     }
 
@@ -588,7 +584,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             };
             IntentFilter end = new IntentFilter(Constants.OUTGOING_CALL_ENDED);
             registerReceiver(mCallEndedReceiver, end);
-            startForeground(Constants.STARTED_ID, buildNotification(true));
+            startForeground(Constants.STARTED_ID, buildNotification());
             startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         } else
             mService.stopSelf();
@@ -639,7 +635,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         nm.notify(simid + 1981, builder.build());
     }
 
-    private Notification buildNotification(boolean id) {
+    private void updateNotification() {
+        NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(Constants.STARTED_ID, buildNotification());
+    }
+
+    private Notification buildNotification() {
         long tot1, tot2 = 0, tot3 = 0;
         String calls = "";
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
@@ -720,7 +721,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 else
                     traffic += "  ||  " + getString(R.string.not_set);
         }
-        return CustomNotification.getNotification(mContext, traffic, calls, id);
+        return CustomNotification.getNotification(mContext, traffic, calls);
     }
 
     @Override

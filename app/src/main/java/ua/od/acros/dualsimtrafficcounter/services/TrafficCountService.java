@@ -450,7 +450,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         writeTrafficDataToDatabase(sim);
         if (CustomApplication.isScreenOn())
-            updateNotification(sim, true);
+            updateNotification(sim);
         if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0) && CustomApplication.isScreenOn())
             sendDataBroadcast(0L, 0L);
         EventBus.getDefault().removeStickyEvent(event);
@@ -516,7 +516,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mResetTime3 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
 
             mLimits = CustomApplication.getTrafficSimLimitsValues();
-            startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM, true));
+            startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
 
             // schedule task
             if (mSimQuantity == 1) {
@@ -623,7 +623,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mPrefs.edit()
                     .putInt(Constants.PREF_OTHER[46], mActiveSIM)
                     .apply();
-            updateNotification(mActiveSIM, true);
+            updateNotification(mActiveSIM);
         } else
             tTask = new CheckTimerTask();
         if (mTaskResult == null || mTaskResult.isCancelled())
@@ -657,7 +657,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
                 key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
-            updateNotification(mActiveSIM, true);
+            updateNotification(mActiveSIM);
         if (key.equals(Constants.PREF_OTHER[44])) {
             writeTrafficDataToDatabase(mActiveSIM);
             readTrafficDataFromDatabase();
@@ -721,7 +721,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                 @Override
                 public void onFinish() {
-                    updateNotification(mActiveSIM, true);
+                    updateNotification(mActiveSIM);
                 }
             }.start();
         }
@@ -1591,7 +1591,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
             writeTrafficDataToDatabase(sim);
             if (CustomApplication.isScreenOn())
-                updateNotification(sim, false);
+                updateNotification(sim);
         }
     }
 
@@ -1761,12 +1761,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
     }
 
-    private void updateNotification(int sim, boolean id) {
+    private void updateNotification(int sim) {
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(Constants.STARTED_ID, buildNotification(sim, id));
+        nm.notify(Constants.STARTED_ID, buildNotification(sim));
     }
 
-    private Notification buildNotification(int sim, boolean id) {
+    private Notification buildNotification(int sim) {
         if (sim == Constants.DISABLED)
             sim = mLastActiveSIM;
         String traffic = "";
@@ -1886,7 +1886,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             else
                 calls += "  ||  " + getString(R.string.not_set);
 
-        return CustomNotification.getNotification(mContext, traffic, calls, id);
+        return CustomNotification.getNotification(mContext, traffic, calls);
     }
 
     private void makePreCheckActions(int sim) {

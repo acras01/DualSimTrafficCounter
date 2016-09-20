@@ -545,6 +545,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 else
                     traffic += "  ||  " + getString(R.string.not_set);
         }
-        return CustomNotification.getNotification(mContext, traffic, text, true);
+        return CustomNotification.getNotification(mContext, traffic, text);
     }
 }

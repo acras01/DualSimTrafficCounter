@@ -14,7 +14,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.receivers.NotificationTapReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
-import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
 public class CustomNotification extends Notification {
 
@@ -54,25 +53,23 @@ public class CustomNotification extends Notification {
         return mBuilder;
     }
 
-    public static Notification getNotification(Context context, String traffic, String calls, boolean id) {
+    public static Notification getNotification(Context context, String traffic, String calls) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (traffic.equals(""))
             traffic = mTraffic;
         if (calls.equals(""))
             calls = mCalls;
         NotificationCompat.Builder b = newInstance(context);
-        if (id) {
-            int activeSIM;
-            if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
-                activeSIM = MobileUtils.getActiveSimForCall(context);
-            else {
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
-                    activeSIM = TrafficCountService.getActiveSIM();
-                else
-                    activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
-            }
-            b.setSmallIcon(getOperatorLogoID(context, activeSIM));
+        int activeSIM;
+        if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
+            activeSIM = MobileUtils.getActiveSimForCall(context);
+        else {
+            if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                activeSIM = TrafficCountService.getActiveSIM();
+            else
+                activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
         }
+        b.setSmallIcon(getOperatorLogoID(context, activeSIM));
         b.setPriority(mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX :
                 NotificationCompat.PRIORITY_MIN);
         b.setContentText(traffic);
