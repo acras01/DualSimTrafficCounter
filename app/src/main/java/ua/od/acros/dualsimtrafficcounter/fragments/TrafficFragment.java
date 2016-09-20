@@ -365,11 +365,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                     TIP.setText(getString(R.string.service_disabled));
                     item.setTitle(R.string.action_start);
                     item.setIcon(R.drawable.ic_action_enable);
-                }
-                else {
+                } else {
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
-                            ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
-                                    !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+                            (!mPrefs.getBoolean(Constants.PREF_OTHER[41], false) || MobileUtils.hasActiveNetworkInfo(mContext) == 2))
                         FloatingWindowService.showFloatingWindow(mContext, mPrefs);
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
                     mContext.startService(new Intent(mContext, TrafficCountService.class));
