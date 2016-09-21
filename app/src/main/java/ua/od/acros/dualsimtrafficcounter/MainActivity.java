@@ -146,12 +146,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             versionView.setText(String.format(getResources().getString(R.string.app_version), version));
         }
 
-        /*if (savedInstanceState == null) {
-            mTraffic = new TrafficFragment();
-            mTest = new TestFragment();
-            mCalls = new CallsFragment();
-        }*/
-
         MobileUtils.getTelephonyManagerMethods(mContext);
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
@@ -178,17 +172,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Subscribe
     public void onMessageEvent(CustomDialogEvent event) {
+        FragmentManager fm = getSupportFragmentManager();
         if (CustomApplication.canSwitchSim()) {
-            getSupportFragmentManager()
-                    .beginTransaction()
+            fm.beginTransaction()
                     .replace(R.id.content_frame, new TestFragment())
                     .commit();
             setItemChecked(R.id.nav_test, true);
         } else {
             if (!(getSupportFragmentManager().findFragmentById(R.id.content_frame) instanceof TrafficFragment)) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, new TrafficFragment())
+                Fragment frg = fm.findFragmentByTag(Constants.TRAFFIC_TAG);
+                if (frg == null)
+                    frg = new TrafficFragment();
+                fm.beginTransaction()
+                        .replace(R.id.content_frame, frg, Constants.TRAFFIC_TAG)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
             }
@@ -201,13 +198,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment fragment = fm.findFragmentById(R.id.content_frame);
             if (fragment instanceof TrafficFragment || (mAction != null && mAction.equals(Constants.CALLS_TAP)))
                 finish();
             else {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, new TrafficFragment())
+                Fragment frg = fm.findFragmentByTag(Constants.TRAFFIC_TAG);
+                if (frg == null)
+                    frg = new TrafficFragment();
+                fm.beginTransaction()
+                        .replace(R.id.content_frame, frg, Constants.TRAFFIC_TAG)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
             }
@@ -327,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .detach(currentFragment)
                         .attach(currentFragment)
                         .commit();
-
                 setItemChecked(R.id.nav_traffic, true);
             }
         } else if (mPrefs.getBoolean(Constants.PREF_OTHER[9], true)) {
@@ -345,20 +345,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (mAction) {
                     case Constants.TRAFFIC_TAP:
                         fm.beginTransaction()
-                                .replace(R.id.content_frame, new TrafficFragment())
+                                .replace(R.id.content_frame, new TrafficFragment(), Constants.TRAFFIC_TAG)
+                                .addToBackStack(Constants.TRAFFIC_TAG)
                                 .commit();
                         setItemChecked(R.id.nav_traffic, true);
                         break;
                     case Constants.CALLS_TAP:
                         fm.beginTransaction()
-                                .replace(R.id.content_frame, new CallsFragment())
+                                .replace(R.id.content_frame, new CallsFragment(), Constants.CALLS_TAG)
+                                .addToBackStack(Constants.CALLS_TAG)
                                 .commit();
                         setItemChecked(R.id.nav_calls, true);
                         break;
                 }
             else {
                 fm.beginTransaction()
-                        .replace(R.id.content_frame, new TrafficFragment())
+                        .replace(R.id.content_frame, new TrafficFragment(), Constants.TRAFFIC_TAG)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
             }
@@ -367,13 +370,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (currentFragment instanceof CallsFragment) {
                 fm.beginTransaction()
                         .remove(currentFragment)
-                        .replace(R.id.content_frame, new TrafficFragment())
+                        .replace(R.id.content_frame, new TrafficFragment(), Constants.TRAFFIC_TAG)
+                        .addToBackStack(Constants.TRAFFIC_TAG)
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
             }
         } else if (mState == null) {
             fm.beginTransaction()
-                    .add(R.id.content_frame, new TrafficFragment())
+                    .replace(R.id.content_frame, new TrafficFragment(), Constants.TRAFFIC_TAG)
+                    .addToBackStack(Constants.TRAFFIC_TAG)
                     .commit();
             setItemChecked(R.id.nav_traffic, true);
         }
@@ -418,14 +423,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void openFragment(int itemId) {
         mAction = "";
         Fragment newFragment = null;
+        FragmentManager fm = getSupportFragmentManager();
+        String tag = "";
         switch (itemId) {
             case R.id.nav_traffic:
                 mLastMenuItem = itemId;
-                newFragment = new TrafficFragment();
+                tag = Constants.TRAFFIC_TAG;
                 break;
             case R.id.nav_calls:
                 mLastMenuItem = itemId;
-                newFragment = new CallsFragment();
+                tag = Constants.TRAFFIC_TAG;
                 break;
             case R.id.nav_traf_for_date:
                 mLastMenuItem = itemId;
@@ -471,11 +478,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         if (newFragment != null) {
-            getSupportFragmentManager().beginTransaction()
+            fm.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .replace(R.id.content_frame, newFragment)
                     .commit();
             setItemChecked(itemId, true);
+        } else if (!tag.equals("")) {
+            newFragment = fm.findFragmentByTag(tag);
+            if (newFragment == null) {
+                if (tag.equals(Constants.TRAFFIC_TAG))
+                    newFragment = new TrafficFragment();
+                else
+                    newFragment = new CallsFragment();
+            }
+            fm.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .replace(R.id.content_frame, newFragment, tag)
+                    .addToBackStack(tag)
+                    .commit();
         }
 
     }
