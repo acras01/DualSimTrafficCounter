@@ -50,6 +50,7 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.ManualSimDialog;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
+import ua.od.acros.dualsimtrafficcounter.events.PostNotificationEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetSimEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.events.TipTrafficEvent;
@@ -239,6 +240,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mActiveSIM = event.sim;
             startNewTimerTask(Constants.COUNT);
         }
+    }
+
+    @Subscribe
+    public void onMessageEvent(PostNotificationEvent event) {
+        updateNotification(mActiveSIM);
     }
 
     @Subscribe

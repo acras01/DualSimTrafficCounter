@@ -41,6 +41,7 @@ import ua.od.acros.dualsimtrafficcounter.dialogs.ChooseOperatorDialog;
 import ua.od.acros.dualsimtrafficcounter.events.ListEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoListEvent;
+import ua.od.acros.dualsimtrafficcounter.events.PostNotificationEvent;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
@@ -284,10 +285,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
-                    if (!mIsOutgoing && state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                        final int sim = MobileUtils.getActiveSimForCall(ctx);
-                        mLastActiveSIM = sim;
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mIsOutgoing)
+                    switch (state) {
+                        case TelephonyManager.CALL_STATE_OFFHOOK:
+                            final int sim = MobileUtils.getActiveSimForCall(ctx);
+                            updateNotification();
+                            mLastActiveSIM = sim;
                             /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
                             try {
                                 // to this path add a new directory path
@@ -303,28 +306,31 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }*/
-                        final ArrayList<String> whiteList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "white");
-                        final ArrayList<String> blackList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "black");
-                        boolean white = whiteList.contains(CallLoggerService.this.mNumber[0]);
-                        boolean black = blackList.contains(CallLoggerService.this.mNumber[0]);
-                        if (!white && !black && !mIsDialogShown) {
-                            mIsDialogShown = true;
-                            final Bundle bundle = new Bundle();
-                            bundle.putString("number", CallLoggerService.this.mNumber[0]);
-                            bundle.putInt("sim", sim);
-                            Intent dialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
-                            dialogIntent.putExtra("bundle", bundle);
-                            dialogIntent.putExtra("whitelist", whiteList);
-                            dialogIntent.putExtra("blacklist", blackList);
-                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            CustomApplication.sleep(500);
-                            mContext.startActivity(dialogIntent);
-                        } else if (black)
-                            mIsOutgoing = true;
-                        else if (white)
+                            final ArrayList<String> whiteList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "white");
+                            final ArrayList<String> blackList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "black");
+                            boolean white = whiteList.contains(CallLoggerService.this.mNumber[0]);
+                            boolean black = blackList.contains(CallLoggerService.this.mNumber[0]);
+                            if (!white && !black && !mIsDialogShown) {
+                                mIsDialogShown = true;
+                                final Bundle bundle = new Bundle();
+                                bundle.putString("number", CallLoggerService.this.mNumber[0]);
+                                bundle.putInt("sim", sim);
+                                Intent dialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
+                                dialogIntent.putExtra("bundle", bundle);
+                                dialogIntent.putExtra("whitelist", whiteList);
+                                dialogIntent.putExtra("blacklist", blackList);
+                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                CustomApplication.sleep(500);
+                                mContext.startActivity(dialogIntent);
+                            } else if (black)
+                                mIsOutgoing = true;
+                            else if (white)
+                                mService.stopSelf();
+                            break;
+                        /*case TelephonyManager.CALL_STATE_IDLE:
                             mService.stopSelf();
+                            break;*/
                     }
-                }
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);
     }
@@ -738,6 +744,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mCallEndedReceiver != null)
             unregisterReceiver(mCallEndedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        EventBus.getDefault().post(new PostNotificationEvent());
         EventBus.getDefault().unregister(this);
     }
 
