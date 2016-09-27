@@ -1676,7 +1676,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
             }
             if (mActiveSIM != Constants.DISABLED)
-                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(mActiveSIM));
+                CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(sim));
         } else
             CustomDatabaseHelper.writeData(mTrafficData, mDbHelper, Constants.TRAFFIC);
     }

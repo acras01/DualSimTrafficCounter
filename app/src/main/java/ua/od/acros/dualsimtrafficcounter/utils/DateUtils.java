@@ -6,9 +6,6 @@ import android.content.SharedPreferences;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 
 public class DateUtils {
 
@@ -25,8 +22,6 @@ public class DateUtils {
     }
 
     public static DateTime getResetDate(int sim, ContentValues contentValues, SharedPreferences preferences, String[] simPref) {
-        DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-        DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
         DateTime now = new DateTime().withTimeAtStartOfDay();
         int delta = 0;
         String period = "";
@@ -44,9 +39,9 @@ public class DateUtils {
                 break;
         }
         if (!date.equals(""))
-            last = fmtDateTime.parseDateTime(date).withTimeAtStartOfDay();
+            last = Constants.DATE_TIME_FORMATTER.parseDateTime(date).withTimeAtStartOfDay();
         else
-            last = fmtDate.parseDateTime("1970-01-01");
+            last = Constants.DATE_FORMATTER.parseDateTime("1970-01-01");
         switch (preferences.getString(simPref[0], "")) {
             case "0":
                 delta = 1;
@@ -95,14 +90,14 @@ public class DateUtils {
             if (now.getDayOfMonth() > delta && diff < daysInMonth)
                 month += 1;
             date = now.getYear() + "-" + month + "-" + delta;
-            return fmtDateTime.parseDateTime(date + " " + preferences.getString(simPref[1], "00:00"));
+            return Constants.DATE_TIME_FORMATTER.parseDateTime(date + " " + preferences.getString(simPref[1], "00:00"));
         } else {
             if (preferences.getString(simPref[0], "").equals("2"))
                 contentValues.put(period, diff);
             if (diff >= delta) {
                 if (preferences.getString(simPref[0], "").equals("2"))
                     contentValues.put(period, 0);
-                return fmtDateTime.parseDateTime(now.toString(fmtDate) + " " + preferences.getString(simPref[1], "00:00"));
+                return Constants.DATE_TIME_FORMATTER.parseDateTime(now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(simPref[1], "00:00"));
             } else
                 return null;
         }
