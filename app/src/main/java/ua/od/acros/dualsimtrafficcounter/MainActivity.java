@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_calls:
                 mLastMenuItem = itemId;
-                tag = Constants.TRAFFIC_TAG;
+                tag = Constants.CALLS_TAG;
                 break;
             case R.id.nav_traf_for_date:
                 mLastMenuItem = itemId;
