@@ -8,8 +8,6 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
@@ -29,13 +27,12 @@ public class ResetReceiver extends BroadcastReceiver {
                 Constants.PREF_SIM1_CALLS[5]};
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-        DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
         if (!prefs.getBoolean(Constants.PREF_SIM1_CALLS[9], false)) {
             DateTime mResetTime1 = DateUtils.setResetDate(prefs, simPref);
             if (mResetTime1 != null) {
                 prefs.edit()
                         .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
-                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
+                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(Constants.DATE_TIME_FORMATTER))
                         .apply();
             }
         }
@@ -47,7 +44,7 @@ public class ResetReceiver extends BroadcastReceiver {
                 if (mResetTime2 != null) {
                     prefs.edit()
                             .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
-                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(Constants.DATE_TIME_FORMATTER))
                             .apply();
                 }
             }
@@ -60,7 +57,7 @@ public class ResetReceiver extends BroadcastReceiver {
                 if (mResetTime3 != null) {
                     prefs.edit()
                             .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
-                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
+                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(Constants.DATE_TIME_FORMATTER))
                             .apply();
                 }
             }

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -311,10 +310,9 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             mMonth = monthOfYear + 1;
             mDay = dayOfMonth;
 
-            DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-            DateTime date = fmt.parseDateTime(mYear + "-" + mMonth + "-" + mDay);
+            DateTime date = Constants.DATE_FORMATTER.parseDateTime(mYear + "-" + mMonth + "-" + mDay);
 
-            Format dateFormat = android.text.format.DateFormat.getDateFormat(mContext);
+            Format dateFormat = DateFormat.getDateFormat(mContext);
             String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
 
             bSetDate.setText(new SimpleDateFormat(pattern).format(date.toDate()));

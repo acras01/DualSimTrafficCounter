@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 
@@ -465,17 +463,16 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
         mSqLiteDatabase = dbHelper.getReadableDatabase();
 
-        DateTimeFormatter fmtDate = DateTimeFormat.forPattern(Constants.DATE_FORMAT);
-        DateTime queried = fmtDate.parseDateTime(date);
+        DateTime queried = Constants.DATE_FORMATTER.parseDateTime(date);
 
         if (queried.isAfterNow())
             return null;
 
-        String dayBeforeDate = queried.minusDays(1).toString(fmtDate);
+        String dayBeforeDate = queried.minusDays(1).toString(Constants.DATE_FORMATTER);
 
         Cursor cursorToDate, cursorToDayBeforeDate;
         if (imsi == null) {
-            cursorToDate = mSqLiteDatabase.query(Constants.TRAFFIC, null, Constants.LAST_DATE + " = ?", new String[]{queried.toString(fmtDate)}, null, null, null);
+            cursorToDate = mSqLiteDatabase.query(Constants.TRAFFIC, null, Constants.LAST_DATE + " = ?", new String[]{queried.toString(Constants.DATE_FORMATTER)}, null, null, null);
             if (cursorToDate.moveToLast()) {
                 switch (sim) {
                     case Constants.SIM1:
@@ -547,7 +544,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         } else {
             cursorToDate = mSqLiteDatabase.query("data_" + imsi.get(sim), new String[]{
                             "rx", "tx", "total", "period", "rx_n", "tx_n", "total_n"}, Constants.LAST_DATE + " = ?",
-                    new String[]{queried.toString(fmtDate)}, null, null, null);
+                    new String[]{queried.toString(Constants.DATE_FORMATTER)}, null, null, null);
             if (cursorToDate.moveToLast()) {
                 cv1.put("rx", cursorToDate.getLong(cursorToDate.getColumnIndex("rx")));
                 cv1.put("tx", cursorToDate.getLong(cursorToDate.getColumnIndex("tx")));

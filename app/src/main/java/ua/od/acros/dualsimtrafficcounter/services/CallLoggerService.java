@@ -27,8 +27,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -375,14 +373,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             int simQuantity = sharedPreferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                     : Integer.valueOf(sharedPreferences.getString(Constants.PREF_OTHER[14], "1"));
             DateTime now = DateTime.now();
-            DateTimeFormatter fmtDateTime = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT);
             String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
                     Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
             DateTime mResetTime1 = DateUtils.setResetDate(sharedPreferences, simPref);
             if (mResetTime1 != null && mResetTime1.isAfter(now)) {
                 sharedPreferences.edit()
                         .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
-                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(fmtDateTime))
+                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(Constants.DATE_TIME_FORMATTER))
                         .apply();
             }
             if (simQuantity >= 2) {
@@ -392,7 +389,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 if (mResetTime2 != null && mResetTime2.isAfter(now)) {
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
-                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(fmtDateTime))
+                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(Constants.DATE_TIME_FORMATTER))
                             .apply();
                 }
             }
@@ -403,7 +400,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 if (mResetTime3 != null && mResetTime3.isAfter(now)) {
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
-                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(fmtDateTime))
+                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(Constants.DATE_TIME_FORMATTER))
                             .apply();
                 }
             }
