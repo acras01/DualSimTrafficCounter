@@ -2,6 +2,8 @@ package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,16 +34,17 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.ListItem;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
-import ua.od.acros.dualsimtrafficcounter.utils.WhiteListAdapter;
+import ua.od.acros.dualsimtrafficcounter.utils.MyListAdapter;
 
-public class WhiteListActivity extends AppCompatActivity {
+public class MyListActivity extends AppCompatActivity {
 
 
     private Context mContext = this;
     private int mKey;
+    private boolean mChoice;
     private CustomDatabaseHelper mDbHelper;
     private ProgressBar pb;
-    private WhiteListAdapter mAdapter;
+    private MyListAdapter mAdapter;
     private SharedPreferences mPrefs;
 
     @Override
@@ -63,6 +66,9 @@ public class WhiteListActivity extends AppCompatActivity {
         }
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mKey = Integer.valueOf(getIntent().getDataString());
+        mChoice = mKey < 3;
+        if (!mChoice)
+            mKey = mKey - 3;
         String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -78,17 +84,20 @@ public class WhiteListActivity extends AppCompatActivity {
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setDefaultDisplayHomeAsUpEnabled(true);
             bar.setSubtitle(mOperatorNames[mKey]);
-            bar.setTitle(getString(R.string.white_list));
+            if (mChoice)
+                bar.setTitle(getString(R.string.white_list));
+            else
+                bar.setTitle(getString(R.string.uid_list));
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
-            List<ListItem> whiteList = new ArrayList<>();
-            mAdapter = new WhiteListAdapter(whiteList);
+            List<ListItem> myList = new ArrayList<>();
+            mAdapter = new MyListAdapter(myList);
             recyclerView.setAdapter(mAdapter);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
-            new LoadContactsTask(recyclerView).execute();
+                new LoadTask(recyclerView).execute();
         }
     }
 
@@ -109,6 +118,18 @@ public class WhiteListActivity extends AppCompatActivity {
             cursor.close();
         }
         return whiteList;
+    }
+
+    private List<ListItem> loadAppUids(ArrayList<String> list) {
+        List<ListItem> uidList = new ArrayList<>();
+        PackageManager pm = getPackageManager();
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        for (ApplicationInfo pkg : packages) {
+            String name = (String)((pkg != null) ? pm.getApplicationLabel(pkg) : getString(R.string.unknown));
+            String uid = String.valueOf((pkg != null) ? pkg.uid : getString(R.string.unknown));
+            uidList.add(new ListItem(name, uid, list.contains(uid)));
+        }
+        return uidList;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,7 +160,10 @@ public class WhiteListActivity extends AppCompatActivity {
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
-            CustomDatabaseHelper.writeList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi, "white");
+            if (mChoice)
+                CustomDatabaseHelper.writeList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi, "white");
+            else
+                CustomDatabaseHelper.writeList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi, "uid");
             return true;
         }
 
@@ -150,11 +174,11 @@ public class WhiteListActivity extends AppCompatActivity {
         }
     }
 
-    private class LoadContactsTask extends AsyncTask<Void, Void, List<ListItem>> {
+    private class LoadTask extends AsyncTask<Void, Void, List<ListItem>> {
 
         RecyclerView rv;
 
-        LoadContactsTask(RecyclerView rv) {
+        LoadTask(RecyclerView rv) {
             this.rv = rv;
         }
 
@@ -169,17 +193,24 @@ public class WhiteListActivity extends AppCompatActivity {
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
                 imsi = MobileUtils.getSimIds(mContext);
-            ArrayList<String> whiteList= CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "white");
-            List<ListItem> listItems = loadContactsFromDB(mContext, whiteList);
+            ArrayList<String> myList;
+            List<ListItem> listItems;
+            if (mChoice) {
+                myList = CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "white");
+                listItems = loadContactsFromDB(mContext, myList);
+            } else {
+                myList = CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "uid");
+                listItems = loadAppUids(myList);
+            }
             List<String> numbers = new ArrayList<>();
             for (ListItem item : listItems)
                 numbers.add(item.getNumber());
-            for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
+            for (Iterator<String> i = myList.iterator(); i.hasNext(); ) {
                 if (numbers.contains(i.next())) {
                     i.remove();
                 }
             }
-            for (Iterator<String> i = whiteList.iterator(); i.hasNext(); ) {
+            for (Iterator<String> i = myList.iterator(); i.hasNext(); ) {
                 listItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
                 i.remove();
             }

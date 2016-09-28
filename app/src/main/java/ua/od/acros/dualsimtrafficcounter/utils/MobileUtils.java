@@ -69,19 +69,19 @@ public class MobileUtils {
     private static Method mGetSimId = null;
     private static Method mGetDefaultDataSubId = null;
 
-    public static final int NT_WCDMA_PREFERRED = 0;             // GSM/WCDMA (WCDMA preferred) (2g/3g)
-    public static final int NT_GSM_ONLY = 1;                    // GSM Only (2g)
-    public static final int NT_WCDMA_ONLY = 2;                  // WCDMA ONLY (3g)
-    public static final int NT_GSM_WCDMA_AUTO = 3;              // GSM/WCDMA Auto (2g/3g)
-    public static final int NT_CDMA_EVDO = 4;                   // CDMA/EVDO Auto (2g/3g)
-    public static final int NT_CDMA_ONLY = 5;                   // CDMA Only (2G)
-    public static final int NT_EVDO_ONLY = 6;                   // Evdo Only (3G)
-    public static final int NT_GLOBAL = 7;                      // GSM/WCDMA/CDMA Auto (2g/3g)
-    public static final int NT_LTE_CDMA_EVDO = 8;
-    public static final int NT_LTE_GSM_WCDMA = 9;
-    public static final int NT_LTE_CMDA_EVDO_GSM_WCDMA = 10;
-    public static final int NT_LTE_ONLY = 11;
-    public static final int NT_LTE_WCDMA = 12;
+    private static final int NT_WCDMA_PREFERRED = 0;             // GSM/WCDMA (WCDMA preferred) (2g/3g)
+    private static final int NT_GSM_ONLY = 1;                    // GSM Only (2g)
+    private static final int NT_WCDMA_ONLY = 2;                  // WCDMA ONLY (3g)
+    private static final int NT_GSM_WCDMA_AUTO = 3;              // GSM/WCDMA Auto (2g/3g)
+    private static final int NT_CDMA_EVDO = 4;                   // CDMA/EVDO Auto (2g/3g)
+    private static final int NT_CDMA_ONLY = 5;                   // CDMA Only (2G)
+    private static final int NT_EVDO_ONLY = 6;                   // Evdo Only (3G)
+    private static final int NT_GLOBAL = 7;                      // GSM/WCDMA/CDMA Auto (2g/3g)
+    private static final int NT_LTE_CDMA_EVDO = 8;
+    private static final int NT_LTE_GSM_WCDMA = 9;
+    private static final int NT_LTE_CMDA_EVDO_GSM_WCDMA = 10;
+    private static final int NT_LTE_ONLY = 11;
+    private static final int NT_LTE_WCDMA = 12;
 
     private static Method getMethod (Class c, String name, int params) {
         Method[] cm = c.getDeclaredMethods();

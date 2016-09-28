@@ -234,6 +234,30 @@
 
         </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
+            android:title="@string/uid_list" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="use_uid1"
+            android:title="@string/use_uid"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="uid1"
+            android:dependency="use_uid1"
+            android:title="@string/uid_list"
+            android:summary="@string/view_uid">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.MyListActivity"
+                android:data="3">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
+    </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -433,6 +457,30 @@
 
         </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
 
+        <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
+            android:title="@string/uid_list" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="use_uid2"
+            android:title="@string/use_uid"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="uid2"
+            android:dependency="use_uid2"
+            android:title="@string/uid_list"
+            android:summary="@string/view_uid">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.MyListActivity"
+                android:data="4">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
+
+        </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -629,6 +677,30 @@
             android:dialogLayout="@layout/time_preference"
             android:dependency="usenight3"
             android:title="@string/time_off"/>
+
+        </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
+            android:title="@string/uid_list" >
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+            android:key="use_uid3"
+            android:title="@string/use_uid"
+            android:defaultValue="false"
+            android:summaryOn="@string/on"
+            android:summaryOff="@string/off" />
+
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference
+            android:key="uid3"
+            android:dependency="use_uid3"
+            android:title="@string/uid_list"
+            android:summary="@string/view_uid">
+            <intent
+                android:targetPackage="ua.od.acros.dualsimtrafficcounter"
+                android:targetClass="ua.od.acros.dualsimtrafficcounter.activities.MyListActivity"
+                android:data="5">
+            </intent>
+        </ua.od.acros.dualsimtrafficcounter.preferences.TwoLinePreference>
 
         </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
 

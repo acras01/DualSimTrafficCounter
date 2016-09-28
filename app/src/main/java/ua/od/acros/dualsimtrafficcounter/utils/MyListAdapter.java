@@ -14,12 +14,12 @@ import java.util.List;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
-public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.ViewHolder> {
+public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
 
 
     public List<ListItem> mList;
 
-    public WhiteListAdapter(List<ListItem> list) {
+    public MyListAdapter(List<ListItem> list) {
         if (list != null)
             this.mList = list;
     }
@@ -38,10 +38,10 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
     }
 
     @Override
-    public WhiteListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.white_list_row, parent, false);
+                .inflate(R.layout.my_list_row, parent, false);
 
         // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
         ViewHolder viewHolder = new ViewHolder(v);
@@ -65,7 +65,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(WhiteListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(MyListAdapter.ViewHolder holder, int position) {
         holder.txtViewName.setText(mList.get(position).getName());
         holder.txtViewName.setTag(mList.get(position));
         holder.txtViewNumber.setText(mList.get(position).getNumber());

@@ -233,4 +233,7 @@
     <string name="auto_load_service">Закривати сервіс автоматично при вимкненні мобільних даних</string>
     <string name="action_traffic">Трафік</string>
     <string name="action_calls">Дзвінки</string>
+    <string name="view_uid">Перегляд та редагування списку виключень</string>
+    <string name="use_uid">Виключати обрані додатки при підрахунку</string>
+    <string name="uid_list">Список виключень</string>
 </resources>

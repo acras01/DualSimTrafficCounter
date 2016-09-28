@@ -99,7 +99,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.WhiteListActivity"
+            android:name=".activities.MyListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_white_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>

@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
@@ -22,6 +23,9 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
     private static final String BLACK_LIST_1 = "list1_b";
     private static final String BLACK_LIST_2 = "list2_b";
     private static final String BLACK_LIST_3 = "list3_b";
+    private static final String UID_1 = "uid_list1";
+    private static final String UID_2 = "uid_list2";
+    private static final String UID_3 = "uid_list3";
     private static SQLiteDatabase mSqLiteDatabase;
     private static CustomDatabaseHelper mInstance;
 
@@ -692,6 +696,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 cv.put(Constants.NUMBER, s);
                 mSqLiteDatabase.insert(table, null, cv);
             }
+            CustomApplication.getAppContext().getContentResolver().notifyChange(Constants.UID_URI, null);
         }
     }
 
@@ -722,7 +727,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
         }
-        return list;
+        return new ArrayList<>(new LinkedHashSet<>(list));
     }
 
     private static String getTableName(int sim, ArrayList<String> imsi, String name) {
@@ -734,8 +739,10 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 else {
                     if (name.contains("h"))
                         table = WHITE_LIST_1;
-                    else
+                    else if (name.contains("b"))
                         table = BLACK_LIST_1;
+                    else
+                        table = UID_1;
                 }
                 break;
             case Constants.SIM2:
@@ -744,8 +751,10 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 else {
                     if (name.contains("h"))
                         table = WHITE_LIST_2;
-                    else
+                    else if (name.contains("b"))
                         table = BLACK_LIST_2;
+                    else
+                        table = UID_2;
                 }
                 break;
             case Constants.SIM3:
@@ -754,8 +763,10 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 else {
                     if (name.contains("h"))
                         table = WHITE_LIST_3;
-                    else
+                    else if (name.contains("b"))
                         table = BLACK_LIST_3;
+                    else
+                        table = UID_3;
                 }
                 break;
         }

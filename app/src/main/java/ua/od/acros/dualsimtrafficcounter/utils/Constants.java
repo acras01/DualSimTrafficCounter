@@ -1,5 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import android.net.Uri;
+
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -51,19 +53,19 @@ public class Constants {
             "op_round1", "op_limit1", "op_value1", "usenight1", "limitnight1", //18
             "valuenight1", "nighton1", "nightoff1", "nightround1", "operator_logo1", "reset1", "needsreset1", //25
             "nextreset1", "overlimit1", "action_chosen1", "prelimit1", "prelimitpercent1", "autoenable1", //31
-            "onlyreceived1"}; //32
+            "onlyreceived1", "use_uid1"}; //33
     public static final String[] PREF_SIM2 = {"stub2", "limit2", "value2", "period2", "round2", "auto2", //5
             "name2", "autooff2", "prefer2", "time2", "day2", "everydayonoff2", "timeoff2", "timeon2", //13
             "op_round2", "op_limit2", "op_value2", "usenight2", "limitnight2", //18
             "valuenight2", "nighton2", "nightoff2", "nightround2", "operator_logo2", "reset2", "needsreset2", //25
             "nextreset2", "overlimit2", "action_chosen2", "prelimit2", "prelimitpercent2", "autoenable2", //31
-            "onlyreceived2"}; //32
+            "onlyreceived2", "use_uid2"}; //33
     public static final String[] PREF_SIM3 = {"stub3", "limit3", "value3", "period3", "round3", "auto3", //5
             "name3", "autooff3", "prefer3", "time3", "day3", "everydayonoff3", "timeoff3", "timeon3", //13
             "op_round3", "op_limit31", "op_value3", "usenight3", "limitnight3", //18
             "valuenight3", "nighton3", "nightoff3", "nightround3", "operator_logo3", "reset3", "needsreset3", //25
             "nextreset3", "overlimit3", "action_chosen3", "prelimit3", "prelimitpercent3", "autoenable3", //31
-            "onlyreceived3"}; //32
+            "onlyreceived3", "use_uid3"}; //33
     public static final String[] PREF_OTHER = {"stub", "ringtone", "vibrate", "notification", //3
             "watchdog", "count_stopped", "watchdog_stopped", //6
             "fullinfo", "watchdog_timer", "first_run", "changeSIM", "acra.enable", //11
@@ -92,7 +94,7 @@ public class Constants {
             "op_round", "op_limit", "op_value", "usenight", "limitnight", //18
             "valuenight", "nighton", "nightoff", "nightround", "operator_logo", "reset", "needsreset", //25
             "nextreset", "overlimit", "action_chosen", "prelimit", "prelimitpercent", "autoenable", //31
-            "onlyreceived"}; //32
+            "onlyreceived", "use_uid"}; //33
     public static final String[] PREF_SIM_CALLS = {"stub", "calls_limit", "calls_period", "calls_round", //3
             "calls_time", "calls_day", "calls_op_value", "calls_period", "calls_reset", "calls_needs_reset", "calls_lastreset"}; //10
     public static final String[] PREF_SIM1_CALLS = {"calls_stub1", "calls_limit1", "calls_period1", "calls_round1", //3
@@ -145,4 +147,5 @@ public class Constants {
     public static final String CALLS_TAP = "ua.od.acros.dualsimtrafficcounter.CALLS";
     public static final String TRAFFIC_TAP = "ua.od.acros.dualsimtrafficcounter.TRAFFIC";
     public static final String HIDE = "ua.od.acros.dualsimtrafficcounter.HIDE";
+    public static final Uri UID_URI = Uri.parse("content://ua.od.acros.dualsimtrafficcounter.mydatabase");
 }

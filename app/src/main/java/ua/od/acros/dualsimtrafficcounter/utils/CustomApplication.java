@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,7 +49,7 @@ import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
         resDialogOkToast = R.string.crash_toast_text_ok)
 public class CustomApplication extends Application {
 
-    private static Context mContext;
+    private static WeakReference<Context> mWeakContext;
     private static Boolean mIsOldMtkDevice = null;
     private static boolean mCanSwitchSim;
     private static Boolean mHasRoot = null;
@@ -75,26 +76,27 @@ public class CustomApplication extends Application {
         super.onCreate();
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
-        mContext = getApplicationContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Context context = getApplicationContext();
+        mWeakContext = new WeakReference<>(context);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         //Check if Data Usage Fragment available
         final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
         mSettingsIntent = new Intent(Intent.ACTION_MAIN);
         mSettingsIntent.setComponent(cn);
         mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (mContext.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
+        if (context.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
         mCanSwitchSim = isOldMtkDevice() && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
 
         //Reschedule alarms
-        AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
         //Calls reset
         if (mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
-            Intent iReset = new Intent(mContext, ResetReceiver.class);
+            Intent iReset = new Intent(context, ResetReceiver.class);
             iReset.setAction(Constants.RESET_ACTION);
             final int RESET = 1981;
-            PendingIntent piReset = PendingIntent.getBroadcast(mContext, RESET, iReset, 0);
+            PendingIntent piReset = PendingIntent.getBroadcast(context, RESET, iReset, 0);
             if (alarmTime.getMillis() < System.currentTimeMillis())
                 alarmTime = alarmTime.plusDays(1);
             am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
@@ -104,12 +106,12 @@ public class CustomApplication extends Application {
                 || !mPrefs.getString(Constants.PREF_SIM3[11], "0").equals("3")) {
             if (mPrefs.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     mPrefs.getString(Constants.PREF_SIM1[11], "0").equals("1")) {
-                Intent i1Off = new Intent(mContext, OnOffReceiver.class);
+                Intent i1Off = new Intent(context, OnOffReceiver.class);
                 i1Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                 i1Off.putExtra(Constants.ON_OFF, false);
                 i1Off.setAction(Constants.ALARM_ACTION);
                 final int SIM1_OFF = 100;
-                PendingIntent pi1Off = PendingIntent.getBroadcast(mContext, SIM1_OFF, i1Off, 0);
+                PendingIntent pi1Off = PendingIntent.getBroadcast(context, SIM1_OFF, i1Off, 0);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
@@ -119,12 +121,12 @@ public class CustomApplication extends Application {
             }
             if (mPrefs.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     mPrefs.getString(Constants.PREF_SIM1[11], "0").equals("2")) {
-                Intent i1On = new Intent(mContext, OnOffReceiver.class);
+                Intent i1On = new Intent(context, OnOffReceiver.class);
                 i1On.putExtra(Constants.SIM_ACTIVE, Constants.SIM1);
                 i1On.putExtra(Constants.ON_OFF, true);
                 i1On.setAction(Constants.ALARM_ACTION);
                 final int SIM1_ON = 101;
-                PendingIntent pi1On = PendingIntent.getBroadcast(mContext, SIM1_ON, i1On, 0);
+                PendingIntent pi1On = PendingIntent.getBroadcast(context, SIM1_ON, i1On, 0);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
@@ -134,12 +136,12 @@ public class CustomApplication extends Application {
             }
             if (mPrefs.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     mPrefs.getString(Constants.PREF_SIM2[11], "0").equals("1")) {
-                Intent i2Off = new Intent(mContext, OnOffReceiver.class);
+                Intent i2Off = new Intent(context, OnOffReceiver.class);
                 i2Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                 i2Off.putExtra(Constants.ON_OFF, false);
                 i2Off.setAction(Constants.ALARM_ACTION);
                 final int SIM2_OFF = 110;
-                PendingIntent pi2Off = PendingIntent.getBroadcast(mContext, SIM2_OFF, i2Off, 0);
+                PendingIntent pi2Off = PendingIntent.getBroadcast(context, SIM2_OFF, i2Off, 0);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
@@ -149,12 +151,12 @@ public class CustomApplication extends Application {
             }
             if (mPrefs.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
                     mPrefs.getString(Constants.PREF_SIM2[11], "0").equals("2")) {
-                Intent i2On = new Intent(mContext, OnOffReceiver.class);
+                Intent i2On = new Intent(context, OnOffReceiver.class);
                 i2On.putExtra(Constants.SIM_ACTIVE, Constants.SIM2);
                 i2On.putExtra(Constants.ON_OFF, true);
                 i2On.setAction(Constants.ALARM_ACTION);
                 final int SIM2_ON = 111;
-                PendingIntent pi2On = PendingIntent.getBroadcast(mContext, SIM2_ON, i2On, 0);
+                PendingIntent pi2On = PendingIntent.getBroadcast(context, SIM2_ON, i2On, 0);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
@@ -164,12 +166,12 @@ public class CustomApplication extends Application {
             }
             if (mPrefs.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     mPrefs.getString(Constants.PREF_SIM3[11], "0").equals("1")) {
-                Intent i3Off = new Intent(mContext, OnOffReceiver.class);
+                Intent i3Off = new Intent(context, OnOffReceiver.class);
                 i3Off.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
                 i3Off.putExtra(Constants.ON_OFF, false);
                 i3Off.setAction(Constants.ALARM_ACTION);
                 final int SIM3_OFF = 120;
-                PendingIntent pi3Off = PendingIntent.getBroadcast(mContext, SIM3_OFF, i3Off, 0);
+                PendingIntent pi3Off = PendingIntent.getBroadcast(context, SIM3_OFF, i3Off, 0);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]))
                         .withSecondOfMinute(0);
@@ -179,12 +181,12 @@ public class CustomApplication extends Application {
             }
             if (mPrefs.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
                     mPrefs.getString(Constants.PREF_SIM3[11], "0").equals("2")) {
-                Intent i3On = new Intent(mContext, OnOffReceiver.class);
+                Intent i3On = new Intent(context, OnOffReceiver.class);
                 i3On.putExtra(Constants.SIM_ACTIVE, Constants.SIM3);
                 i3On.putExtra(Constants.ON_OFF, true);
                 i3On.setAction(Constants.ALARM_ACTION);
                 final int SIM3_ON = 121;
-                PendingIntent pi3On = PendingIntent.getBroadcast(mContext, SIM3_ON, i3On, 0);
+                PendingIntent pi3On = PendingIntent.getBroadcast(context, SIM3_ON, i3On, 0);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]))
                         .withMinuteOfHour(Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]))
                         .withSecondOfMinute(0);
@@ -204,7 +206,7 @@ public class CustomApplication extends Application {
     }
 
     public static Context getAppContext() {
-        return  mContext;
+        return mWeakContext.get();
     }
 
     public static boolean isActivityVisible() {
@@ -220,8 +222,8 @@ public class CustomApplication extends Application {
     }
 
     public static boolean isScreenOn() {
-        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1)
+        PowerManager pm = (PowerManager) mWeakContext.get().getSystemService(Context.POWER_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return pm.isInteractive();
         else
             return pm.isScreenOn();
@@ -229,7 +231,7 @@ public class CustomApplication extends Application {
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
         try {
-            ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+            ActivityManager manager = (ActivityManager) mWeakContext.get().getSystemService(Context.ACTIVITY_SERVICE);
             for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
                 if (serviceClass.getName().equals(service.service.getClassName()))
                     return true;
@@ -242,7 +244,7 @@ public class CustomApplication extends Application {
 
     public static boolean isPackageExisted(String targetPackage){
         try {
-            PackageInfo info = mContext.getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
+            PackageInfo info = mWeakContext.get().getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
@@ -279,7 +281,7 @@ public class CustomApplication extends Application {
     public static boolean hasGeminiSupport() {
         if (mHasGeminiSupport == null)
             mHasGeminiSupport = System.getProperty("ro.mediatek.gemini_support", "").equals("true") &&
-                    Build.VERSION.SDK_INT < 22;
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1;
         return mHasGeminiSupport;
     }
 
@@ -300,14 +302,15 @@ public class CustomApplication extends Application {
 
     public static int[] getWidgetIds(String name) {
         Class c;
+        Context context = mWeakContext.get();
         if (name.equals(Constants.CALLS))
             c = CallsInfoWidget.class;
         else
             c = TrafficInfoWidget.class;
-        int[] ids = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new ComponentName(mContext, c));
+        int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, c));
         if (ids.length == 0) {
             try {
-                File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
+                File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
                 String[] children = dir.list();
                 int i = 0;
                 for (String aChildren : children) {
@@ -427,12 +430,13 @@ public class CustomApplication extends Application {
     }
 
     public static void deletePreferenceFile(int quantity, String name) {
-        File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
+        Context context = mWeakContext.get();
+        File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
         String[] children = dir.list();
         for (String aChildren : children) {
             for (int j = 0; j < quantity; j++) {
                 if (aChildren.contains(name))
-                    mContext.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
+                    context.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().apply();
             }
         }
         sleep(1000);
@@ -445,19 +449,20 @@ public class CustomApplication extends Application {
     }
 
     public static void deleteWidgetPreferenceFile(int[] ids, String name) {
-        File dir = new File(mContext.getFilesDir().getParent() + "/shared_prefs/");
+        Context context = mWeakContext.get();
+        File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
         String[] children = dir.list();
         for (String aChildren : children) {
             for (int j : ids)
                 if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + name + Constants.WIDGET_PREFERENCES))
-                    mContext.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
+                    context.getSharedPreferences(aChildren.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().apply();
         }
         sleep(1000);
         for (String aChildren : children) {
             for (int j : ids)
                 if (aChildren.replace(".xml", "").equalsIgnoreCase(String.valueOf(j) + name + Constants.WIDGET_PREFERENCES))
                     if (new File(dir, aChildren).delete())
-                        Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, R.string.deleted, Toast.LENGTH_LONG).show();
         }
     }
 

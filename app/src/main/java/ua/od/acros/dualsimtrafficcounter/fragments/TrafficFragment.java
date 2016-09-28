@@ -80,7 +80,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (mContext == null)
-            mContext = CustomApplication.getAppContext();
+            mContext = getActivity().getApplicationContext();
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
