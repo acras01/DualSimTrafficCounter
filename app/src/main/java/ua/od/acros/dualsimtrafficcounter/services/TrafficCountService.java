@@ -676,6 +676,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mStartRX = TrafficStats.getMobileRxBytes();
             mStartTX = TrafficStats.getMobileTxBytes();
             String[] prefs = new String[Constants.PREF_SIM_DATA.length];
+            mUids = null;
             switch (mActiveSIM) {
                 case Constants.SIM1:
                     tTask = new CountTimerTask1();
@@ -735,6 +736,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     CustomApplication.putObject(editor, key, o);
                 editor.apply();
             }
+        }
+        if (key.equals(Constants.PREF_SIM_DATA[33]) || key.equals(Constants.PREF_SIM1[33]) ||
+                key.equals(Constants.PREF_SIM2[33]) || key.equals(Constants.PREF_SIM3[33])) {
+            if (mTaskResult != null) {
+                mTaskResult.cancel(false);
+                mTaskExecutor.shutdown();
+            }
+            startNewTimerTask(Constants.COUNT);
         }
         if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
                 key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
