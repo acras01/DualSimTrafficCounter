@@ -142,7 +142,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            mUids = CustomDatabaseHelper.readList(mActiveSIM, mDbHelper, mIMSI, "uid");
+            if (mTaskResult != null) {
+                mTaskResult.cancel(false);
+                mTaskExecutor.shutdown();
+            }
+            startNewTimerTask(Constants.COUNT);
         }
 
         @Override
