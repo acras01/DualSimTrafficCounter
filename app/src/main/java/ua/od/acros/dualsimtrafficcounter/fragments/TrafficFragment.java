@@ -110,7 +110,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             }
                             TOT1.setText(DataFormat.formatData(context, mIsNight[0] ? intent.getLongExtra(Constants.TOTAL1_N, 0L) :
                                     intent.getLongExtra(Constants.TOTAL1, 0L)));
-                            if (intent.getStringExtra(Constants.OPERATOR1).equals("") || !intent.hasExtra(Constants.OPERATOR1))
+                            if (!intent.hasExtra(Constants.OPERATOR1) || intent.getStringExtra(Constants.OPERATOR1).equals(""))
                                 SIM1.setText(mIsNight[0] ? "SIM1" + getString(R.string.night) : "SIM1");
                             else {
                                 mOperatorNames[0] = intent.getStringExtra(Constants.OPERATOR1);
