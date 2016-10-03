@@ -194,8 +194,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                     .apply();
             ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[40])).setChecked(true);
             if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
-                    ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
-                            !mPrefs.getBoolean(Constants.PREF_OTHER[41], false)))
+                    (!mPrefs.getBoolean(Constants.PREF_OTHER[41], false) || MobileUtils.isMobileDataActive(mContext)))
                 FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             return true;
         } else
