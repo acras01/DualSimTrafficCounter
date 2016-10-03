@@ -109,21 +109,19 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             iReset.setAction(Constants.RESET_ACTION);
             final int RESET = 1981;
             PendingIntent piReset = PendingIntent.getBroadcast(mContext, RESET, iReset, 0);
-            if (!sharedPreferences.getBoolean(key, false)) {
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
-                    mContext.stopService(new Intent(mContext, CallLoggerService.class));
-                    sharedPreferences.edit()
-                            .putBoolean(Constants.PREF_OTHER[24], true)
-                            .apply();
-                    am.cancel(piReset);
-                }
-            } else {
-                mContext.startService(new Intent(mContext, CallLoggerService.class));
+            if (sharedPreferences.getBoolean(key, false)) {
                 sharedPreferences.edit()
                         .putBoolean(Constants.PREF_OTHER[24], false)
                         .apply();
                 am.cancel(piReset);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
+            } else {
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
+                    mContext.stopService(new Intent(mContext, CallLoggerService.class));
+                sharedPreferences.edit()
+                        .putBoolean(Constants.PREF_OTHER[24], true)
+                        .apply();
+                am.cancel(piReset);
             }
         }
         if (key.equals(Constants.PREF_OTHER[12]) && CustomApplication.isMyServiceRunning(WatchDogService.class)) {
