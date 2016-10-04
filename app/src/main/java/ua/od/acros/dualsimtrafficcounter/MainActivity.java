@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.joda.time.DateTime;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,6 +50,7 @@ import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,

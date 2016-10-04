@@ -67,6 +67,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.DataResetObject;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import wei.mark.standout.StandOutWindow;
@@ -824,10 +825,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private void checkIfResetNeeded() {
         String[] simPref;
         if (DateTimeComparator.getDateOnlyInstance().compare(mNowDate, mLastDate) > 0 || mResetRuleHasChanged) {
-            simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9],
-                    Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
-            mResetTime1 = DateUtils.getResetDate(Constants.SIM1, mTrafficData, mPrefs, simPref);
-            if (mResetTime1 != null) {
+            simPref = new String[] {Constants.PREF_SIM1[3], Constants.PREF_SIM1[9], Constants.PREF_SIM1[10], Constants.PREF_SIM1[24]};
+            DataResetObject dro = DateUtils.getResetDate(mPrefs, simPref);
+            if (dro != null) {
+                mResetTime1 = dro.getDate();
+                mTrafficData.put(Constants.PREF_SIM1[10], dro.getPeriod());
                 mIsResetNeeded1 = true;
                 mPrefs.edit()
                         .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
@@ -835,10 +837,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         .apply();
             }
             if (mSimQuantity >= 2) {
-                simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9],
-                        Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
-                mResetTime2 = DateUtils.getResetDate(Constants.SIM2, mTrafficData, mPrefs, simPref);
-                if (mResetTime2 != null) {
+                simPref = new String[] {Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10], Constants.PREF_SIM2[24]};
+                dro = DateUtils.getResetDate(mPrefs, simPref);
+                if (dro != null) {
+                    mResetTime2 = dro.getDate();
+                    mTrafficData.put(Constants.PREF_SIM2[10], dro.getPeriod());
                     mIsResetNeeded2 = true;
                     mPrefs.edit()
                             .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
@@ -847,10 +850,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             }
             if (mSimQuantity == 3) {
-                simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9],
-                        Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
-                mResetTime3 = DateUtils.getResetDate(Constants.SIM3, mTrafficData, mPrefs, simPref);
-                if (mResetTime3 != null) {
+                simPref = new String[] {Constants.PREF_SIM3[3], Constants.PREF_SIM3[9], Constants.PREF_SIM3[10], Constants.PREF_SIM3[24]};
+                dro = DateUtils.getResetDate(mPrefs, simPref);
+                if (dro != null) {
+                    mResetTime3 = dro.getDate();
+                    mTrafficData.put(Constants.PREF_SIM3[10], dro.getPeriod());
                     mIsResetNeeded3 = true;
                     mPrefs.edit()
                             .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)

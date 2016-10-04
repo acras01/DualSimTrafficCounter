@@ -1,11 +1,12 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.app.AlarmManager;
-import android.content.ContentValues;
 import android.content.SharedPreferences;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+
+import static java.lang.Integer.parseInt;
 
 public class DateUtils {
 
@@ -21,23 +22,11 @@ public class DateUtils {
         }
     }
 
-    public static DateTime getResetDate(int sim, ContentValues contentValues, SharedPreferences preferences, String[] simPref) {
+    public static DataResetObject getResetDate(SharedPreferences preferences, String[] simPref) {
         DateTime now = new DateTime().withTimeAtStartOfDay();
-        int delta = 0;
-        String period = "";
+        int delta = parseInt(preferences.getString(simPref[2], "1"));
         DateTime last;
         String date = preferences.getString(simPref[3], "");
-        switch (sim) {
-            case Constants.SIM1:
-                period = Constants.PERIOD1;
-                break;
-            case Constants.SIM2:
-                period = Constants.PERIOD2;
-                break;
-            case Constants.SIM3:
-                period = Constants.PERIOD3;
-                break;
-        }
         if (!date.equals(""))
             last = Constants.DATE_TIME_FORMATTER.parseDateTime(date).withTimeAtStartOfDay();
         else
@@ -47,7 +36,6 @@ public class DateUtils {
                 delta = 1;
                 break;
             case "1":
-                delta = Integer.parseInt(preferences.getString(simPref[2], "1"));
                 if (delta >= 28)
                     switch (now.getMonthOfYear()) {
                         case 2:
@@ -64,9 +52,6 @@ public class DateUtils {
                                 delta = 30;
                             break;
                     }
-                break;
-            case "2":
-                delta = Integer.parseInt(preferences.getString(simPref[2], "1"));
                 break;
         }
         int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
@@ -90,14 +75,15 @@ public class DateUtils {
             if (now.getDayOfMonth() > delta && diff < daysInMonth)
                 month += 1;
             date = now.getYear() + "-" + month + "-" + delta;
-            return Constants.DATE_TIME_FORMATTER.parseDateTime(date + " " + preferences.getString(simPref[1], "00:00"));
+            return new DataResetObject(0, Constants.DATE_TIME_FORMATTER.parseDateTime(date + " " + preferences.getString(simPref[1], "00:00")));
         } else {
+            int period = 0;
             if (preferences.getString(simPref[0], "").equals("2"))
-                contentValues.put(period, diff);
+                period = diff;
             if (diff >= delta) {
                 if (preferences.getString(simPref[0], "").equals("2"))
-                    contentValues.put(period, 0);
-                return Constants.DATE_TIME_FORMATTER.parseDateTime(now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(simPref[1], "00:00"));
+                    period = 0;
+                return new DataResetObject(period, Constants.DATE_TIME_FORMATTER.parseDateTime(now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(simPref[1], "00:00")));
             } else
                 return null;
         }
@@ -109,19 +95,17 @@ public class DateUtils {
         now = new DateTime()
                 .withHourOfDay(Integer.valueOf(time.split(":")[0]))
                 .withMinuteOfHour(Integer.valueOf(time.split(":")[1]));
-        int delta;
+        int delta = parseInt(preferences.getString(simPref[2], "1"));
         switch (preferences.getString(simPref[0], "")) {
             case "0":
                 delta = 1;
                 return now.plusDays(delta);
             case "1":
-                delta = Integer.parseInt(preferences.getString(simPref[2], "1"));
                 if (delta >= now.getDayOfMonth())
                     return now.withDayOfMonth(delta);
                 else
                     return now.plusMonths(1).withDayOfMonth(delta);
             case "2":
-                delta = Integer.parseInt(preferences.getString(simPref[2], "1"));
                 return now.plusDays(delta);
         }
         return null;
@@ -167,7 +151,7 @@ public class DateUtils {
                 interval *= AlarmManager.INTERVAL_DAY;
                 break;
             case "2":
-                interval = Integer.parseInt(sharedPreferences.getString(pref[10], "1")) * AlarmManager.INTERVAL_DAY;
+                interval = parseInt(sharedPreferences.getString(pref[10], "1")) * AlarmManager.INTERVAL_DAY;
                 break;
         }
         return interval;
