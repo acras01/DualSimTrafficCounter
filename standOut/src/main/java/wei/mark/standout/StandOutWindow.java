@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -180,7 +182,7 @@ public abstract class StandOutWindow extends Service {
 	 * other.
 	 * 
 	 * <p>
-	 * Send {@link Parceleable} data in a {@link Bundle} to a new or existing
+	 * Send {@link Parcelable} data in a {@link Bundle} to a new or existing
 	 * windows. The implementation of the recipient window can handle what to do
 	 * with the data. To receive a result, provide the class and id of the
 	 * sender.
@@ -270,7 +272,7 @@ public abstract class StandOutWindow extends Service {
 	}
 
 	/**
-	 * See {@link #closeAll(Context, Class, int)}.
+	 * See {@link #closeAll()}.
 	 * 
 	 * @param context
 	 *            A Context of the application package implementing this class.
@@ -449,7 +451,7 @@ public abstract class StandOutWindow extends Service {
 	public abstract void createAndAttachView(int id, FrameLayout frame);
 
 	/**
-	 * Return the {@link StandOutWindow#LayoutParams} for the corresponding id.
+	 * Return the {@link StandOutWindow #LayoutParams} for the corresponding id.
 	 * The system will set the layout params on the view for this StandOut
 	 * window. The layout params may be reused.
 	 * 
@@ -459,7 +461,7 @@ public abstract class StandOutWindow extends Service {
 	 * @param window
 	 *            The window corresponding to the id. Given as courtesy, so you
 	 *            may get the existing layout params.
-	 * @return The {@link StandOutWindow#LayoutParams} corresponding to the id.
+	 * @return The {@link StandOutWindow #LayoutParams} corresponding to the id.
 	 *         The layout params will be set on the window. The layout params
 	 *         returned will be reused whenever possible, minimizing the number
 	 *         of times getParams() will be called.
@@ -821,9 +823,7 @@ public abstract class StandOutWindow extends Service {
 				}
 			});
 		}
-
-		Drawable background = getResources().getDrawable(android.R.drawable.editbox_dropdown_dark_frame);
-		dropDown.setBackgroundDrawable(background);
+		dropDown.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.drawable.editbox_dropdown_dark_frame));
 		return dropDown;
 	}
 
@@ -904,7 +904,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @param id
 	 *            The id of the view, provided as a courtesy.
-	 * @param view
+	 * @param window
 	 *            The view about to be shown.
 	 * @return Return true to cancel the view from being shown, or false to
 	 *         continue.
@@ -922,7 +922,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @param id
 	 *            The id of the view, provided as a courtesy.
-	 * @param view
+	 * @param window
 	 *            The view about to be hidden.
 	 * @return Return true to cancel the view from being hidden, or false to
 	 *         continue.
@@ -939,7 +939,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @param id
 	 *            The id of the view, provided as a courtesy.
-	 * @param view
+	 * @param window
 	 *            The view about to be closed.
 	 * @return Return true to cancel the view from being closed, or false to
 	 *         continue.
@@ -993,13 +993,13 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @param id
 	 *            The id of the window, provided as a courtesy.
-	 * @param view
+	 * @param window
 	 *            The window about to be updated.
 	 * @param params
 	 *            The updated layout params.
 	 * @return Return true to cancel the window from being updated, or false to
 	 *         continue.
-	 * @see #updateViewLayout(int, Window, StandOutLayoutParams)
+	 * @see #updateViewLayout(int, StandOutLayoutParams)
 	 */
 	public boolean onUpdate(int id, Window window, StandOutLayoutParams params) {
 		return false;
@@ -1012,7 +1012,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @param id
 	 *            The id of the window, provided as a courtesy.
-	 * @param view
+	 * @param window
 	 *            The window about to be brought to the front.
 	 * @return Return true to cancel the window from being brought to the front,
 	 *         or false to continue.
@@ -1029,7 +1029,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @param id
 	 *            The id of the window, provided as a courtesy.
-	 * @param view
+	 * @param window
 	 *            The window about to be brought to the front.
 	 * @param focus
 	 *            Whether the window is gaining or losing focus.
@@ -1048,7 +1048,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @param id
 	 *            The id of the window, provided as a courtesy.
-	 * @param view
+	 * @param window
 	 *            The window about to receive the key event.
 	 * @param event
 	 *            The key event.
@@ -1333,7 +1333,7 @@ public abstract class StandOutWindow extends Service {
 	}
 
 	/**
-	 * Send {@link Parceleable} data in a {@link Bundle} to a new or existing
+	 * Send {@link Parcelable} data in a {@link Bundle} to a new or existing
 	 * windows. The implementation of the recipient window can handle what to do
 	 * with the data. To receive a result, provide the id of the sender.
 	 * 
@@ -1479,7 +1479,7 @@ public abstract class StandOutWindow extends Service {
 	/**
 	 * Return the window corresponding to the id, if it exists in cache. The
 	 * window will not be created with
-	 * {@link #createAndAttachView(int, ViewGroup)}. This means the returned
+	 * {@link #createAndAttachView(int, FrameLayout)}. This means the returned
 	 * value will be null if the window is not shown or hidden.
 	 * 
 	 * @param id
@@ -1856,9 +1856,10 @@ public abstract class StandOutWindow extends Service {
 				y = ypos;
 			}
 
-			Display display = mWindowManager.getDefaultDisplay();
-			int width = display.getWidth();
-			int height = display.getHeight();
+			Point size = new Point();
+			mWindowManager.getDefaultDisplay().getSize(size);
+			int width = size.x;
+			int height = size.y;
 
 			if (x == RIGHT) {
 				x = width - w;
@@ -1923,8 +1924,9 @@ public abstract class StandOutWindow extends Service {
 
 		// helper to create cascading windows
 		private int getX(int id, int width) {
-			Display display = mWindowManager.getDefaultDisplay();
-			int displayWidth = display.getWidth();
+			Point size = new Point();
+			mWindowManager.getDefaultDisplay().getSize(size);
+			int displayWidth = size.x;
 
 			int types = sWindowCache.size();
 
@@ -1937,9 +1939,10 @@ public abstract class StandOutWindow extends Service {
 
 		// helper to create cascading windows
 		private int getY(int id, int height) {
-			Display display = mWindowManager.getDefaultDisplay();
-			int displayWidth = display.getWidth();
-			int displayHeight = display.getHeight();
+			Point size = new Point();
+			mWindowManager.getDefaultDisplay().getSize(size);
+			int displayWidth = size.x;
+			int displayHeight = size.y;
 
 			int types = sWindowCache.size();
 
