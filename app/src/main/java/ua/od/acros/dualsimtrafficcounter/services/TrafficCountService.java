@@ -642,13 +642,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private Long[] getBytesForUid(int uid) {
         File dir = new File("/proc/uid_stat/");
         String[] children = dir.list();
-        if (children == null || !Arrays.asList(children).contains(String.valueOf(uid))) {
+        if (children == null || !Arrays.asList(children).contains(String.valueOf(uid)))
             return new Long[] {0L, 0L};
-        }
         File uidFileDir = new File("/proc/uid_stat/" + String.valueOf(uid));
         File uidActualFileReceived = new File(uidFileDir, "tcp_rcv");
         File uidActualFileSent = new File(uidFileDir, "tcp_snd");
-
         String textReceived = "0";
         String textSent = "0";
         try {
@@ -656,16 +654,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             BufferedReader brSent = new BufferedReader(new FileReader(uidActualFileSent));
             String receivedLine;
             String sentLine;
-            if ((receivedLine = brReceived.readLine()) != null) {
+            if ((receivedLine = brReceived.readLine()) != null)
                 textReceived = receivedLine;
-            }
-            if ((sentLine = brSent.readLine()) != null) {
+            if ((sentLine = brSent.readLine()) != null)
                 textSent = sentLine;
-            }
         } catch (IOException e) {
-
         }
-
         return new Long[] {Long.valueOf(textReceived), Long.valueOf(textSent)};
     }
 
