@@ -78,7 +78,6 @@ public class Window extends FrameLayout {
 	 * Context of the window.
 	 */
 	private final StandOutWindow mContext;
-	private LayoutInflater mLayoutInflater;
 
 	public Window(Context context) {
 		super(context);
@@ -90,7 +89,6 @@ public class Window extends FrameLayout {
 		context.setTheme(context.getThemeStyle());
 
 		mContext = context;
-		mLayoutInflater = LayoutInflater.from(context);
 
 		this.cls = context.getClass();
 		this.id = id;
@@ -341,7 +339,7 @@ public class Window extends FrameLayout {
 	 * @return The frame view containing the system window decorations.
 	 */
 	private View getSystemDecorations() {
-		final View decorations = mLayoutInflater.inflate(R.layout.system_window_decorators, null);
+		final View decorations = View.inflate(mContext, R.layout.system_window_decorators, null);
 
 		// icon
 		final ImageView icon = (ImageView) decorations.findViewById(R.id.window_icon);
@@ -389,8 +387,7 @@ public class Window extends FrameLayout {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// handle dragging to move
-				boolean consumed = mContext.onTouchHandleMove(id, Window.this, v, event);
-				return consumed;
+				return mContext.onTouchHandleMove(id, Window.this, v, event);
 			}
 		});
 
@@ -401,9 +398,7 @@ public class Window extends FrameLayout {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// handle dragging to move
-				boolean consumed = mContext.onTouchHandleResize(id, Window.this, v, event);
-
-				return consumed;
+				return mContext.onTouchHandleResize(id, Window.this, v, event);
 			}
 		});
 
@@ -447,9 +442,7 @@ public class Window extends FrameLayout {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						// handle dragging to move
-						boolean consumed = mContext.onTouchHandleResize(id, Window.this, v, event);
-
-						return consumed;
+						return mContext.onTouchHandleResize(id, Window.this, v, event);
 					}
 				});
 			}
@@ -487,10 +480,10 @@ public class Window extends FrameLayout {
 	 *            The root view hierarchy to iterate through and check.
 	 */
 	void fixCompatibility(View root) {
-		Queue<View> queue = new LinkedList<View>();
+		Queue<View> queue = new LinkedList<>();
 		queue.add(root);
 
-		View view = null;
+		View view;
 		while ((view = queue.poll()) != null) {
 			// do nothing yet
 
@@ -531,7 +524,7 @@ public class Window extends FrameLayout {
 		 * The anchor point effects the following methods:
 		 * 
 		 * <p>
-		 * {@link #setSize(int, int)} and {@link #setSize(float, float)}. The
+		 * {@link #setSize(int, int)} and {@link #setSize(int, int, boolean)}. The
 		 * window will expand or shrink around the anchor point.
 		 * 
 		 * <p>

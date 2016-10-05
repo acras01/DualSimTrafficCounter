@@ -329,7 +329,6 @@ public abstract class StandOutWindow extends Service {
 	// internal system services
 	WindowManager mWindowManager;
 	private NotificationManager mNotificationManager;
-	LayoutInflater mLayoutInflater;
 
 	// internal state variables
 	public static boolean startedForeground;
@@ -345,7 +344,6 @@ public abstract class StandOutWindow extends Service {
 
 		mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		startedForeground = false;
 	}
@@ -805,7 +803,7 @@ public abstract class StandOutWindow extends Service {
 		final PopupWindow dropDown = new PopupWindow(scroller, StandOutLayoutParams.WRAP_CONTENT, StandOutLayoutParams.WRAP_CONTENT, true);
 
 		for (final DropDownListItem item : items) {
-			ViewGroup listItem = (ViewGroup) mLayoutInflater.inflate(R.layout.drop_down_list_item, null);
+			ViewGroup listItem = (ViewGroup) View.inflate(this, R.layout.drop_down_list_item, null);
 			list.addView(listItem);
 
 			ImageView icon = (ImageView) listItem.findViewById(R.id.icon);
