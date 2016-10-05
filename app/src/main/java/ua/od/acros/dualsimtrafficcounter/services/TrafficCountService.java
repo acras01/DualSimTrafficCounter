@@ -4,8 +4,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.app.usage.NetworkStats;
-import android.app.usage.NetworkStatsManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,15 +12,12 @@ import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceActivity;
@@ -38,7 +33,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.DateTimeFieldType;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -71,8 +69,6 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataResetObject;
 import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import wei.mark.standout.StandOutWindow;
-
-import static android.R.attr.id;
 
 
 public class TrafficCountService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -116,7 +112,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private ArrayList<String> mUids = null;
     private CountDownTimer mTimer = null;
     private Service mService = null;
-    private long mQueryTime;
     private UidObserver mUidObserver;
 
     public TrafficCountService() {
@@ -644,35 +639,34 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
     }
 
-    private Long[] getBytesForUid(int uid, long time) {
-        Long[] rxtx = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkStatsManager nsm = (NetworkStatsManager) getSystemService(NETWORK_STATS_SERVICE);
-            try {
-                ArrayList<String> imsi = MobileUtils.getSimIds(mContext);
-                if (imsi != null) {
-                    NetworkStats ns = nsm.queryDetailsForUid(ConnectivityManager.TYPE_MOBILE, imsi.get(mActiveSIM),
-                            time, System.currentTimeMillis(), uid);
-                    if (ns.hasNextBucket()) {
-                        NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-                        ns.getNextBucket(bucket);
-                        rxtx = new Long[] {bucket.getRxBytes(), bucket.getTxBytes()};
-                    }
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        } else {
-            long rx = -1, tx = -1;
-            try {
-                rx = TrafficStats.getUidRxBytes(id);
-                tx = TrafficStats.getUidTxBytes(id);
-            } catch (Exception e) {
-            }
-            if (rx != -1 && tx != -1)
-                rxtx = new Long[] {rx, tx};
+    private Long[] getBytesForUid(int uid) {
+        File dir = new File("/proc/uid_stat/");
+        String[] children = dir.list();
+        if (children == null || !Arrays.asList(children).contains(String.valueOf(uid))) {
+            return new Long[] {0L, 0L};
         }
-        return rxtx;
+        File uidFileDir = new File("/proc/uid_stat/" + String.valueOf(uid));
+        File uidActualFileReceived = new File(uidFileDir, "tcp_rcv");
+        File uidActualFileSent = new File(uidFileDir, "tcp_snd");
+
+        String textReceived = "0";
+        String textSent = "0";
+        try {
+            BufferedReader brReceived = new BufferedReader(new FileReader(uidActualFileReceived));
+            BufferedReader brSent = new BufferedReader(new FileReader(uidActualFileSent));
+            String receivedLine;
+            String sentLine;
+            if ((receivedLine = brReceived.readLine()) != null) {
+                textReceived = receivedLine;
+            }
+            if ((sentLine = brSent.readLine()) != null) {
+                textSent = sentLine;
+            }
+        } catch (IOException e) {
+
+        }
+
+        return new Long[] {Long.valueOf(textReceived), Long.valueOf(textSent)};
     }
 
     private void startNewTimerTask(int task) {
@@ -699,10 +693,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (mPrefs.getBoolean(prefs[33], false)) {
                 mUids = CustomDatabaseHelper.readList(mActiveSIM, mDbHelper, mIMSI, "uid");
                 mRxTx = new SparseArray<>();
-                mQueryTime = System.currentTimeMillis();
                 for (String uid : mUids) {
                     int id = Integer.valueOf(uid);
-                    Long[] rxtx = getBytesForUid(id, mQueryTime);
+                    Long[] rxtx = getBytesForUid(id);
                     if (rxtx != null)
                         mRxTx.put(id, rxtx);
                 }
@@ -829,7 +822,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             DataResetObject dro = DateUtils.getResetDate(mPrefs, simPref);
             if (dro != null) {
                 mResetTime1 = dro.getDate();
-                mTrafficData.put(Constants.PREF_SIM1[10], dro.getPeriod());
+                mTrafficData.put(Constants.PERIOD1, dro.getPeriod());
                 mIsResetNeeded1 = true;
                 mPrefs.edit()
                         .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
@@ -841,7 +834,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 dro = DateUtils.getResetDate(mPrefs, simPref);
                 if (dro != null) {
                     mResetTime2 = dro.getDate();
-                    mTrafficData.put(Constants.PREF_SIM2[10], dro.getPeriod());
+                    mTrafficData.put(Constants.PERIOD2, dro.getPeriod());
                     mIsResetNeeded2 = true;
                     mPrefs.edit()
                             .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
@@ -854,7 +847,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 dro = DateUtils.getResetDate(mPrefs, simPref);
                 if (dro != null) {
                     mResetTime3 = dro.getDate();
-                    mTrafficData.put(Constants.PREF_SIM3[10], dro.getPeriod());
+                    mTrafficData.put(Constants.PERIOD3, dro.getPeriod());
                     mIsResetNeeded3 = true;
                     mPrefs.edit()
                             .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
@@ -1115,7 +1108,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         for (String uid : mUids) {
                             int id = Integer.valueOf(uid);
                             Long[] rxtx = mRxTx.get(id);
-                            Long[] rxtx_new = getBytesForUid(id, mQueryTime);
+                            Long[] rxtx_new = getBytesForUid(id);
                             if (rxtx != null) {
                                 uidRx += rxtx_new[0] - rxtx[0];
                                 uidTx += rxtx_new[1] - rxtx[1];
@@ -1123,7 +1116,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                 mRxTx.put(id, rxtx_new);
                             }
                         }
-                        mQueryTime = System.currentTimeMillis();
                     }
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX - uidRx;
@@ -1385,7 +1377,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         for (String uid : mUids) {
                             int id = Integer.valueOf(uid);
                             Long[] rxtx = mRxTx.get(id);
-                            Long[] rxtx_new = getBytesForUid(id, mQueryTime);
+                            Long[] rxtx_new = getBytesForUid(id);
                             if (rxtx != null) {
                                 uidRx += rxtx_new[0] - rxtx[0];
                                 uidTx += rxtx_new[1] - rxtx[1];
@@ -1393,7 +1385,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                 mRxTx.put(id, rxtx_new);
                             }
                         }
-                        mQueryTime = System.currentTimeMillis();
                     }
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX - uidRx;
@@ -1655,7 +1646,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         for (String uid : mUids) {
                             int id = Integer.valueOf(uid);
                             Long[] rxtx = mRxTx.get(id);
-                            Long[] rxtx_new = getBytesForUid(id, mQueryTime);
+                            Long[] rxtx_new = getBytesForUid(id);
                             if (rxtx != null) {
                                 uidRx += rxtx_new[0] - rxtx[0];
                                 uidTx += rxtx_new[1] - rxtx[1];
@@ -1663,7 +1654,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                 mRxTx.put(id, rxtx_new);
                             }
                         }
-                        mQueryTime = System.currentTimeMillis();
                     }
 
                     long diffrx = TrafficStats.getMobileRxBytes() - mStartRX - uidRx;

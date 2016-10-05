@@ -6,8 +6,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v7.preference.Preference;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
@@ -35,10 +38,10 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
 
     private TwoLineEditTextPreference timer, simQuantity, floatWindow;
 
-    private static final String XPOSED = "de.robv.android.xposed.installer";
     private Context mContext;
     private boolean mIsAttached;
     private SharedPreferences mPrefs;
+    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -58,7 +61,6 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         floatWindow.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
         if (mPrefs.getBoolean(Constants.PREF_OTHER[47], false))
             findPreference(Constants.PREF_OTHER[41]).setEnabled(false);
-        TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
         findPreference("hud_reset").setOnPreferenceClickListener(this);
         if (mIsAttached)
             updateSummary();
@@ -147,8 +149,15 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         boolean mobileData = MobileUtils.hasActiveNetworkInfo(mContext) == 2;
         boolean bool = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));
         boolean show = false;
-        if (key.equals(Constants.PREF_OTHER[32]))
-            show = floatingWindow && bool;
+        if (key.equals(Constants.PREF_OTHER[32])) {
+            if (sharedPreferences.getBoolean(key, false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    !Settings.canDrawOverlays(mContext)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + mContext.getPackageName()));
+                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
+            } else
+                show = floatingWindow && bool;
+        }
         if (key.contains("hud") && !(key.equals(Constants.PREF_OTHER[32]) ||
                 key.equals(Constants.PREF_OTHER[36]) || key.equals(Constants.PREF_OTHER[37]) ||
                 key.equals(Constants.PREF_OTHER[38])))
@@ -159,6 +168,14 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             else
                 FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(mContext))
+                ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[32])).setChecked(false);
         }
     }
 

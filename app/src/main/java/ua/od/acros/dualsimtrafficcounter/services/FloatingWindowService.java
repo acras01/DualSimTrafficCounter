@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -72,10 +73,21 @@ public class FloatingWindowService extends StandOutWindow {
 		return getAppName() + " " + id;
 	}
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (mContext == null)
+            mContext = CustomApplication.getAppContext();
+        if (mPrefs == null)
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+    }
+
 	@Override
 	public void createAndAttachView(int id, FrameLayout frame) {
-        mContext = CustomApplication.getAppContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        if (mContext == null)
+            mContext = CustomApplication.getAppContext();
+        if (mPrefs == null)
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		// create a new layout from .xml
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.floating_window, frame, true);
@@ -105,31 +117,48 @@ public class FloatingWindowService extends StandOutWindow {
 				android.R.anim.slide_out_right);
 	}
 
+    @Override
+    public void onMove(int id, Window window, View view, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+            //case MotionEvent.ACTION_MOVE:
+                int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
+                if (newId == id) {
+                    int[] location = new int[2];
+                    window.getLocationOnScreen(location);
+                    mPrefs.edit()
+                            .putInt(Constants.PREF_OTHER[36], location[0])
+                            .putInt(Constants.PREF_OTHER[37], location[1])
+                            .apply();
+                }
+                break;
+        }
+    }
+
 	@Override
 	public void onReceiveData(int id, int requestCode, Bundle data,
 			Class<? extends StandOutWindow> fromCls, int fromId) {
 		// receive data from WidgetsWindow's button press
 		// to show off the data sending framework
 		switch (requestCode) {
-			case Constants.FLOATING_WINDOW:
-				Window window = getWindow(id);
-				if (window == null) {
-					String errorText = String.format(Locale.US,
-							"%s received data but Window id: %d is not open.",
-							getAppName(), id);
-					Toast.makeText(mContext, errorText, Toast.LENGTH_SHORT).show();
-					return;
-				}
-                if (mPrefs != null) {
-                    int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
-                    if (newId == id) {
-                        int[] location = new int[2];
-                        window.getLocationOnScreen(location);
-                        mPrefs.edit()
-                                .putInt(Constants.PREF_OTHER[36], location[0])
-                                .putInt(Constants.PREF_OTHER[37], location[1])
-                                .apply();
-                    }
+            case Constants.FLOATING_WINDOW:
+                Window window = getWindow(id);
+                if (window == null) {
+                    String errorText = String.format(Locale.US,
+                            "%s received data but Window id: %d is not open.",
+                            getAppName(), id);
+                    Toast.makeText(mContext, errorText, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
+                if (newId == id) {
+                    int[] location = new int[2];
+                    window.getLocationOnScreen(location);
+                    mPrefs.edit()
+                            .putInt(Constants.PREF_OTHER[36], location[0])
+                            .putInt(Constants.PREF_OTHER[37], location[1])
+                            .apply();
                 }
                 long seconds = System.currentTimeMillis() / 1000L;
                 String changedText;
@@ -142,8 +171,8 @@ public class FloatingWindowService extends StandOutWindow {
                     textSize = (int) ((double) textSize * 0.5);
                 } else
                     changedText = DataFormat.formatData(mContext, data.getLong("total"));
-				TextView status = (TextView) window.findViewById(R.id.tv);
-				status.setTextSize(textSize);
+                TextView status = (TextView) window.findViewById(R.id.tv);
+                status.setTextSize(textSize);
                 int textColor = mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text));
                 if (data.getBoolean("flash", false) && seconds % 2 == 0) {
                     String alpha = Integer.toHexString(textColor).substring(0, 2);
@@ -155,17 +184,15 @@ public class FloatingWindowService extends StandOutWindow {
                 status.setTextColor(textColor);
                 status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
                 status.setText(changedText);
-				break;
-			default:
-				Log.d("MultiWindow", "Unexpected data received.");
-				break;
-		}
+                break;
+            default:
+                Log.d("MultiWindow", "Unexpected data received.");
+                break;
+        }
 	}
 
     @Override
     public StandOutLayoutParams getParams(int id, Window window) {
-        mContext = CustomApplication.getAppContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         int x = mPrefs.getInt(Constants.PREF_OTHER[36], -1);
         if (x < 0)
             x = StandOutLayoutParams.CENTER;
@@ -186,16 +213,14 @@ public class FloatingWindowService extends StandOutWindow {
 
     @Override
     public boolean onClose(int id, Window window) {
-        if (mPrefs != null) {
-            int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
-            if (newId == id) {
-                int[] location = new int[2];
-                window.getLocationOnScreen(location);
-                mPrefs.edit()
-                        .putInt(Constants.PREF_OTHER[36], location[0])
-                        .putInt(Constants.PREF_OTHER[37], location[1])
-                        .apply();
-            }
+        int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
+        if (newId == id) {
+            int[] location = new int[2];
+            window.getLocationOnScreen(location);
+            mPrefs.edit()
+                    .putInt(Constants.PREF_OTHER[36], location[0])
+                    .putInt(Constants.PREF_OTHER[37], location[1])
+                    .apply();
         }
         return false;
     }
