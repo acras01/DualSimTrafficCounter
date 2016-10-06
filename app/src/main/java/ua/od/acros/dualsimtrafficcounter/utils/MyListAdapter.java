@@ -144,7 +144,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     }
 
     // элемент по позиции
-    public Object getItem(int position) {
+    public ListItem getItem(int position) {
         return mList.get(position);
     }
 
