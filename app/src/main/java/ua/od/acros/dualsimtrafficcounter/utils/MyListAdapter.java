@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -178,16 +178,16 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
         @Override
         public Result load(Request request, int networkPolicy) throws IOException {
-            Drawable drawable = null;
+            Bitmap bmp = null;
             if (request.uri.toString().contains(SCHEME_APP_ICON)) {
                 try {
-                    drawable = pm.getApplicationIcon(request.uri.toString()
-                            .replace(SCHEME_APP_ICON + "://", ""));
-                } catch (PackageManager.NameNotFoundException ignored) {
+                    bmp = ((BitmapDrawable) pm.getApplicationIcon(request.uri.toString().replace(SCHEME_APP_ICON + "://", ""))).getBitmap();
+                } catch (Exception e) {
                 }
-                if (drawable != null)
-                    return new Result(((BitmapDrawable) drawable).getBitmap(), Picasso.LoadedFrom.DISK);
+                if (bmp != null)
+                    return new Result(bmp, Picasso.LoadedFrom.DISK);
             } else if (request.uri.toString().contains(SCHEME_CONTACT_PHOTO)) {
+                boolean choice = false;
                 long contactID = Long.parseLong(request.uri.toString().replace(SCHEME_CONTACT_PHOTO + "://", ""));
                 Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactID);
                 Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
@@ -199,10 +199,19 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                             byte[] data = cursor.getBlob(0);
                             if (data != null)
                                 return new Result(new ByteArrayInputStream(data), Picasso.LoadedFrom.DISK);
-                        }
+                            else
+                                choice = true;
+                        } else
+                            choice = true;
                     } finally {
                         cursor.close();
                     }
+                else
+                    choice = true;
+                if (choice) {
+                    bmp = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.ic_contact_picture);
+                    return new Result(bmp, Picasso.LoadedFrom.DISK);
+                }
             }
             return null;
         }
