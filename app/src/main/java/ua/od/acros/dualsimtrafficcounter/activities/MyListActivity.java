@@ -104,15 +104,17 @@ public class MyListActivity extends AppCompatActivity {
     private List<ListItem> loadContactsFromDB(Context context, ArrayList<String> list) {
         List<ListItem> whiteList = new ArrayList<>();
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        Cursor cursor = context.getContentResolver().query(uri, new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER,
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME}, null, null,
+        Cursor cursor = context.getContentResolver().query(uri, new String[]{ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER,
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME}, null, null,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
         if (cursor != null) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[\\s\\-()]", "");
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                whiteList.add(new ListItem(name, number, list.contains(number)));
+                Uri contactID = Uri.parse("contact_photo://" + cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+                whiteList.add(new ListItem(contactID, name, number, list.contains(number)));
                 cursor.moveToNext();
             }
             cursor.close();
@@ -125,9 +127,10 @@ public class MyListActivity extends AppCompatActivity {
         PackageManager pm = getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
         for (ApplicationInfo pkg : packages) {
-            String name = (String)((pkg != null) ? pm.getApplicationLabel(pkg) : getString(R.string.unknown));
+            String label = (String)((pkg != null) ? pm.getApplicationLabel(pkg) : getString(R.string.unknown));
+            Uri icon = Uri.parse("app_icon://" + ((pkg != null) ? pkg.packageName : getString(R.string.unknown)));
             String uid = String.valueOf((pkg != null) ? pkg.uid : getString(R.string.unknown));
-            uidList.add(new ListItem(name, uid, list.contains(uid)));
+            uidList.add(new ListItem(icon, label, uid, list.contains(uid)));
         }
         return uidList;
     }
@@ -198,21 +201,21 @@ public class MyListActivity extends AppCompatActivity {
             if (mChoice) {
                 myList = CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "white");
                 listItems = loadContactsFromDB(mContext, myList);
+                List<String> numbers = new ArrayList<>();
+                for (ListItem item : listItems)
+                    numbers.add(item.getNumber());
+                for (Iterator<String> i = myList.iterator(); i.hasNext(); ) {
+                    if (numbers.contains(i.next())) {
+                        i.remove();
+                    }
+                }
+                for (Iterator<String> i = myList.iterator(); i.hasNext(); ) {
+                    listItems.add(new ListItem(Uri.parse("contact_photo://" + getString(R.string.unknown)), getString(R.string.unknown), i.next(), true));
+                    i.remove();
+                }
             } else {
                 myList = CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "uid");
                 listItems = loadAppUids(myList);
-            }
-            List<String> numbers = new ArrayList<>();
-            for (ListItem item : listItems)
-                numbers.add(item.getNumber());
-            for (Iterator<String> i = myList.iterator(); i.hasNext(); ) {
-                if (numbers.contains(i.next())) {
-                    i.remove();
-                }
-            }
-            for (Iterator<String> i = myList.iterator(); i.hasNext(); ) {
-                listItems.add(new ListItem(getString(R.string.unknown), i.next(), true));
-                i.remove();
             }
             return listItems;
         }

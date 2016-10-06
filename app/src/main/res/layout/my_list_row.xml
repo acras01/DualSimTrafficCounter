@@ -2,7 +2,16 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:id="@+id/icon"
+        android:layout_centerVertical="true"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_height="match_parent" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,9 +23,10 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:id="@+id/name"
-        android:singleLine="false"
         android:layout_toLeftOf="@+id/checkBox"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="false"
+        android:layout_toRightOf="@+id/icon"
+        android:layout_marginLeft="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +39,9 @@
         android:focusableInTouchMode="false"
         android:id="@+id/number"
         android:layout_below="@+id/name"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="false"
+        android:layout_toRightOf="@+id/icon"
+        android:layout_marginLeft="5dp" />
 
     <android.support.v7.widget.AppCompatCheckBox
         android:layout_width="wrap_content"
