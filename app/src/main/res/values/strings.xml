@@ -244,4 +244,5 @@
     <string name="use_uid">Exclude apps from counting</string>
     <string name="uid_list">List of excluded apps</string>
     <string name="view_uid">View and edit list of apps excluded from counting</string>
+    <string name="show_choose_actions_dialog">Show actions dialog when reaching limit</string>
 </resources>

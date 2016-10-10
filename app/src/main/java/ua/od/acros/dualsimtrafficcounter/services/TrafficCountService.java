@@ -113,6 +113,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private CountDownTimer mTimer = null;
     private Service mService = null;
     private UidObserver mUidObserver;
+    private boolean mDoNotStopService = false;
 
     public TrafficCountService() {
     }
@@ -301,14 +302,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.TOTAL3, DataFormat.getRoundLong((long) mTrafficData.get(Constants.TOTAL3),
                     mPrefs.getString(Constants.PREF_SIM3[15], "1"), mPrefs.getString(Constants.PREF_SIM3[16], "0")));
 
-        //stop WatchDogService
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
-            mContext.stopService(new Intent(mContext, WatchDogService.class));
-
         writeTrafficDataToDatabase(mLastActiveSIM);
         sendDataBroadcast(0L, 0L);
 
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[47], false)) {
+        if (!mDoNotStopService && mPrefs.getBoolean(Constants.PREF_OTHER[47], false)) {
             mTimer = new CountDownTimer(10000, 10000) {
                 @Override
                 public void onTick(long l) {
@@ -317,6 +314,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                 @Override
                 public void onFinish() {
+                    //stop WatchDogService
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+                        mContext.stopService(new Intent(mContext, WatchDogService.class));
                     mService.stopSelf();
                 }
             };
@@ -666,6 +666,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private void startNewTimerTask(int task) {
         TimerTask tTask = null;
         if (task == Constants.COUNT) {
+            mDoNotStopService = false;
             mStartRX = TrafficStats.getMobileRxBytes();
             mStartTX = TrafficStats.getMobileTxBytes();
             String[] prefs = new String[Constants.PREF_SIM_DATA.length];
@@ -1885,8 +1886,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
             if (mPrefs.getBoolean(Constants.PREF_OTHER[39], false)) {
                 total = mLimits[mActiveSIM] - total;
-                if (total < 0)
-                    total = 0;
+                /*if (total < 0)
+                    total = 0;*/
             }
             Bundle bundle = new Bundle();
             bundle.putLong("total", total);
@@ -2030,6 +2031,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void makePreCheckActions(int sim) {
 
+        mDoNotStopService = true;
+
         String[] keys = new String[Constants.PREF_SIM_DATA.length];
         switch (sim) {
             case Constants.SIM1:
@@ -2087,6 +2090,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     ACRA.getErrorReporter().handleException(e);
                 }
             }
+        } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
+            EventBus.getDefault().post(new ActionTrafficEvent(sim, Constants.CONTINUE_ACTION));
         } else {
             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);

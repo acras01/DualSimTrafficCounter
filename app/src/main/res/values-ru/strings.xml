@@ -236,4 +236,5 @@
     <string name="view_uid">Просмотр и редактирование списка исключений</string>
     <string name="use_uid">Исключать избранные приложения при подсчете</string>
     <string name="uid_list">Список исключений</string>
+    <string name="show_choose_actions_dialog">Показывать диалог выбора действий при достижении предела</string>
 </resources>

@@ -52,7 +52,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             opLimit1, opLimit2, opLimit3,
             prelimitValue1, prelimitValue2, prelimitValue3;
     private TwoLineListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3, value1N, value2N, value3N;
-    private TwoLineCheckPreference prefer1, prefer2, prefer3;
+    private TwoLineCheckPreference prefer1, prefer2, prefer3, changeSIM, chooseActions;
     private TwoLineListPreference everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
     private SharedPreferences mPrefs;
@@ -146,7 +146,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         time1 = (TimePreference) findPreference(Constants.PREF_SIM1[9]);
         time2 = (TimePreference) findPreference(Constants.PREF_SIM2[9]);
         time3 = (TimePreference) findPreference(Constants.PREF_SIM3[9]);
-        TwoLineCheckPreference changeSIM = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[10]);
         day1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[10]);
         day2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[10]);
         day3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[10]);
@@ -185,6 +184,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         prelimitValue1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[30]);
         prelimitValue2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[30]);
         prelimitValue3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[30]);
+
+        changeSIM = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[10]);
+        chooseActions = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[51]);
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
@@ -549,6 +551,22 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 }
             } else
                 new DeleteTask().execute();
+        }
+
+        if (key.equals(Constants.PREF_OTHER[10])) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                chooseActions.setChecked(false);
+                chooseActions.setEnabled(false);
+            } else
+                chooseActions.setEnabled(true);
+        }
+
+        if (key.equals(Constants.PREF_OTHER[51])) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                changeSIM.setChecked(false);
+                changeSIM.setEnabled(false);
+            } else if (CustomApplication.canSwitchSim())
+                changeSIM.setEnabled(true);
         }
 
         if (key.equals(Constants.PREF_OTHER[47])) {
