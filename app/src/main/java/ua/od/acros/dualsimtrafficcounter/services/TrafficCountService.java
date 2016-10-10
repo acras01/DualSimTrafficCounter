@@ -2031,8 +2031,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void makePreCheckActions(int sim) {
 
-        mDoNotStopService = true;
-
         String[] keys = new String[Constants.PREF_SIM_DATA.length];
         switch (sim) {
             case Constants.SIM1:
@@ -2063,6 +2061,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[10], false)) {
             if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM3OverLimit) {
+                mDoNotStopService = true;
                 Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
                 dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -2091,8 +2090,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             }
         } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
+            mDoNotStopService = true;
             EventBus.getDefault().post(new ActionTrafficEvent(sim, Constants.CONTINUE_ACTION));
         } else {
+            mDoNotStopService = true;
             Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
             dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
