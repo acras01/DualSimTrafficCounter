@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setItemChecked(int id, boolean checked) {
         mNavigationView.setCheckedItem(id);
         mNavigationView.getMenu().findItem(id).setChecked(checked);
-        if (id != R.id.nav_settings)
+        if (id != R.id.nav_settings && id != R.id.nav_email && id != R.id.nav_4pda)
             mLastMenuItem = id;
     }
 
