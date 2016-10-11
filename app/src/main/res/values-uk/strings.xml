@@ -237,4 +237,5 @@
     <string name="use_uid">Виключати обрані додатки при підрахунку</string>
     <string name="uid_list">Список виключень</string>
     <string name="show_choose_actions_dialog">Відображати діалог вибору дій при досягненні ліміту</string>
+    <string name="flash_hud">Змінювати колір тексту при наближенні до ліміту</string>
 </resources>

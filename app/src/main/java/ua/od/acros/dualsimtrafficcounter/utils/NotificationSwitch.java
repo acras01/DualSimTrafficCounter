@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.SwitchCompat;
@@ -9,10 +10,12 @@ import android.widget.CompoundButton;
 public class NotificationSwitch implements CompoundButton.OnCheckedChangeListener {
 
     protected final Context mContext;
+    private SharedPreferences mPrefs;
     private SwitchCompat mSwitch;
 
     public NotificationSwitch(Context context, SwitchCompat swtch) {
         mContext = context;
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         setSwitch(swtch);
     }
 
@@ -27,13 +30,13 @@ public class NotificationSwitch implements CompoundButton.OnCheckedChangeListene
     }
 
     public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-        Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        Editor editor = mPrefs.edit();
         editor.putBoolean(Constants.PREF_OTHER[3], isChecked)
                 .apply();
     }
 
     public boolean isSwitchOn() {
-        return PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(Constants.PREF_OTHER[3], true);
+        return mPrefs.getBoolean(Constants.PREF_OTHER[3], true);
     }
 
     public void resume() {
@@ -46,7 +49,7 @@ public class NotificationSwitch implements CompoundButton.OnCheckedChangeListene
     }
 
     public void setChecked(boolean checked) {
-        this.mSwitch.setChecked(checked);
+        mSwitch.setChecked(checked);
     }
 }
 

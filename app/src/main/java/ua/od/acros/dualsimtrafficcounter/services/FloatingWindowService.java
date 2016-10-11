@@ -174,7 +174,7 @@ public class FloatingWindowService extends StandOutWindow {
                 TextView status = (TextView) window.findViewById(R.id.tv);
                 status.setTextSize(textSize);
                 int textColor = mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text));
-                if (data.getBoolean("flash", false) && seconds % 2 == 0) {
+                if (mPrefs.getBoolean(Constants.PREF_OTHER[52], true) && data.getBoolean("flash", false) && seconds % 2 == 0) {
                     String alpha = Integer.toHexString(textColor).substring(0, 2);
                     String color = Integer.toHexString(textColor).substring(2);
                     textColor = 0xFFFFFF - Integer.parseInt(color, 16);

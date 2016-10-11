@@ -245,4 +245,5 @@
     <string name="uid_list">List of excluded apps</string>
     <string name="view_uid">View and edit list of apps excluded from counting</string>
     <string name="show_choose_actions_dialog">Show actions dialog when reaching limit</string>
+    <string name="flash_hud">Text changes color when reaching limit</string>
 </resources>
