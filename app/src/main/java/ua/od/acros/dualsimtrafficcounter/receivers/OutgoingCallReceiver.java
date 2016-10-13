@@ -26,7 +26,7 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
                 i.setFlags(intent.getFlags());
                 context.startService(i);
             } else
-                EventBus.getDefault().post(new NewOutgoingCallEvent(intent.getStringExtra(Constants.NUMBER)));
+                EventBus.getDefault().post(new NewOutgoingCallEvent(intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)));
         }
     }
 }

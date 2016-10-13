@@ -223,63 +223,65 @@ public class MobileUtils {
         int sim = Constants.DISABLED;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-            try {
-                if (mGetDefaultDataSubscriptionInfo == null) {
-                    Method[] cm = sm.getClass().getDeclaredMethods();
-                    for (Method m : cm) {
-                        if (m.getName().equalsIgnoreCase("getDefaultDataSubscriptionInfo")) {
-                            m.setAccessible(true);
-                            mGetDefaultDataSubscriptionInfo = m;
-                            break;
-                        }
-                    }
-                }
-                SubscriptionInfo si = (SubscriptionInfo) mGetDefaultDataSubscriptionInfo.invoke(sm);
-                sim = si.getSimSlotIndex();
-                out = "getDefaultDataSubscriptionInfo " + sim;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (sim == Constants.DISABLED) {
+            if (sm != null) {
                 try {
-                    if (mGetDefaultDataSubId == null) {
+                    if (mGetDefaultDataSubscriptionInfo == null) {
                         Method[] cm = sm.getClass().getDeclaredMethods();
                         for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getDefaultDataSubId")) {
+                            if (m.getName().equalsIgnoreCase("getDefaultDataSubscriptionInfo")) {
                                 m.setAccessible(true);
-                                mGetDefaultDataSubId = m;
+                                mGetDefaultDataSubscriptionInfo = m;
                                 break;
                             }
                         }
                     }
-                    sim = sm.getActiveSubscriptionInfo((int) mGetDefaultDataSubId.invoke(sm)).getSimSlotIndex();
-                    out = "getDefaultDataSubId " + sim;
+                    SubscriptionInfo si = (SubscriptionInfo) mGetDefaultDataSubscriptionInfo.invoke(sm);
+                    sim = si.getSimSlotIndex();
+                    out = "getDefaultDataSubscriptionInfo " + sim;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            if (sim == Constants.DISABLED) {
-                final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
-                if (activeNetworkInfo != null) {
-                    List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-                    if (sl != null)
-                        for (int i = 0; i < sl.size(); i++) {
-                            if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), activeNetworkInfo.getExtraInfo())) {
-                                sim = sl.get(i).getSimSlotIndex();
-                                out = "getNetworkFromApnsFile " + sim;
-                                break;
+                if (sim == Constants.DISABLED) {
+                    try {
+                        if (mGetDefaultDataSubId == null) {
+                            Method[] cm = sm.getClass().getDeclaredMethods();
+                            for (Method m : cm) {
+                                if (m.getName().equalsIgnoreCase("getDefaultDataSubId")) {
+                                    m.setAccessible(true);
+                                    mGetDefaultDataSubId = m;
+                                    break;
+                                }
                             }
                         }
+                        sim = sm.getActiveSubscriptionInfo((int) mGetDefaultDataSubId.invoke(sm)).getSimSlotIndex();
+                        out = "getDefaultDataSubId " + sim;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            if (sim == Constants.DISABLED) {
-                try {
-                    int id = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
-                    sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
-                    out = "getFromSettingsGlobal " + sim;
-                } catch (Settings.SettingNotFoundException e) {
-                    e.printStackTrace();
+                if (sim == Constants.DISABLED) {
+                    final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+                    if (activeNetworkInfo != null) {
+                        List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                        if (sl != null)
+                            for (int i = 0; i < sl.size(); i++) {
+                                if (getNetworkFromApnsFile(String.valueOf(sl.get(i).getMcc()) + String.valueOf(sl.get(i).getMnc()), activeNetworkInfo.getExtraInfo())) {
+                                    sim = sl.get(i).getSimSlotIndex();
+                                    out = "getNetworkFromApnsFile " + sim;
+                                    break;
+                                }
+                            }
+                    }
+                }
+                if (sim == Constants.DISABLED) {
+                    try {
+                        int id = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
+                        sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
+                        out = "getFromSettingsGlobal " + sim;
+                    } catch (Settings.SettingNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
