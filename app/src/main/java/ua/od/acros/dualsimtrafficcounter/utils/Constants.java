@@ -116,7 +116,7 @@ public class Constants {
     public static final int SECOND = 1000;
     public static final String TEXT_SIZE = "15";
     public static final String ICON_SIZE = "30";
-    static final String NUMBER = "number";
+    public static final String NUMBER = "number";
     public static final String SPEEDRX = "rx_speed";
     public static final String SPEEDTX = "tx_speed";
     public static final String WIDGET_IDS = "widget_ids";
@@ -149,4 +149,5 @@ public class Constants {
     public static final String TRAFFIC_TAP = "ua.od.acros.dualsimtrafficcounter.TRAFFIC";
     public static final String HIDE = "ua.od.acros.dualsimtrafficcounter.HIDE";
     public static final Uri UID_URI = Uri.parse("content://ua.od.acros.dualsimtrafficcounter.mydatabase");
+    public static final String NEW_OUTGOING_CALL = "ua.od.acros.dualsimtrafficcounter.NEW_OUTGOING_CALL";
 }

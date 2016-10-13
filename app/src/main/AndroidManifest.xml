@@ -163,7 +163,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="999">
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <action android:name="ua.od.acros.dualsimtrafficcounter.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
         <receiver
