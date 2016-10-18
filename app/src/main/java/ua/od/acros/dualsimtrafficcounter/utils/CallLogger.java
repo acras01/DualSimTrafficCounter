@@ -198,6 +198,8 @@ public class CallLogger implements IXposedHookLoadPackage {
         int sim;
         // register outgoing call
         if (state == CallState.DIALING && mOutgoingCall == null) {
+            sim = MobileUtils.getActiveSimForCall(context);
+            XposedBridge.log("Outgoing call started: " + sim);
             mOutgoingCall = call;
         }
         // vibrate on outgoing connected and periodic
