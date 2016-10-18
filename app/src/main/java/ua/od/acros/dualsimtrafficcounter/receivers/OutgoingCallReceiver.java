@@ -18,15 +18,15 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (intent.getAction().equals(Constants.NEW_OUTGOING_CALL) && !prefs.getBoolean(Constants.PREF_OTHER[24], true)) {
+        if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL) && getResultData() != null && !prefs.getBoolean(Constants.PREF_OTHER[24], true)) {
             if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
                 Intent i = new Intent(context, CallLoggerService.class);
                 i.setAction(intent.getAction());
-                i.putExtras(intent.getExtras());
+                i.putExtra(Intent.EXTRA_PHONE_NUMBER, getResultData());
                 i.setFlags(intent.getFlags());
                 context.startService(i);
             } else
-                EventBus.getDefault().post(new NewOutgoingCallEvent(intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)));
+                EventBus.getDefault().post(new NewOutgoingCallEvent(getResultData()));
         }
     }
 }

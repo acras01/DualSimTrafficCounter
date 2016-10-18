@@ -444,7 +444,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mCallsData = new ContentValues();
         readCallsDataFromDatabase();
         EventBus.getDefault().register(this);
-        if (intent != null && intent.getAction() != null && intent.getAction().equals(Constants.NEW_OUTGOING_CALL)) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
             mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
             mLimits = CustomApplication.getCallsSimLimitsValues();
             mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -588,7 +588,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             IntentFilter end = new IntentFilter(Constants.OUTGOING_CALL_ENDED);
             registerReceiver(mCallEndedReceiver, end);
             startForeground(Constants.STARTED_ID, buildNotification());
-            startTask(mContext, intent.getStringExtra(Constants.NUMBER));
+            startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         } else
             mService.stopSelf();
         return START_STICKY;
