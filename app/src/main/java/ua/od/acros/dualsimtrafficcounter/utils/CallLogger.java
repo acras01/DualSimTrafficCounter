@@ -159,7 +159,6 @@ public class CallLogger implements IXposedHookLoadPackage {
                                             activeCall = XposedHelpers.callMethod(param.args[0], "getOutgoingCall");
                                             if (activeCall != null) {
                                                 key = activeCall.toString();
-                                                XposedBridge.log(key);
                                                 mOutgoingCall = activeCall;
                                                 XposedBridge.log("Outgoing call started: " + sim);
                                             }
