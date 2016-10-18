@@ -30,7 +30,7 @@ public class CallLogger implements IXposedHookLoadPackage {
     private static final String CLASS_ASYNC_RESULT = "android.os.AsyncResult";
     private static final String CLASS_CALL_NOTIFIER = "com.android.phone.CallNotifier";
     private static final List<String> PACKAGE_NAMES = new ArrayList<>(Arrays.asList(
-            "com.google.android.dialer", "com.android.dialer", "com.android.phone"));
+            "com.google.android.dialer", "com.android.dialer", "com.android.phone", "com.android.server.telecom"));
     private static final String CLASS_IN_CALL_PRESENTER = "com.android.incallui.InCallPresenter";
     private static final String ENUM_IN_CALL_STATE = "com.android.incallui.InCallPresenter$InCallState";
     private static final String CLASS_CALL_LIST = "com.android.incallui.CallList";
@@ -40,169 +40,155 @@ public class CallLogger implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (PACKAGE_NAMES.contains(loadPackageParam.packageName)) {
+        String name = loadPackageParam.packageName;
+        if (PACKAGE_NAMES.contains(name)) {
             XposedBridge.log("Loaded app: " + loadPackageParam.packageName);
-            if (loadPackageParam.packageName.contains("phone")) {
-                /*try {
-                    final Class<?> classPhoneUtils = XposedHelpers.findClass(CLASS_PHONE_UTILS, loadPackageParam.classLoader);
-                    XposedBridge.log(CLASS_PHONE_UTILS + " found!");
-                    XposedHelpers.findAndHookMethod(classPhoneUtils, "getNumberFromIntent", Context.class, Intent.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            try {
-                                //String number = ((Intent) param.args[0]).getStringExtra("android.phone.extra.ACTUAL_NUMBER_TO_DIAL");
-                                String number = param.args[1].toString();
-                                Context context = AndroidAppHelper.currentApplication();
-                                Intent intent = new Intent(Constants.NEW_OUTGOING_CALL);
-                                intent.putExtra(Intent.EXTRA_PHONE_NUMBER, number);
-                                context.sendBroadcast(intent);
-                                XposedBridge.log(number);
-                            } catch (Throwable t) {
-                                XposedBridge.log(t);
-                            }
-                        }
-                    });
-                    XposedBridge.log("getNumberFromIntent hooked");
-                } catch (Throwable t) {
-                    XposedBridge.log(CLASS_PHONE_UTILS + " not found!");
-                }*/
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    final Class<?> classCallNotifier = XposedHelpers.findClass(CLASS_CALL_NOTIFIER, loadPackageParam.classLoader);
-                    final Class<? extends Enum> enumPhoneState = (Class<? extends Enum>) Class.forName(ENUM_PHONE_STATE);
-                    final Class<? extends Enum> enumCallState = (Class<? extends Enum>) Class.forName(ENUM_CALL_STATE);
-                    if (CustomApplication.isOldMtkDevice()) {
-                        XposedHelpers.findAndHookMethod(classCallNotifier, "onDisconnect",
-                                CLASS_ASYNC_RESULT, int.class, onDisconnectHook);
-                    } else {
-                        XposedHelpers.findAndHookMethod(classCallNotifier, "onDisconnect",
-                                CLASS_ASYNC_RESULT, onDisconnectHook);
-                    }
-                    XposedBridge.log("onDisconnect hooked");
-                    XposedHelpers.findAndHookMethod(classCallNotifier, "onPhoneStateChanged", CLASS_ASYNC_RESULT, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Context context = AndroidAppHelper.currentApplication();
-                            final Object cm = XposedHelpers.getObjectField(param.thisObject, "mCM");
-                            final Object state = XposedHelpers.callMethod(cm, "getState");
-                            if (state == Enum.valueOf(enumPhoneState, "OFFHOOK")) {
-                                final Object fgPhone = XposedHelpers.callMethod(cm, "getFgPhone");
-                                final Object activeCall = getCurrentCall(fgPhone);
-                                final Object conn = getConnection(fgPhone, activeCall);
-                                if (activeCall != null) {
-                                    if (XposedHelpers.callMethod(activeCall, "getState") == Enum.valueOf(enumCallState, "ACTIVE") &&
-                                            !(Boolean) XposedHelpers.callMethod(conn, "isIncoming")) {
-                                        String imei = (String) XposedHelpers.callMethod(fgPhone, "getDeviceId");
-                                        ArrayList<String> id = MobileUtils.getDeviceIds(context);
-                                        int sim = Constants.DISABLED;
-                                        for (int i = 0; i < id.size(); i++) {
-                                            if (imei.equals(id.get(i)))
-                                                sim = i;
-                                        }
-                                        XposedBridge.log("Outgoing call answered: " + sim);
-                                        Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
-                                        i.putExtra(Constants.SIM_ACTIVE, sim);
-                                        context.sendBroadcast(i);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    XposedBridge.log("onPhoneStateChanged hooked");
+            if (name.contains("phone") && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                final Class<?> classCallNotifier = XposedHelpers.findClass(CLASS_CALL_NOTIFIER, loadPackageParam.classLoader);
+                final Class<? extends Enum> enumPhoneState = (Class<? extends Enum>) Class.forName(ENUM_PHONE_STATE);
+                final Class<? extends Enum> enumCallState = (Class<? extends Enum>) Class.forName(ENUM_CALL_STATE);
+                if (CustomApplication.isOldMtkDevice()) {
+                    XposedHelpers.findAndHookMethod(classCallNotifier, "onDisconnect",
+                            CLASS_ASYNC_RESULT, int.class, onDisconnectHook);
+                } else {
+                    XposedHelpers.findAndHookMethod(classCallNotifier, "onDisconnect",
+                            CLASS_ASYNC_RESULT, onDisconnectHook);
                 }
-            } else {
-                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    try {
-                        Class<?> mClassInCallPresenter = XposedHelpers.findClass(CLASS_IN_CALL_PRESENTER, loadPackageParam.classLoader);
-                        XposedBridge.log(CLASS_IN_CALL_PRESENTER + " found!");
-                        final Class<? extends Enum> enumInCallState = (Class<? extends Enum>) XposedHelpers.findClass(ENUM_IN_CALL_STATE,
-                                loadPackageParam.classLoader);
-                        XposedBridge.hookAllMethods(mClassInCallPresenter, "setUp", new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                mOutgoingCall = null;
-                            }
-                        });
-                        XposedBridge.log("setUp hooked");
-                        XposedBridge.hookAllMethods(mClassInCallPresenter, "onDisconnect", new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                Object activeCall = param.args[0];
-                                String key = activeCall.toString();
-                                long start;
-                                int sim;
-                                if (activeCall == mOutgoingCall) {
-                                    sim = mActiveCallSimList.getInt(key);
-                                    start = mActiveCallStartList.getLong(key);
-                                    Context context = AndroidAppHelper.currentApplication();
-                                    long durationMillis = System.currentTimeMillis() - start;
-                                    XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s");
-                                    Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
+                XposedBridge.log("onDisconnect hooked");
+                XposedHelpers.findAndHookMethod(classCallNotifier, "onPhoneStateChanged", CLASS_ASYNC_RESULT, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        Context context = AndroidAppHelper.currentApplication();
+                        final Object cm = XposedHelpers.getObjectField(param.thisObject, "mCM");
+                        final Object state = XposedHelpers.callMethod(cm, "getState");
+                        if (state == Enum.valueOf(enumPhoneState, "OFFHOOK")) {
+                            final Object fgPhone = XposedHelpers.callMethod(cm, "getFgPhone");
+                            final Object activeCall = getCurrentCall(fgPhone);
+                            final Object conn = getConnection(fgPhone, activeCall);
+                            if (activeCall != null) {
+                                if (XposedHelpers.callMethod(activeCall, "getState") == Enum.valueOf(enumCallState, "ACTIVE") &&
+                                        !(Boolean) XposedHelpers.callMethod(conn, "isIncoming")) {
+                                    String imei = (String) XposedHelpers.callMethod(fgPhone, "getDeviceId");
+                                    ArrayList<String> id = MobileUtils.getDeviceIds(context);
+                                    int sim = Constants.DISABLED;
+                                    for (int i = 0; i < id.size(); i++) {
+                                        if (imei.equals(id.get(i)))
+                                            sim = i;
+                                    }
+                                    XposedBridge.log("Outgoing call answered: " + sim);
+                                    Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
                                     i.putExtra(Constants.SIM_ACTIVE, sim);
-                                    i.putExtra(Constants.CALL_DURATION, durationMillis);
                                     context.sendBroadcast(i);
                                 }
                             }
-                        });
-                        XposedBridge.log("onDisconnect hooked");
-                        XposedHelpers.findAndHookMethod(mClassInCallPresenter, "getPotentialStateFromCallList",
-                                CLASS_CALL_LIST, new XC_MethodHook() {
-                                    @Override
-                                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                        long start;
-                                        int sim;
-                                        Context context = AndroidAppHelper.currentApplication();
-                                        Object state = param.getResult();
-                                        Object activeCall;
-                                        String key;
-                                        sim = MobileUtils.getActiveSimForCall(context);
-                                        if (state == Enum.valueOf(enumInCallState, "OUTGOING") && mOutgoingCall == null) {
-                                            activeCall = XposedHelpers.callMethod(param.args[0], "getOutgoingCall");
-                                            if (activeCall != null) {
-                                                key = activeCall.toString();
-                                                mOutgoingCall = activeCall;
-                                                XposedBridge.log("Outgoing call started: " + sim);
-                                            }
+                        }
+                    }
+                });
+                XposedBridge.log("onPhoneStateChanged hooked");
+            } else if (name.contains("telecom") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                try {
+                    Class<?> clsCallsManager = XposedHelpers.findClass(CLASS_CALLS_MANAGER, loadPackageParam.classLoader);
+                    XposedBridge.log(CLASS_CALLS_MANAGER + " found!");
+                    XposedHelpers.findAndHookMethod(clsCallsManager, "addCall", CLASS_CALL, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            onCallAdded(param.args[0]);
+                        }
+                    });
+                    XposedBridge.log("addCall hooked");
+                    XposedHelpers.findAndHookMethod(clsCallsManager, "setCallState", CLASS_CALL, int.class, String.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            onCallStateChanged(param.args[0], (int) param.args[1]);
+                        }
+                    });
+                    XposedBridge.log("setCallState hooked");
+                } catch (Throwable t) {
+                    XposedBridge.log(CLASS_CALLS_MANAGER + " not found!");
+                }
+            } else if (name.contains("dialer") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+                try {
+                    Class<?> mClassInCallPresenter = XposedHelpers.findClass(CLASS_IN_CALL_PRESENTER, loadPackageParam.classLoader);
+                    XposedBridge.log(CLASS_IN_CALL_PRESENTER + " found!");
+                    final Class<? extends Enum> enumInCallState = (Class<? extends Enum>) XposedHelpers.findClass(ENUM_IN_CALL_STATE,
+                            loadPackageParam.classLoader);
+                    XposedBridge.hookAllMethods(mClassInCallPresenter, "setUp", new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            mOutgoingCall = null;
+                        }
+                    });
+                    XposedBridge.log("setUp hooked");
+                    XposedBridge.hookAllMethods(mClassInCallPresenter, "onDisconnect", new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Object activeCall = param.args[0];
+                            String key = activeCall.toString();
+                            long start;
+                            int sim;
+                            if (activeCall == mOutgoingCall) {
+                                sim = mActiveCallSimList.getInt(key);
+                                start = mActiveCallStartList.getLong(key);
+                                Context context = AndroidAppHelper.currentApplication();
+                                long durationMillis = System.currentTimeMillis() - start;
+                                XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s");
+                                Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
+                                i.putExtra(Constants.SIM_ACTIVE, sim);
+                                i.putExtra(Constants.CALL_DURATION, durationMillis);
+                                context.sendBroadcast(i);
+                            }
+                        }
+                    });
+                    XposedBridge.log("onDisconnect hooked");
+                    XposedHelpers.findAndHookMethod(mClassInCallPresenter, "getPotentialStateFromCallList",
+                            CLASS_CALL_LIST, new XC_MethodHook() {
+                                @Override
+                                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                    long start;
+                                    int sim;
+                                    Context context = AndroidAppHelper.currentApplication();
+                                    Object state = param.getResult();
+                                    Object activeCall;
+                                    String key;
+                                    sim = MobileUtils.getActiveSimForCall(context);
+                                    if (state == Enum.valueOf(enumInCallState, "OUTGOING") && mOutgoingCall == null) {
+                                        activeCall = XposedHelpers.callMethod(param.args[0], "getOutgoingCall");
+                                        if (activeCall != null) {
+                                            mOutgoingCall = activeCall;
+                                            XposedBridge.log("Outgoing call started: " + sim);
                                         }
-                                        if (state == Enum.valueOf(enumInCallState, "INCALL")) {
-                                            activeCall = XposedHelpers.callMethod(param.args[0], "getActiveCall");
-                                            if (activeCall != null) {
-                                                final int callState = (Integer) XposedHelpers.callMethod(activeCall, "getState");
-                                                final boolean activeOutgoing = (callState == CALL_STATE_ACTIVE &&
-                                                        activeCall == mOutgoingCall);
-                                                if (activeOutgoing) {
-                                                    key = activeCall.toString();
-                                                    mActiveCallSimList.putInt(key, sim);
-                                                    start = System.currentTimeMillis();
-                                                    mActiveCallStartList.putLong(key, start);
-                                                    XposedBridge.log("Outgoing call answered: " + sim);
-                                                    Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
-                                                    i.putExtra(Constants.SIM_ACTIVE, sim);
-                                                    context.sendBroadcast(i);
-                                                }
+                                    }
+                                    if (state == Enum.valueOf(enumInCallState, "INCALL")) {
+                                        activeCall = XposedHelpers.callMethod(param.args[0], "getActiveCall");
+                                        if (activeCall != null) {
+                                            final int callState = (Integer) XposedHelpers.callMethod(activeCall, "getState");
+                                            final boolean activeOutgoing = (callState == CALL_STATE_ACTIVE &&
+                                                    activeCall == mOutgoingCall);
+                                            if (activeOutgoing) {
+                                                key = activeCall.toString();
+                                                mActiveCallSimList.putInt(key, sim);
+                                                start = System.currentTimeMillis();
+                                                mActiveCallStartList.putLong(key, start);
+                                                XposedBridge.log("Outgoing call answered: " + sim);
+                                                Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
+                                                i.putExtra(Constants.SIM_ACTIVE, sim);
+                                                context.sendBroadcast(i);
                                             }
                                         }
                                     }
-                                });
-                        XposedBridge.log("getPotentialStateFromCallList hooked");
-                    } catch (Throwable t) {
-                        XposedBridge.log(CLASS_IN_CALL_PRESENTER + " not found!");
-                    }
-                } else {
-                    try {
-                        Class<?> clsCallsManager = XposedHelpers.findClass(CLASS_CALLS_MANAGER, loadPackageParam.classLoader);
-                        XposedBridge.log(CLASS_CALLS_MANAGER + " found!");
-                        XposedHelpers.findAndHookMethod(clsCallsManager, "setCallState", CLASS_CALL, int.class, String.class, new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                onCallStateChanged(param.args[0], (int) param.args[1]);
-                            }
-                        });
-                    } catch (Throwable t) {
-                        XposedBridge.log(CLASS_CALLS_MANAGER + " not found!");
-                    }
+                                }
+                            });
+                    XposedBridge.log("getPotentialStateFromCallList hooked");
+                } catch (Throwable t) {
+                    XposedBridge.log(CLASS_IN_CALL_PRESENTER + " not found!");
                 }
             }
         }
+    }
+
+    private void onCallAdded(Object call) {
+        int state = (int) XposedHelpers.callMethod(call, "getState");
+        onCallStateChanged(call, state);
     }
 
     private void onCallStateChanged(Object call, int state) {

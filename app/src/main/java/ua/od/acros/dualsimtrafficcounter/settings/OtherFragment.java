@@ -41,7 +41,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     private Context mContext;
     private boolean mIsAttached;
     private SharedPreferences mPrefs;
-    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
+    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT = 5469;
+    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL = 5470;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -143,6 +144,14 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 mContext.startService(i);
             }
         }
+        if (key.equals(Constants.PREF_OTHER[25])) {
+            if (sharedPreferences.getBoolean(key, false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    !Settings.canDrawOverlays(mContext)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + mContext.getPackageName()));
+                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL);
+            }
+        }
         boolean autoLoad = sharedPreferences.getBoolean(Constants.PREF_OTHER[47], false);
         boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
@@ -154,7 +163,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                     !Settings.canDrawOverlays(mContext)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + mContext.getPackageName()));
-                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
+                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT);
             } else
                 show = floatingWindow && bool;
         }
@@ -173,8 +182,10 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(mContext))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(mContext)) {
+            if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL)
+                ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25])).setChecked(false);
+            else if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT)
                 ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[32])).setChecked(false);
         }
     }
@@ -195,7 +206,6 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 if (input.matches("[0-9]+") && (Integer.valueOf(input) >= 1 && Integer.valueOf(input) <= 3))
                     return true;
                 break;
-
         }
         Toast.makeText(getActivity(), R.string.check_input, Toast.LENGTH_LONG).show();
         return false;
