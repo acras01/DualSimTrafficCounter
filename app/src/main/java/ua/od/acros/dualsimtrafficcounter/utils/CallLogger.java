@@ -136,6 +136,8 @@ public class CallLogger implements IXposedHookLoadPackage {
                                 long durationMillis = System.currentTimeMillis() - start;
                                 XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s");
                                 XposedBridge.log(key);
+                                XposedBridge.log(activeCall.toString());
+                                XposedBridge.log(mOutgoingCall.toString());
                                 XposedBridge.log(mActiveCallSimList.toString());
                                 XposedBridge.log(mActiveCallStartList.toString());
                                 Context context = AndroidAppHelper.currentApplication();
@@ -175,14 +177,16 @@ public class CallLogger implements IXposedHookLoadPackage {
                                         activeCall = XposedHelpers.callMethod(param.args[0], "getActiveCall");
                                         if (activeCall != null) {
                                             key = (String) XposedHelpers.callMethod(activeCall, "getId");
+                                            String _key = (String) XposedHelpers.callMethod(mOutgoingCall, "getId");
                                             final int callState = (Integer) XposedHelpers.callMethod(activeCall, "getState");
-                                            final boolean activeOutgoing = (callState == CALL_STATE_ACTIVE &&
-                                                    activeCall == mOutgoingCall && !mActiveCallSimList.containsKey(key));
-                                            if (activeOutgoing) {
+                                            if (callState == CALL_STATE_ACTIVE && key.equals(_key) &&
+                                                    !mActiveCallSimList.containsKey(key)) {
                                                 start = System.currentTimeMillis();
                                                 mActiveCallStartList.putLong(key, start);
                                                 XposedBridge.log("Outgoing call answered: " + sim);
                                                 XposedBridge.log(key);
+                                                XposedBridge.log(activeCall.toString());
+                                                XposedBridge.log(mOutgoingCall.toString());
                                                 XposedBridge.log(mActiveCallSimList.toString());
                                                 XposedBridge.log(mActiveCallStartList.toString());
                                                 Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
