@@ -67,9 +67,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private final String[] mNumber = new String[1];
     private boolean mLimitHasChanged;
     private long[] mLimits = new long[3];
-    private BroadcastReceiver mCallAnsweredReceiver, mCallEndedReceiver;
+    private BroadcastReceiver mCallStartedReceiver, mCallAnsweredReceiver, mCallEndedReceiver;
     private ArrayList<String> mIMSI = null;
     private Service mService = null;
+    private Intent mDialogIntent = null;
 
     public CallLoggerService() {
     }
@@ -313,13 +314,11 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 final Bundle bundle = new Bundle();
                                 bundle.putString("number", CallLoggerService.this.mNumber[0]);
                                 bundle.putInt("sim", sim);
-                                Intent dialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
-                                dialogIntent.putExtra("bundle", bundle);
-                                dialogIntent.putExtra("whitelist", whiteList);
-                                dialogIntent.putExtra("blacklist", blackList);
-                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                CustomApplication.sleep(500);
-                                mContext.startActivity(dialogIntent);
+                                mDialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
+                                mDialogIntent.putExtra("bundle", bundle);
+                                mDialogIntent.putExtra("whitelist", whiteList);
+                                mDialogIntent.putExtra("blacklist", blackList);
+                                mDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             } else if (black)
                                 mIsOutgoing = true;
                             else if (white)
@@ -451,13 +450,25 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
+            mCallStartedReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    //Toast.makeText(mContext, "Call started!", Toast.LENGTH_LONG).show();
+                    CustomApplication.sleep(500);
+                    if (mDialogIntent != null)
+                        mContext.startActivity(mDialogIntent);
+                }
+            };
+            IntentFilter start = new IntentFilter(Constants.OUTGOING_CALL_STARTED);
+            registerReceiver(mCallStartedReceiver, start);
+
             mCallAnsweredReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (mIsOutgoing) {
                         //final String[] out = {"Call Starts\n"};
                         readCallsDataFromDatabase();
-                        String lim, inter;
+                        String lim = "", inter = "";
                         long currentDuration = 0;
                         int interval = 10;
                         long limit = Long.MAX_VALUE;
@@ -467,30 +478,22 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 currentDuration = (long) mCallsData.get(Constants.CALLS1);
                                 lim = mPrefs.getString(Constants.PREF_SIM1_CALLS[1], "0");
                                 inter = mPrefs.getString(Constants.PREF_SIM1_CALLS[3], "0");
-                                if (!inter.equals(""))
-                                    interval = Integer.valueOf(inter) * Constants.SECOND;
-                                if (!lim.equals(""))
-                                    limit = Long.valueOf(lim) * Constants.MINUTE;
                                 break;
                             case Constants.SIM2:
                                 currentDuration = (long) mCallsData.get(Constants.CALLS2);
                                 lim = mPrefs.getString(Constants.PREF_SIM2_CALLS[1], "0");
                                 inter = mPrefs.getString(Constants.PREF_SIM2_CALLS[3], "0");
-                                if (!inter.equals(""))
-                                    interval = Integer.valueOf(inter) * Constants.SECOND;
-                                if (!lim.equals(""))
-                                    limit = Long.valueOf(lim) * Constants.MINUTE;
                                 break;
                             case Constants.SIM3:
                                 currentDuration = (long) mCallsData.get(Constants.CALLS3);
                                 lim = mPrefs.getString(Constants.PREF_SIM3_CALLS[1], "0");
                                 inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
-                                if (!inter.equals(""))
-                                    interval = Integer.valueOf(inter) * Constants.SECOND;
-                                if (!lim.equals(""))
-                                    limit = Long.valueOf(lim) * Constants.MINUTE;
                                 break;
                         }
+                        if (!inter.equals(""))
+                            interval = Integer.valueOf(inter) * Constants.SECOND;
+                        if (!lim.equals(""))
+                            limit = Long.valueOf(lim) * Constants.MINUTE;
                         long timeToVibrate = limit - currentDuration - interval;
                         if (timeToVibrate < 0)
                             timeToVibrate = 0;

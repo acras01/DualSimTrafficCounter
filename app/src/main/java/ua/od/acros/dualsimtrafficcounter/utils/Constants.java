@@ -77,7 +77,7 @@ public class Constants {
             "hud_id", "hud_remain", "hud_move", "hud_mobile_data", "hud_speed", //42
             "manual_sim", "save_profiles_traffic", "save_profiles_calls", "last_sim", // 46
             "auto_load", "traffic_running", "calls_running", "show_buttons", "choose_actions", //51
-            "hud_flash"}; //52
+            "hud_flash", "call_started"}; //53
     public static final String[] PREF_WIDGET_TRAFFIC = {"stub", "mNames", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10
@@ -150,4 +150,5 @@ public class Constants {
     public static final String HIDE = "ua.od.acros.dualsimtrafficcounter.HIDE";
     public static final Uri UID_URI = Uri.parse("content://ua.od.acros.dualsimtrafficcounter.mydatabase");
     public static final String NEW_OUTGOING_CALL = "ua.od.acros.dualsimtrafficcounter.NEW_OUTGOING_CALL";
+    public static final String OUTGOING_CALL_STARTED = "ua.od.acros.dualsimtrafficcounter.CALL_STARTED";
 }
