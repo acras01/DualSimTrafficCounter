@@ -225,36 +225,38 @@ public class MobileUtils {
             SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             if (sm != null) {
                 try {
-                    if (mGetDefaultDataSubscriptionInfo == null) {
-                        Method[] cm = sm.getClass().getDeclaredMethods();
-                        for (Method m : cm) {
-                            if (m.getName().equalsIgnoreCase("getDefaultDataSubscriptionInfo")) {
-                                m.setAccessible(true);
-                                mGetDefaultDataSubscriptionInfo = m;
-                                break;
-                            }
-                        }
-                    }
-                    SubscriptionInfo si = (SubscriptionInfo) mGetDefaultDataSubscriptionInfo.invoke(sm);
-                    sim = si.getSimSlotIndex();
-                    out = "getDefaultDataSubscriptionInfo " + sim;
-                } catch (Exception e) {
+                    int id = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
+                    sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
+                    out = "getFromSettingsGlobal " + sim;
+                } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
                 }
                 if (sim == Constants.DISABLED) {
                     try {
-                        if (mGetDefaultDataSubId == null) {
-                            Method[] cm = sm.getClass().getDeclaredMethods();
-                            for (Method m : cm) {
-                                if (m.getName().equalsIgnoreCase("getDefaultDataSubId")) {
-                                    m.setAccessible(true);
-                                    mGetDefaultDataSubId = m;
-                                    break;
+                        if (mGetDefaultDataSubscriptionInfo == null) {
+                            mGetDefaultDataSubscriptionInfo = getMethod(sm.getClass(), "getDefaultDataSubscriptionInfo", 0);
+                            if (mGetDefaultDataSubscriptionInfo != null) {
+                                SubscriptionInfo si = (SubscriptionInfo) mGetDefaultDataSubscriptionInfo.invoke(sm);
+                                if (si != null) {
+                                    sim = si.getSimSlotIndex();
+                                    out = "getDefaultDataSubscriptionInfo " + sim;
                                 }
                             }
                         }
-                        sim = sm.getActiveSubscriptionInfo((int) mGetDefaultDataSubId.invoke(sm)).getSimSlotIndex();
-                        out = "getDefaultDataSubId " + sim;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (sim == Constants.DISABLED) {
+                    try {
+                        if (mGetDefaultDataSubId == null) {
+                            mGetDefaultDataSubId = getMethod(sm.getClass(), "mGetDefaultDataSubId", 0);
+                            if (mGetDefaultDataSubId != null) {
+                                int id = (int) mGetDefaultDataSubId.invoke(sm);
+                                sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
+                                out = "getDefaultDataSubId " + sim;
+                            }
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -272,15 +274,6 @@ public class MobileUtils {
                                     break;
                                 }
                             }
-                    }
-                }
-                if (sim == Constants.DISABLED) {
-                    try {
-                        int id = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
-                        sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
-                        out = "getFromSettingsGlobal " + sim;
-                    } catch (Settings.SettingNotFoundException e) {
-                        e.printStackTrace();
                     }
                 }
             }
