@@ -226,8 +226,11 @@ public class MobileUtils {
             if (sm != null) {
                 try {
                     int id = Settings.Global.getInt(context.getContentResolver(), "multi_sim_data_call");
-                    sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
-                    out = "getFromSettingsGlobal " + sim;
+                    SubscriptionInfo si = sm.getActiveSubscriptionInfo(id);
+                    if (si != null) {
+                        sim = si.getSimSlotIndex();
+                        out = "getFromSettingsGlobal " + sim;
+                    }
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -253,8 +256,11 @@ public class MobileUtils {
                             mGetDefaultDataSubId = getMethod(sm.getClass(), "mGetDefaultDataSubId", 0);
                             if (mGetDefaultDataSubId != null) {
                                 int id = (int) mGetDefaultDataSubId.invoke(sm);
-                                sim = sm.getActiveSubscriptionInfo(id).getSimSlotIndex();
-                                out = "getDefaultDataSubId " + sim;
+                                SubscriptionInfo si = sm.getActiveSubscriptionInfo(id);
+                                if (si != null) {
+                                    sim = si.getSimSlotIndex();
+                                    out = "getDefaultDataSubId " + sim;
+                                }
                             }
                         }
                     } catch (Exception e) {
