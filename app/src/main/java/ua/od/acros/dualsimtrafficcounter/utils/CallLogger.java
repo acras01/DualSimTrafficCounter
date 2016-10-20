@@ -263,7 +263,14 @@ public class CallLogger implements IXposedHookLoadPackage {
                     Object call = XposedHelpers.callMethod(conn, "getCall");
                     if (call == mOutgoingCall) {
                         mOutgoingCall = null;
-                        int sim = MobileUtils.getActiveSimForCall(context);
+                        Object phone = XposedHelpers.callMethod(call, "getPhone");
+                        String imei = (String) XposedHelpers.callMethod(phone, "getDeviceId");
+                        ArrayList<String> id = MobileUtils.getDeviceIds(context);
+                        int sim = Constants.DISABLED;
+                        for (int i = 0; i < id.size(); i++) {
+                            if (imei.equals(id.get(i)))
+                                sim = i;
+                        }
                         long durationMillis = (long) XposedHelpers.callMethod(conn, "getDurationMillis");
                         XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s");
                         Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
