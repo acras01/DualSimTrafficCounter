@@ -454,7 +454,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     //Toast.makeText(mContext, "Call started!", Toast.LENGTH_LONG).show();
-                    CustomApplication.sleep(500);
+                    CustomApplication.sleep(1000);
                     if (mDialogIntent != null)
                         mContext.startActivity(mDialogIntent);
                 }
