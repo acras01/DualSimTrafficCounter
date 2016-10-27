@@ -743,6 +743,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             unregisterReceiver(mCallAnsweredReceiver);
         if (mCallEndedReceiver != null)
             unregisterReceiver(mCallEndedReceiver);
+        if (mCallStartedReceiver != null)
+            unregisterReceiver(mCallStartedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().post(new PostNotificationEvent());
         EventBus.getDefault().unregister(this);
