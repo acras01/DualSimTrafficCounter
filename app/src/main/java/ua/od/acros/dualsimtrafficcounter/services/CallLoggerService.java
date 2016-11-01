@@ -100,7 +100,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             Map<String, ?> prefs;
             String name = Constants.CALLS + "_" + mIMSI.get(0);
             if (new File(path + name + ".xml").exists()) {
-                prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                prefSim = getSharedPreferences(name, Context.MODE_PRIVATE);
                 prefs = prefSim.getAll();
                 if (prefs.size() != 0)
                     for (String key : prefs.keySet()) {
@@ -113,7 +113,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             if (mSimQuantity >= 2) {
                 name = Constants.CALLS + "_" + mIMSI.get(1);
                 if (new File(path + name + ".xml").exists()) {
-                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefSim = getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
                         for (String key : prefs.keySet()) {
@@ -127,7 +127,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             if (mSimQuantity == 3) {
                 name = Constants.CALLS + "_" + mIMSI.get(2);
                 if (new File(path + name + ".xml").exists()) {
-                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefSim = getSharedPreferences(name, Context.MODE_PRIVATE);
                     prefs = prefSim.getAll();
                     if (prefs.size() != 0)
                         for (String key : prefs.keySet()) {
