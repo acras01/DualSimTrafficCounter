@@ -159,9 +159,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mService = this;
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mPrefs.edit()
-                .putBoolean(Constants.PREF_OTHER[48], true)
-                .apply();
 
         mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
@@ -581,6 +578,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 }
             }
         }
+
+        mPrefs.edit()
+                .putBoolean(Constants.PREF_OTHER[48], true)
+                .apply();
 
         return START_STICKY;
     }

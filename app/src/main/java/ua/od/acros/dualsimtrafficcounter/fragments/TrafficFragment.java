@@ -223,7 +223,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             EventBus.getDefault().register(this);
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
         mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[48], true);
-        setOptionsMenuButton();
+        if (mService != null)
+            setOptionsMenuButton(mService);
         bSet.setOnClickListener(this);
         readTrafficDataFromDatabase();
         if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
@@ -364,8 +365,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
                     mContext.stopService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.service_disabled));
-                    item.setTitle(R.string.action_start);
-                    item.setIcon(R.drawable.ic_action_enable);
                 } else {
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
                             (!mPrefs.getBoolean(Constants.PREF_OTHER[41], false) || MobileUtils.hasActiveNetworkInfo(mContext) == 2))
@@ -373,9 +372,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                     mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
                     mContext.startService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.tip));
-                    item.setTitle(R.string.action_stop);
-                    item.setIcon(R.drawable.ic_action_disable);
                 }
+                setOptionsMenuButton(item);
+                item.setEnabled(false);
                 break;
             case R.id.action_mobile_data_on_off:
                 showDialog(Constants.ON_OFF);
@@ -512,7 +511,10 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[48])) {
             mIsRunning = sharedPreferences.getBoolean(key, true);
-            setOptionsMenuButton();
+            if (mService != null) {
+                mService.setEnabled(true);
+                setOptionsMenuButton(mService);
+            }
         }
     }
 
@@ -748,15 +750,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         }
     }
 
-    private void setOptionsMenuButton() {
-        if (mService != null) {
-            if (mIsRunning) {
-                mService.setTitle(R.string.action_stop);
-                mService.setIcon(R.drawable.ic_action_disable);
-            } else {
-                mService.setTitle(R.string.action_start);
-                mService.setIcon(R.drawable.ic_action_enable);
-            }
+    private void setOptionsMenuButton(MenuItem item) {
+        if (mIsRunning) {
+            item.setTitle(R.string.action_stop);
+            item.setIcon(R.drawable.ic_action_disable);
+        } else {
+            item.setTitle(R.string.action_start);
+            item.setIcon(R.drawable.ic_action_enable);
         }
     }
 
