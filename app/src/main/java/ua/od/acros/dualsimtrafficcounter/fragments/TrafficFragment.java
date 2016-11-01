@@ -219,9 +219,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
-
         mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[48], true);
         setOptionsMenuButton();
         bSet.setOnClickListener(this);
@@ -277,13 +277,14 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
         setLabelText(mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED), "0", "0");
 
-        CustomApplication.isActivityResumed();
+        CustomApplication.resumeActivity();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         bSet.setOnClickListener(null);
         SIM1.setOnClickListener(null);
         bLim1.setOnClickListener(null);
@@ -299,7 +300,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             bClear3.setOnClickListener(null);
         }
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        CustomApplication.isActivityPaused();
+        CustomApplication.pauseActivity();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

@@ -265,7 +265,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         arr.recycle();
         TIP.setText(getResources().getString(R.string.tip_calls));
         setButtonLimitText();
-        CustomApplication.isActivityResumed();
+        CustomApplication.resumeActivity();
     }
 
     @Override
@@ -282,7 +282,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             bClear3.setOnClickListener(this);
         }
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        CustomApplication.isActivityPaused();
+        CustomApplication.pauseActivity();
     }
 
     @Override

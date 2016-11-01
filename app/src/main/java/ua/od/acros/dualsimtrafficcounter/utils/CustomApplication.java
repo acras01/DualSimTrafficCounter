@@ -213,11 +213,11 @@ public class CustomApplication extends Application {
         return mIsActivityVisible;
     }
 
-    public static void isActivityResumed() {
+    public static void resumeActivity() {
         mIsActivityVisible = true;
     }
 
-    public static void isActivityPaused() {
+    public static void pauseActivity() {
         mIsActivityVisible = false;
     }
 

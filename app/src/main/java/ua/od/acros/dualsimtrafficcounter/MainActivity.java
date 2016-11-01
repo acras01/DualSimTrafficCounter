@@ -167,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startService(new Intent(mContext, CallLoggerService.class));
 
         mAction = getIntent().getAction();
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
     @Subscribe
@@ -516,7 +517,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Override

@@ -442,7 +442,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mCallsData = new ContentValues();
         readCallsDataFromDatabase();
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
             mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
             mLimits = CustomApplication.getCallsSimLimitsValues();
@@ -747,7 +748,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             unregisterReceiver(mCallStartedReceiver);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         EventBus.getDefault().post(new PostNotificationEvent());
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     private void writeCallsDataToDatabase(int sim) {

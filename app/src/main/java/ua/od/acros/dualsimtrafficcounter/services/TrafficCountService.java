@@ -522,7 +522,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         sendDataBroadcast(0L, 0L);
 
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
 
         if ((mPrefs.getBoolean(Constants.PREF_OTHER[47], false) && !MobileUtils.isMobileDataActive(mContext)) ||
                 mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
@@ -2199,6 +2200,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         writeTrafficDataToDatabase(mActiveSIM);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         getContentResolver().unregisterContentObserver(mUidObserver);
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 }
