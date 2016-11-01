@@ -280,6 +280,8 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         if (mIsAttached)
             updateSummary();
         if (key.equals(Constants.PREF_OTHER[45])) {
+            if (mIMSI == null)
+                mIMSI = MobileUtils.getSimIds(mContext);
             if (sharedPreferences.getBoolean(key, false)) {
                 for (int i = 0; i < mSimQuantity; i++) {
                     new SaveTask().execute(i);
@@ -340,8 +342,6 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                     keys = Constants.PREF_SIM3_CALLS;
                     break;
             }
-            if (mIMSI == null)
-                mIMSI = MobileUtils.getSimIds(mContext);
             SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
@@ -373,8 +373,6 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            if (mIMSI == null)
-                mIMSI = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
             CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
             CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS);
