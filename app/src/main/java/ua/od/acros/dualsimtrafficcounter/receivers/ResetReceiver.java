@@ -147,8 +147,6 @@ public class ResetReceiver extends BroadcastReceiver {
                 keys = Constants.PREF_SIM3_CALLS;
                 break;
         }
-        if (mIMSI == null)
-            mIMSI = MobileUtils.getSimIds(context);
         SharedPreferences.Editor editor = context.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
         Set<String> keySet = prefsMap.keySet();
         ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
