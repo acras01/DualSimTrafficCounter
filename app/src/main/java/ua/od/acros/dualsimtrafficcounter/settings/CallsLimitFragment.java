@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -59,51 +58,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
-            String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
-            SharedPreferences.Editor editor = mPrefs.edit();
-            SharedPreferences prefSim;
-            Map<String, ?> prefs;
-            String name = Constants.CALLS + "_" + mIMSI.get(0);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefs = prefSim.getAll();
-                if (prefs.size() != 0)
-                    for (String key : prefs.keySet()) {
-                        Object o = prefs.get(key);
-                        key = key + 1;
-                        CustomApplication.putObject(editor, key, o);
-                    }
-                prefSim = null;
-            }
-            if (mSimQuantity >= 2) {
-                name = Constants.CALLS + "_" + mIMSI.get(1);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefs = prefSim.getAll();
-                    if (prefs.size() != 0)
-                        for (String key : prefs.keySet()) {
-                            Object o = prefs.get(key);
-                            key = key + 2;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            if (mSimQuantity == 3) {
-                name = Constants.CALLS + "_" + mIMSI.get(2);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefs = prefSim.getAll();
-                    if (prefs.size() != 0)
-                        for (String key : prefs.keySet()) {
-                            Object o = prefs.get(key);
-                            key = key + 3;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            editor.apply();
+            CustomApplication.loadCallsPreferences(mContext, mIMSI);
         }
 
         addPreferencesFromResource(R.xml.calls_settings);
@@ -376,7 +331,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
             CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
             CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS);
-            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS);
+            CustomApplication.deletePreferenceFile(mContext, mSimQuantity, Constants.CALLS);
             return true;
         }
 

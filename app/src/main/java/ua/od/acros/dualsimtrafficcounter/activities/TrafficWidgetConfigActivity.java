@@ -34,7 +34,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
 import ua.od.acros.dualsimtrafficcounter.dialogs.ShowSimDialog;
 import ua.od.acros.dualsimtrafficcounter.fragments.IconsListFragment;
-import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
@@ -71,8 +70,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
 
         mContext = CustomApplication.getAppContext();
 
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class))
-            startService(new Intent(this, TrafficCountService.class));
+        /*if (!CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
+            startService(new Intent(this, TrafficCountService.class));*/
 
         mDim = (int) getResources().getDimension(R.dimen.logo_size);
 

@@ -31,7 +31,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                     MobileUtils.hasActiveNetworkInfo(context) != 2) {
                 if (bool)
                     FloatingWindowService.closeFloatingWindow(context, prefs);
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                if (CustomApplication.isMyServiceRunning(context, TrafficCountService.class))
                     EventBus.getDefault().post(new NoConnectivityEvent());
             } else {
                 //start WatchDogService
@@ -39,14 +39,14 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                     context.startService(new Intent(context, WatchDogService.class));
                 if (bool)
                     FloatingWindowService.showFloatingWindow(context, prefs);
-                if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
+                if (!CustomApplication.isMyServiceRunning(context, TrafficCountService.class) &&
                         !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                     Intent i = new Intent(context, TrafficCountService.class);
                     i.setAction(intent.getAction());
                     i.putExtras(intent.getExtras());
                     i.setFlags(intent.getFlags());
                     context.startService(i);
-                } else if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                } else if (CustomApplication.isMyServiceRunning(context, TrafficCountService.class))
                     EventBus.getDefault().post(new MobileConnectionEvent());
             }
         }

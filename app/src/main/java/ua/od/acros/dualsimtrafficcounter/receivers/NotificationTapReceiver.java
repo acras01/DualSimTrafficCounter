@@ -39,11 +39,11 @@ public class NotificationTapReceiver extends BroadcastReceiver {
                         .putBoolean(Constants.PREF_OTHER[50], !prefs.getBoolean(Constants.PREF_OTHER[50], true))
                         .apply();
                 Intent i;
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+                if (CustomApplication.isMyServiceRunning(context, TrafficCountService.class)) {
                     i = new Intent(context, TrafficCountService.class);
                     context.stopService(i);
                     context.startService(i);
-                } else if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
+                } else if (CustomApplication.isMyServiceRunning(context, CallLoggerService.class)) {
                     i = new Intent(context, CallLoggerService.class);
                     context.stopService(i);
                     context.startService(i);

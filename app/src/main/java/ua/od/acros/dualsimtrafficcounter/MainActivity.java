@@ -152,19 +152,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
                         (!mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false))))
             FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class))
+        if (!CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
             startService(new Intent(mContext, TrafficCountService.class));
-        if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+        if (!CustomApplication.isMyServiceRunning(mContext, WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             startService(new Intent(mContext, WatchDogService.class));
-        if (!CustomApplication.isPackageExisted(XPOSED)) {
+        if (!CustomApplication.isPackageExisted(mContext, XPOSED)) {
             mPrefs.edit()
                     .putBoolean(Constants.PREF_OTHER[24], true)
                     .putBoolean(Constants.PREF_OTHER[25], false)
                     .apply();
         }
 
-        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class))
-            startService(new Intent(mContext, CallLoggerService.class));
+        /*if (!CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class))
+            startService(new Intent(mContext, CallLoggerService.class));*/
 
         mAction = getIntent().getAction();
         if (!EventBus.getDefault().isRegistered(this))
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
                 setItemChecked(R.id.nav_traffic, true);
             }
-        } else if (CustomApplication.isPackageExisted(XPOSED) && (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration) &&
+        } else if (CustomApplication.isPackageExisted(mContext, XPOSED) && (mLastMenuItem == R.id.nav_calls || mLastMenuItem == R.id.nav_set_duration) &&
                 !mPrefs.getBoolean(Constants.PREF_OTHER[25], true)) {
             if (currentFragment instanceof CallsFragment) {
                 fm.beginTransaction()
@@ -468,11 +468,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(i2);
                 break;
             case R.id.nav_exit:
-                if (CustomApplication.isMyServiceRunning(WatchDogService.class))
+                if (CustomApplication.isMyServiceRunning(mContext, WatchDogService.class))
                     stopService(new Intent(mContext, WatchDogService.class));
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                if (CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
                     stopService(new Intent(mContext, TrafficCountService.class));
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
+                if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class))
                     stopService(new Intent(mContext, CallLoggerService.class));
                 FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
                 finish();

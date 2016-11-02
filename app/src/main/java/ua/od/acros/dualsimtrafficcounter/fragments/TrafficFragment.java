@@ -93,7 +93,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
             mIMSI = MobileUtils.getSimIds(mContext);
         mTrafficData = new ContentValues();
-        mIsNight =  CustomApplication.getIsNightState();
+        mIsNight =  CustomApplication.getIsNightState(mContext);
 
         mTrafficDataReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -574,7 +574,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
     @Override
     public void onClick(View v) {
-        boolean[] isNight =  CustomApplication.getIsNightState();
+        boolean[] isNight =  CustomApplication.getIsNightState(mContext);
         switch (v.getId()) {
             case R.id.settings:
                 try {
@@ -584,7 +584,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 }
                 break;
             case R.id.buttonClear1:
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                if (CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM1, 0, 0));
                 else {
                     readTrafficDataFromDatabase();
@@ -611,7 +611,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 }
                 break;
             case R.id.buttonClear2:
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                if (CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM2, 0, 0));
                 else {
                     readTrafficDataFromDatabase();
@@ -638,7 +638,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 }
                 break;
             case R.id.buttonClear3:
-                if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                if (CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
                     EventBus.getDefault().post(new SetTrafficEvent("0", "0", Constants.SIM3, 0, 0));
                 else {
                     readTrafficDataFromDatabase();
@@ -763,7 +763,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     private void setButtonLimitText() {
 
         String limit1, limit2, limit3;
-        long[] limit = CustomApplication.getTrafficSimLimitsValues();
+        long[] limit = CustomApplication.getTrafficSimLimitsValues(mContext);
         limit1 = limit[0] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[0]) : getString(R.string.not_set);
         limit2 = limit[1] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[1]) : getString(R.string.not_set);
         limit3 = limit[2] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[2]) : getString(R.string.not_set);

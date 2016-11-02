@@ -28,7 +28,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -94,55 +93,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             mIMSI = MobileUtils.getSimIds(mContext);
-            String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
-            SharedPreferences.Editor editor = mPrefs.edit();
-            SharedPreferences prefSim;
-            Map<String, ?> prefs;
-            String name = Constants.CALLS + "_" + mIMSI.get(0);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefs = prefSim.getAll();
-                if (prefs.size() != 0)
-                    for (String key : prefs.keySet()) {
-                        Object o = prefs.get(key);
-                        key = key + 1;
-                        CustomApplication.putObject(editor, key, o);
-                    }
-                prefSim = null;
-            }
-            if (mSimQuantity >= 2) {
-                name = Constants.CALLS + "_" + mIMSI.get(1);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefs = prefSim.getAll();
-                    if (prefs.size() != 0)
-                        for (String key : prefs.keySet()) {
-                            Object o = prefs.get(key);
-                            key = key + 2;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            if (mSimQuantity == 3) {
-                name = Constants.CALLS + "_" + mIMSI.get(2);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefs = prefSim.getAll();
-                    if (prefs.size() != 0)
-                        for (String key : prefs.keySet()) {
-                            Object o = prefs.get(key);
-                            key = key + 3;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            editor.apply();
+            CustomApplication.loadCallsPreferences(mContext, mIMSI);
+            mPrefs = null;
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         }
-
-        mPrefs = null;
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -284,7 +238,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mIsOutgoing)
+                if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class) && !mIsOutgoing)
                     switch (state) {
                         case TelephonyManager.CALL_STATE_OFFHOOK:
                             final int sim = MobileUtils.getActiveSimForCall(ctx);
@@ -334,8 +288,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     private void refreshWidgetAndNotification(int sim, long duration) {
         updateNotification();
-        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
-        if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn()) || ids.length != 0) {
+        int[] ids = CustomApplication.getWidgetIds(mContext, Constants.CALLS);
+        if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn(mContext)) || ids.length != 0) {
             Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
             callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
             callsIntent.putExtra(Constants.CALL_DURATION, duration);
@@ -419,7 +373,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 }
             }.start();
         }
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+        if (!CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class)) {
             if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
                     key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
                 updateNotification();
@@ -433,7 +387,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
+        int[] ids = CustomApplication.getWidgetIds(mContext, Constants.CALLS);
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
             i.putExtra(Constants.WIDGET_IDS, ids);
@@ -446,7 +400,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             EventBus.getDefault().register(this);
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
             mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-            mLimits = CustomApplication.getCallsSimLimitsValues();
+            mLimits = CustomApplication.getCallsSimLimitsValues(mContext);
             mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                     MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -653,7 +607,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
             calls = getString(R.string.remain_calls);
             if (mLimitHasChanged) {
-                mLimits = CustomApplication.getCallsSimLimitsValues();
+                mLimits = CustomApplication.getCallsSimLimitsValues(mContext);
                 mLimitHasChanged = false;
             }
             tot1 = mLimits[0] - (long) mCallsData.get(Constants.CALLS1);
@@ -690,9 +644,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             else
                 calls += "  ||  " + getString(R.string.not_set);
         String traffic = "";
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+        if (!CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class)) {
             ContentValues cv;
-            boolean[] isNight = CustomApplication.getIsNightState();
+            boolean[] isNight = CustomApplication.getIsNightState(mContext);
             if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
                 if (mIMSI == null)
                     mIMSI = MobileUtils.getSimIds(mContext);
@@ -712,7 +666,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 tot2 = isNight[1] ? (long) cv.get(Constants.TOTAL2_N) : (long) cv.get(Constants.TOTAL2);
                 tot3 = isNight[2] ? (long) cv.get(Constants.TOTAL3_N) : (long) cv.get(Constants.TOTAL3);
             }
-            long[] limits = CustomApplication.getTrafficSimLimitsValues();
+            long[] limits = CustomApplication.getTrafficSimLimitsValues(mContext);
             if (limits[0] != Long.MAX_VALUE)
                 traffic = DataFormat.formatData(mContext, tot1);
             else

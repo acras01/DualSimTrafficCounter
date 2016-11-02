@@ -119,7 +119,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 am.cancel(piReset);
                 am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
             } else {
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
+                if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class))
                     mContext.stopService(new Intent(mContext, CallLoggerService.class));
                 sharedPreferences.edit()
                         .putBoolean(Constants.PREF_OTHER[24], true)
@@ -127,18 +127,18 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 am.cancel(piReset);
             }
         }
-        if (key.equals(Constants.PREF_OTHER[12]) && CustomApplication.isMyServiceRunning(WatchDogService.class)) {
+        if (key.equals(Constants.PREF_OTHER[12]) && CustomApplication.isMyServiceRunning(mContext, WatchDogService.class)) {
             Intent i = new Intent(mContext, WatchDogService.class);
             mContext.stopService(i);
             mContext.startService(i);
         }
         if (key.equals(Constants.PREF_OTHER[12])) {
             Intent i;
-            if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+            if (CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class)) {
                 i = new Intent(mContext, TrafficCountService.class);
                 mContext.stopService(i);
                 mContext.startService(i);
-            } else if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
+            } else if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class)) {
                 i = new Intent(mContext, CallLoggerService.class);
                 mContext.stopService(i);
                 mContext.startService(i);

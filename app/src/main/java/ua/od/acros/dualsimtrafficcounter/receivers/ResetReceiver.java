@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 
 import org.joda.time.DateTime;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -37,55 +36,11 @@ public class ResetReceiver extends BroadcastReceiver {
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (prefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             mIMSI = MobileUtils.getSimIds(context);
-            String path = context.getFilesDir().getParent() + "/shared_prefs/";
-            SharedPreferences.Editor editor = prefs.edit();
-            SharedPreferences prefSim;
-            Map<String, ?> prefsMap;
-            String name = Constants.CALLS + "_" + mIMSI.get(0);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefsMap = prefSim.getAll();
-                if (prefsMap.size() != 0)
-                    for (String key : prefsMap.keySet()) {
-                        Object o = prefsMap.get(key);
-                        key = key + 1;
-                        CustomApplication.putObject(editor, key, o);
-                    }
-                prefSim = null;
-            }
-            if (simQuantity >= 2) {
-                name = Constants.CALLS + "_" + mIMSI.get(1);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefsMap = prefSim.getAll();
-                    if (prefsMap.size() != 0)
-                        for (String key : prefsMap.keySet()) {
-                            Object o = prefsMap.get(key);
-                            key = key + 2;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            if (simQuantity == 3) {
-                name = Constants.CALLS + "_" + mIMSI.get(2);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefsMap = prefSim.getAll();
-                    if (prefsMap.size() != 0)
-                        for (String key : prefsMap.keySet()) {
-                            Object o = prefsMap.get(key);
-                            key = key + 3;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            editor.apply();
+            CustomApplication.loadCallsPreferences(context, mIMSI);
+            prefs = null;
+            prefs = PreferenceManager.getDefaultSharedPreferences(context);
         }
 
-        prefs = null;
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
                 Constants.PREF_SIM1_CALLS[5]};
         if (!prefs.getBoolean(Constants.PREF_SIM1_CALLS[9], false)) {

@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -73,51 +72,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
-            String path = mContext.getFilesDir().getParent() + "/shared_prefs/";
-            SharedPreferences.Editor editor = mPrefs.edit();
-            SharedPreferences prefSim;
-            Map<String, ?> prefs;
-            String name = Constants.TRAFFIC + "_" + mIMSI.get(0);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefs = prefSim.getAll();
-                if (prefs.size() != 0)
-                    for (String key : prefs.keySet()) {
-                        Object o = prefs.get(key);
-                        key = key + 1;
-                        CustomApplication.putObject(editor, key, o);
-                    }
-                prefSim = null;
-            }
-            if (mSimQuantity >= 2) {
-                name = Constants.TRAFFIC + "_" + mIMSI.get(1);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefs = prefSim.getAll();
-                    if (prefs.size() != 0)
-                        for (String key : prefs.keySet()) {
-                            Object o = prefs.get(key);
-                            key = key + 2;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            if (mSimQuantity == 3) {
-                name = Constants.TRAFFIC + "_" + mIMSI.get(2);
-                if (new File(path + name + ".xml").exists()) {
-                    prefSim = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
-                    prefs = prefSim.getAll();
-                    if (prefs.size() != 0)
-                        for (String key : prefs.keySet()) {
-                            Object o = prefs.get(key);
-                            key = key + 3;
-                            CustomApplication.putObject(editor, key, o);
-                        }
-                    prefSim = null;
-                }
-            }
-            editor.apply();
+            CustomApplication.loadTrafficPreferences(mContext, mIMSI);
         }
 
         addPreferencesFromResource(R.xml.traffic_settings);
@@ -601,7 +556,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
 
         if (key.equals(Constants.PREF_OTHER[43])) {
-            if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+            if (CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
                 mContext.stopService(new Intent(mContext, TrafficCountService.class));
             mContext.startService(new Intent(mContext, TrafficCountService.class));
         }
@@ -822,7 +777,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper.deleteDataTable(CustomDatabaseHelper.getInstance(mContext), mIMSI, Constants.TRAFFIC);
-            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.TRAFFIC);
+            CustomApplication.deletePreferenceFile(mContext, mSimQuantity, Constants.TRAFFIC);
             return true;
         }
 
