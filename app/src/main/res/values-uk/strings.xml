@@ -76,7 +76,7 @@
     <string name="time_of_end">Час скидання</string>
     <string name="day">День скидання</string>
     <string name="check">Введіть вірний день</string>
-    <string name="info_widget_traffic">Віджет DSTC (трафік)</string>
+    <string name="info_widget_traffic">Трафік - Віджет DSTC</string>
     <string name="info_widget_image">Віджет з лого операторів</string>
     <string name="show_icons">Лого операторів на віджеті</string>
     <string name="operator_logo_1">Лого для SIM1</string>
@@ -178,7 +178,7 @@
     <string name="view_black_list">Перегляд та редагування чорного списку</string>
     <string name="unknown">Невідомий</string>
     <string name="saved">Збережено!</string>
-    <string name="info_widget_calls">Віджет DSTC (дзвінки)</string>
+    <string name="info_widget_calls">Дзвінки - Віджет DSTC</string>
     <string name="deleted">Видалено!</string>
     <string name="remain_calls">"Залишок: "</string>
     <string name="show_remaining_calls">Вiдображати залишок хвилин в панелi повiдомлень</string>

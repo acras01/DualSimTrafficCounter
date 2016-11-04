@@ -77,7 +77,7 @@
     <string name="day">День обнуления</string>
     <string name="check">Введите правильный день</string>
     <string name="info_widget_image">Виджет с лого операторов</string>
-    <string name="info_widget_traffic">Виджет DSTC (трафик)</string>
+    <string name="info_widget_traffic">Трафик - Виджет DSTC</string>
     <string name="show_icons">Лого операторов на виджете</string>
     <string name="operator_logo_1">Лого для SIM1</string>
     <string name="operator_logo_2">Лого для SIM2</string>
@@ -178,7 +178,7 @@
     <string name="view_black_list">Просмотр и редактирование черного списка</string>
     <string name="unknown">Неизвестный</string>
     <string name="saved">Сохранено!</string>
-    <string name="info_widget_calls">Виджет DSTC (вызовы)</string>
+    <string name="info_widget_calls">Вызовы - Виджет DSTC</string>
     <string name="deleted">Удалено!</string>
     <string name="remain_calls">"Остаток: "</string>
     <string name="show_remaining_calls">Показывать остаток минут в панели уведомлений</string>

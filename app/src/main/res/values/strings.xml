@@ -79,7 +79,7 @@
     <string name="set">Set</string>
     <string name="day">Day of reset</string>
     <string name="check">Enter valid day of month</string>
-    <string name="info_widget_traffic">DSTC Traffic Widget</string>
+    <string name="info_widget_traffic">Traffic - DSTC Widget</string>
     <string name="info_widget_image">Widget with carrier labels</string>
     <string name="show_icons">Show operator logo</string>
     <string name="operator_logo_1">Logo for SIM1</string>
@@ -186,7 +186,7 @@
     <string name="title_activity_black_list" translatable="false">BlackListActivity</string>
     <string name="unknown">Unknown</string>
     <string name="saved">Saved!</string>
-    <string name="info_widget_calls">DSTC widget (calls)</string>
+    <string name="info_widget_calls">Calls - DSTC widget</string>
     <string name="deleted">Deleted!</string>
     <string name="remain_calls">"Remaining: "</string>
     <string name="show_remaining_calls">Show remaining call time in notification area</string>
