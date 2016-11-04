@@ -93,7 +93,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             mIMSI = MobileUtils.getSimIds(mContext);
-            CustomApplication.loadCallsPreferences(mContext, mIMSI);
+            CustomApplication.loadCallsPreferences(mIMSI);
             mPrefs = null;
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         }
@@ -238,7 +238,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
-                if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class) && !mIsOutgoing)
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mIsOutgoing)
                     switch (state) {
                         case TelephonyManager.CALL_STATE_OFFHOOK:
                             final int sim = MobileUtils.getActiveSimForCall(ctx);
@@ -288,8 +288,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     private void refreshWidgetAndNotification(int sim, long duration) {
         updateNotification();
-        int[] ids = CustomApplication.getWidgetIds(mContext, Constants.CALLS);
-        if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn(mContext)) || ids.length != 0) {
+        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
+        if ((CustomApplication.isActivityVisible() && CustomApplication.isScreenOn()) || ids.length != 0) {
             Intent callsIntent = new Intent(Constants.CALLS_BROADCAST_ACTION);
             callsIntent.putExtra(Constants.SIM_ACTIVE, sim);
             callsIntent.putExtra(Constants.CALL_DURATION, duration);
@@ -373,7 +373,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 }
             }.start();
         }
-        if (!CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class)) {
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
             if (key.equals(Constants.PREF_OTHER[15]) || key.equals(Constants.PREF_SIM1[23]) ||
                     key.equals(Constants.PREF_SIM2[23]) || key.equals(Constants.PREF_SIM3[23]))
                 updateNotification();
@@ -387,7 +387,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int[] ids = CustomApplication.getWidgetIds(mContext, Constants.CALLS);
+        int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
             i.putExtra(Constants.WIDGET_IDS, ids);
@@ -400,7 +400,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             EventBus.getDefault().register(this);
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
             mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-            mLimits = CustomApplication.getCallsSimLimitsValues(mContext);
+            mLimits = CustomApplication.getCallsSimLimitsValues();
             mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                     MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -607,7 +607,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
             calls = getString(R.string.remain_calls);
             if (mLimitHasChanged) {
-                mLimits = CustomApplication.getCallsSimLimitsValues(mContext);
+                mLimits = CustomApplication.getCallsSimLimitsValues();
                 mLimitHasChanged = false;
             }
             tot1 = mLimits[0] - (long) mCallsData.get(Constants.CALLS1);
@@ -644,9 +644,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             else
                 calls += "  ||  " + getString(R.string.not_set);
         String traffic = "";
-        if (!CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class)) {
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
             ContentValues cv;
-            boolean[] isNight = CustomApplication.getIsNightState(mContext);
+            boolean[] isNight = CustomApplication.getIsNightState();
             if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
                 if (mIMSI == null)
                     mIMSI = MobileUtils.getSimIds(mContext);
@@ -666,7 +666,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 tot2 = isNight[1] ? (long) cv.get(Constants.TOTAL2_N) : (long) cv.get(Constants.TOTAL2);
                 tot3 = isNight[2] ? (long) cv.get(Constants.TOTAL3_N) : (long) cv.get(Constants.TOTAL3);
             }
-            long[] limits = CustomApplication.getTrafficSimLimitsValues(mContext);
+            long[] limits = CustomApplication.getTrafficSimLimitsValues();
             if (limits[0] != Long.MAX_VALUE)
                 traffic = DataFormat.formatData(mContext, tot1);
             else

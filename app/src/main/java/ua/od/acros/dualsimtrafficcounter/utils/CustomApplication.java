@@ -82,9 +82,9 @@ public class CustomApplication extends Application {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         ArrayList imsi = MobileUtils.getSimIds(context);
         if (preferences.getBoolean(Constants.PREF_OTHER[44], false))
-            loadTrafficPreferences(context, imsi);
+            loadTrafficPreferences(imsi);
         if (preferences.getBoolean(Constants.PREF_OTHER[45], false))
-            loadCallsPreferences(context, imsi);
+            loadCallsPreferences(imsi);
 
 
         //Check if Data Usage Fragment available
@@ -96,8 +96,8 @@ public class CustomApplication extends Application {
             mIsDataUsageAvailable = false;
         mCanSwitchSim = isOldMtkDevice() && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
 
-        setOnOffAlarms(context);
-        setCallResetAlarm(context);
+        setOnOffAlarms();
+        setCallResetAlarm();
     }
 
     public static Intent getSettingsIntent() {
@@ -124,19 +124,19 @@ public class CustomApplication extends Application {
         mIsActivityVisible = false;
     }
 
-    public static boolean isScreenOn(Context context) {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+    public static boolean isScreenOn() {
+        PowerManager pm = (PowerManager) mWeakReference.get().getSystemService(Context.POWER_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return pm.isInteractive();
         else
             return pm.isScreenOn();
     }
 
-    public static boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
+    public static boolean isMyServiceRunning(Class<?> serviceClass) {
         try {
-            ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-                if (serviceClass.getName().equals(service.service.getClassName()))
+            ActivityManager manager = (ActivityManager) mWeakReference.get().getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(serviceInfo.service.getClassName()))
                     return true;
             }
         } catch (Exception e) {
@@ -145,9 +145,9 @@ public class CustomApplication extends Application {
         return false;
     }
 
-    public static boolean isPackageExisted(Context context, String targetPackage){
+    public static boolean isPackageExisted(String targetPackage){
         try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
+            PackageInfo info = mWeakReference.get().getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
@@ -203,8 +203,9 @@ public class CustomApplication extends Application {
             editor.putBoolean(key, (boolean) o);
     }
 
-    public static int[] getWidgetIds(Context context, String name) {
+    public static int[] getWidgetIds(String name) {
         Class c;
+        Context context = mWeakReference.get();
         if (name.equals(Constants.CALLS))
             c = CallsInfoWidget.class;
         else
@@ -237,8 +238,8 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static long[] getCallsSimLimitsValues(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public static long[] getCallsSimLimitsValues() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mWeakReference.get());
         long limit1, limit2, limit3;
         try {
             limit1 = Long.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
@@ -258,9 +259,9 @@ public class CustomApplication extends Application {
         return new long[]{limit1, limit2, limit3};
     }
 
-    public static long[] getTrafficSimLimitsValues(Context context) {
-        boolean[] isNight = getIsNightState(context);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public static long[] getTrafficSimLimitsValues() {
+        boolean[] isNight = getIsNightState();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mWeakReference.get());
         String limit1 = isNight[0] ? preferences.getString(Constants.PREF_SIM1[18], "") : preferences.getString(Constants.PREF_SIM1[1], "");
         String limit2 = isNight[1] ? preferences.getString(Constants.PREF_SIM2[18], "") : preferences.getString(Constants.PREF_SIM2[1], "");
         String limit3 = isNight[2] ? preferences.getString(Constants.PREF_SIM3[18], "") : preferences.getString(Constants.PREF_SIM3[1], "");
@@ -308,8 +309,8 @@ public class CustomApplication extends Application {
         return new long[] {lim1, lim2, lim3};
     }
 
-    public static boolean[] getIsNightState(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public static boolean[] getIsNightState() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mWeakReference.get());
         DateTime now = new DateTime();
         boolean isNight1, isNight2, isNight3;
         if (preferences.getBoolean(Constants.PREF_SIM1[17], false)) {
@@ -334,7 +335,8 @@ public class CustomApplication extends Application {
         return new boolean[] {isNight1, isNight2, isNight3};
     }
 
-    public static void deletePreferenceFile(Context context, int quantity, String name) {
+    public static void deletePreferenceFile(int quantity, String name) {
+        Context context = mWeakReference.get();
         File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
         String[] children = dir.list();
         for (String aChildren : children) {
@@ -352,7 +354,8 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static void deleteWidgetPreferenceFile(Context context, int[] ids, String name) {
+    public static void deleteWidgetPreferenceFile(int[] ids, String name) {
+        Context context = mWeakReference.get();
         File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
         String[] children = dir.list();
         for (String aChildren : children) {
@@ -373,7 +376,8 @@ public class CustomApplication extends Application {
         return mCanSwitchSim;
     }
 
-    public static void setOnOffAlarms(Context context) {
+    public static void setOnOffAlarms() {
+        Context context = mWeakReference.get();
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
@@ -473,7 +477,8 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static void setCallResetAlarm(Context context) {
+    public static void setCallResetAlarm() {
+        Context context = mWeakReference.get();
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
@@ -489,7 +494,8 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static void loadTrafficPreferences(Context context, ArrayList imsi) {
+    public static void loadTrafficPreferences(ArrayList imsi) {
+        Context context = mWeakReference.get();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1"));
@@ -540,7 +546,8 @@ public class CustomApplication extends Application {
         editor.apply();
     }
 
-    public static void loadCallsPreferences(Context context, ArrayList imsi) {
+    public static void loadCallsPreferences(ArrayList imsi) {
+        Context context = mWeakReference.get();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1"));

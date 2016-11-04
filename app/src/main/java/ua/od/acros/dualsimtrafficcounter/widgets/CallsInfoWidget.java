@@ -46,7 +46,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
             final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
-                CustomApplication.deleteWidgetPreferenceFile(context, new int[]{appWidgetId}, Constants.CALLS_TAG);
+                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.CALLS_TAG);
         } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null)
             updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, readData(context));
     }
@@ -358,7 +358,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it
-        CustomApplication.deleteWidgetPreferenceFile(context, appWidgetIds, Constants.CALLS_TAG);
+        CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.CALLS_TAG);
         //super.onDeleted(context, appWidgetIds);
     }
 

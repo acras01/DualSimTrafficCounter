@@ -72,7 +72,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
-            CustomApplication.loadTrafficPreferences(mContext, mIMSI);
+            CustomApplication.loadTrafficPreferences(mIMSI);
         }
 
         addPreferencesFromResource(R.xml.traffic_settings);
@@ -556,7 +556,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
 
         if (key.equals(Constants.PREF_OTHER[43])) {
-            if (CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class))
+            if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 mContext.stopService(new Intent(mContext, TrafficCountService.class));
             mContext.startService(new Intent(mContext, TrafficCountService.class));
         }
@@ -777,7 +777,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
             CustomDatabaseHelper.deleteDataTable(CustomDatabaseHelper.getInstance(mContext), mIMSI, Constants.TRAFFIC);
-            CustomApplication.deletePreferenceFile(mContext, mSimQuantity, Constants.TRAFFIC);
+            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.TRAFFIC);
             return true;
         }
 

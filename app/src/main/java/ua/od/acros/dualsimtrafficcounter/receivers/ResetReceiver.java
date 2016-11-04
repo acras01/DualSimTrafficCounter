@@ -36,7 +36,7 @@ public class ResetReceiver extends BroadcastReceiver {
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (prefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             mIMSI = MobileUtils.getSimIds(context);
-            CustomApplication.loadCallsPreferences(context, mIMSI);
+            CustomApplication.loadCallsPreferences(mIMSI);
             prefs = null;
             prefs = PreferenceManager.getDefaultSharedPreferences(context);
         }

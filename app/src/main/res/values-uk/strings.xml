@@ -228,7 +228,7 @@
     <string name="save_profile">Зберегти профіль</string>
     <string name="save_profile_known">Використовувати профілі для відомих SIM</string>
     <string name="save_profile_sum">Зберегти профіль для поточної SIM</string>
-    <string name="sim_not_defined">Додаток не може визначити активну SIM-карту. Будь ласка, оберіть в налаштуваннях ручний вибір SIM</string>
+    <string name="sim_not_defined">Додаток не може визначити активну SIM-карту. Будь ласка, вимкніть в налаштуваннях автоматичний вибір SIM</string>
     <string name="enable_mobile_data">Будь ласка, увімкніть мобільні дані!</string>
     <string name="auto_load_service">Закривати сервіс автоматично при вимкненні мобільних даних</string>
     <string name="action_traffic">Трафік</string>

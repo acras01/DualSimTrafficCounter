@@ -88,7 +88,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                long[] limit = CustomApplication.getCallsSimLimitsValues(context);
+                long[] limit = CustomApplication.getCallsSimLimitsValues();
                 TypedValue typedValue = new TypedValue();
                 Resources.Theme theme = getActivity().getTheme();
                 theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -221,12 +221,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
         readCallsDataFromDatabase();
-        if (!CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class)) {
+        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
             NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(Constants.STARTED_ID, buildNotification());
         }
 
-        long[] limit = CustomApplication.getCallsSimLimitsValues(mContext);
+        long[] limit = CustomApplication.getCallsSimLimitsValues();
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -289,7 +289,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonClear1:
-                if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class))
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM1, "0", 1));
                 else {
                     readCallsDataFromDatabase();
@@ -300,7 +300,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 TOT1.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear2:
-                if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class))
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM2, "0", 1));
                 else {
                     readCallsDataFromDatabase();
@@ -311,7 +311,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 TOT2.setText(DataFormat.formatCallDuration(mContext, 0L));
                 break;
             case R.id.buttonClear3:
-                if (CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class))
+                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     EventBus.getDefault().post(new SetCallsEvent(Constants.SIM3, "0", 1));
                 else {
                     readCallsDataFromDatabase();
@@ -468,7 +468,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     private Notification buildNotification() {
-        long[] limit = CustomApplication.getCallsSimLimitsValues(mContext);
+        long[] limit = CustomApplication.getCallsSimLimitsValues();
         long tot1, tot2 = 0, tot3 = 0;
         String text = "";
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
@@ -507,9 +507,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             else
                 text += "  ||  " + getString(R.string.not_set);
         String traffic = "";
-        if (!CustomApplication.isMyServiceRunning(mContext, TrafficCountService.class)) {
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
             ContentValues cv;
-            boolean[] isNight = CustomApplication.getIsNightState(mContext);
+            boolean[] isNight = CustomApplication.getIsNightState();
             if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
                 if (mIMSI == null)
                     mIMSI = MobileUtils.getSimIds(mContext);
@@ -529,7 +529,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 tot2 = isNight[1] ? (long) cv.get(Constants.TOTAL2_N) : (long) cv.get(Constants.TOTAL2);
                 tot3 = isNight[2] ? (long) cv.get(Constants.TOTAL3_N) : (long) cv.get(Constants.TOTAL3);
             }
-            long[] limits = CustomApplication.getTrafficSimLimitsValues(mContext);
+            long[] limits = CustomApplication.getTrafficSimLimitsValues();
             if (limits[0] != Long.MAX_VALUE)
                 traffic = DataFormat.formatData(mContext, tot1);
             else

@@ -104,7 +104,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mSIM1ContinueOverLimit, mSIM2ContinueOverLimit, mSIM3ContinueOverLimit,
             mIsResetNeeded3, mIsResetNeeded2, mIsResetNeeded1, mResetRuleHasChanged;
     private long[] mLimits = new long[3];
-    private boolean mLimitHasChanged = false;
     private Handler mHandler;
     private boolean[] mFlashPreOverLimit;
     private ArrayList<String> mIMSI = null;
@@ -165,7 +164,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             mIMSI = MobileUtils.getSimIds(mContext);
-            CustomApplication.loadTrafficPreferences(mContext, mIMSI);
+            CustomApplication.loadTrafficPreferences(mIMSI);
             mPrefs = null;
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         }
@@ -441,10 +440,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 break;
         }
         writeTrafficDataToDatabase(sim);
-        if (CustomApplication.isScreenOn(mContext))
+        if (CustomApplication.isScreenOn())
             updateNotification(sim);
-        if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(mContext, Constants.TRAFFIC).length != 0) &&
-                CustomApplication.isScreenOn(mContext))
+        if ((CustomApplication.isActivityVisible() || CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0) &&
+                CustomApplication.isScreenOn())
             sendDataBroadcast(0L, 0L);
         EventBus.getDefault().removeStickyEvent(event);
         if(!MobileUtils.isMobileDataActive(mContext))
@@ -466,9 +465,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mActiveSIM = Constants.DISABLED;
         mLastActiveSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
 
-        mIsNight1 = CustomApplication.getIsNightState(mContext)[0];
-        mIsNight2 = CustomApplication.getIsNightState(mContext)[1];
-        mIsNight3 = CustomApplication.getIsNightState(mContext)[2];
+        mIsNight1 = CustomApplication.getIsNightState()[0];
+        mIsNight2 = CustomApplication.getIsNightState()[1];
+        mIsNight3 = CustomApplication.getIsNightState()[2];
 
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -509,7 +508,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (mIsResetNeeded3)
                 mResetTime3 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
 
-            mLimits = CustomApplication.getTrafficSimLimitsValues(mContext);
+            mLimits = CustomApplication.getTrafficSimLimitsValues();
             startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
 
             // schedule task
@@ -673,19 +672,19 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             int sim = Constants.DISABLED;
             if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))
                 sim = Constants.SIM1;
-            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2)).contains(key))
+            else if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2)).contains(key))
                 sim = Constants.SIM2;
-            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
+            else if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
                 sim = Constants.SIM3;
             if (sim >= 0 && sim < mIMSI.size()) {
                 Map prefs = sharedPreferences.getAll();
                 Object o = prefs.get(key);
-                key = key.substring(0, key.length() - 1);
+                String _key = key.substring(0, key.length() - 1);
                 SharedPreferences.Editor editor = getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
-                boolean operator = key.equals(Constants.PREF_SIM_DATA[5]) ||
-                        key.equals(Constants.PREF_SIM_DATA[6]);
+                boolean operator = _key.equals(Constants.PREF_SIM_DATA[5]) ||
+                        _key.equals(Constants.PREF_SIM_DATA[6]);
                 if (!operator)
-                    CustomApplication.putObject(editor, key, o);
+                    CustomApplication.putObject(editor, _key, o);
                 editor.apply();
             }
         }
@@ -741,7 +740,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 key.equals(Constants.PREF_SIM2[29]) || key.equals(Constants.PREF_SIM2[30]) ||
                 key.equals(Constants.PREF_SIM3[1]) || key.equals(Constants.PREF_SIM3[2]) || key.equals(Constants.PREF_SIM3[4]) ||
                 key.equals(Constants.PREF_SIM3[29]) || key.equals(Constants.PREF_SIM3[30])) {
-            mLimitHasChanged = true;
+            mLimits = CustomApplication.getTrafficSimLimitsValues();
             mHasPreLimitNotificationShown1 = false;
             mHasPreLimitNotificationShown2 = false;
             mHasPreLimitNotificationShown3 = false;
@@ -822,16 +821,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
             DateTime dt = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
 
-            if (mLimitHasChanged) {
-                mLimits = CustomApplication.getTrafficSimLimitsValues(mContext);
-                mLimitHasChanged = false;
-            }
-
             long tot1 = mIsNight1 ? (long) mTrafficData.get(Constants.TOTAL1_N) : (long) mTrafficData.get(Constants.TOTAL1);
             long tot2 = mIsNight2 ? (long) mTrafficData.get(Constants.TOTAL2_N) : (long) mTrafficData.get(Constants.TOTAL2);
             long tot3 = mIsNight3 ? (long) mTrafficData.get(Constants.TOTAL3_N) : (long) mTrafficData.get(Constants.TOTAL3);
             try {
-                if (mPrefs.getBoolean(Constants.PREF_SIM1[31], false) && mIsSIM1OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM1[31], false) && mIsSIM1OverLimit &&
+                        (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM1[3], ""))
                         || (tot1 <= mLimits[0] && (mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -842,7 +837,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
                     startNewTimerTask(Constants.COUNT);
                 }
-                if (mPrefs.getBoolean(Constants.PREF_SIM2[31], false) && mIsSIM2OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM2[31], false) && mIsSIM2OverLimit &&
+                        (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM2[3], ""))
                         || (tot2 <= mLimits[1] && (mPrefs.getBoolean(Constants.PREF_SIM2[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -853,7 +849,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
                     startNewTimerTask(Constants.COUNT);
                 }
-                if (mPrefs.getBoolean(Constants.PREF_SIM3[31], false) && mIsSIM3OverLimit && (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
+                if (mPrefs.getBoolean(Constants.PREF_SIM3[31], false) && mIsSIM3OverLimit &&
+                        (DateUtils.isNextDayOrMonth(dt, mPrefs.getString(Constants.PREF_SIM3[3], ""))
                         || (tot3 <= mLimits[2] && (mPrefs.getBoolean(Constants.PREF_SIM3[8], false)
                         || (!mPrefs.getBoolean(Constants.PREF_SIM1[8], false)
                         && !mPrefs.getBoolean(Constants.PREF_SIM2[8], false) && !mPrefs.getBoolean(Constants.PREF_SIM3[8], false)))))) {
@@ -920,9 +917,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mLastDate = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
-                    mIsNight1 = CustomApplication.getIsNightState(mContext)[0];
-                    mIsNight2 = CustomApplication.getIsNightState(mContext)[1];
-                    mIsNight3 = CustomApplication.getIsNightState(mContext)[2];
+                    mIsNight1 = CustomApplication.getIsNightState()[0];
+                    mIsNight2 = CustomApplication.getIsNightState()[1];
+                    mIsNight3 = CustomApplication.getIsNightState()[2];
 
                     checkIfResetNeeded();
 
@@ -1086,11 +1083,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mStartRX = TrafficStats.getMobileRxBytes();
                     mStartTX = TrafficStats.getMobileTxBytes();
 
-                    if (mLimitHasChanged) {
-                        mLimits = CustomApplication.getTrafficSimLimitsValues(mContext);
-                        mLimitHasChanged = false;
-                    }
-
                     if ((tot <= mLimits[0]) || mSIM1ContinueOverLimit) {
                         rx += diffrx;
                         tx += difftx;
@@ -1129,8 +1121,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((CustomApplication.isActivityVisible() ||
-                            CustomApplication.getWidgetIds(mContext, Constants.TRAFFIC).length != 0 ||
-                                    mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn(mContext))
+                            CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 ||
+                                    mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1189,9 +1181,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mLastDate = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
-                    mIsNight1 = CustomApplication.getIsNightState(mContext)[0];
-                    mIsNight2 = CustomApplication.getIsNightState(mContext)[1];
-                    mIsNight3 = CustomApplication.getIsNightState(mContext)[2];
+                    mIsNight1 = CustomApplication.getIsNightState()[0];
+                    mIsNight2 = CustomApplication.getIsNightState()[1];
+                    mIsNight3 = CustomApplication.getIsNightState()[2];
 
                     checkIfResetNeeded();
 
@@ -1355,11 +1347,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mStartRX = TrafficStats.getMobileRxBytes();
                     mStartTX = TrafficStats.getMobileTxBytes();
 
-                    if (mLimitHasChanged) {
-                        mLimits = CustomApplication.getTrafficSimLimitsValues(mContext);
-                        mLimitHasChanged = false;
-                    }
-
                     if ((tot <= mLimits[1]) || mSIM2ContinueOverLimit) {
                         rx += diffrx;
                         tx += difftx;
@@ -1398,8 +1385,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((CustomApplication.isActivityVisible() ||
-                            CustomApplication.getWidgetIds(mContext, Constants.TRAFFIC).length != 0 ||
-                            mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn(mContext))
+                            CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 ||
+                            mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
             } catch (Exception e) {
@@ -1458,9 +1445,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mLastDate = Constants.DATE_FORMATTER.parseDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = new DateTime();
 
-                    mIsNight1 = CustomApplication.getIsNightState(mContext)[0];
-                    mIsNight2 = CustomApplication.getIsNightState(mContext)[1];
-                    mIsNight3 = CustomApplication.getIsNightState(mContext)[2];
+                    mIsNight1 = CustomApplication.getIsNightState()[0];
+                    mIsNight2 = CustomApplication.getIsNightState()[1];
+                    mIsNight3 = CustomApplication.getIsNightState()[2];
 
                     checkIfResetNeeded();
 
@@ -1624,11 +1611,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     mStartRX = TrafficStats.getMobileRxBytes();
                     mStartTX = TrafficStats.getMobileTxBytes();
 
-                    if (mLimitHasChanged) {
-                        mLimits = CustomApplication.getTrafficSimLimitsValues(mContext);
-                        mLimitHasChanged = false;
-                    }
-
                     if ((tot <= mLimits[2]) || mSIM3ContinueOverLimit) {
                         rx += diffrx;
                         tx += difftx;
@@ -1667,8 +1649,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     }
 
                     if ((CustomApplication.isActivityVisible() ||
-                            CustomApplication.getWidgetIds(mContext, Constants.TRAFFIC).length != 0 ||
-                            mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn(mContext))
+                            CustomApplication.getWidgetIds(Constants.TRAFFIC).length != 0 ||
+                            mPrefs.getBoolean(Constants.PREF_OTHER[32], false)) && CustomApplication.isScreenOn())
                         sendDataBroadcast(speedRX, speedTX);
                 }
 
@@ -1689,7 +1671,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
             mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
             writeTrafficDataToDatabase(sim);
-            if (CustomApplication.isScreenOn(mContext))
+            if (CustomApplication.isScreenOn())
                 updateNotification(sim);
         }
     }
@@ -1788,7 +1770,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void sendDataBroadcast(long speedRX, long speedTX) {
         Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
-        intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(mContext, Constants.TRAFFIC));
+        intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(Constants.TRAFFIC));
         intent.putExtra(Constants.SPEEDRX, speedRX);
         intent.putExtra(Constants.SPEEDTX, speedTX);
         intent.putExtra(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
@@ -1853,7 +1835,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             bundle.putBoolean("flash", mFlashPreOverLimit[mActiveSIM]);
             bundle.putLong(Constants.SPEEDRX, speedRX);
             bundle.putLong(Constants.SPEEDTX, speedTX);
-            if (!CustomApplication.isMyServiceRunning(mContext, FloatingWindowService.class))
+            if (!CustomApplication.isMyServiceRunning(FloatingWindowService.class))
                 FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             StandOutWindow.sendData(mContext, FloatingWindowService.class,
                     mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID), Constants.FLOATING_WINDOW, bundle, null, -1);
@@ -1871,10 +1853,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         String traffic = "";
         long tot1, tot2 = 0, tot3 = 0;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
-            if (mLimitHasChanged) {
-                mLimits = CustomApplication.getTrafficSimLimitsValues(mContext);
-                mLimitHasChanged = false;
-            }
             tot1 = mIsNight1 ? mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1_N) : mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1);
             if (tot1 < 0)
                 tot1 = 0;
@@ -1969,7 +1947,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             tot2 = (long) cv.get(Constants.CALLS2);
             tot3 = (long) cv.get(Constants.CALLS3);
         }
-        long[] limits = CustomApplication.getCallsSimLimitsValues(mContext);
+        long[] limits = CustomApplication.getCallsSimLimitsValues();
         if (limits[0] != Long.MAX_VALUE)
             calls += DataFormat.formatCallDuration(mContext, tot1);
         else

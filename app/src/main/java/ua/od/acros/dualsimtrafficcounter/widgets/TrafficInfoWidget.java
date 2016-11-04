@@ -46,7 +46,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
             final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
-                CustomApplication.deleteWidgetPreferenceFile(context, new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
+                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
         } else if (action.equals(Constants.TRAFFIC_BROADCAST_ACTION) && widgetIds != null)
             updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
     }
@@ -221,7 +221,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             String sizestrs = prefs.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.traffic_info_widget);
-            boolean[] isNight =  CustomApplication.getIsNightState(context);
+            boolean[] isNight =  CustomApplication.getIsNightState();
 
             //SIM1
             if ((prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true) && !prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false))
@@ -738,7 +738,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
-        CustomApplication.deleteWidgetPreferenceFile(context, appWidgetIds, Constants.TRAFFIC_TAG);
+        CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.TRAFFIC_TAG);
         //super.onDeleted(context, appWidgetIds);
     }
 

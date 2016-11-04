@@ -58,7 +58,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(mContext);
-            CustomApplication.loadCallsPreferences(mContext, mIMSI);
+            CustomApplication.loadCallsPreferences(mIMSI);
         }
 
         addPreferencesFromResource(R.xml.calls_settings);
@@ -331,7 +331,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
             CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
             CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS);
-            CustomApplication.deletePreferenceFile(mContext, mSimQuantity, Constants.CALLS);
+            CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS);
             return true;
         }
 
