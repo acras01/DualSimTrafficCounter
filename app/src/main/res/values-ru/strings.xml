@@ -60,7 +60,7 @@
     <string name="widget_title">Виджет</string>
     <string name="widget_summary">Настройки виджета</string>
     <string name="background_color">Цвет подложки</string>
-    <string name="text_color">Цвет текста</string>
+    <string name="text_color">Цвет текста названия оператора</string>
     <string name="text_size">Размер шрифта</string>
     <string name="show_names">Названия операторов на виджете</string>
     <string name="no_root_granted">Приложение не получило прав суперпользователя!</string>
@@ -238,4 +238,7 @@
     <string name="uid_list">Список исключений</string>
     <string name="show_choose_actions_dialog">Показывать диалог выбора действий при достижении предела</string>
     <string name="flash_hud">Менять цвет текста при приближении к пределу</string>
+    <string name="text_color_rx">Цвет текста Получено/Осталось</string>
+    <string name="text_color_tot">Цвет текста Всего</string>
+    <string name="text_color_tx">Цвет текста Отправлено/Использовано</string>
 </resources>

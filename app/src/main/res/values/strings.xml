@@ -60,7 +60,7 @@
     <string name="press_color_to_apply">Press on Color to apply</string>
     <string name="widget_summary">Widget options</string>
     <string name="widget_title">Widget</string>
-    <string name="text_color">Text color</string>
+    <string name="text_color">Operator name text color</string>
     <string name="background_color">Background color</string>
     <string name="text_size">Font size</string>
     <string name="show_names">Show operator names</string>
@@ -246,4 +246,7 @@
     <string name="view_uid">View and edit list of apps excluded from counting</string>
     <string name="show_choose_actions_dialog">Show actions dialog when reaching limit</string>
     <string name="flash_hud">Text changes color when reaching limit</string>
+    <string name="text_color_tot">Total text color</string>
+    <string name="text_color_rx">RX/Left text color</string>
+    <string name="text_color_tx">TX/Used text color</string>
 </resources>

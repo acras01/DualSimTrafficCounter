@@ -84,12 +84,14 @@ public class Constants {
             "icon_size", "size", "text_color", "useback", //14
             "background_color", "speedtext", "speedicons", //17
             "showsim1","showsim2", "showsim3", "showdiv", "active", //22
-            "day_night", "data_remain", "rx_tx", "showminus"}; //26
+            "day_night", "data_remain", "rx_tx", "showminus", //26
+            "t_color1", "t_color2", "t_color3"}; //29
     public static final String[] PREF_WIDGET_CALLS = {"stub", "mNames", "icons", //2
             "logo1", "logo2", "logo3", //5
             "user_pick1", "user_pick2", "user_pick3", //8
             "icon_size", "size", "text_color", "useback", //12
-            "background_color", "showdiv", "showsim1","showsim2", "showsim3", "calls_remain"}; //18
+            "background_color", "showdiv", "showsim1","showsim2", "showsim3", //17
+            "calls_remain", "c_color1"}; //19
     public static final String[] PREF_SIM_DATA = {"stub", "limit", "value", "period", "round", "auto", //5
             "name", "autooff", "prefer", "time", "day", "everydayonoff", "timeoff", "timeon", //13
             "op_round", "op_limit", "op_value", "usenight", "limitnight", //18

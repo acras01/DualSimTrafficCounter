@@ -44,18 +44,16 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         ShowSimDialog.ShowSimDialogClosedListener {
 
     private static final int SELECT_PHOTO = 101;
-    private final int KEY_TEXT = 0;
-    private final int KEY_ICON = 1;
+    private final int KEY_TEXT = 0, KEY_ICON = 1;
     private int mDim;
     private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private SharedPreferences.Editor mEdit;
     private Context mContext;
-    private int mTextColor;
-    private int mBackColor;
+    private int mTextColor, mTextColor1, mBackColor;
     private Intent mResultValueIntent;
     private TextView namesSum, iconsSum, divSum, backSum, textSizeSum, iconsSizeSum, logoSum1, logoSum2, logoSum3, showSimSum, remainSum;
     private RelativeLayout logoL1, logoL2, logoL3, simLogoL, backColorL;
-    private ImageView tiv, biv, logo1, logo2, logo3;
+    private ImageView tiv, tiv1, biv, logo1, logo2, logo3;
     private String mUserPickedImage;
     private boolean[] mSim;
 
@@ -127,6 +125,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             else
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], false);
             mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
+            mEdit.putInt(Constants.PREF_WIDGET_CALLS[19], Color.WHITE); //Total Text color
             mEdit.apply();
         }
 
@@ -134,6 +133,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[16], true), prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)};
 
         mTextColor = prefsWidget.getInt(Constants.PREF_WIDGET_CALLS[11], Color.WHITE);
+        mTextColor1 = prefsWidget.getInt(Constants.PREF_WIDGET_CALLS[19], Color.WHITE);
         mBackColor = prefsWidget.getInt(Constants.PREF_WIDGET_CALLS[13], Color.TRANSPARENT);
 
         mResultValueIntent = new Intent();
@@ -225,8 +225,10 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         remain.setOnCheckedChangeListener(this);
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
+        tiv1 = (ImageView) findViewById(R.id.textColorPreview1);
         biv = (ImageView) findViewById(R.id.backColorPreview);
         tiv.setBackgroundColor(mTextColor);
+        tiv1.setBackgroundColor(mTextColor1);
         biv.setBackgroundColor(mBackColor);
 
         logo1 = (ImageView) findViewById(R.id.logoPreview1);
@@ -294,6 +296,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         }
 
         tiv.setOnClickListener(this);
+        tiv1.setOnClickListener(this);
         biv.setOnClickListener(this);
         logo1.setOnClickListener(this);
         logo2.setOnClickListener(this);
@@ -548,6 +551,19 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_CALLS[11], color);
                         tiv.setBackgroundColor(color);
+                    }
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+                        // cancel was selected by the user
+                    }
+                });
+                break;
+            case R.id.textColorPreview1:
+                dialog = new AmbilWarnaDialog(this, mTextColor1, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                        mEdit.putInt(Constants.PREF_WIDGET_CALLS[19], color);
+                        tiv1.setBackgroundColor(color);
                     }
                     @Override
                     public void onCancel(AmbilWarnaDialog dialog) {

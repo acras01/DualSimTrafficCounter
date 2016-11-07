@@ -690,6 +690,120 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/textColorLayout1"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_color_tx"
+                    android:id="@+id/textColor1"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/textColorPreview1" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/textColorPreview1"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:src="@android:drawable/ic_menu_preferences" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/textColorLayout2"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_color_rx"
+                    android:id="@+id/textColor2"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/textColorPreview2" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/textColorPreview2"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:src="@android:drawable/ic_menu_preferences" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/textColorLayout3"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/text_color_tot"
+                    android:id="@+id/textColor3"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/textColorPreview3" />
+
+                <ImageView
+                    android:layout_width="@dimen/logo_size"
+                    android:layout_height="@dimen/logo_size"
+                    android:id="@+id/textColorPreview3"
+                    android:scaleType="fitXY"
+                    android:maxHeight="@dimen/logo_size"
+                    android:maxWidth="@dimen/logo_size"
+                    android:minHeight="@dimen/logo_size"
+                    android:minWidth="@dimen/logo_size"
+                    android:layout_alignParentEnd="true"
+                    android:src="@android:drawable/ic_menu_preferences" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/backlayout">
 

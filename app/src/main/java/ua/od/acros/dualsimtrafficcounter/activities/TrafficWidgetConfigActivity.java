@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -46,14 +47,14 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
     private static final int SELECT_PHOTO = 101;
     private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent mResultValueIntent;
-    private ImageView tiv, biv, logo1, logo2, logo3;
+    private ImageView tiv, biv, logo1, logo2, logo3, tiv1, tiv2, tiv3;
     private TextView infoSum, namesSum, iconsSum, logoSum1, logoSum2,
             logoSum3, textSizeSum, iconsSizeSum, speedSum, backSum,
             speedTextSum, speedIconsSum, showSimSum, divSum, activesum, daynightSum, remainSum, rxtxSum, minusSum;
     private RelativeLayout simLogoL, speedFontL, speedArrowsL, showSimL, backColorL, logoL1, logoL2, logoL3,
             remainL, rxtxL, minusL;
     private SharedPreferences.Editor mEdit;
-    private int mTextColor, mBackColor;
+    private int mTextColor, mTextColor1, mTextColor2, mTextColor3, mBackColor;
     private final int KEY_TEXT = 0;
     private final int KEY_ICON = 1;
     private final int KEY_TEXT_S = 2;
@@ -137,6 +138,9 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false);//Show remaining
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true);//Show RX/TX
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true);//Show over-limit traffic
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[27], ContextCompat.getColor(mContext, android.R.color.holo_green_dark));//TX Text color
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(mContext, android.R.color.holo_orange_dark));//RX Text color
+            mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[29], Color.WHITE);//Total Text color
             mEdit.apply();
         }
 
@@ -144,6 +148,9 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[19], true), prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[20], true)};
 
         mTextColor = prefsWidget.getInt(Constants.PREF_WIDGET_TRAFFIC[13], Color.WHITE);
+        mTextColor1 = prefsWidget.getInt(Constants.PREF_WIDGET_TRAFFIC[27], ContextCompat.getColor(mContext, android.R.color.holo_green_dark));
+        mTextColor2 = prefsWidget.getInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(mContext, android.R.color.holo_orange_dark));
+        mTextColor3 = prefsWidget.getInt(Constants.PREF_WIDGET_TRAFFIC[29], Color.WHITE);
         mBackColor = prefsWidget.getInt(Constants.PREF_WIDGET_TRAFFIC[15], Color.TRANSPARENT);
 
         mResultValueIntent = new Intent();
@@ -327,8 +334,14 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         showSimSum.setText(sum);
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
+        tiv1 = (ImageView) findViewById(R.id.textColorPreview1);
+        tiv2 = (ImageView) findViewById(R.id.textColorPreview2);
+        tiv3 = (ImageView) findViewById(R.id.textColorPreview3);
         biv = (ImageView) findViewById(R.id.backColorPreview);
         tiv.setBackgroundColor(mTextColor);
+        tiv1.setBackgroundColor(mTextColor1);
+        tiv2.setBackgroundColor(mTextColor2);
+        tiv3.setBackgroundColor(mTextColor3);
         biv.setBackgroundColor(mBackColor);
 
         logo1 = (ImageView) findViewById(R.id.logoPreview1);
@@ -396,6 +409,9 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         }
 
         tiv.setOnClickListener(this);
+        tiv1.setOnClickListener(this);
+        tiv2.setOnClickListener(this);
+        tiv3.setOnClickListener(this);
         biv.setOnClickListener(this);
         logo1.setOnClickListener(this);
         logo2.setOnClickListener(this);
@@ -800,6 +816,45 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], color);
                         tiv.setBackgroundColor(color);
+                    }
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+                        // cancel was selected by the user
+                    }
+                });
+                break;
+            case R.id.textColorPreview1:
+                dialog = new AmbilWarnaDialog(this, mTextColor1, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                        mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[27], color);
+                        tiv1.setBackgroundColor(color);
+                    }
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+                        // cancel was selected by the user
+                    }
+                });
+                break;
+            case R.id.textColorPreview2:
+                dialog = new AmbilWarnaDialog(this, mTextColor2, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                        mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[28], color);
+                        tiv2.setBackgroundColor(color);
+                    }
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+                        // cancel was selected by the user
+                    }
+                });
+                break;
+            case R.id.textColorPreview3:
+                dialog = new AmbilWarnaDialog(this, mTextColor3, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                        mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[29], color);
+                        tiv3.setBackgroundColor(color);
                     }
                     @Override
                     public void onCancel(AmbilWarnaDialog dialog) {

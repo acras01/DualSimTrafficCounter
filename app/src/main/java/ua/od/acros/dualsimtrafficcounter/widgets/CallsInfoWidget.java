@@ -125,6 +125,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[16], true); //Show SIM2
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
+                edit.putInt(Constants.PREF_WIDGET_CALLS[19], Color.WHITE); // Total Text color
                 edit.apply();
             }
             String[] operatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -200,7 +201,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM1, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM1, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[11], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[19], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[11], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout1, View.VISIBLE);
             } else
@@ -258,7 +259,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM2, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM2, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[11], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[19], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[11], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout2, View.VISIBLE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true)) {
@@ -327,7 +328,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setFloat(R.id.totSIM3, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                     updateViews.setFloat(R.id.operSIM3, "setTextSize", context.getResources().getDimension(R.dimen.widget_text_size));
                 }
-                updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[11], ContextCompat.getColor(context, R.color.widget_text)));
+                updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[19], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setInt(R.id.operSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_CALLS[11], ContextCompat.getColor(context, R.color.widget_text)));
                 updateViews.setViewVisibility(R.id.simLayout3, View.VISIBLE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true) ||

@@ -668,26 +668,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
-            int sim = Constants.DISABLED;
-            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))
-                sim = Constants.SIM1;
-            else if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2)).contains(key))
-                sim = Constants.SIM2;
-            else if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
-                sim = Constants.SIM3;
-            if (sim >= 0 && sim < mIMSI.size()) {
-                Map prefs = sharedPreferences.getAll();
-                Object o = prefs.get(key);
-                String _key = key.substring(0, key.length() - 1);
-                SharedPreferences.Editor editor = getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
-                boolean operator = _key.equals(Constants.PREF_SIM_DATA[5]) ||
-                        _key.equals(Constants.PREF_SIM_DATA[6]);
-                if (!operator)
-                    CustomApplication.putObject(editor, _key, o);
-                editor.apply();
-            }
-        }
         if (key.equals(Constants.PREF_SIM_DATA[33]) || key.equals(Constants.PREF_SIM1[33]) ||
                 key.equals(Constants.PREF_SIM2[33]) || key.equals(Constants.PREF_SIM3[33])) {
             if (mTaskResult != null) {
@@ -765,6 +745,26 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     updateNotification(mActiveSIM);
                 }
             }.start();
+        }
+        if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {
+            int sim = Constants.DISABLED;
+            if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1)).contains(key))
+                sim = Constants.SIM1;
+            else if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM2)).contains(key))
+                sim = Constants.SIM2;
+            else if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM3)).contains(key))
+                sim = Constants.SIM3;
+            if (sim >= 0 && sim < mIMSI.size()) {
+                Map prefs = sharedPreferences.getAll();
+                Object o = prefs.get(key);
+                key = key.substring(0, key.length() - 1);
+                SharedPreferences.Editor editor = getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                boolean operator = key.equals(Constants.PREF_SIM_DATA[5]) ||
+                        key.equals(Constants.PREF_SIM_DATA[6]);
+                if (!operator)
+                    CustomApplication.putObject(editor, key, o);
+                editor.apply();
+            }
         }
     }
 
