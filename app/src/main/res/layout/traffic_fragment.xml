@@ -1,5 +1,6 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="?attr/actionBarSize"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -236,7 +237,8 @@
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                         android:width="@dimen/limit_button_width"
                         android:maxLines="2"
-                        android:minLines="2" />
+                        android:minLines="2"
+                        tools:ignore="HardcodedText" />
 
                     <android.support.v7.widget.AppCompatButton
                         android:layout_width="wrap_content"
