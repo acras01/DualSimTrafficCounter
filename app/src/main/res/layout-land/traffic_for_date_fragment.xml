@@ -33,7 +33,7 @@
                 android:gravity="center_vertical"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
-                android:layout_alignLeft="@+id/ll"
+                android:layout_alignLeft="@+id/rl"
                 android:textColor="?android:attr/textColorPrimary" />
 
             <android.support.v7.widget.LinearLayoutCompat
@@ -43,7 +43,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/choosesim"
                 android:weightSum="1"
-                android:id="@+id/ll">
+                android:id="@+id/rl">
 
                 <include layout="@layout/sim_radiogroup"
                     android:id="@+id/sim_group"/>
@@ -219,7 +219,7 @@
                 android:id="@+id/setdate"
                 android:layout_centerHorizontal="true"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_below="@+id/ll" />
+                android:layout_below="@+id/rl" />
         </RelativeLayout>
     </ScrollView>
 

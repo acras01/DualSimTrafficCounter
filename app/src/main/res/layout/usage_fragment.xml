@@ -55,7 +55,7 @@
         android:layout_marginRight="10dp"
         android:layout_below="@+id/checktotal"
         android:width="@dimen/input_width"
-        android:singleLine="true" />
+        android:maxLines="1" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -70,6 +70,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_below="@+id/txamount"
+        android:maxLines="1"
         android:width="@dimen/input_width"
         android:layout_marginTop="10dp" />
 

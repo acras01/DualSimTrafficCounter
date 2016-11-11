@@ -49,76 +49,71 @@
                 android:layout_below="@+id/checktotal"
                 android:textColor="?android:attr/textColorPrimary" />
 
-            <android.support.v7.widget.LinearLayoutCompat
-                android:orientation="horizontal"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/choosesim"
-                android:id="@+id/ll">
+                android:id="@+id/rl">
 
                 <include layout="@layout/sim_radiogroup"
                     android:id="@+id/sim_group"/>
 
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/txamount"
+                    android:hint="@string/transmitted"
+                    android:maxWidth="@dimen/input_width"
+                    android:inputType="numberDecimal"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/sim_group"
+                    android:width="@dimen/input_width"
+                    android:maxLines="1" />
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/rxamount"
+                    android:hint="@string/received"
+                    android:maxWidth="@dimen/input_width"
+                    android:inputType="numberDecimal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@+id/txamount"
+                    android:maxLines="1"
+                    android:layout_toRightOf="@+id/sim_group"
+                    android:width="@dimen/input_width"
+                    android:layout_marginTop="10dp" />
 
-                        <EditText
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:id="@+id/txamount"
-                            android:hint="@string/transmitted"
-                            android:maxWidth="@dimen/input_width"
-                            android:inputType="numberDecimal"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:width="@dimen/input_width" />
+                <android.support.v7.widget.AppCompatSpinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnertx"
+                    android:spinnerMode="dropdown"
+                    android:layout_toRightOf="@+id/txamount"
+                    android:layout_alignBottom="@+id/txamount"
+                    android:entries="@array/measure"
+                    android:minWidth="@dimen/spinner_width"
+                    android:layout_marginBottom="10dp" />
 
-                        <android.support.v7.widget.AppCompatSpinner
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/spinnertx"
-                            android:spinnerMode="dropdown"
-                            android:entries="@array/measure"
-                            android:minWidth="@dimen/spinner_width"
-                            android:layout_marginBottom="10dp" />
-                    </TableRow>
+                <android.support.v7.widget.AppCompatSpinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinnerrx"
+                    android:focusable="true"
+                    android:spinnerMode="dropdown"
+                    android:layout_alignBottom="@+id/rxamount"
+                    android:entries="@array/measure"
+                    android:minWidth="@dimen/spinner_width"
+                    android:layout_toRightOf="@+id/txamount"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp" />
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <EditText
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:id="@+id/rxamount"
-                            android:hint="@string/received"
-                            android:maxWidth="@dimen/input_width"
-                            android:inputType="numberDecimal"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:width="@dimen/input_width"
-                            android:layout_marginTop="10dp" />
-
-                        <android.support.v7.widget.AppCompatSpinner
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/spinnerrx"
-                            android:focusable="true"
-                            android:spinnerMode="dropdown"
-                            android:entries="@array/measure"
-                            android:minWidth="@dimen/spinner_width"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginTop="10dp" />
-                    </TableRow>
-                </TableLayout>
-            </android.support.v7.widget.LinearLayoutCompat>
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
 
@@ -126,6 +121,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/set"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:id="@+id/buttonOK"
         style="?android:attr/buttonBarButtonStyle" />
 
