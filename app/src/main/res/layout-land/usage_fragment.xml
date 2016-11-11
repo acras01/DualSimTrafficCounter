@@ -124,6 +124,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/buttonOK"
+        android:layout_weight=".1"
         style="?android:attr/buttonBarButtonStyle" />
 
 </android.support.v7.widget.LinearLayoutCompat>
