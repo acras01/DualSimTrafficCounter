@@ -97,8 +97,7 @@
                     android:layout_toRightOf="@+id/txamount"
                     android:layout_alignBottom="@+id/txamount"
                     android:entries="@array/measure"
-                    android:minWidth="@dimen/spinner_width"
-                    android:layout_marginBottom="10dp" />
+                    android:minWidth="@dimen/spinner_width" />
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:layout_width="wrap_content"
@@ -109,9 +108,7 @@
                     android:layout_alignBottom="@+id/rxamount"
                     android:entries="@array/measure"
                     android:minWidth="@dimen/spinner_width"
-                    android:layout_toRightOf="@+id/txamount"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_toRightOf="@+id/txamount" />
 
             </RelativeLayout>
         </RelativeLayout>

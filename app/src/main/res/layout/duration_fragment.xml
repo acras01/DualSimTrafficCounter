@@ -42,7 +42,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:width="@dimen/input_width"
-        android:singleLine="true"
+        android:maxLines="1"
         android:layout_below="@+id/sim_group" />
 
     <android.support.v7.widget.AppCompatSpinner
@@ -53,8 +53,7 @@
         android:layout_toRightOf="@+id/duration"
         android:layout_alignBottom="@+id/duration"
         android:entries="@array/duration"
-        android:minWidth="@dimen/spinner_width"
-        android:layout_marginBottom="10dp" />
+        android:minWidth="@dimen/spinner_width" />
 
     <android.support.v7.widget.AppCompatButton
         android:layout_width="match_parent"
