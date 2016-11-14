@@ -452,93 +452,94 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mDbHelper = CustomDatabaseHelper.getInstance(mContext);
-
-        mTrafficData = new ContentValues();
-        readTrafficDataFromDatabase();
-        if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
-            DateTime dateTime = new DateTime();
-            mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
-            mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
-        }
-
-        mActiveSIM = Constants.DISABLED;
-        mLastActiveSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
-
-        mIsNight1 = CustomApplication.getIsNightState()[0];
-        mIsNight2 = CustomApplication.getIsNightState()[1];
-        mIsNight3 = CustomApplication.getIsNightState()[2];
-
-        mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
-                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
-                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
-
-        sendDataBroadcast(0L, 0L);
-
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-
-        if ((mPrefs.getBoolean(Constants.PREF_OTHER[47], false) && !MobileUtils.isMobileDataActive(mContext)) ||
+        boolean mobile = MobileUtils.isMobileDataActive(mContext);
+        if ((mPrefs.getBoolean(Constants.PREF_OTHER[47], false) && !mobile) ||
                 mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mService.stopSelf();
         else {
-            mHandler = new Handler();
+            mDbHelper = CustomDatabaseHelper.getInstance(mContext);
+            mTrafficData = new ContentValues();
+            readTrafficDataFromDatabase();
+            if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
+                DateTime dateTime = new DateTime();
+                mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
+                mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
+            }
+            mActiveSIM = Constants.DISABLED;
+            mLastActiveSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
 
-            mHasPreLimitNotificationShown1 = false;
-            mHasPreLimitNotificationShown2 = false;
-            mHasPreLimitNotificationShown3 = false;
+            mIsNight1 = CustomApplication.getIsNightState()[0];
+            mIsNight2 = CustomApplication.getIsNightState()[1];
+            mIsNight3 = CustomApplication.getIsNightState()[2];
 
-            mFlashPreOverLimit = new boolean[] {false, false, false};
+            mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                    MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                    MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
-            mSIM1ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM1[27], false);
-            mSIM2ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM2[27], false);
-            mSIM3ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM3[27], false);
+            sendDataBroadcast(0L, 0L);
 
-            mHasActionChosen1 = mPrefs.getBoolean(Constants.PREF_SIM1[28], false);
-            mHasActionChosen2 = mPrefs.getBoolean(Constants.PREF_SIM2[28], false);
-            mHasActionChosen3 = mPrefs.getBoolean(Constants.PREF_SIM3[28], false);
+            if (!EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().register(this);
 
-            mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
-            if (mIsResetNeeded1)
-                mResetTime1 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
-            mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2[25], false);
-            if (mIsResetNeeded2)
-                mResetTime2 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
-            mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3[25], false);
-            if (mIsResetNeeded3)
-                mResetTime3 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
-
-            mLimits = CustomApplication.getTrafficSimLimitsValues();
             startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
 
-            // schedule task
-            if (mSimQuantity == 1) {
-                mActiveSIM = Constants.SIM1;
-                startNewTimerTask(Constants.COUNT);
-            } else {
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[43], true)) {
-                    mActiveSIM = MobileUtils.getActiveSimForData(mContext);
-                    if (mActiveSIM != Constants.DISABLED)
-                        startNewTimerTask(Constants.COUNT);
-                    else {
-                        Intent dialogIntent = new Intent(mContext, ManualSimDialog.class);
+            if (mobile) {
+                mHandler = new Handler();
+
+                mHasPreLimitNotificationShown1 = false;
+                mHasPreLimitNotificationShown2 = false;
+                mHasPreLimitNotificationShown3 = false;
+
+                mFlashPreOverLimit = new boolean[]{false, false, false};
+
+                mSIM1ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM1[27], false);
+                mSIM2ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM2[27], false);
+                mSIM3ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM3[27], false);
+
+                mHasActionChosen1 = mPrefs.getBoolean(Constants.PREF_SIM1[28], false);
+                mHasActionChosen2 = mPrefs.getBoolean(Constants.PREF_SIM2[28], false);
+                mHasActionChosen3 = mPrefs.getBoolean(Constants.PREF_SIM3[28], false);
+
+                mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
+                if (mIsResetNeeded1)
+                    mResetTime1 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+                mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2[25], false);
+                if (mIsResetNeeded2)
+                    mResetTime2 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
+                mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3[25], false);
+                if (mIsResetNeeded3)
+                    mResetTime3 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+
+                mLimits = CustomApplication.getTrafficSimLimitsValues();
+
+                // schedule task
+                if (mSimQuantity == 1) {
+                    mActiveSIM = Constants.SIM1;
+                    startNewTimerTask(Constants.COUNT);
+                } else {
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[43], true)) {
+                        mActiveSIM = MobileUtils.getActiveSimForData(mContext);
+                        if (mActiveSIM != Constants.DISABLED)
+                            startNewTimerTask(Constants.COUNT);
+                        else {
+                            Intent dialogIntent = new Intent(mContext, ManualSimDialog.class);
+                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            if (!ManualSimDialog.isActive())
+                                mContext.startActivity(dialogIntent);
+                        }
+                    } else {
+                        Intent dialogIntent = new Intent(mContext, ChooseSimDialog.class);
                         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        if (!ManualSimDialog.isActive())
+                        if (!ChooseSimDialog.isActive())
                             mContext.startActivity(dialogIntent);
                     }
-                } else {
-                    Intent dialogIntent = new Intent(mContext, ChooseSimDialog.class);
-                    dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    if (!ChooseSimDialog.isActive())
-                        mContext.startActivity(dialogIntent);
                 }
             }
+
+            mPrefs.edit()
+                    .putBoolean(Constants.PREF_OTHER[48], true)
+                    .apply();
         }
-
-        mPrefs.edit()
-                .putBoolean(Constants.PREF_OTHER[48], true)
-                .apply();
-
         return START_STICKY;
     }
 
