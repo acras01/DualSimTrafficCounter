@@ -171,9 +171,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-        mUidObserver = new UidObserver();
-        getContentResolver().registerContentObserver(Constants.UID_URI, true, mUidObserver);
-
         // cancel if already existed
         if (mTaskExecutor != null) {
             mTaskResult.cancel(true);
@@ -457,6 +454,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mService.stopSelf();
         else {
+            mUidObserver = new UidObserver();
+            getContentResolver().registerContentObserver(Constants.UID_URI, true, mUidObserver);
+
             mDbHelper = CustomDatabaseHelper.getInstance(mContext);
             mTrafficData = new ContentValues();
             readTrafficDataFromDatabase();
@@ -2134,9 +2134,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
-        writeTrafficDataToDatabase(mActiveSIM);
+        if (mTrafficData != null)
+            writeTrafficDataToDatabase(mActiveSIM);
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        getContentResolver().unregisterContentObserver(mUidObserver);
+        if (mUidObserver != null)
+            getContentResolver().unregisterContentObserver(mUidObserver);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
     }
