@@ -17,100 +17,99 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.v7.widget.AppCompatCheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/only_total"
-                android:id="@+id/checktotal"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
-                android:checked="false"
-                android:layout_centerVertical="true"
-                android:layout_alignParentTop="true"
-                android:textColor="?android:attr/textColorPrimary" />
-
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/choose_sim"
                 android:id="@+id/choosesim"
-                android:layout_alignParentTop="false"
                 android:minLines="2"
                 android:maxLines="4"
                 android:maxWidth="@dimen/text_width"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
-                android:layout_alignParentEnd="false"
-                android:layout_marginRight="10dp"
-                android:layout_alignLeft="@+id/checktotal"
-                android:layout_below="@+id/checktotal"
+                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
                 android:textColor="?android:attr/textColorPrimary" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/choosesim"
-                android:id="@+id/rl">
+            <include layout="@layout/sim_radiogroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checktotal"
+                android:id="@+id/sim_group"/>
 
-                <include layout="@layout/sim_radiogroup"
-                    android:id="@+id/sim_group"/>
+            <Space
+                android:id="@+id/spacer"
+                android:layout_width="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/sim_group"
+                android:layout_height="match_parent" />
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:id="@+id/txamount"
-                    android:hint="@string/transmitted"
-                    android:maxWidth="@dimen/input_width"
-                    android:inputType="numberDecimal"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_toRightOf="@+id/sim_group"
-                    android:width="@dimen/input_width"
-                    android:maxLines="1" />
+            <android.support.v7.widget.AppCompatCheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/only_total"
+                android:id="@+id/checktotal"
+                android:layout_marginLeft="10dp"
+                android:checked="false"
+                android:layout_toRightOf="@+id/spacer"
+                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:textColor="?android:attr/textColorPrimary" />
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:id="@+id/rxamount"
-                    android:hint="@string/received"
-                    android:maxWidth="@dimen/input_width"
-                    android:inputType="numberDecimal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_below="@+id/txamount"
-                    android:maxLines="1"
-                    android:layout_toRightOf="@+id/sim_group"
-                    android:width="@dimen/input_width"
-                    android:layout_marginTop="10dp" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/txamount"
+                android:hint="@string/transmitted"
+                android:maxWidth="@dimen/input_width"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/checktotal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@+id/spacer"
+                android:width="@dimen/input_width"
+                android:maxLines="1" />
 
-                <android.support.v7.widget.AppCompatSpinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnertx"
-                    android:spinnerMode="dropdown"
-                    android:layout_toRightOf="@+id/txamount"
-                    android:layout_alignBottom="@+id/txamount"
-                    android:entries="@array/measure"
-                    android:minWidth="@dimen/spinner_width" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/rxamount"
+                android:hint="@string/received"
+                android:maxWidth="@dimen/input_width"
+                android:inputType="numberDecimal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_below="@+id/txamount"
+                android:maxLines="1"
+                android:layout_toRightOf="@+id/spacer"
+                android:width="@dimen/input_width"
+                android:layout_marginTop="10dp" />
 
-                <android.support.v7.widget.AppCompatSpinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/spinnerrx"
-                    android:focusable="true"
-                    android:spinnerMode="dropdown"
-                    android:layout_alignBottom="@+id/rxamount"
-                    android:entries="@array/measure"
-                    android:minWidth="@dimen/spinner_width"
-                    android:layout_toRightOf="@+id/txamount" />
+            <android.support.v7.widget.AppCompatSpinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnertx"
+                android:spinnerMode="dropdown"
+                android:layout_toRightOf="@+id/txamount"
+                android:layout_alignBottom="@+id/txamount"
+                android:entries="@array/measure"
+                android:minWidth="@dimen/spinner_width" />
 
-            </RelativeLayout>
+            <android.support.v7.widget.AppCompatSpinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerrx"
+                android:focusable="true"
+                android:spinnerMode="dropdown"
+                android:layout_alignBottom="@+id/rxamount"
+                android:entries="@array/measure"
+                android:minWidth="@dimen/spinner_width"
+                android:layout_toRightOf="@+id/txamount" />
+
         </RelativeLayout>
     </ScrollView>
 
