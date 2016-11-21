@@ -454,6 +454,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mPrefs.getBoolean(Constants.PREF_OTHER[5], false))
             mService.stopSelf();
         else {
+            mHandler = new Handler();
+
             mUidObserver = new UidObserver();
             getContentResolver().registerContentObserver(Constants.UID_URI, true, mUidObserver);
 
@@ -475,6 +477,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                     MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
+            mFlashPreOverLimit = new boolean[]{false, false, false};
 
             sendDataBroadcast(0L, 0L);
 
@@ -484,13 +487,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             startForeground(Constants.STARTED_ID, buildNotification(mLastActiveSIM));
 
             if (mobile) {
-                mHandler = new Handler();
-
                 mHasPreLimitNotificationShown1 = false;
                 mHasPreLimitNotificationShown2 = false;
                 mHasPreLimitNotificationShown3 = false;
-
-                mFlashPreOverLimit = new boolean[]{false, false, false};
 
                 mSIM1ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM1[27], false);
                 mSIM2ContinueOverLimit = mPrefs.getBoolean(Constants.PREF_SIM2[27], false);
