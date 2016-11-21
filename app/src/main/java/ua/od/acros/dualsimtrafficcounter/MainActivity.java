@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FloatingWindowService.showFloatingWindow(mContext, mPrefs);
         if (!CustomApplication.isMyServiceRunning(TrafficCountService.class))
             startService(new Intent(mContext, TrafficCountService.class));
+
         if (!CustomApplication.isMyServiceRunning(WatchDogService.class) && mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
             startService(new Intent(mContext, WatchDogService.class));
         if (!CustomApplication.isPackageExisted(XPOSED)) {
@@ -161,6 +162,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .putBoolean(Constants.PREF_OTHER[24], true)
                     .putBoolean(Constants.PREF_OTHER[25], false)
                     .apply();
+        } else {
+            //Update widgets
+            int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
+            if (ids.length != 0) {
+                Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
+                i.putExtra(Constants.WIDGET_IDS, ids);
+                sendBroadcast(i);
+            }
         }
 
         /*if (!CustomApplication.isMyServiceRunning(mContext, CallLoggerService.class))

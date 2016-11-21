@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.TrafficWidgetConfigActivity;
+import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
@@ -57,6 +58,12 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(context);
         ContentValues dataMap;
         boolean emptyDB;
+        int activeSIM;
+        if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+            activeSIM = TrafficCountService.getActiveSIM();
+        else
+            activeSIM = prefs.getInt(Constants.PREF_OTHER[46], Constants.SIM1);
+        bundle.putInt(Constants.SIM_ACTIVE, activeSIM);
         if (prefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(context);
@@ -140,7 +147,6 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 bundle.putLong(Constants.TOTAL1_N, (long) dataMap.get(Constants.TOTAL1_N));
                 bundle.putLong(Constants.TOTAL2_N, (long) dataMap.get(Constants.TOTAL2_N));
                 bundle.putLong(Constants.TOTAL3_N, (long) dataMap.get(Constants.TOTAL3_N));
-                bundle.putInt(Constants.SIM_ACTIVE, (int) dataMap.get(Constants.LAST_ACTIVE_SIM));
             } else {
                 bundle.putLong(Constants.SIM1RX, 0L);
                 bundle.putLong(Constants.SIM2RX, 0L);
@@ -160,14 +166,13 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 bundle.putLong(Constants.TOTAL1_N, 0L);
                 bundle.putLong(Constants.TOTAL2_N, 0L);
                 bundle.putLong(Constants.TOTAL3_N, 0L);
-                bundle.putInt(Constants.SIM_ACTIVE, 0);
             }
         }
         return bundle;
     }
 
     private void updateWidget(Context context, AppWidgetManager appWidgetManager, int[] ids, Bundle bundle) {
-        if (bundle.size() == 0)
+        if (bundle.size() <= 1)
             bundle = readData(context);
         for (int i : ids) {
             SharedPreferences prefs = context.getSharedPreferences(i + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
