@@ -255,20 +255,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         sendDataBroadcast(0L, 0L);
 
         if (!mDoNotStopService && mPrefs.getBoolean(Constants.PREF_OTHER[47], false)) {
-            mTimer = new CountDownTimer(10000, 10000) {
-                @Override
-                public void onTick(long l) {
-
-                }
-
-                @Override
-                public void onFinish() {
-                    //stop WatchDogService
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
-                        mContext.stopService(new Intent(mContext, WatchDogService.class));
-                    mService.stopSelf();
-                }
-            };
             mTimer.start();
         }
     }
@@ -444,7 +430,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             sendDataBroadcast(0L, 0L);
         EventBus.getDefault().removeStickyEvent(event);
         if(!MobileUtils.isMobileDataActive(mContext))
-            mService.stopSelf();
+            mTimer.start();
     }
 
     @Override
@@ -455,6 +441,21 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mService.stopSelf();
         else {
             mHandler = new Handler();
+
+            mTimer = new CountDownTimer(10000, 10000) {
+                @Override
+                public void onTick(long l) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    //stop WatchDogService
+                    if (mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
+                        mContext.stopService(new Intent(mContext, WatchDogService.class));
+                    mService.stopSelf();
+                }
+            };
 
             mUidObserver = new UidObserver();
             getContentResolver().registerContentObserver(Constants.UID_URI, true, mUidObserver);
