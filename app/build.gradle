@@ -15,8 +15,8 @@ android {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 16
         targetSdkVersion 16
-        versionCode 111
-        versionName '2.1.1'
+        versionCode 112
+        versionName '2.1.2'
         signingConfig signingConfigs.acras
         vectorDrawables.useSupportLibrary = true
     }

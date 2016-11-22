@@ -241,4 +241,7 @@
     <string name="text_color_rx">Цвет текста Получено/Осталось</string>
     <string name="text_color_tot">Цвет текста Всего</string>
     <string name="text_color_tx">Цвет текста Отправлено/Использовано</string>
+    <string name="widgets_summary">Настройки виджетов</string>
+    <string name="widgets_title">Виджеты</string>
+    <string name="widget">Виджет №%1$d</string>
 </resources>

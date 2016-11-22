@@ -249,4 +249,7 @@
     <string name="text_color_tot">Total text color</string>
     <string name="text_color_rx">RX/Left text color</string>
     <string name="text_color_tx">TX/Used text color</string>
+    <string name="widgets_summary">Customize your widgets</string>
+    <string name="widgets_title">Widgets</string>
+    <string name="widget">Widget #%1$d</string>
 </resources>

@@ -241,4 +241,7 @@
     <string name="text_color_rx">Колір тексту Отримано/Залишилось</string>
     <string name="text_color_tot">Колір тексту Разом</string>
     <string name="text_color_tx">Колір тексту Відправлено/Використано</string>
+    <string name="widgets_summary">Налаштування віджетів</string>
+    <string name="widgets_title">Віджети</string>
+    <string name="widget">Віджет №%1$d</string>
 </resources>

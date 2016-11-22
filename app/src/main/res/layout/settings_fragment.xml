@@ -145,6 +145,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
+                android:id="@+id/widgets_layout"
+                android:layout_marginLeft="5dp"
+                android:background="?android:attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/widgets_title"
+                    android:id="@+id/widgets_sett"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentTop="true"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/widgets_summary"
+                    android:id="@+id/widgets_sum"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/widgets_sett"
+                    android:textColor="?android:attr/textColorPrimary" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
                 android:id="@+id/other_layout"
                 android:layout_marginLeft="5dp"
                 android:background="?android:attr/selectableItemBackground">
