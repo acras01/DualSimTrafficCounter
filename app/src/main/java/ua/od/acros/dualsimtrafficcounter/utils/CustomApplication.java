@@ -92,119 +92,110 @@ public class CustomApplication extends Application {
         if (preferences.getBoolean(Constants.PREF_OTHER[45], false))
             loadCallsPreferences(imsi);
 
-        int versionCode;
-        try {
-            versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            versionCode = -1;
+        Map<String, ?> keys = preferences.getAll();
+        SharedPreferences.Editor edit = preferences.edit();
+        if (keys.get(Constants.PREF_OTHER[28]) != null && keys.get(Constants.PREF_OTHER[28]).getClass().equals(Boolean.class)) {
+            if (preferences.getBoolean(Constants.PREF_OTHER[28], true))
+                edit.remove(Constants.PREF_OTHER[28])
+                        .putString(Constants.PREF_OTHER[28], "0");
+            else
+                edit.remove(Constants.PREF_OTHER[28])
+                        .putString(Constants.PREF_OTHER[28], "1");
         }
-        if (versionCode > 0 && versionCode <= 112) {
-            Map<String, ?> keys = preferences.getAll();
-            SharedPreferences.Editor edit = preferences.edit();
-            if (keys.get(Constants.PREF_OTHER[28]) != null && keys.get(Constants.PREF_OTHER[28]).getClass().equals(Boolean.class)) {
-                if (preferences.getBoolean(Constants.PREF_OTHER[28], true))
-                    edit.remove(Constants.PREF_OTHER[28])
-                            .putString(Constants.PREF_OTHER[28], "0");
-                else
-                    edit.remove(Constants.PREF_OTHER[28])
-                            .putString(Constants.PREF_OTHER[28], "1");
-            }
-            if (keys.get(Constants.PREF_OTHER[7]) != null && keys.get(Constants.PREF_OTHER[7]).getClass().equals(Boolean.class)) {
-                if (preferences.getBoolean(Constants.PREF_OTHER[7], true))
-                    edit.remove(Constants.PREF_OTHER[7])
-                            .putString(Constants.PREF_OTHER[7], "0");
-                else
-                    edit.remove(Constants.PREF_OTHER[7])
-                            .putString(Constants.PREF_OTHER[7], "1");
-            }
-            if (keys.get(Constants.PREF_OTHER[19]) != null && keys.get(Constants.PREF_OTHER[19]).getClass().equals(Boolean.class)) {
-                if (preferences.getBoolean(Constants.PREF_OTHER[19], true))
-                    edit.remove(Constants.PREF_OTHER[19])
-                            .putString(Constants.PREF_OTHER[19], "0");
-                else
-                    edit.remove(Constants.PREF_OTHER[19])
-                            .putString(Constants.PREF_OTHER[19], "1");
-            }
-            if (keys.get(Constants.PREF_OTHER[16]) != null && keys.get(Constants.PREF_OTHER[16]).getClass().equals(Boolean.class)) {
-                if (preferences.getBoolean(Constants.PREF_OTHER[16], true))
-                    edit.putString(Constants.PREF_OTHER[16], "0")
-                            .remove(Constants.PREF_OTHER[16]);
-                else
-                    edit.remove(Constants.PREF_OTHER[16])
-                            .putString(Constants.PREF_OTHER[16], "1");
-            }
-            if (keys.get(Constants.PREF_OTHER[27]) != null && keys.get(Constants.PREF_OTHER[27]).getClass().equals(Boolean.class)) {
-                if (preferences.getBoolean(Constants.PREF_OTHER[27], true))
-                    edit.remove(Constants.PREF_OTHER[27])
-                            .putString(Constants.PREF_OTHER[27], "0");
-                else
-                    edit.remove(Constants.PREF_OTHER[27])
-                            .putString(Constants.PREF_OTHER[27], "1");
-            }
-            if (keys.get(Constants.PREF_OTHER[39]) != null && keys.get(Constants.PREF_OTHER[39]).getClass().equals(Boolean.class)) {
-                if (preferences.getBoolean(Constants.PREF_OTHER[39], true))
-                    edit.remove(Constants.PREF_OTHER[39])
-                            .putString(Constants.PREF_OTHER[39], "0");
-                else
-                    edit.remove(Constants.PREF_OTHER[39])
-                            .putString(Constants.PREF_OTHER[39], "1");
-            }
-            edit.apply();
-            int[] ids = getWidgetIds(Constants.TRAFFIC);
-            if (ids.length != 0) {
-                SharedPreferences prefsWidget;
-                for (int id : ids) {
-                    prefsWidget = getSharedPreferences(String.valueOf(id) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-                    keys = prefsWidget.getAll();
-                    edit = prefsWidget.edit();
-                    if (keys.get(Constants.PREF_WIDGET_TRAFFIC[2]) != null &&
-                            keys.get(Constants.PREF_WIDGET_TRAFFIC[2]).getClass().equals(Boolean.class)) {
-                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true))
-                            edit.putString(Constants.PREF_WIDGET_TRAFFIC[2], "0")
-                                    .remove(Constants.PREF_WIDGET_TRAFFIC[2]);
-                        else
-                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[2])
-                                    .putString(Constants.PREF_WIDGET_TRAFFIC[2], "1");
-                    }
-                    if (keys.get(Constants.PREF_WIDGET_TRAFFIC[24]) != null &&
-                            keys.get(Constants.PREF_WIDGET_TRAFFIC[24]).getClass().equals(Boolean.class)) {
-                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], true))
-                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[24])
-                                    .putString(Constants.PREF_WIDGET_TRAFFIC[24], "0");
-                        else
-                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[24])
-                                    .putString(Constants.PREF_WIDGET_TRAFFIC[24], "1");
-                    }
-                    if (keys.get(Constants.PREF_WIDGET_TRAFFIC[25]) != null &&
-                            keys.get(Constants.PREF_WIDGET_TRAFFIC[25]).getClass().equals(Boolean.class)) {
-                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true))
-                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[25])
-                                    .putString(Constants.PREF_WIDGET_TRAFFIC[25], "0");
-                        else
-                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[25])
-                                    .putString(Constants.PREF_WIDGET_TRAFFIC[25], "1");
-                        edit.apply();
-                    }
+        if (keys.get(Constants.PREF_OTHER[7]) != null && keys.get(Constants.PREF_OTHER[7]).getClass().equals(Boolean.class)) {
+            if (preferences.getBoolean(Constants.PREF_OTHER[7], true))
+                edit.remove(Constants.PREF_OTHER[7])
+                        .putString(Constants.PREF_OTHER[7], "0");
+            else
+                edit.remove(Constants.PREF_OTHER[7])
+                        .putString(Constants.PREF_OTHER[7], "1");
+        }
+        if (keys.get(Constants.PREF_OTHER[19]) != null && keys.get(Constants.PREF_OTHER[19]).getClass().equals(Boolean.class)) {
+            if (preferences.getBoolean(Constants.PREF_OTHER[19], true))
+                edit.remove(Constants.PREF_OTHER[19])
+                        .putString(Constants.PREF_OTHER[19], "0");
+            else
+                edit.remove(Constants.PREF_OTHER[19])
+                        .putString(Constants.PREF_OTHER[19], "1");
+        }
+        if (keys.get(Constants.PREF_OTHER[16]) != null && keys.get(Constants.PREF_OTHER[16]).getClass().equals(Boolean.class)) {
+            if (preferences.getBoolean(Constants.PREF_OTHER[16], true))
+                edit.putString(Constants.PREF_OTHER[16], "0")
+                        .remove(Constants.PREF_OTHER[16]);
+            else
+                edit.remove(Constants.PREF_OTHER[16])
+                        .putString(Constants.PREF_OTHER[16], "1");
+        }
+        if (keys.get(Constants.PREF_OTHER[27]) != null && keys.get(Constants.PREF_OTHER[27]).getClass().equals(Boolean.class)) {
+            if (preferences.getBoolean(Constants.PREF_OTHER[27], true))
+                edit.remove(Constants.PREF_OTHER[27])
+                        .putString(Constants.PREF_OTHER[27], "0");
+            else
+                edit.remove(Constants.PREF_OTHER[27])
+                        .putString(Constants.PREF_OTHER[27], "1");
+        }
+        if (keys.get(Constants.PREF_OTHER[39]) != null && keys.get(Constants.PREF_OTHER[39]).getClass().equals(Boolean.class)) {
+            if (preferences.getBoolean(Constants.PREF_OTHER[39], true))
+                edit.remove(Constants.PREF_OTHER[39])
+                        .putString(Constants.PREF_OTHER[39], "0");
+            else
+                edit.remove(Constants.PREF_OTHER[39])
+                        .putString(Constants.PREF_OTHER[39], "1");
+        }
+        edit.apply();
+        int[] ids = getWidgetIds(Constants.TRAFFIC);
+        if (ids.length != 0) {
+            SharedPreferences prefsWidget;
+            for (int id : ids) {
+                prefsWidget = getSharedPreferences(String.valueOf(id) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+                keys = prefsWidget.getAll();
+                edit = prefsWidget.edit();
+                if (keys.get(Constants.PREF_WIDGET_TRAFFIC[2]) != null &&
+                        keys.get(Constants.PREF_WIDGET_TRAFFIC[2]).getClass().equals(Boolean.class)) {
+                    if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true))
+                        edit.putString(Constants.PREF_WIDGET_TRAFFIC[2], "0")
+                                .remove(Constants.PREF_WIDGET_TRAFFIC[2]);
+                    else
+                        edit.remove(Constants.PREF_WIDGET_TRAFFIC[2])
+                                .putString(Constants.PREF_WIDGET_TRAFFIC[2], "1");
+                }
+                if (keys.get(Constants.PREF_WIDGET_TRAFFIC[24]) != null &&
+                        keys.get(Constants.PREF_WIDGET_TRAFFIC[24]).getClass().equals(Boolean.class)) {
+                    if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], true))
+                        edit.remove(Constants.PREF_WIDGET_TRAFFIC[24])
+                                .putString(Constants.PREF_WIDGET_TRAFFIC[24], "0");
+                    else
+                        edit.remove(Constants.PREF_WIDGET_TRAFFIC[24])
+                                .putString(Constants.PREF_WIDGET_TRAFFIC[24], "1");
+                }
+                if (keys.get(Constants.PREF_WIDGET_TRAFFIC[25]) != null &&
+                        keys.get(Constants.PREF_WIDGET_TRAFFIC[25]).getClass().equals(Boolean.class)) {
+                    if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true))
+                        edit.remove(Constants.PREF_WIDGET_TRAFFIC[25])
+                                .putString(Constants.PREF_WIDGET_TRAFFIC[25], "0");
+                    else
+                        edit.remove(Constants.PREF_WIDGET_TRAFFIC[25])
+                                .putString(Constants.PREF_WIDGET_TRAFFIC[25], "1");
+                    edit.apply();
                 }
             }
-            ids = getWidgetIds(Constants.CALLS);
-            if (ids.length != 0) {
-                SharedPreferences prefsWidget;
-                for (int id : ids) {
-                    prefsWidget = getSharedPreferences(String.valueOf(id) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-                    keys = prefsWidget.getAll();
-                    edit = prefsWidget.edit();
-                    if (keys.get(Constants.PREF_WIDGET_CALLS[18]) != null &&
-                            keys.get(Constants.PREF_WIDGET_CALLS[18]).getClass().equals(Boolean.class)) {
-                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[18], true))
-                            edit.putString(Constants.PREF_WIDGET_CALLS[18], "0")
-                                    .remove(Constants.PREF_WIDGET_CALLS[18]);
-                        else
-                            edit.remove(Constants.PREF_WIDGET_CALLS[18])
-                                    .putString(Constants.PREF_WIDGET_CALLS[18], "1");
-                        edit.apply();
-                    }
+        }
+        ids = getWidgetIds(Constants.CALLS);
+        if (ids.length != 0) {
+            SharedPreferences prefsWidget;
+            for (int id : ids) {
+                prefsWidget = getSharedPreferences(String.valueOf(id) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+                keys = prefsWidget.getAll();
+                edit = prefsWidget.edit();
+                if (keys.get(Constants.PREF_WIDGET_CALLS[18]) != null &&
+                        keys.get(Constants.PREF_WIDGET_CALLS[18]).getClass().equals(Boolean.class)) {
+                    if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[18], true))
+                        edit.putString(Constants.PREF_WIDGET_CALLS[18], "0")
+                                .remove(Constants.PREF_WIDGET_CALLS[18]);
+                    else
+                        edit.remove(Constants.PREF_WIDGET_CALLS[18])
+                                .putString(Constants.PREF_WIDGET_CALLS[18], "1");
+                    edit.apply();
                 }
             }
         }
