@@ -2,16 +2,16 @@ package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -19,9 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import org.acra.ACRA;
 
 import java.io.File;
+import java.util.Arrays;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
@@ -39,6 +41,11 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import yuku.ambilwarna.AmbilWarnaDialog;
+
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.getRealPathFromURI;
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.getStringArray;
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.onOff;
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.setOnClickListenerWithChild;
 
 public class TrafficWidgetConfigActivity extends AppCompatActivity implements IconsListFragment.OnCompleteListener,
         CompoundButton.OnCheckedChangeListener, View.OnClickListener,
@@ -53,17 +60,17 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             speedTextSum, speedIconsSum, showSimSum, divSum, activesum, daynightSum, remainSum, rxtxSum, minusSum;
     private RelativeLayout simLogoL, speedFontL, speedArrowsL, showSimL, backColorL, logoL1, logoL2, logoL3,
             remainL, rxtxL, minusL;
+    private AppCompatCheckBox minus;
     private SharedPreferences.Editor mEdit;
     private int mTextColor, mTextColor1, mTextColor2, mTextColor3, mBackColor;
     private final int KEY_TEXT = 0;
     private final int KEY_ICON = 1;
     private final int KEY_TEXT_S = 2;
     private final int KEY_ICON_S = 3;
-    private int mDim;
+    private int mDim, remainSel, infoSel, rxtxSel;
     private String mUserPickedImage;
     private boolean[] mSim;
     private Context mContext;
-    private AppCompatCheckBox rxtx, remain, minus;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -93,7 +100,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
+                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -107,7 +114,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         mEdit = prefsWidget.edit();
         if (prefsWidget.getAll().size() == 0) {
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show mNames
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);//Show full/short info
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[2], "0");//Show full/short info
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);//Show speed
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);//Show sim icons
             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");//SIM1 icon
@@ -135,8 +142,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);//Show divider
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);//Show only active SIM
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);//Show day/night icons
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false);//Show remaining
-            mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true);//Show RX/TX
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], "1");//Show remaining
+            mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], "0");//Show RX/TX
             mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true);//Show over-limit traffic
             mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[27], ContextCompat.getColor(mContext, android.R.color.holo_green_dark));//TX Text color
             mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(mContext, android.R.color.holo_orange_dark));//RX Text color
@@ -255,44 +262,25 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 daynightSum.setText(R.string.off);
         }
 
-        remain = (AppCompatCheckBox) findViewById(R.id.remain_data);
-        if (remain != null) {
-            remain.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false));
-            remain.setOnCheckedChangeListener(this);
-            remainSum = (TextView) findViewById(R.id.remain_data_summary);
-            if (remain.isChecked())
-                remainSum.setText(R.string.remain);
-            else
-                remainSum.setText(R.string.used);
-        }
+        remainL = (RelativeLayout) findViewById(R.id.remain_layout);
+        remainSum = (TextView) findViewById(R.id.remain_data_summary);
+        remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1"));
+        if (remainSel == 0)
+            remainSum.setText(R.string.remain);
+        else
+            remainSum.setText(R.string.used);
 
-        rxtx = (AppCompatCheckBox) findViewById(R.id.rx_tx);
-        rxtx.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true));
-        rxtx.setOnCheckedChangeListener(this);
+        rxtxL = (RelativeLayout) findViewById(R.id.rxtx_layout);
+        rxtxSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0"));
+        boolean rxtxState = rxtxSel == 0;
         rxtxSum = (TextView) findViewById(R.id.rx_tx_summary);
-        if (rxtx.isChecked())
+        if (rxtxState)
             rxtxSum.setText(R.string.show_rx_tx_sum);
         else
             rxtxSum.setText(R.string.show_used_left);
 
-        AppCompatCheckBox info = (AppCompatCheckBox) findViewById(R.id.info);
-        infoSum = (TextView) findViewById(R.id.info_summary);
-        rxtxL = (RelativeLayout) findViewById(R.id.rxtxlayout);
-        remainL = (RelativeLayout) findViewById(R.id.remainlayout);
-        minusL = (RelativeLayout) findViewById(R.id.minus_layout);
-        if (info != null) {
-            info.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true));
-            info.setOnCheckedChangeListener(this);
-            onOff(rxtxL, info.isChecked());
-            onOff(remainL, !info.isChecked());
-            onOff(minusL, !rxtx.isChecked() && info.isChecked());
-            if (info.isChecked())
-                infoSum.setText(R.string.all);
-            else
-                infoSum.setText(R.string.only_total);
-        }
-
         minus = (AppCompatCheckBox) findViewById(R.id.minus);
+        minusL = (RelativeLayout) findViewById(R.id.minus_layout);
         minusSum = (TextView) findViewById(R.id.minus_summary);
         if (minus != null) {
             minus.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true));
@@ -301,6 +289,22 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 minusSum.setText(R.string.on);
             else
                 minusSum.setText(R.string.off);
+        }
+
+        RelativeLayout infoL = (RelativeLayout) findViewById(R.id.info_layout);
+        ;
+        infoSum = (TextView) findViewById(R.id.info_summary);
+        if (infoL != null) {
+            infoSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0"));
+            boolean infoState = infoSel == 0;
+            setOnClickListenerWithChild(infoL, this);
+            onOff(rxtxL, infoState);
+            onOff(remainL, infoState);
+            onOff(minusL, !rxtxState && infoState);
+            if (infoState)
+                infoSum.setText(R.string.all);
+            else
+                infoSum.setText(R.string.only_total);
         }
 
         RelativeLayout simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
@@ -416,29 +420,19 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         logo1.setOnClickListener(this);
         logo2.setOnClickListener(this);
         logo3.setOnClickListener(this);
-        setOnClickListenerWithChild(simFontL);
-        setOnClickListenerWithChild(simLogoL);
-        setOnClickListenerWithChild(speedFontL);
-        setOnClickListenerWithChild(speedArrowsL);
-        setOnClickListenerWithChild(showSimL);
-        setOnClickListenerWithChild(minusL);
+        setOnClickListenerWithChild(simFontL, this);
+        setOnClickListenerWithChild(simLogoL, this);
+        setOnClickListenerWithChild(speedFontL, this);
+        setOnClickListenerWithChild(speedArrowsL, this);
+        setOnClickListenerWithChild(showSimL, this);
+        setOnClickListenerWithChild(rxtxL, this);
+        setOnClickListenerWithChild(remainL, this);
         backColorL.setOnClickListener(this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-    private void setOnClickListenerWithChild(ViewGroup v) {
-        for (int i = 0; i < v.getChildCount(); i++) {
-            View child = v.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                setOnClickListenerWithChild((ViewGroup) child);
-            } else {
-                child.setOnClickListener(this);
-            }
-        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -464,21 +458,82 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         return super.onOptionsItemSelected(item);
     }
 
-    private static void onOff(ViewGroup layout, boolean state) {
-        layout.setEnabled(false);
-        for (int i = 0; i < layout.getChildCount(); i++) {
-            View child = layout.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                onOff((ViewGroup) child, state);
-            } else {
-                child.setEnabled(state);
-            }
-        }
-    }
-
     private void showDialog(View view) {
         DialogFragment dialog = null;
+        AlertDialog.Builder ldb = new AlertDialog.Builder(this);
+        ArrayAdapter<String> adapter = null;
+        SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+        int selection = -1;
+        DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                ListView lv = ((AlertDialog) dialog).getListView();
+                String[] array = getStringArray(lv.getAdapter());
+                boolean isChecked = lv.getCheckedItemPosition() == 0;
+                if (Arrays.equals(array, getResources().getStringArray(R.array.remain))) {
+                    remainSel = lv.getCheckedItemPosition();
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "0" : "1");
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "1" : "0");
+                    if (isChecked)
+                        remainSum.setText(R.string.remain);
+                    else
+                        remainSum.setText(R.string.used);
+                } else if (Arrays.equals(array, getResources().getStringArray(R.array.fullinfo))) {
+                    infoSel = lv.getCheckedItemPosition();
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[2], isChecked ? "0" : "1");
+                    if (isChecked)
+                        infoSum.setText(R.string.all);
+                    else
+                        infoSum.setText(R.string.only_total);
+                    SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+                    boolean rxtxChecked = prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0").equals("0");
+                    onOff(remainL, !isChecked);
+                    onOff(rxtxL, isChecked);
+                    onOff(minusL, isChecked && !rxtxChecked);
+                    if (!isChecked) {
+                        mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], isChecked);
+                        minus.setChecked(isChecked);
+                        mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "0" : "1");
+                    } else {
+                        mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "1" : "0");
+                    }
+                } else if (Arrays.equals(array, getResources().getStringArray(R.array.rxtx))) {
+                    rxtxSel = lv.getCheckedItemPosition();
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "1" : "0");
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "0" : "1");
+                    if (isChecked) {
+                        minus.setChecked(!isChecked);
+                        mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], !isChecked);
+                    }
+                    onOff(minusL, !isChecked);
+                    if (isChecked)
+                        rxtxSum.setText(R.string.show_rx_tx_sum);
+                    else
+                        rxtxSum.setText(R.string.show_used_left);
+                }
+            }
+        };
         switch (view.getId()) {
+            case R.id.remain_data_summary:
+            case R.id.remaintv:
+            case R.id.remain_layout:
+                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
+                        getResources().getStringArray(R.array.remain));
+                selection = remainSel;
+                break;
+            case R.id.info_summary:
+            case R.id.infotv:
+            case R.id.info_layout:
+                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
+                        getResources().getStringArray(R.array.fullinfo));
+                selection = infoSel;
+                break;
+            case R.id.rx_tx_summary:
+            case R.id.rx_txtv:
+            case R.id.rxtx_layout:
+                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
+                        getResources().getStringArray(R.array.rxtx));
+                selection = rxtxSel;
+                break;
             case R.id.logoPreview1:
                 dialog = IconsListFragment.newInstance(Constants.PREF_WIDGET_TRAFFIC[5]);
                 break;
@@ -520,6 +575,11 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         }
         if (dialog != null) {
             dialog.show(getSupportFragmentManager(), "dialog");
+        } else if (adapter != null) {
+            ldb.setSingleChoiceItems(adapter, selection, null);
+            ldb.setPositiveButton(android.R.string.ok, myClickListener);
+            ldb.create();
+            ldb.show();
         }
     }
 
@@ -664,27 +724,6 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         }
     }
 
-    private String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index;
-            if (cursor != null) {
-                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                return cursor.getString(column_index);
-            } else
-                return null;
-        } catch (Exception e) {
-            return null;
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
@@ -694,25 +733,6 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                     namesSum.setText(R.string.on);
                 else
                     namesSum.setText(R.string.off);
-                break;
-            case R.id.info:
-                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], isChecked);
-                if (isChecked)
-                    infoSum.setText(R.string.all);
-                else
-                    infoSum.setText(R.string.only_total);
-                onOff(remainL, !isChecked);
-                onOff(rxtxL, isChecked);
-                onOff(minusL, isChecked && !rxtx.isChecked());
-                if (!isChecked) {
-                    mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], isChecked);
-                    minus.setChecked(isChecked);
-                    mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], isChecked);
-                    rxtx.setChecked(isChecked);
-                } else {
-                    mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], !isChecked);
-                    remain.setChecked(!isChecked);
-                }
                 break;
             case R.id.speed:
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], isChecked);
@@ -774,27 +794,6 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 else
                     daynightSum.setText(R.string.off);
                 break;
-            case R.id.remain_data:
-                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], isChecked);
-                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], !isChecked);
-                if (isChecked)
-                    remainSum.setText(R.string.remain);
-                else
-                    remainSum.setText(R.string.used);
-                break;
-            case R.id.rx_tx:
-                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], !isChecked);
-                mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], isChecked);
-                if (isChecked) {
-                    minus.setChecked(!isChecked);
-                    mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], !isChecked);
-                }
-                onOff(minusL, !isChecked);
-                if (isChecked)
-                    rxtxSum.setText(R.string.show_rx_tx_sum);
-                else
-                    rxtxSum.setText(R.string.show_used_left);
-                break;
             case R.id.minus:
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], isChecked);
                 if (isChecked)
@@ -802,16 +801,15 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 else
                     minusSum.setText(R.string.off);
                 break;
-
         }
     }
 
     @Override
     public void onClick(View v) {
-        AmbilWarnaDialog dialog = null;
+        AmbilWarnaDialog ambilWarnaDialog = null;
         switch (v.getId()) {
             case R.id.textColorPreview:
-                dialog = new AmbilWarnaDialog(this, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                ambilWarnaDialog = new AmbilWarnaDialog(this, mTextColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[13], color);
@@ -824,7 +822,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 });
                 break;
             case R.id.textColorPreview1:
-                dialog = new AmbilWarnaDialog(this, mTextColor1, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                ambilWarnaDialog = new AmbilWarnaDialog(this, mTextColor1, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[27], color);
@@ -837,7 +835,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 });
                 break;
             case R.id.textColorPreview2:
-                dialog = new AmbilWarnaDialog(this, mTextColor2, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                ambilWarnaDialog = new AmbilWarnaDialog(this, mTextColor2, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[28], color);
@@ -850,7 +848,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 });
                 break;
             case R.id.textColorPreview3:
-                dialog = new AmbilWarnaDialog(this, mTextColor3, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                ambilWarnaDialog = new AmbilWarnaDialog(this, mTextColor3, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[29], color);
@@ -863,7 +861,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 });
                 break;
             case R.id.backColorPreview:
-                dialog = new AmbilWarnaDialog(this, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                ambilWarnaDialog = new AmbilWarnaDialog(this, mBackColor, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
                     @Override
                     public void onOk(AmbilWarnaDialog dialog, int color) {
                         mEdit.putInt(Constants.PREF_WIDGET_TRAFFIC[15], color);
@@ -893,11 +891,20 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             case R.id.speedIconsSizeSum:
             case R.id.speedTextSize:
             case R.id.speedTextSizeSum:
+            case R.id.remain_data_summary:
+            case R.id.remaintv:
+            case R.id.remain_layout:
+            case R.id.info_summary:
+            case R.id.infotv:
+            case R.id.info_layout:
+            case R.id.rx_tx_summary:
+            case R.id.rx_txtv:
+            case R.id.rxtx_layout:
                 showDialog(v);
                 break;
         }
-        if (dialog != null)
-            dialog.show();
+        if (ambilWarnaDialog != null)
+            ambilWarnaDialog.show();
     }
 
     @Override

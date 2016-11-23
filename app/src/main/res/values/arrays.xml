@@ -174,17 +174,9 @@
         <item>1</item>
         <item>3</item>
     </string-array>
-    <string-array name="measure_calls_values">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
     <string-array name="measure_calls">
         <item>1 second</item>
         <item>1 minute</item>
-    </string-array>
-    <string-array name="duration_values">
-        <item>0</item>
-        <item>1</item>
     </string-array>
     <string-array name="duration">
         <item>seconds</item>
@@ -397,5 +389,29 @@
         <item>967,YE</item>
         <item>260,ZM</item>
         <item>263,ZW</item>
+    </string-array>
+    <string-array name="values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="theme">
+        <item>@string/day_theme</item>
+        <item>@string/night_theme</item>
+    </string-array>
+    <string-array name="fullinfo">
+        <item>@string/all</item>
+        <item>@string/only_total</item>
+    </string-array>
+    <string-array name="remain">
+        <item>@string/remain</item>
+        <item>@string/used</item>
+    </string-array>
+    <string-array name="infostatus">
+        <item>@string/all</item>
+        <item>@string/only_active</item>
+    </string-array>
+    <string-array name="rxtx">
+        <item>@string/show_rx_tx_sum</item>
+        <item>@string/show_used_left</item>
     </string-array>
 </resources>

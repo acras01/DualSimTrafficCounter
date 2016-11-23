@@ -31,7 +31,7 @@
             <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calls_values"
+                android:entryValues="@array/values"
                 android:key="calls_op_value1"
                 android:summary=""
                 android:title="@string/tariffication" />
@@ -105,7 +105,7 @@
             <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calls_values"
+                android:entryValues="@array/values"
                 android:key="calls_op_value2"
                 android:summary=""
                 android:title="@string/tariffication" />
@@ -179,7 +179,7 @@
             <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
                 android:defaultValue="0"
                 android:entries="@array/measure_calls"
-                android:entryValues="@array/measure_calls_values"
+                android:entryValues="@array/values"
                 android:key="calls_op_value3"
                 android:summary=""
                 android:title="@string/tariffication" />

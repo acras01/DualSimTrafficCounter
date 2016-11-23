@@ -604,7 +604,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private Notification buildNotification() {
         long tot1, tot2 = 0, tot3 = 0;
         String calls = "";
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
+        if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0")) {
             calls = getString(R.string.remain_calls);
             if (mLimitHasChanged) {
                 mLimits = CustomApplication.getCallsSimLimitsValues();

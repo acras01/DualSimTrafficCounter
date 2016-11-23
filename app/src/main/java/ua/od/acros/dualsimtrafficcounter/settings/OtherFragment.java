@@ -22,6 +22,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
+import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
 import ua.od.acros.dualsimtrafficcounter.receivers.ResetReceiver;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
@@ -37,7 +38,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private TwoLineEditTextPreference timer, simQuantity, floatWindow;
-
+    private TwoLineListPreference theme, fullInfo, dataRemain, infoStatus, callsRemain, hudRemain;
     private Context mContext;
     private boolean mIsAttached;
     private SharedPreferences mPrefs;
@@ -60,6 +61,12 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         simQuantity.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, 3)});
         floatWindow = (TwoLineEditTextPreference) findPreference(Constants.PREF_OTHER[33]);
         floatWindow.getEditText().setFilters(new InputFilter[]{new InputFilterMinMax(1, Integer.MAX_VALUE)});
+        theme = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[28]);
+        fullInfo = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[7]);
+        dataRemain = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[19]);
+        infoStatus = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[16]);
+        callsRemain = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[27]);
+        hudRemain = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[39]);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[47], false))
             findPreference(Constants.PREF_OTHER[41]).setEnabled(false);
         findPreference("hud_reset").setOnPreferenceClickListener(this);
@@ -72,8 +79,21 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             timer.setSummary(String.format(getResources().getString(R.string.minutes), timer.getText()));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
-        if (floatWindow != null && floatWindow.isEnabled())
+        if (floatWindow != null && floatWindow.isEnabled()) {
             floatWindow.setSummary(floatWindow.getText());
+        }
+        if (theme != null)
+            theme.setSummary(theme.getEntry());
+        if (fullInfo != null)
+            fullInfo.setSummary(fullInfo.getEntry());
+        if (dataRemain != null)
+            dataRemain.setSummary(dataRemain.getEntry());
+        if (infoStatus != null)
+            infoStatus.setSummary(infoStatus.getEntry());
+        if (callsRemain != null)
+            callsRemain.setSummary(callsRemain.getEntry());
+        if (hudRemain != null)
+            hudRemain.setSummary(hudRemain.getEntry());
     }
 
     @Override

@@ -97,7 +97,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/remainlayout">
+                android:id="@+id/remain_layout">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -105,17 +105,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/show_remaining_calls_widget"
                     android:id="@+id/remaintv"
-                    android:layout_toLeftOf="@+id/remain_calls"
                     android:textColor="?android:attr/textColorPrimary"
                     android:layout_alignParentStart="true" />
-
-                <android.support.v7.widget.AppCompatCheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/remain_calls"
-                    android:checked="false"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -124,7 +115,6 @@
                     android:text="@string/used"
                     android:id="@+id/remain_calls_summary"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:layout_toLeftOf="@+id/remain_calls"
                     android:layout_below="@+id/remaintv"
                     android:layout_alignParentStart="true" />
             </RelativeLayout>

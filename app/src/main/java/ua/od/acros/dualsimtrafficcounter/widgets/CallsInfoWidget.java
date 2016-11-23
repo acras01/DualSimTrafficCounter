@@ -124,7 +124,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[15], true); //Show SIM1
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[16], true); //Show SIM2
                 edit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
-                edit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
+                edit.putString(Constants.PREF_WIDGET_CALLS[18], "1"); //Show remaining
                 edit.putInt(Constants.PREF_WIDGET_CALLS[19], Color.WHITE); // Total Text color
                 edit.apply();
             }
@@ -151,7 +151,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM1
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true)) {
                 String text;
-                if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
+                if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
                     long lim = Long.MAX_VALUE;
                     String limit = prefsSIM.getString(Constants.PREF_SIM1_CALLS[1], "");
                     if (!limit.equals(""))
@@ -210,7 +210,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM2
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true)) {
                 String text;
-                if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
+                if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
                     long lim = Long.MAX_VALUE;
                     String limit = prefsSIM.getString(Constants.PREF_SIM2_CALLS[1], "");
                     if (!limit.equals(""))
@@ -277,7 +277,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM3
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)) {
                 String text;
-                if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[18], false)) {
+                if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
                     long lim = Long.MAX_VALUE;
                     String limit = prefsSIM.getString(Constants.PREF_SIM3_CALLS[1], "");
                     if (!limit.equals(""))

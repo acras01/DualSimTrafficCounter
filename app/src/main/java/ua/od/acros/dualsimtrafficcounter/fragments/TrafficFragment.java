@@ -100,7 +100,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 if (isVisible()) {
                     try {
                         if (!mShowNightTraffic1) {
-                            if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                            if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                                 if (RX1 != null)
                                     RX1.setText(DataFormat.formatData(context, mIsNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
                                             intent.getLongExtra(Constants.SIM1RX, 0L)));
@@ -121,7 +121,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             if (!mShowNightTraffic2) {
                                 TOT2.setText(DataFormat.formatData(context, mIsNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
                                         intent.getLongExtra(Constants.TOTAL2, 0L)));
-                                if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                                     if (RX2 != null)
                                         RX2.setText(DataFormat.formatData(context, mIsNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
                                                 intent.getLongExtra(Constants.SIM2RX, 0L)));
@@ -140,7 +140,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             if (!mShowNightTraffic3) {
                                 TOT3.setText(DataFormat.formatData(context, mIsNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
                                         intent.getLongExtra(Constants.TOTAL3, 0L)));
-                                if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                                     if (RX3 != null)
                                         RX3.setText(DataFormat.formatData(context, mIsNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
                                                 intent.getLongExtra(Constants.SIM3RX, 0L)));
@@ -227,7 +227,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             setOptionsMenuButton(mService);
         bSet.setOnClickListener(this);
         readTrafficDataFromDatabase();
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
             if (RX1 != null)
                 RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                         (long) mTrafficData.get(Constants.SIM1RX)));
@@ -400,7 +400,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         View view;
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
             view = inflater.inflate(R.layout.traffic_fragment, container, false);
             RX1 = (TextView) view.findViewById(R.id.RX1);
             TX1 = (TextView) view.findViewById(R.id.TX1);
@@ -431,7 +431,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         bSet = (AppCompatButton) view.findViewById(R.id.settings);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+            if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                 if (TX2 != null)
                     TX2.setVisibility(View.GONE);
                 if (RX2 != null)
@@ -455,7 +455,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         }
         if (mSimQuantity >= 2)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                     if (TX2 != null)
                         TX2.setVisibility(View.VISIBLE);
                     if (RX2 != null)
@@ -469,7 +469,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 view.findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
         if (mSimQuantity == 3)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                     if (TX3 != null)
                         TX3.setVisibility(View.VISIBLE);
                     if (RX3 != null)
@@ -598,7 +598,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.TOTAL1, 0L);
                     }
                     writeTrafficDataToDatabase();
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                    if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                                     (long) mTrafficData.get(Constants.SIM1RX)));
@@ -625,7 +625,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.TOTAL2, 0L);
                     }
                     writeTrafficDataToDatabase();
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                    if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
                                     (long) mTrafficData.get(Constants.SIM2RX)));
@@ -652,7 +652,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.TOTAL3, 0L);
                     }
                     writeTrafficDataToDatabase();
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                    if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
                                     (long) mTrafficData.get(Constants.SIM3RX)));
@@ -672,7 +672,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             SIM1.setText(!isNight[0] ? "SIM1" + getString(R.string.night) : "SIM1");
                         else
                             SIM1.setText(!isNight[0] ? mOperatorNames[0] + getString(R.string.night) : mOperatorNames[0]);
-                        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                             if (RX1 != null)
                                 RX1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                                         (long) mTrafficData.get(Constants.SIM1RX)));
@@ -693,7 +693,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             SIM2.setText(!isNight[1] ? "SIM2" + getString(R.string.night) : "SIM2");
                         else
                             SIM2.setText(!isNight[1] ? mOperatorNames[1] + getString(R.string.night) : mOperatorNames[1]);
-                        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                             if (RX2 != null)
                                 RX2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
                                         (long) mTrafficData.get(Constants.SIM2RX)));
@@ -710,7 +710,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 if (mPrefs.getBoolean(Constants.PREF_SIM3[17], false)) {
                     mShowNightTraffic3 = !mShowNightTraffic3;
                     if (mShowNightTraffic3) {
-                        if (mPrefs.getBoolean(Constants.PREF_OTHER[7], true)) {
+                        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
                             if (mOperatorNames[2].equals(""))
                                 SIM3.setText(!isNight[2] ? "SIM3" + getString(R.string.night) : "SIM3");
                             else

@@ -1826,7 +1826,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                         total = (long) mTrafficData.get(Constants.TOTAL3);
                     break;
             }
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[39], false)) {
+            if (mPrefs.getString(Constants.PREF_OTHER[39], "1").equals("0")) {
                 total = mLimits[mActiveSIM] - total;
                 /*if (total < 0)
                     total = 0;*/
@@ -1853,7 +1853,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             sim = mLastActiveSIM;
         String traffic = "";
         long tot1, tot2 = 0, tot3 = 0;
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
+        if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0")) {
             tot1 = mIsNight1 ? mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1_N) : mLimits[0] - (long) mTrafficData.get(Constants.TOTAL1);
             if (tot1 < 0)
                 tot1 = 0;
@@ -1872,7 +1872,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             tot2 = mIsNight2 ? (long) mTrafficData.get(Constants.TOTAL2_N) : (long) mTrafficData.get(Constants.TOTAL2);
             tot3 = mIsNight3 ? (long) mTrafficData.get(Constants.TOTAL3_N) : (long) mTrafficData.get(Constants.TOTAL3);
         }
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[16], true)) {
+        if (mPrefs.getString(Constants.PREF_OTHER[16], "0").equals("0")) {
             if (mLimits[0] != Long.MAX_VALUE)
                 traffic = DataFormat.formatData(mContext, tot1);
             else
@@ -1890,7 +1890,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         } else {
             switch (sim) {
                 case Constants.SIM1:
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
+                    if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0"))
                         if (mLimits[0] != Long.MAX_VALUE)
                             traffic = String.format(getString(R.string.traffic_rest), mOperatorNames[0],
                                     DataFormat.formatData(mContext, tot1));
@@ -1902,7 +1902,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             DataFormat.formatData(mContext, tot1);
                     break;
                 case Constants.SIM2:
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
+                    if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0"))
                         if (mLimits[1] != Long.MAX_VALUE)
                             traffic = String.format(getString(R.string.traffic_rest), mOperatorNames[1],
                                     DataFormat.formatData(mContext, tot2));
@@ -1914,7 +1914,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                                 DataFormat.formatData(mContext, tot2);
                     break;
                 case Constants.SIM3:
-                    if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false))
+                    if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0"))
                         if (mLimits[2] != Long.MAX_VALUE)
                             traffic = String.format(getString(R.string.traffic_rest), mOperatorNames[2],
                                     DataFormat.formatData(mContext, tot3));

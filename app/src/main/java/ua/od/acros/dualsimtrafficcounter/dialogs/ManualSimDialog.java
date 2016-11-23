@@ -28,7 +28,7 @@ public class ManualSimDialog extends AppCompatActivity {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
+                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);

@@ -11,9 +11,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import com.stericson.RootShell.RootShell;
@@ -86,6 +92,122 @@ public class CustomApplication extends Application {
         if (preferences.getBoolean(Constants.PREF_OTHER[45], false))
             loadCallsPreferences(imsi);
 
+        int versionCode;
+        try {
+            versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            versionCode = -1;
+        }
+        if (versionCode > 0 && versionCode <= 112) {
+            Map<String, ?> keys = preferences.getAll();
+            SharedPreferences.Editor edit = preferences.edit();
+            if (keys.get(Constants.PREF_OTHER[28]) != null && keys.get(Constants.PREF_OTHER[28]).getClass().equals(Boolean.class)) {
+                if (preferences.getBoolean(Constants.PREF_OTHER[28], true))
+                    edit.remove(Constants.PREF_OTHER[28])
+                            .putString(Constants.PREF_OTHER[28], "0");
+                else
+                    edit.remove(Constants.PREF_OTHER[28])
+                            .putString(Constants.PREF_OTHER[28], "1");
+            }
+            if (keys.get(Constants.PREF_OTHER[7]) != null && keys.get(Constants.PREF_OTHER[7]).getClass().equals(Boolean.class)) {
+                if (preferences.getBoolean(Constants.PREF_OTHER[7], true))
+                    edit.remove(Constants.PREF_OTHER[7])
+                            .putString(Constants.PREF_OTHER[7], "0");
+                else
+                    edit.remove(Constants.PREF_OTHER[7])
+                            .putString(Constants.PREF_OTHER[7], "1");
+            }
+            if (keys.get(Constants.PREF_OTHER[19]) != null && keys.get(Constants.PREF_OTHER[19]).getClass().equals(Boolean.class)) {
+                if (preferences.getBoolean(Constants.PREF_OTHER[19], true))
+                    edit.remove(Constants.PREF_OTHER[19])
+                            .putString(Constants.PREF_OTHER[19], "0");
+                else
+                    edit.remove(Constants.PREF_OTHER[19])
+                            .putString(Constants.PREF_OTHER[19], "1");
+            }
+            if (keys.get(Constants.PREF_OTHER[16]) != null && keys.get(Constants.PREF_OTHER[16]).getClass().equals(Boolean.class)) {
+                if (preferences.getBoolean(Constants.PREF_OTHER[16], true))
+                    edit.putString(Constants.PREF_OTHER[16], "0")
+                            .remove(Constants.PREF_OTHER[16]);
+                else
+                    edit.remove(Constants.PREF_OTHER[16])
+                            .putString(Constants.PREF_OTHER[16], "1");
+            }
+            if (keys.get(Constants.PREF_OTHER[27]) != null && keys.get(Constants.PREF_OTHER[27]).getClass().equals(Boolean.class)) {
+                if (preferences.getBoolean(Constants.PREF_OTHER[27], true))
+                    edit.remove(Constants.PREF_OTHER[27])
+                            .putString(Constants.PREF_OTHER[27], "0");
+                else
+                    edit.remove(Constants.PREF_OTHER[27])
+                            .putString(Constants.PREF_OTHER[27], "1");
+            }
+            if (keys.get(Constants.PREF_OTHER[39]) != null && keys.get(Constants.PREF_OTHER[39]).getClass().equals(Boolean.class)) {
+                if (preferences.getBoolean(Constants.PREF_OTHER[39], true))
+                    edit.remove(Constants.PREF_OTHER[39])
+                            .putString(Constants.PREF_OTHER[39], "0");
+                else
+                    edit.remove(Constants.PREF_OTHER[39])
+                            .putString(Constants.PREF_OTHER[39], "1");
+            }
+            edit.apply();
+            int[] ids = getWidgetIds(Constants.TRAFFIC);
+            if (ids.length != 0) {
+                SharedPreferences prefsWidget;
+                for (int id : ids) {
+                    prefsWidget = getSharedPreferences(String.valueOf(id) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+                    keys = prefsWidget.getAll();
+                    edit = prefsWidget.edit();
+                    if (keys.get(Constants.PREF_WIDGET_TRAFFIC[2]) != null &&
+                            keys.get(Constants.PREF_WIDGET_TRAFFIC[2]).getClass().equals(Boolean.class)) {
+                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true))
+                            edit.putString(Constants.PREF_WIDGET_TRAFFIC[2], "0")
+                                    .remove(Constants.PREF_WIDGET_TRAFFIC[2]);
+                        else
+                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[2])
+                                    .putString(Constants.PREF_WIDGET_TRAFFIC[2], "1");
+                    }
+                    if (keys.get(Constants.PREF_WIDGET_TRAFFIC[24]) != null &&
+                            keys.get(Constants.PREF_WIDGET_TRAFFIC[24]).getClass().equals(Boolean.class)) {
+                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], true))
+                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[24])
+                                    .putString(Constants.PREF_WIDGET_TRAFFIC[24], "0");
+                        else
+                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[24])
+                                    .putString(Constants.PREF_WIDGET_TRAFFIC[24], "1");
+                    }
+                    if (keys.get(Constants.PREF_WIDGET_TRAFFIC[25]) != null &&
+                            keys.get(Constants.PREF_WIDGET_TRAFFIC[25]).getClass().equals(Boolean.class)) {
+                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true))
+                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[25])
+                                    .putString(Constants.PREF_WIDGET_TRAFFIC[25], "0");
+                        else
+                            edit.remove(Constants.PREF_WIDGET_TRAFFIC[25])
+                                    .putString(Constants.PREF_WIDGET_TRAFFIC[25], "1");
+                        edit.apply();
+                    }
+                }
+            }
+            ids = getWidgetIds(Constants.CALLS);
+            if (ids.length != 0) {
+                SharedPreferences prefsWidget;
+                for (int id : ids) {
+                    prefsWidget = getSharedPreferences(String.valueOf(id) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+                    keys = prefsWidget.getAll();
+                    edit = prefsWidget.edit();
+                    if (keys.get(Constants.PREF_WIDGET_CALLS[18]) != null &&
+                            keys.get(Constants.PREF_WIDGET_CALLS[18]).getClass().equals(Boolean.class)) {
+                        if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[18], true))
+                            edit.putString(Constants.PREF_WIDGET_CALLS[18], "0")
+                                    .remove(Constants.PREF_WIDGET_CALLS[18]);
+                        else
+                            edit.remove(Constants.PREF_WIDGET_CALLS[18])
+                                    .putString(Constants.PREF_WIDGET_CALLS[18], "1");
+                        edit.apply();
+                    }
+                }
+            }
+        }
 
         //Check if Data Usage Fragment available
         final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity");
@@ -98,6 +220,57 @@ public class CustomApplication extends Application {
 
         setOnOffAlarms();
         setCallResetAlarm();
+    }
+
+    public static void setOnClickListenerWithChild(ViewGroup v, View.OnClickListener listener) {
+        for (int i = 0; i < v.getChildCount(); i++) {
+            View child = v.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                setOnClickListenerWithChild((ViewGroup) child, listener);
+            } else {
+                child.setOnClickListener(listener);
+            }
+        }
+    }
+
+    public static String[] getStringArray(ListAdapter adapter){
+        String[] a = new String[adapter.getCount()];
+        for (int i = 0; i < a.length; i++)
+            a[i] = adapter.getItem(i).toString();
+        return a;
+    }
+
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index;
+            if (cursor != null) {
+                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            } else
+                return null;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public static void onOff(ViewGroup layout, boolean state) {
+        layout.setEnabled(false);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                onOff((ViewGroup) child, state);
+            } else {
+                child.setEnabled(state);
+            }
+        }
     }
 
     public static Intent getSettingsIntent() {

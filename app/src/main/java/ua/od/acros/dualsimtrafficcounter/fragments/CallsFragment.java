@@ -471,7 +471,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         long[] limit = CustomApplication.getCallsSimLimitsValues();
         long tot1, tot2 = 0, tot3 = 0;
         String text = "";
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[19], false)) {
+        if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0")) {
             text = getString(R.string.remain_calls);
             tot1 = limit[0] - (long) mCallsData.get(Constants.CALLS1);
             if (tot1 < 0)

@@ -2,15 +2,15 @@ package ua.od.acros.dualsimtrafficcounter.activities;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -18,9 +18,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import org.acra.ACRA;
 
 import java.io.File;
+import java.util.Arrays;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
@@ -38,6 +40,11 @@ import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import yuku.ambilwarna.AmbilWarnaDialog;
+
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.getRealPathFromURI;
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.getStringArray;
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.onOff;
+import static ua.od.acros.dualsimtrafficcounter.utils.CustomApplication.setOnClickListenerWithChild;
 
 public class CallsWidgetConfigActivity extends AppCompatActivity implements IconsListFragment.OnCompleteListener,
         View.OnClickListener, CompoundButton.OnCheckedChangeListener, SetSizeDialog.TextSizeDialogListener,
@@ -49,10 +56,14 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
     private int mWidgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private SharedPreferences.Editor mEdit;
     private Context mContext;
-    private int mTextColor, mTextColor1, mBackColor;
+    private int mTextColor, mTextColor1, mBackColor, remainSel;
     private Intent mResultValueIntent;
     private TextView namesSum, iconsSum, divSum, backSum, textSizeSum, iconsSizeSum, logoSum1, logoSum2, logoSum3, showSimSum, remainSum;
-    private RelativeLayout logoL1, logoL2, logoL3, simLogoL, backColorL;
+    private RelativeLayout logoL1;
+    private RelativeLayout logoL2;
+    private RelativeLayout logoL3;
+    private RelativeLayout simLogoL;
+    private RelativeLayout backColorL;
     private ImageView tiv, tiv1, biv, logo1, logo2, logo3;
     private String mUserPickedImage;
     private boolean[] mSim;
@@ -89,7 +100,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getBoolean(Constants.PREF_OTHER[28], false))
+                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -124,7 +135,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], true); //Show SIM3
             else
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[17], false);
-            mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[18], false); //Show remaining
+            mEdit.putString(Constants.PREF_WIDGET_CALLS[18], "1"); //Show remaining
             mEdit.putInt(Constants.PREF_WIDGET_CALLS[19], Color.WHITE); //Total Text color
             mEdit.apply();
         }
@@ -153,8 +164,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         back.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[12], true));
         AppCompatCheckBox div = (AppCompatCheckBox) findViewById(R.id.divider);
         div.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[14], true));
-        AppCompatCheckBox remain = (AppCompatCheckBox) findViewById(R.id.remain_calls);
-        remain.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[18], false));
 
         namesSum = (TextView) findViewById(R.id.names_summary);
         if (names.isChecked())
@@ -176,11 +185,16 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             backSum.setText(R.string.on);
         else
             backSum.setText(R.string.off);
-        remainSum = (TextView) findViewById(R.id.remain_calls_summary);
-        if (remain.isChecked())
-            remainSum.setText(R.string.remain);
-        else
-            remainSum.setText(R.string.used);
+
+        RelativeLayout remainL = (RelativeLayout) findViewById(R.id.remain_layout);
+        if (remainL != null) {
+            remainSum = (TextView) findViewById(R.id.remain_calls_summary);
+            remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[18], "1"));
+            if (remainSel == 0)
+                remainSum.setText(R.string.remain);
+            else
+                remainSum.setText(R.string.used);
+        }
 
 
         logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
@@ -222,7 +236,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         names.setOnCheckedChangeListener(this);
         icons.setOnCheckedChangeListener(this);
         back.setOnCheckedChangeListener(this);
-        remain.setOnCheckedChangeListener(this);
 
         tiv = (ImageView) findViewById(R.id.textColorPreview);
         tiv1 = (ImageView) findViewById(R.id.textColorPreview1);
@@ -301,33 +314,11 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         logo1.setOnClickListener(this);
         logo2.setOnClickListener(this);
         logo3.setOnClickListener(this);
-        setOnClickListenerWithChild(simFontL);
-        setOnClickListenerWithChild(simLogoL);
-        setOnClickListenerWithChild(showSimL);
+        setOnClickListenerWithChild(simFontL, this);
+        setOnClickListenerWithChild(simLogoL, this);
+        setOnClickListenerWithChild(showSimL, this);
+        setOnClickListenerWithChild(remainL, this);
         backColorL.setOnClickListener(this);
-    }
-
-    private void setOnClickListenerWithChild(ViewGroup v) {
-        for (int i = 0; i < v.getChildCount(); i++) {
-            View child = v.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                setOnClickListenerWithChild((ViewGroup) child);
-            } else {
-                child.setOnClickListener(this);
-            }
-        }
-    }
-
-    private static void onOff(ViewGroup layout, boolean state) {
-        layout.setEnabled(false);
-        for (int i = 0; i < layout.getChildCount(); i++) {
-            View child = layout.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                onOff((ViewGroup) child, state);
-            } else {
-                child.setEnabled(state);
-            }
-        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -469,27 +460,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         }
     }
 
-    private String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index;
-            if (cursor != null) {
-                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                return cursor.getString(column_index);
-            } else
-                return null;
-        } catch (Exception e) {
-            return null;
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
@@ -514,13 +484,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 else
                     backSum.setText(R.string.off);
                 onOff(backColorL, isChecked);
-                break;
-            case R.id.remain_calls:
-                mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[18], isChecked);
-                if (isChecked)
-                    remainSum.setText(R.string.remain);
-                else
-                    remainSum.setText(R.string.used);
                 break;
             case R.id.icons:
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[2], isChecked);
@@ -596,6 +559,9 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             case R.id.showSim:
             case R.id.simChoose:
             case R.id.simChooseSum:
+            case R.id.remain_calls_summary:
+            case R.id.remaintv:
+            case R.id.remain_layout:
                 showDialog(v);
                 break;
         }
@@ -605,7 +571,33 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
 
     private void showDialog(View view) {
         DialogFragment dialog = null;
+        AlertDialog.Builder ldb = new AlertDialog.Builder(this);
+        ArrayAdapter<String> adapter = null;
+        SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+        int selection = -1;
+        DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                ListView lv = ((AlertDialog) dialog).getListView();
+                String[] array = getStringArray(lv.getAdapter());
+                boolean isChecked = lv.getCheckedItemPosition() == 0;
+                if (Arrays.equals(array, getResources().getStringArray(R.array.remain))) {
+                    remainSel = lv.getCheckedItemPosition();
+                    mEdit.putString(Constants.PREF_WIDGET_CALLS[18], isChecked ? "0" : "1");
+                    if (isChecked)
+                        remainSum.setText(R.string.remain);
+                    else
+                        remainSum.setText(R.string.used);
+                }
+            }
+        };
         switch (view.getId()) {
+            case R.id.remain_calls_summary:
+            case R.id.remaintv:
+            case R.id.remain_layout:
+                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
+                        getResources().getStringArray(R.array.remain));
+                selection = remainSel;
+                break;
             case R.id.logoPreview1:
                 dialog = IconsListFragment.newInstance(Constants.PREF_WIDGET_CALLS[3]);
                 break;
@@ -635,6 +627,11 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         }
         if (dialog != null) {
             dialog.show(getSupportFragmentManager(), "dialog");
+        } else if (adapter != null) {
+            ldb.setSingleChoiceItems(adapter, selection, null);
+            ldb.setPositiveButton(android.R.string.ok, myClickListener);
+            ldb.create();
+            ldb.show();
         }
     }
 

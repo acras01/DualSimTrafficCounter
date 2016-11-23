@@ -56,7 +56,7 @@ public class MyListActivity extends AppCompatActivity {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[28], false))
+                if (mPrefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);

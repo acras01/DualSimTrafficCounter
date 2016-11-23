@@ -180,7 +180,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
             if (prefs.getAll().size() == 0) {
                 SharedPreferences.Editor edit = prefs.edit();
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true);//Show mNames
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true);//Show full/short info
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[2], "0");//Show full/short info
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[3], false);//Show speed
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true);//Show sim icons
                 edit.putString(Constants.PREF_WIDGET_TRAFFIC[5], "none");//SIM1 icon
@@ -202,8 +202,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true);//Show divider
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false);//Show only active SIM
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false);//Show day/night icons
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false);//Show remaining
-                edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true);//Show RX/TX
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[24], "1");//Show remaining
+                edit.putString(Constants.PREF_WIDGET_TRAFFIC[25], "0");//Show RX/TX
                 edit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true);//Show over-limit traffic
                 edit.putInt(Constants.PREF_WIDGET_TRAFFIC[27], ContextCompat.getColor(context, android.R.color.holo_green_dark));//TX Text color
                 edit.putInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(context, android.R.color.holo_orange_dark));//RX Text color
@@ -249,14 +249,14 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     valuer = 1 - Float.valueOf(round) / 100;
                     lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], false))
+                if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "1").equals("0"))
                         text = DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                                 bundle.getLong(Constants.TOTAL1, 0));
                     else
                         text = DataFormat.formatData(context, lim);
                 } else {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1").equals("0")) {
                         long tot = isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
                                 (lim - bundle.getLong(Constants.TOTAL1, 0));
                         if (tot < 0)
@@ -271,8 +271,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.rxSIM1, View.GONE);
                 updateViews.setViewVisibility(R.id.vert11, View.GONE);
                 updateViews.setViewVisibility(R.id.vert12, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true)) {
+                if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0").equals("0")) {
                         updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setInt(R.id.txSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[27], ContextCompat.getColor(context, android.R.color.holo_green_dark)));
                         updateViews.setInt(R.id.rxSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(context, android.R.color.holo_orange_dark)));
@@ -402,14 +402,14 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     valuer = 1 - Float.valueOf(round) / 100;
                     lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], false))
+                if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "1").equals("0"))
                         text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                                 bundle.getLong(Constants.TOTAL2, 0));
                     else
                         text = DataFormat.formatData(context, lim);
                 } else {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1").equals("0")) {
                         long tot = isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
                                 (lim - bundle.getLong(Constants.TOTAL2, 0));
                         if (tot < 0)
@@ -424,8 +424,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.rxSIM2, View.GONE);
                 updateViews.setViewVisibility(R.id.vert21, View.GONE);
                 updateViews.setViewVisibility(R.id.vert22, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true)) {
+                if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0").equals("0")) {
                         updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setInt(R.id.txSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[27], ContextCompat.getColor(context, android.R.color.holo_green_dark)));
                         updateViews.setInt(R.id.rxSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(context, android.R.color.holo_orange_dark)));
@@ -555,14 +555,14 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     valuer = 1 - Float.valueOf(round) / 100;
                     lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
                 }
-                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], false))
+                if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "1").equals("0"))
                         text = DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                                 bundle.getLong(Constants.TOTAL3, 0));
                     else
                         text = DataFormat.formatData(context, lim);
                 } else {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], false)) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1").equals("0")) {
                         long tot = isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
                                 (lim - bundle.getLong(Constants.TOTAL3, 0));
                         if (tot < 0)
@@ -577,8 +577,8 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                 updateViews.setViewVisibility(R.id.rxSIM3, View.GONE);
                 updateViews.setViewVisibility(R.id.vert31, View.GONE);
                 updateViews.setViewVisibility(R.id.vert32, View.GONE);
-                if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true)) {
-                    if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true)) {
+                if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
+                    if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0").equals("0")) {
                         updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setInt(R.id.txSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, android.R.color.holo_green_dark)));
                         updateViews.setInt(R.id.rxSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[13], ContextCompat.getColor(context, android.R.color.holo_orange_dark)));
