@@ -232,11 +232,11 @@ public class CustomApplication extends Application {
         return a;
     }
 
-    public static String getRealPathFromURI(Context context, Uri contentUri) {
+    public static String getRealPathFromURI(Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            cursor = mWeakReference.get().getContentResolver().query(contentUri, proj, null, null, null);
             int column_index;
             if (cursor != null) {
                 column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);

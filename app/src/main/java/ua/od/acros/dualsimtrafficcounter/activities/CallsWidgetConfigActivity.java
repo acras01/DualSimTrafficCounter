@@ -422,7 +422,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                     Uri selectedImage = imageReturnedIntent.getData();
                     if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[5])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[8], true);
-                        String path = getRealPathFromURI(mContext, selectedImage);
+                        String path = getRealPathFromURI(selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[5], path);
                         Picasso.with(this)
                                 .load(new File(path))
@@ -433,7 +433,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[6])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[9], true);
-                        String path = getRealPathFromURI(mContext, selectedImage);
+                        String path = getRealPathFromURI(selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[6], path);
                         Picasso.with(this)
                                 .load(new File(path))
@@ -444,7 +444,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[7])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[10], true);
-                        String path = getRealPathFromURI(mContext, selectedImage);
+                        String path = getRealPathFromURI(selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[7], path);
                         Picasso.with(this)
                                 .load(new File(path))

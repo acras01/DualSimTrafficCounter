@@ -682,7 +682,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                     Uri selectedImage = imageReturnedIntent.getData();
                     if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[5])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], true);
-                        String path = getRealPathFromURI(mContext, selectedImage);
+                        String path = getRealPathFromURI(selectedImage);
                         if (path != null) {
                             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], path);
                             Picasso.with(this)
@@ -695,7 +695,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                         logoSum1.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[6])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], true);
-                        String path = getRealPathFromURI(mContext, selectedImage);
+                        String path = getRealPathFromURI(selectedImage);
                         if (path != null) {
                             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], path);
                             Picasso.with(this)
@@ -708,7 +708,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                         logoSum2.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[7])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], true);
-                        String path = getRealPathFromURI(mContext, selectedImage);
+                        String path = getRealPathFromURI(selectedImage);
                         if (path != null) {
                             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], path);
                             Picasso.with(this)
