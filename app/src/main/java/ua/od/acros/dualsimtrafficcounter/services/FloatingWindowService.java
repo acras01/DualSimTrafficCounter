@@ -169,8 +169,12 @@ public class FloatingWindowService extends StandOutWindow {
                             "\n" + String.format(getResources().getString(R.string.speed),
                             DataFormat.formatData(mContext, data.getLong(Constants.SPEEDTX, 0L)));
                     textSize = (int) ((double) textSize * 0.5);
-                } else
-                    changedText = DataFormat.formatData(mContext, data.getLong("total"));
+                } else {
+                    if (data.getLong("total") == -1)
+                        changedText = mContext.getString(R.string.not_set);
+                    else
+                        changedText = DataFormat.formatData(mContext, data.getLong("total"));
+                }
                 TextView status = (TextView) window.findViewById(R.id.tv);
                 status.setTextSize(textSize);
                 int textColor = mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text));

@@ -152,14 +152,15 @@ public class CallsInfoWidget extends AppWidgetProvider {
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true)) {
                 String text;
                 if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
-                    long lim = Long.MAX_VALUE;
                     String limit = prefsSIM.getString(Constants.PREF_SIM1_CALLS[1], "");
-                    if (!limit.equals(""))
-                        lim = Long.valueOf(limit) * Constants.MINUTE;
-                    long rest = lim - bundle.getLong(Constants.CALLS1, 0);
-                    if (rest < 0)
-                        rest = 0;
-                    text = DataFormat.formatCallDuration(context, rest);
+                    if (!limit.equals("")) {
+                        long lim = Long.valueOf(limit) * Constants.MINUTE;
+                        long rest = lim - bundle.getLong(Constants.CALLS1, 0);
+                        if (rest < 0)
+                            rest = 0;
+                        text = DataFormat.formatCallDuration(context, rest);
+                    } else
+                        text = context.getString(R.string.not_set);
                 } else
                     text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS1, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);
@@ -211,14 +212,15 @@ public class CallsInfoWidget extends AppWidgetProvider {
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true)) {
                 String text;
                 if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
-                    long lim = Long.MAX_VALUE;
                     String limit = prefsSIM.getString(Constants.PREF_SIM2_CALLS[1], "");
-                    if (!limit.equals(""))
-                        lim = Long.valueOf(limit) * Constants.MINUTE;
-                    long rest = lim - bundle.getLong(Constants.CALLS2, 0);
-                    if (rest < 0)
-                        rest = 0;
-                    text = DataFormat.formatCallDuration(context, rest);
+                    if (!limit.equals("")) {
+                        long lim = Long.valueOf(limit) * Constants.MINUTE;
+                        long rest = lim - bundle.getLong(Constants.CALLS2, 0);
+                        if (rest < 0)
+                            rest = 0;
+                        text = DataFormat.formatCallDuration(context, rest);
+                    } else
+                        text = context.getString(R.string.not_set);
                 } else
                     text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS2, 0));
                 updateViews.setTextViewText(R.id.totSIM2, text);
@@ -278,14 +280,15 @@ public class CallsInfoWidget extends AppWidgetProvider {
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)) {
                 String text;
                 if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
-                    long lim = Long.MAX_VALUE;
                     String limit = prefsSIM.getString(Constants.PREF_SIM3_CALLS[1], "");
-                    if (!limit.equals(""))
-                        lim = Long.valueOf(limit) * Constants.MINUTE;
-                    long rest = lim - bundle.getLong(Constants.CALLS3, 0);
-                    if (rest < 0)
-                        rest = 0;
-                    text = DataFormat.formatCallDuration(context, rest);
+                    if (!limit.equals("")) {
+                        long lim = Long.valueOf(limit) * Constants.MINUTE;
+                        long rest = lim - bundle.getLong(Constants.CALLS3, 0);
+                        if (rest < 0)
+                            rest = 0;
+                        text = DataFormat.formatCallDuration(context, rest);
+                    } else
+                        text = context.getString(R.string.not_set);
                 } else
                     text = "-" + DataFormat.formatCallDuration(context, bundle.getLong(Constants.CALLS3, 0));
                 updateViews.setTextViewText(R.id.totSIM1, text);

@@ -244,17 +244,22 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     value = isNight[0] ? Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM1[19], "")) :
                             Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM1[2], ""));
                 float valuer;
-                long lim = Long.MAX_VALUE;
+                long lim;
                 if (!limit.equals("")) {
                     valuer = 1 - Float.valueOf(round) / 100;
                     lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
-                }
+                } else
+                    lim = 0;
                 if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
                     if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "1").equals("0"))
                         text = DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                                 bundle.getLong(Constants.TOTAL1, 0));
-                    else
-                        text = DataFormat.formatData(context, lim);
+                    else {
+                        if (lim == 0)
+                            text = context.getString(R.string.not_set);
+                        else
+                            text = DataFormat.formatData(context, lim);
+                    }
                 } else {
                     if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1").equals("0")) {
                         long tot = isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
@@ -285,15 +290,19 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         updateViews.setInt(R.id.rxSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setTextViewText(R.id.txSIM1, DataFormat.formatData(context, isNight[0] ? bundle.getLong(Constants.TOTAL1_N, 0) :
                                 bundle.getLong(Constants.TOTAL1, 0)));
-                        long rest = isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
-                                (lim - bundle.getLong(Constants.TOTAL1, 0));
-                        if (rest < 0) {
-                            if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true))
-                                rest = 0;
-                            updateViews.setInt(R.id.totSIM1, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
-                        } else
-                            updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
-                        updateViews.setTextViewText(R.id.rxSIM1, DataFormat.formatData(context, rest));
+                        if (lim == 0)
+                            updateViews.setTextViewText(R.id.rxSIM1, context.getString(R.string.not_available));
+                        else {
+                            long rest = isNight[0] ? (lim - bundle.getLong(Constants.TOTAL1_N, 0)) :
+                                    (lim - bundle.getLong(Constants.TOTAL1, 0));
+                            if (rest < 0) {
+                                if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true))
+                                    rest = 0;
+                                updateViews.setInt(R.id.totSIM1, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
+                            } else
+                                updateViews.setInt(R.id.totSIM1, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
+                            updateViews.setTextViewText(R.id.rxSIM1, DataFormat.formatData(context, rest));
+                        }
                     }
                     updateViews.setViewVisibility(R.id.txSIM1, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.rxSIM1, View.VISIBLE);
@@ -397,17 +406,22 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     value = isNight[1] ? Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM2[19], "")) :
                             Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM2[2], ""));
                 float valuer;
-                long lim = Long.MAX_VALUE;
+                long lim;
                 if (!limit.equals("")) {
                     valuer = 1 - Float.valueOf(round) / 100;
                     lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
-                }
+                } else
+                    lim = 0;
                 if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
                     if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "1").equals("0"))
                         text = DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                                 bundle.getLong(Constants.TOTAL2, 0));
-                    else
-                        text = DataFormat.formatData(context, lim);
+                    else {
+                        if (lim == 0)
+                            text = context.getString(R.string.not_set);
+                        else
+                            text = DataFormat.formatData(context, lim);
+                    }
                 } else {
                     if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1").equals("0")) {
                         long tot = isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
@@ -438,15 +452,19 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         updateViews.setInt(R.id.rxSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setTextViewText(R.id.txSIM2, DataFormat.formatData(context, isNight[1] ? bundle.getLong(Constants.TOTAL2_N, 0) :
                                 bundle.getLong(Constants.TOTAL2, 0)));
-                        long rest = isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
-                                (lim - bundle.getLong(Constants.TOTAL2, 0));
-                        if (rest < 0) {
-                            if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true))
-                                rest = 0;
-                            updateViews.setInt(R.id.totSIM2, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
-                        } else
-                            updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
-                        updateViews.setTextViewText(R.id.rxSIM2, DataFormat.formatData(context, rest));
+                        if (lim == 0)
+                            updateViews.setTextViewText(R.id.rxSIM2, context.getString(R.string.not_available));
+                        else {
+                            long rest = isNight[1] ? (lim - bundle.getLong(Constants.TOTAL2_N, 0)) :
+                                    (lim - bundle.getLong(Constants.TOTAL2, 0));
+                            if (rest < 0) {
+                                if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true))
+                                    rest = 0;
+                                updateViews.setInt(R.id.totSIM2, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
+                            } else
+                                updateViews.setInt(R.id.totSIM2, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
+                            updateViews.setTextViewText(R.id.rxSIM2, DataFormat.formatData(context, rest));
+                        }
                     }
                     updateViews.setViewVisibility(R.id.txSIM2, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.rxSIM2, View.VISIBLE);
@@ -550,17 +568,22 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     value = isNight[2] ? Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM3[19], "")) :
                             Integer.valueOf(prefsSIM.getString(Constants.PREF_SIM3[2], ""));
                 float valuer;
-                long lim = Long.MAX_VALUE;
+                long lim;
                 if (!limit.equals("")) {
                     valuer = 1 - Float.valueOf(round) / 100;
                     lim = (long) (valuer * DataFormat.getFormatLong(limit, value));
-                }
+                } else
+                    lim = 0;
                 if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0").equals("0")) {
                     if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[25], "1").equals("0"))
                         text = DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                                 bundle.getLong(Constants.TOTAL3, 0));
-                    else
-                        text = DataFormat.formatData(context, lim);
+                    else {
+                        if (lim == 0)
+                            text = context.getString(R.string.not_set);
+                        else
+                            text = DataFormat.formatData(context, lim);
+                    }
                 } else {
                     if (prefs.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1").equals("0")) {
                         long tot = isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
@@ -591,15 +614,20 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                         updateViews.setInt(R.id.rxSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[28], ContextCompat.getColor(context, R.color.widget_text)));
                         updateViews.setTextViewText(R.id.txSIM3, DataFormat.formatData(context, isNight[2] ? bundle.getLong(Constants.TOTAL3_N, 0) :
                                 bundle.getLong(Constants.TOTAL3, 0)));
-                        long rest = isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
-                                (lim - bundle.getLong(Constants.TOTAL3, 0));
-                        if (rest < 0) {
-                            if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true))
-                                rest = 0;
-                            updateViews.setInt(R.id.totSIM3, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
-                        } else
-                            updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
-                        updateViews.setTextViewText(R.id.rxSIM3, DataFormat.formatData(context, rest));
+                        if (lim == 0)
+                            updateViews.setTextViewText(R.id.rxSIM3, context.getString(R.string.not_available));
+                        else {
+                            long rest = isNight[2] ? (lim - bundle.getLong(Constants.TOTAL3_N, 0)) :
+                                    (lim - bundle.getLong(Constants.TOTAL3, 0));
+                            if (rest < 0) {
+                                if (!prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true))
+                                    rest = 0;
+                                updateViews.setInt(R.id.totSIM3, "setTextColor", ContextCompat.getColor(context, android.R.color.holo_red_dark));
+                            } else
+                                updateViews.setInt(R.id.totSIM3, "setTextColor", prefs.getInt(Constants.PREF_WIDGET_TRAFFIC[29], ContextCompat.getColor(context, R.color.widget_text)));
+                            updateViews.setTextViewText(R.id.rxSIM3, DataFormat.formatData(context, rest));
+                        }
+
                     }
                     updateViews.setViewVisibility(R.id.txSIM3, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.rxSIM3, View.VISIBLE);

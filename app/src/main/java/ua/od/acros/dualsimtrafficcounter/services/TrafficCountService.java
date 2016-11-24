@@ -1806,28 +1806,38 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         mContext.sendBroadcast(intent);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) && mActiveSIM != Constants.DISABLED) {
             long total = 0;
+            int limit = 0;
             switch (mActiveSIM) {
                 case Constants.SIM1:
                     if (mIsNight1)
                         total = (long) mTrafficData.get(Constants.TOTAL1_N);
                     else
                         total = (long) mTrafficData.get(Constants.TOTAL1);
+                    if (mPrefs.getString(Constants.PREF_SIM1[1], "").equals(""))
+                        limit = -1;
                     break;
                 case Constants.SIM2:
                     if (mIsNight2)
                         total = (long) mTrafficData.get(Constants.TOTAL2_N);
                     else
                         total = (long) mTrafficData.get(Constants.TOTAL2);
+                    if (mPrefs.getString(Constants.PREF_SIM2[1], "").equals(""))
+                        limit = -1;
                     break;
                 case Constants.SIM3:
                     if (mIsNight3)
                         total = (long) mTrafficData.get(Constants.TOTAL3_N);
                     else
                         total = (long) mTrafficData.get(Constants.TOTAL3);
+                    if (mPrefs.getString(Constants.PREF_SIM3[1], "").equals(""))
+                        limit = -1;
                     break;
             }
             if (mPrefs.getString(Constants.PREF_OTHER[39], "1").equals("0")) {
-                total = mLimits[mActiveSIM] - total;
+                if (limit < 0)
+                    total = -1;
+                else
+                    total = mLimits[mActiveSIM] - total;
                 /*if (total < 0)
                     total = 0;*/
             }

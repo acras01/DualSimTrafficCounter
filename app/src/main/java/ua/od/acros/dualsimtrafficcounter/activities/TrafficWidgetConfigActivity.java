@@ -462,8 +462,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         DialogFragment dialog = null;
         AlertDialog.Builder ldb = new AlertDialog.Builder(this);
         ArrayAdapter<String> adapter = null;
-        SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
         int selection = -1;
+        String[] array = null;
         DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 ListView lv = ((AlertDialog) dialog).getListView();
@@ -510,28 +510,29 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                     else
                         rxtxSum.setText(R.string.show_used_left);
                 }
+                dialog.dismiss();
             }
         };
         switch (view.getId()) {
             case R.id.remain_data_summary:
             case R.id.remaintv:
             case R.id.remain_layout:
-                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
-                        getResources().getStringArray(R.array.remain));
+                array = getResources().getStringArray(R.array.remain);
+                ldb.setTitle(R.string.show_remaining_widget);
                 selection = remainSel;
                 break;
             case R.id.info_summary:
             case R.id.infotv:
             case R.id.info_layout:
-                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
-                        getResources().getStringArray(R.array.fullinfo));
+                array = getResources().getStringArray(R.array.fullinfo);
+                ldb.setTitle(R.string.show_full_text_on_widget);
                 selection = infoSel;
                 break;
             case R.id.rx_tx_summary:
             case R.id.rx_txtv:
             case R.id.rxtx_layout:
-                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
-                        getResources().getStringArray(R.array.rxtx));
+                array = getResources().getStringArray(R.array.rxtx);
+                ldb.setTitle(R.string.show_rx_tx);
                 selection = rxtxSel;
                 break;
             case R.id.logoPreview1:
@@ -575,9 +576,10 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         }
         if (dialog != null) {
             dialog.show(getSupportFragmentManager(), "dialog");
-        } else if (adapter != null) {
-            ldb.setSingleChoiceItems(adapter, selection, null);
-            ldb.setPositiveButton(android.R.string.ok, myClickListener);
+        } else if (array != null) {
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, array);
+            ldb.setSingleChoiceItems(adapter, selection, myClickListener);
+            ldb.setNegativeButton(android.R.string.cancel, null);
             ldb.create();
             ldb.show();
         }

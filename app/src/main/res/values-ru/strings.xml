@@ -41,7 +41,7 @@
     <string name="period_value">Период измерения</string>
     <string name="measure_value">Единица измерения</string>
     <string name="limit">Значение</string>
-    <string name="not_set">Не установлено</string>
+    <string name="not_set">Не уст.</string>
     <string name="from_boot">С момента\nперезагрузки</string>
     <string name="round">Точность подсчета (%)</string>
     <string name="not_supported">Ваше устройство не поддерживается</string>
@@ -54,7 +54,7 @@
     <string name="on">Вкл.</string>
     <string name="auto_off_text">Выключать передачу данных при достижении лимита</string>
     <string name="data_dis_tip">Внимание! Отключите передачу данных!</string>
-    <string name="not_available">Недоступно</string>
+    <string name="not_available">Недост.</string>
     <string name="dialog_color_picker">Выбор цвета</string>
     <string name="press_color_to_apply">Нажмите для выбора</string>
     <string name="widget_title">Виджет</string>

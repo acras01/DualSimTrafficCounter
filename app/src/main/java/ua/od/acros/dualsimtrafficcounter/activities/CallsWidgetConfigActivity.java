@@ -573,7 +573,6 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         DialogFragment dialog = null;
         AlertDialog.Builder ldb = new AlertDialog.Builder(this);
         ArrayAdapter<String> adapter = null;
-        SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.CALLS_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
         int selection = -1;
         DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -588,14 +587,16 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                     else
                         remainSum.setText(R.string.used);
                 }
+                dialog.dismiss();
             }
         };
         switch (view.getId()) {
             case R.id.remain_calls_summary:
             case R.id.remaintv:
             case R.id.remain_layout:
-                adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice,
+                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice,
                         getResources().getStringArray(R.array.remain));
+                ldb.setTitle(R.string.show_remaining_calls_widget);
                 selection = remainSel;
                 break;
             case R.id.logoPreview1:
@@ -628,8 +629,8 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         if (dialog != null) {
             dialog.show(getSupportFragmentManager(), "dialog");
         } else if (adapter != null) {
-            ldb.setSingleChoiceItems(adapter, selection, null);
-            ldb.setPositiveButton(android.R.string.ok, myClickListener);
+            ldb.setSingleChoiceItems(adapter, selection, myClickListener);
+            ldb.setNegativeButton(android.R.string.cancel, null);
             ldb.create();
             ldb.show();
         }

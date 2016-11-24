@@ -55,7 +55,7 @@
     <string name="off">Off</string>
     <string name="auto_off_text">Turn off mobile data when reaching limit</string>
     <string name="data_dis_tip">Warning: Turn off mobile data!</string>
-    <string name="not_available">Not available</string>
+    <string name="not_available">Not avail.</string>
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on Color to apply</string>
     <string name="widget_summary">Widget options</string>
