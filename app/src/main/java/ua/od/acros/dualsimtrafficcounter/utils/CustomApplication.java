@@ -214,6 +214,7 @@ public class CustomApplication extends Application {
     }
 
     public static void setOnClickListenerWithChild(ViewGroup v, View.OnClickListener listener) {
+        v.setOnClickListener(listener);
         for (int i = 0; i < v.getChildCount(); i++) {
             View child = v.getChildAt(i);
             if (child instanceof ViewGroup) {
