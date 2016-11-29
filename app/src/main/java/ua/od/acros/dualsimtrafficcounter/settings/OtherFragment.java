@@ -12,11 +12,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
+
+import java.lang.ref.WeakReference;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
@@ -30,13 +33,13 @@ import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomSwitch;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 
 public class OtherFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
-
     private TwoLineEditTextPreference timer, simQuantity, floatWindow;
     private TwoLineListPreference theme, fullInfo, dataRemain, infoStatus, callsRemain, hudRemain;
     private Context mContext;
@@ -44,6 +47,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     private SharedPreferences mPrefs;
     private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT = 5469;
     private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL = 5470;
+    private static WeakReference<CustomSwitch> mSwitch;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -67,11 +71,11 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         infoStatus = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[16]);
         callsRemain = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[27]);
         hudRemain = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[39]);
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[47], false))
-            findPreference(Constants.PREF_OTHER[41]).setEnabled(false);
-        findPreference("hud_reset").setOnPreferenceClickListener(this);
-        if (mIsAttached)
+        if (mIsAttached) {
+            findPreference(Constants.PREF_OTHER[41]).setEnabled(!mPrefs.getBoolean(Constants.PREF_OTHER[47], false));
+            findPreference("hud_reset").setOnPreferenceClickListener(this);
             updateSummary();
+        }
     }
 
     private void updateSummary() {
@@ -94,6 +98,17 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             callsRemain.setSummary(callsRemain.getEntry());
         if (hudRemain != null)
             hudRemain.setSummary(hudRemain.getEntry());
+        PreferenceScreen ps = getPreferenceScreen();
+        if (ps != null && ps.getKey() != null && ps.getKey().equals("float")) {
+            int count = getPreferenceScreen().getPreferenceCount();
+            for (int i = 0; i < count; ++i) {
+                android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);
+                boolean state = mSwitch == null ? mPrefs.getBoolean(Constants.PREF_OTHER[32], true) : mSwitch.get().isSwitchOn();
+                pref.setEnabled(state);
+                if (pref.getKey().equals(Constants.PREF_OTHER[41]))
+                    pref.setEnabled(state && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false));
+            }
+        }
     }
 
     @Override
@@ -112,12 +127,18 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.other_title);
+        if (mSwitch != null)
+            mSwitch.get().resume();
+        updateSummary();
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (mSwitch != null)
+            mSwitch.get().pause();
+        updateSummary();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -246,5 +267,9 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             return true;
         } else
             return false;
+    }
+
+    public static void setSwitch(CustomSwitch swtch) {
+        mSwitch = new WeakReference<>(swtch);
     }
 }

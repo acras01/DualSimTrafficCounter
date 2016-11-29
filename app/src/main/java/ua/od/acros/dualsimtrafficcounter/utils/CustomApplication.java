@@ -479,20 +479,38 @@ public class CustomApplication extends Application {
         DateTime now = new DateTime();
         boolean isNight1, isNight2, isNight3;
         if (preferences.getBoolean(Constants.PREF_SIM1[17], false)) {
-            String timeON = now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(Constants.PREF_SIM1[20], "23:00");
-            String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(Constants.PREF_SIM1[21], "06:00");
+            String time = preferences.getString(Constants.PREF_SIM1[20], "23:00");
+            if (time.equals("null"))
+                time = "23:00";
+            String timeON = now.toString(Constants.DATE_FORMATTER) + " " + time;
+            time = preferences.getString(Constants.PREF_SIM1[21], "06:00");
+            if (time.equals("null"))
+                time = "06:00";
+            String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + time;
             isNight1 = DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
         } else
             isNight1 = false;
         if (preferences.getBoolean(Constants.PREF_SIM2[17], false)) {
-            String timeON = now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(Constants.PREF_SIM2[20], "23:00");
-            String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(Constants.PREF_SIM2[21], "06:00");
+            String time = preferences.getString(Constants.PREF_SIM2[20], "23:00");
+            if (time.equals("null"))
+                time = "23:00";
+            String timeON = now.toString(Constants.DATE_FORMATTER) + " " + time;
+            time = preferences.getString(Constants.PREF_SIM2[21], "06:00");
+            if (time.equals("null"))
+                time = "06:00";
+            String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + time;
             isNight2 = DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
         } else
             isNight2 = false;
         if (preferences.getBoolean(Constants.PREF_SIM3[17], false)) {
-            String timeON = now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(Constants.PREF_SIM3[20], "23:00");
-            String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(Constants.PREF_SIM3[21], "06:00");
+            String time = preferences.getString(Constants.PREF_SIM3[20], "23:00");
+            if (time.equals("null"))
+                time = "23:00";
+            String timeON = now.toString(Constants.DATE_FORMATTER) + " " + time;
+            time = preferences.getString(Constants.PREF_SIM3[21], "06:00");
+            if (time.equals("null"))
+                time = "06:00";
+            String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + time;
             isNight3 = DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
         } else
             isNight3 = false;

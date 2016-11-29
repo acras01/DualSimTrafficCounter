@@ -10,7 +10,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/titleText"
-        android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/switchForActionBar"
         android:layout_marginLeft="5dp"
@@ -24,5 +23,15 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/subTitleText"
+        android:textColor="?android:attr/textColorPrimary"
+        android:layout_below="@+id/titleText"
+        android:layout_alignLeft="@+id/titleText" />
 
 </RelativeLayout>

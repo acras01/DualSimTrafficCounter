@@ -19,14 +19,14 @@ import android.widget.TextView;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
-import ua.od.acros.dualsimtrafficcounter.utils.NotificationSwitch;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomSwitch;
 
 public class SoundFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int REQUEST_CODE_ALERT_RINGTONE = 142;
     private Context mContext;
     private SharedPreferences mPrefs;
-    private NotificationSwitch mSwitch = null;
+    private CustomSwitch mSwitch = null;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -43,10 +43,12 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
             View custom = actionBar.getCustomView();
             TextView tv = (TextView) custom.findViewById(R.id.titleText);
             tv.setText(R.string.use_notification_title);
+            tv = (TextView) custom.findViewById(R.id.subTitleText);
+            tv.setVisibility(View.GONE);
             actionBarSwitch = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
         }
         if (actionBarSwitch != null)
-            mSwitch = new NotificationSwitch(getActivity(), actionBarSwitch);
+            mSwitch = new CustomSwitch(getActivity(), actionBarSwitch, Constants.PREF_OTHER[3]);
         updateSettings();
     }
 

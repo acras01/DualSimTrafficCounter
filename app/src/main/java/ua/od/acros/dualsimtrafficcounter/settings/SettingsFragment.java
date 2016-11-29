@@ -16,19 +16,19 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.NotificationSwitch;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomSwitch;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private SharedPreferences mPrefs;
-    private NotificationSwitch mSwitch;
+    private CustomSwitch mSwitch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        mSwitch = new NotificationSwitch(context, new SwitchCompat(context));
+        mSwitch = new CustomSwitch(context, new SwitchCompat(context), Constants.PREF_OTHER[3]);
     }
 
     @Override

@@ -7,15 +7,17 @@ import android.preference.PreferenceManager;
 import android.support.v7.widget.SwitchCompat;
 import android.widget.CompoundButton;
 
-public class NotificationSwitch implements CompoundButton.OnCheckedChangeListener {
+public class CustomSwitch implements CompoundButton.OnCheckedChangeListener {
 
     protected final Context mContext;
     private SharedPreferences mPrefs;
     private SwitchCompat mSwitch;
+    private String mKey;
 
-    public NotificationSwitch(Context context, SwitchCompat swtch) {
+    public CustomSwitch(Context context, SwitchCompat swtch, String key) {
         mContext = context;
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mKey = key;
         setSwitch(swtch);
     }
 
@@ -31,12 +33,12 @@ public class NotificationSwitch implements CompoundButton.OnCheckedChangeListene
 
     public void onCheckedChanged(CompoundButton view, boolean isChecked) {
         Editor editor = mPrefs.edit();
-        editor.putBoolean(Constants.PREF_OTHER[3], isChecked)
+        editor.putBoolean(mKey, isChecked)
                 .apply();
     }
 
     public boolean isSwitchOn() {
-        return mPrefs.getBoolean(Constants.PREF_OTHER[3], true);
+        return mPrefs.getBoolean(mKey, true);
     }
 
     public void resume() {

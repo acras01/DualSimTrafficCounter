@@ -11,9 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -24,13 +27,14 @@ import ua.od.acros.dualsimtrafficcounter.settings.SettingsFragment;
 import ua.od.acros.dualsimtrafficcounter.settings.TrafficLimitFragment;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomSwitch;
 
 public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
     private static ActionBar mActionBar;
     private static String mTag, mAction;
     private static PreferenceFragmentCompat mFragment;
-    private Context mContext;
+    private static Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,5 +161,19 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         mFragment = preferenceFragmentCompat;
         preferenceFragmentCompat.setPreferenceScreen(preferenceScreen);
         mActionBar.setSubtitle(preferenceScreen.getTitle());
+        if (mFragment instanceof OtherFragment && mTag.equals("float")) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setDisplayShowHomeEnabled(true);
+            mActionBar.setDisplayShowCustomEnabled(true);
+            mActionBar.setCustomView(R.layout.actionbar_switch);
+            View custom = mActionBar.getCustomView();
+            TextView tv = (TextView) custom.findViewById(R.id.titleText);
+            tv.setText(R.string.other_title);
+            tv = (TextView) custom.findViewById(R.id.subTitleText);
+            tv.setText(R.string.floating_window);
+            SwitchCompat actionBarSwitch = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
+            if (actionBarSwitch != null)
+                OtherFragment.setSwitch(new CustomSwitch(mContext, actionBarSwitch, Constants.PREF_OTHER[32]));
+        }
     }
 }
