@@ -252,4 +252,5 @@
     <string name="widgets_summary">Customize your widgets</string>
     <string name="widgets_title">Widgets</string>
     <string name="widget">Widget #%1$d</string>
+    <string name="next_reset">"\nTill "</string>
 </resources>

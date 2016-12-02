@@ -10,6 +10,10 @@
         <item>Месяц</item>
         <item>Пользов.</item>
     </string-array>
+    <string-array name="limit">
+        <item>день</item>
+        <item>мес.</item>
+    </string-array>
     <string-array name="icons">
         <item>Нет</item>
         <item>Автомат.</item>

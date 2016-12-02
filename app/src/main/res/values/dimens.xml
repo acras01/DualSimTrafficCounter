@@ -11,6 +11,6 @@
     <dimen name="widget_margin">5dp</dimen>
     <dimen name="widget_text_size">5sp</dimen>
     <dimen name="logo_size">40dp</dimen>
-    <dimen name="limit_button_width">50dp</dimen>
+    <dimen name="button_width">125dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 </resources>

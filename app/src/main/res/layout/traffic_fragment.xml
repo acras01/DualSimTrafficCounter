@@ -235,8 +235,7 @@
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:width="@dimen/limit_button_width"
-                        android:maxLines="2"
+                        android:width="@dimen/button_width"
                         android:minLines="2"
                         tools:ignore="HardcodedText" />
 
@@ -249,8 +248,7 @@
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:width="@dimen/limit_button_width"
-                        android:maxLines="2"
+                        android:width="@dimen/button_width"
                         android:minLines="2" />
 
                     <android.support.v7.widget.AppCompatButton
@@ -262,8 +260,7 @@
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:width="@dimen/limit_button_width"
-                        android:maxLines="2"
+                        android:width="@dimen/button_width"
                         android:minLines="2" />
                 </TableRow>
 

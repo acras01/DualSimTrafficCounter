@@ -356,30 +356,35 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         String limit3 = String.format(getString(R.string.minutes), mPrefs.getString(Constants.PREF_SIM3_CALLS[1], ""));
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
-        String[] list = getResources().getStringArray(R.array.period);
+        String[] list = getResources().getStringArray(R.array.limit);
 
-        for (int i = 0; i < list.length; i++) {
+        for (int i = 0; i < listitems.length; i++) {
             if (!limit1.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1_CALLS[2], "0"))) {
                 if (listitems[i].equals("2"))
                     limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1_CALLS[5], "1") + getString(R.string.days);
                 else
                     limit1 += "/" + list[i];
-
+                limit1 += getString(R.string.next_reset) +
+                        mPrefs.getString(Constants.PREF_SIM1_CALLS[8], getString(R.string.not_set)).substring(0, 10);
             }
-            if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2_CALLS[2], "0"))) {
-                if (listitems[i].equals("2"))
-                    limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2_CALLS[5], "1") + getString(R.string.days);
-                else
-                    limit2 += "/" + list[i];
-
-            }
-            if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3_CALLS[2], "0"))) {
-                if (listitems[i].equals("2"))
-                    limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3_CALLS[5], "1") + getString(R.string.days);
-                else
-                    limit3 += "/" + list[i];
-
-            }
+            if (mSimQuantity >= 2)
+                if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2_CALLS[2], "0"))) {
+                    if (listitems[i].equals("2"))
+                        limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2_CALLS[5], "1") + getString(R.string.days);
+                    else
+                        limit2 += "/" + list[i];
+                    limit2 += getString(R.string.next_reset) +
+                            mPrefs.getString(Constants.PREF_SIM2_CALLS[8], getString(R.string.not_set)).substring(0, 10);
+                }
+            if (mSimQuantity == 3)
+                if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3_CALLS[2], "0"))) {
+                    if (listitems[i].equals("2"))
+                        limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3_CALLS[5], "1") + getString(R.string.days);
+                    else
+                        limit3 += "/" + list[i];
+                    limit3 += getString(R.string.next_reset) +
+                            mPrefs.getString(Constants.PREF_SIM3_CALLS[8], getString(R.string.not_set)).substring(0, 10);
+                }
         }
 
         bLim1.setText(limit1);

@@ -10,6 +10,10 @@
         <item>Місяць</item>
         <item>Корист.</item>
     </string-array>
+    <string-array name="limit">
+        <item>день</item>
+        <item>міс.</item>
+    </string-array>
     <string-array name="icons">
         <item>Немає</item>
         <item>Автомат.</item>

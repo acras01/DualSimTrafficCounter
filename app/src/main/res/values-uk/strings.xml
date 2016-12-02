@@ -244,4 +244,5 @@
     <string name="widgets_summary">Налаштування віджетів</string>
     <string name="widgets_title">Віджети</string>
     <string name="widget">Віджет №%1$d</string>
+    <string name="next_reset">"\nДо "</string>
 </resources>

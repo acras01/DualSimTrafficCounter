@@ -188,7 +188,6 @@
     <string name="show_rx_tx">Показывать получено/отправлено или использовано/осталось</string>
     <string name="show_used_left">Использовано/Остаток</string>
     <string name="show_rx_tx_sum">Получено/Отправлено</string>
-    <string name="day_theme">День</string>
     <string name="night_theme">Ночь</string>
     <string name="use_auto_theme">Использовать автоматическую смену дневной/ночной тем</string>
     <string name="use_day_theme">Выбрать тему вручную</string>
@@ -244,4 +243,6 @@
     <string name="widgets_summary">Настройки виджетов</string>
     <string name="widgets_title">Виджеты</string>
     <string name="widget">Виджет №%1$d</string>
+    <string name="day_theme">День</string>
+    <string name="next_reset">"\nДо "</string>
 </resources>

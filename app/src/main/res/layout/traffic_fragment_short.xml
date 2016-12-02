@@ -91,7 +91,7 @@
                         android:id="@+id/Tot1"
                         android:layout_column="2"
                         android:gravity="center_vertical|center"
-                        android:width="100dp"
+                        android:width="@dimen/button_width"
                         android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
@@ -101,7 +101,7 @@
                         android:id="@+id/Tot2"
                         android:layout_column="3"
                         android:gravity="center_vertical|center"
-                        android:width="100dp"
+                        android:width="@dimen/button_width"
                         android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
@@ -111,7 +111,7 @@
                         android:id="@+id/Tot3"
                         android:layout_column="4"
                         android:gravity="center_vertical|center"
-                        android:width="100dp"
+                        android:width="@dimen/button_width"
                         android:textColor="?android:attr/textColorPrimary" />
 
                 </TableRow>
@@ -130,9 +130,7 @@
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:width="@dimen/limit_button_width"
-                        android:minLines="2"
-                        android:maxLines="2" />
+                        android:minLines="2"/>
 
                     <android.support.v7.widget.AppCompatButton
                         android:layout_width="wrap_content"
@@ -143,9 +141,7 @@
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:width="@dimen/limit_button_width"
-                        android:minLines="2"
-                        android:maxLines="2" />
+                        android:minLines="2"/>
 
                     <android.support.v7.widget.AppCompatButton
                         android:layout_width="wrap_content"
@@ -156,9 +152,7 @@
                         android:visibility="visible"
                         style="?android:attr/buttonBarButtonStyle"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-                        android:width="@dimen/limit_button_width"
-                        android:minLines="2"
-                        android:maxLines="2" />
+                        android:minLines="2"/>
                 </TableRow>
 
                 <TableRow
