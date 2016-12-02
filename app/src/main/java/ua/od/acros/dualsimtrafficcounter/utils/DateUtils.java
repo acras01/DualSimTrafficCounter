@@ -72,9 +72,15 @@ public class DateUtils {
                     daysInMonth = 30;
                     break;
             }
-            if (now.getDayOfMonth() > delta && diff < daysInMonth)
+            int year = now.getYear();
+            if (now.getDayOfMonth() > delta && diff < daysInMonth) {
                 month += 1;
-            date = now.getYear() + "-" + month + "-" + delta;
+                if (month > 12) {
+                    month = 1;
+                    year += 1;
+                }
+            }
+            date = year + "-" + month + "-" + delta;
             return new DataResetObject(0, Constants.DATE_TIME_FORMATTER.parseDateTime(date + " " + preferences.getString(simPref[1], "00:00")));
         } else {
             int period = 0;

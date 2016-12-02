@@ -3,8 +3,8 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 import org.joda.time.DateTime;
 
 public class DataResetObject {
-    int period;
-    DateTime dt;
+    private int period;
+    private DateTime dt;
 
     DataResetObject(int period, DateTime dt) {
         this.period = period;
