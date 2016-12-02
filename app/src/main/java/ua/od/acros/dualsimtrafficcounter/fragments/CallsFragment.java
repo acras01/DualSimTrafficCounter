@@ -351,9 +351,11 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
 
     private void setButtonLimitText() {
 
-        String limit1 = String.format(getString(R.string.minutes), mPrefs.getString(Constants.PREF_SIM1_CALLS[1], ""));
-        String limit2 = String.format(getString(R.string.minutes), mPrefs.getString(Constants.PREF_SIM2_CALLS[1], ""));
-        String limit3 = String.format(getString(R.string.minutes), mPrefs.getString(Constants.PREF_SIM3_CALLS[1], ""));
+        String limit1, limit2, limit3;
+        long[] limit = CustomApplication.getCallsSimLimitsValues();
+        limit1 = limit[0] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[0])) : getString(R.string.not_set);
+        limit2 = limit[1] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[1])) : getString(R.string.not_set);
+        limit3 = limit[2] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[2])) : getString(R.string.not_set);
 
         String[] listitems = getResources().getStringArray(R.array.period_values);
         String[] list = getResources().getStringArray(R.array.limit);
