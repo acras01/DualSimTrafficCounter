@@ -88,7 +88,7 @@ public class DateUtils {
                 period = diff;
             if (diff >= delta) {
                 if (preferences.getString(simPref[0], "").equals("2"))
-                    period = 0;
+                    period = diff - delta;
                 return new DataResetObject(period, Constants.DATE_TIME_FORMATTER.parseDateTime(now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(simPref[1], "00:00")));
             } else
                 return null;
