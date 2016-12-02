@@ -150,7 +150,7 @@
     <string name="test">Тест</string>
     <string name="app_version">Версія %1$s</string>
     <string name="seconds">0хв. %1$sс</string>
-    <string name="minutes_seconds">%1$sхв. %2$sс</string>
+    <string name="minutes_seconds">%1$s хв. %2$s с</string>
     <string name="calls">Вихiднi дзвiнки</string>
     <string name="calls_fragment">Статистика вихiдних дзвiнкiв</string>
     <string name="outgoing_duration">Тривалiсть вихiдних дзвiнкiв</string>
@@ -158,7 +158,7 @@
     <string name="tariffication">Інтервал тарифікації</string>
     <string name="calls_limit_title">Обмеження вихідних дзвінків</string>
     <string name="calls_limit_summary">Налаштування обмеження вихідних дзвінків</string>
-    <string name="minutes">%1$sхв.</string>
+    <string name="minutes">%1$s хв.</string>
     <string name="tip_calls">Вказана тривалість дзвінків не є точною, а є округленою згідно з інтревалом тарифікації</string>
     <string name="traffic_rest">%1$s (залишок): %2$s</string>
     <string name="body">Інформація для тестування</string>

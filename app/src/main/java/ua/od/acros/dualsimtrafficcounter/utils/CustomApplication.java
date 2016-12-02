@@ -403,21 +403,30 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static long[] getCallsSimLimitsValues() {
+    public static long[] getCallsSimLimitsValues(boolean min) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mWeakReference.get());
         long limit1, limit2, limit3;
         try {
-            limit1 = Long.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
+            if (min)
+                limit1 = Long.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], "0")) * Constants.MINUTE;
+            else
+                limit1 = Long.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], "0"));
         } catch (Exception e) {
             limit1 = Long.MAX_VALUE;
         }
         try {
-            limit2 = Long.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
+            if (min)
+                limit2 = Long.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], "0")) * Constants.MINUTE;
+            else
+                limit2 = Long.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], "0"));
         } catch (Exception e) {
             limit2 = Long.MAX_VALUE;
         }
         try {
-            limit3 = Long.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
+            if (min)
+                limit3 = Long.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], "0")) * Constants.MINUTE;
+            else
+                limit3 = Long.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], "0"));
         } catch (Exception e) {
             limit3 = Long.MAX_VALUE;
         }

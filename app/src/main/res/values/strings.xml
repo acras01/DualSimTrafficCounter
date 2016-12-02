@@ -156,7 +156,7 @@
     <string name="test">Test</string>
     <string name="app_version">Version %1$s</string>
     <string name="seconds">0m %1$ss</string>
-    <string name="minutes_seconds">%1$sm %2$ss</string>
+    <string name="minutes_seconds">%1$s m %2$s s</string>
     <string name="outgoing_duration">Duration of outgoing calls</string>
     <string name="tip_calls">Shown duration of calls is not exact but rounded in accordance with interval of tariffication</string>
     <string name="calls">Outgoing Calls</string>
@@ -165,7 +165,7 @@
     <string name="tariffication">Tariffication interval</string>
     <string name="calls_limit_summary">Outgoing calls limits settings</string>
     <string name="calls_limit_title">Calls limits</string>
-    <string name="minutes">%1$sm</string>
+    <string name="minutes">%1$s m</string>
     <string name="traffic_rest">%1$s (left): %2$s</string>
     <string name="is_out_of_home_network">Are you calling outside of your home network?</string>
     <string name="no">No</string>

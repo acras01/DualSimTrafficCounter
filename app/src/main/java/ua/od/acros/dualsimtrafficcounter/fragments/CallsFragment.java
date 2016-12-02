@@ -88,7 +88,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                long[] limit = CustomApplication.getCallsSimLimitsValues();
+                long[] limit = CustomApplication.getCallsSimLimitsValues(true);
                 TypedValue typedValue = new TypedValue();
                 Resources.Theme theme = getActivity().getTheme();
                 theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -226,7 +226,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             nm.notify(Constants.STARTED_ID, buildNotification());
         }
 
-        long[] limit = CustomApplication.getCallsSimLimitsValues();
+        long[] limit = CustomApplication.getCallsSimLimitsValues(true);
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -352,7 +352,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private void setButtonLimitText() {
 
         String limit1, limit2, limit3;
-        long[] limit = CustomApplication.getCallsSimLimitsValues();
+        long[] limit = CustomApplication.getCallsSimLimitsValues(false);
         limit1 = limit[0] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[0])) : getString(R.string.not_set);
         limit2 = limit[1] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[1])) : getString(R.string.not_set);
         limit3 = limit[2] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[2])) : getString(R.string.not_set);
@@ -490,7 +490,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     private Notification buildNotification() {
-        long[] limit = CustomApplication.getCallsSimLimitsValues();
+        long[] limit = CustomApplication.getCallsSimLimitsValues(true);
         long tot1, tot2 = 0, tot3 = 0;
         String text = "";
         if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0")) {

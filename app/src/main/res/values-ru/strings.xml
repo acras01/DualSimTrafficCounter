@@ -150,7 +150,7 @@
     <string name="test">Тест</string>
     <string name="app_version">Версия %1$s</string>
     <string name="seconds">0мин. %1$sс</string>
-    <string name="minutes_seconds">%1$sмин. %2$sс</string>
+    <string name="minutes_seconds">%1$s мин. %2$s с</string>
     <string name="calls_fragment">Статистика исходящих вызовов</string>
     <string name="calls">Исходящие вызовы</string>
     <string name="outgoing_duration">Длительность исходящих вызовов</string>
@@ -158,7 +158,7 @@
     <string name="tariffication">Интервал тарификации</string>
     <string name="calls_limit_title">Ограничение исходящих вызовов</string>
     <string name="calls_limit_summary">Настройка ограничения исходящих вызовов</string>
-    <string name="minutes">%1$sмин.</string>
+    <string name="minutes">%1$s мин.</string>
     <string name="tip_calls">Отображаемая длительность вызовов не является точной, а округлена в соответствии с интервалом тарификации</string>
     <string name="traffic_rest">%1$s (остаток): %2$s</string>
     <string name="body">Отладочная информация</string>

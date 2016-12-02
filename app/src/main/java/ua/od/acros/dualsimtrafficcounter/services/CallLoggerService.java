@@ -400,7 +400,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             EventBus.getDefault().register(this);
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
             mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-            mLimits = CustomApplication.getCallsSimLimitsValues();
+            mLimits = CustomApplication.getCallsSimLimitsValues(true);
             mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                     MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -607,7 +607,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0")) {
             calls = getString(R.string.remain_calls);
             if (mLimitHasChanged) {
-                mLimits = CustomApplication.getCallsSimLimitsValues();
+                mLimits = CustomApplication.getCallsSimLimitsValues(true);
                 mLimitHasChanged = false;
             }
             tot1 = mLimits[0] - (long) mCallsData.get(Constants.CALLS1);
