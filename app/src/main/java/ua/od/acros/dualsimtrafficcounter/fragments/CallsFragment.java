@@ -364,8 +364,13 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1_CALLS[5], "1") + getString(R.string.days);
                 else
                     limit1 += "/" + list[i];
-                limit1 += getString(R.string.next_reset) +
-                        mPrefs.getString(Constants.PREF_SIM1_CALLS[8], getString(R.string.not_set)).substring(0, 10);
+                String date = mPrefs.getString(Constants.PREF_SIM1_CALLS[8], getString(R.string.not_set));
+                try {
+                    date = date.substring(0, 10);
+                    limit1 += getString(R.string.next_reset) + date;
+                } catch (Exception e) {
+                    limit1 += "\n" + date;
+                }
             }
             if (mSimQuantity >= 2)
                 if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2_CALLS[2], "0"))) {
@@ -373,8 +378,13 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                         limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2_CALLS[5], "1") + getString(R.string.days);
                     else
                         limit2 += "/" + list[i];
-                    limit2 += getString(R.string.next_reset) +
-                            mPrefs.getString(Constants.PREF_SIM2_CALLS[8], getString(R.string.not_set)).substring(0, 10);
+                    String date = mPrefs.getString(Constants.PREF_SIM2_CALLS[8], getString(R.string.not_set));
+                    try {
+                        date = date.substring(0, 10);
+                        limit2 += getString(R.string.next_reset) + date;
+                    } catch (Exception e) {
+                        limit2 += "\n" + date;
+                    }
                 }
             if (mSimQuantity == 3)
                 if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3_CALLS[2], "0"))) {
@@ -382,8 +392,13 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                         limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3_CALLS[5], "1") + getString(R.string.days);
                     else
                         limit3 += "/" + list[i];
-                    limit3 += getString(R.string.next_reset) +
-                            mPrefs.getString(Constants.PREF_SIM3_CALLS[8], getString(R.string.not_set)).substring(0, 10);
+                    String date = mPrefs.getString(Constants.PREF_SIM3_CALLS[8], getString(R.string.not_set));
+                    try {
+                        date = date.substring(0, 10);
+                        limit3 += getString(R.string.next_reset) + date;
+                    } catch (Exception e) {
+                        limit3 += "\n" + date;
+                    }
                 }
         }
 

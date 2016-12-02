@@ -777,8 +777,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                     limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1[10], "1") + getString(R.string.days);
                 else
                     limit1 += "/" + list[i];
-                limit1 += getString(R.string.next_reset) +
-                        mPrefs.getString(Constants.PREF_SIM1[26], getString(R.string.not_set)).substring(0, 10);
+                String date = mPrefs.getString(Constants.PREF_SIM1[26], getString(R.string.not_set));
+                try {
+                    date = date.substring(0, 10);
+                    limit1 += getString(R.string.next_reset) + date;
+                } catch (Exception e) {
+                    limit1 += "\n" + date;
+                }
             }
             if (mSimQuantity >= 2)
                 if (!limit2.equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2[3], "0"))) {
@@ -786,8 +791,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2[10], "1") + getString(R.string.days);
                     else
                         limit2 += "/" + list[i];
-                    limit2 += getString(R.string.next_reset) +
-                            mPrefs.getString(Constants.PREF_SIM2[26], getString(R.string.not_set)).substring(0, 10);
+                    String date = mPrefs.getString(Constants.PREF_SIM2[26], getString(R.string.not_set));
+                    try {
+                        date = date.substring(0, 10);
+                        limit2 += getString(R.string.next_reset) + date;
+                    } catch (Exception e) {
+                        limit2 += "\n" + date;
+                    }
                 }
             if (mSimQuantity == 3)
                 if (!limit3.equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3[3], "0"))) {
@@ -795,8 +805,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3[10], "1") + getString(R.string.days);
                     else
                         limit3 += "/" + list[i];
-                    limit3 += getString(R.string.next_reset) +
-                            mPrefs.getString(Constants.PREF_SIM3[26], getString(R.string.not_set)).substring(0, 10);
+                    String date = mPrefs.getString(Constants.PREF_SIM3[26], getString(R.string.not_set));
+                    try {
+                        date = date.substring(0, 10);
+                        limit3 += getString(R.string.next_reset) + date;
+                    } catch (Exception e) {
+                        limit3 += "\n" + date;
+                    }
                 }
         }
 
