@@ -149,8 +149,8 @@
     <string name="traffic">Передача данных</string>
     <string name="test">Тест</string>
     <string name="app_version">Версия %1$s</string>
-    <string name="seconds">0мин. %1$sс</string>
-    <string name="minutes_seconds">%1$s мин. %2$s с</string>
+    <string name="seconds">0 мин. %1$d с</string>
+    <string name="minutes_seconds">%1$d мин. %2$d с</string>
     <string name="calls_fragment">Статистика исходящих вызовов</string>
     <string name="calls">Исходящие вызовы</string>
     <string name="outgoing_duration">Длительность исходящих вызовов</string>
