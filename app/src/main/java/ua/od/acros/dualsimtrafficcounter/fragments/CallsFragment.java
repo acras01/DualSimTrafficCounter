@@ -1,8 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,11 +33,9 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
-import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -221,11 +217,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
         readCallsDataFromDatabase();
-        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
-            NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(Constants.STARTED_ID, buildNotification());
-        }
-
         long[] limit = CustomApplication.getCallsSimLimitsValues(true);
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
@@ -487,86 +478,5 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
         }
-    }
-
-    private Notification buildNotification() {
-        long[] limit = CustomApplication.getCallsSimLimitsValues(true);
-        long tot1, tot2 = 0, tot3 = 0;
-        String text = "";
-        if (mPrefs.getString(Constants.PREF_OTHER[19], "1").equals("0")) {
-            text = getString(R.string.remain_calls);
-            tot1 = limit[0] - (long) mCallsData.get(Constants.CALLS1);
-            if (tot1 < 0)
-                tot1 = 0;
-            if (mSimQuantity >= 2) {
-                tot2 = limit[1] - (long) mCallsData.get(Constants.CALLS2);
-                if (tot2 < 0)
-                    tot2 = 0;
-            }
-            if (mSimQuantity == 3) {
-                tot3 = limit[2] - (long) mCallsData.get(Constants.CALLS3);
-                if (tot3 < 0)
-                    tot3 = 0;
-            }
-        } else {
-            tot1 = (long) mCallsData.get(Constants.CALLS1);
-            tot2 = (long) mCallsData.get(Constants.CALLS2);
-            tot3 = (long) mCallsData.get(Constants.CALLS3);
-        }
-
-        if (limit[0] != Long.MAX_VALUE)
-            text += DataFormat.formatCallDuration(mContext, tot1);
-        else
-            text += getString(R.string.not_set);
-        if (mSimQuantity >= 2)
-            if (limit[1] != Long.MAX_VALUE)
-                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot2);
-            else
-                text += "  ||  " + getString(R.string.not_set);
-        if (mSimQuantity == 3)
-            if (limit[2] != Long.MAX_VALUE)
-                text += "  ||  " + DataFormat.formatCallDuration(mContext, tot3);
-            else
-                text += "  ||  " + getString(R.string.not_set);
-        String traffic = "";
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
-            ContentValues cv;
-            boolean[] isNight = CustomApplication.getIsNightState();
-            if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
-                if (mIMSI == null)
-                    mIMSI = MobileUtils.getSimIds(mContext);
-                cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
-                tot1 = isNight[0] ? (long) cv.get("total_n") : (long) cv.get("total");
-                if (mSimQuantity >= 2) {
-                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
-                    tot2 = isNight[1] ? (long) cv.get("total_n") : (long) cv.get("total");
-                }
-                if (mSimQuantity == 3) {
-                    cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(2));
-                    tot3 = isNight[2] ? (long) cv.get("total_n") : (long) cv.get("total");
-                }
-            } else {
-                cv = CustomDatabaseHelper.readTrafficData(mDbHelper);
-                tot1 = isNight[0] ? (long) cv.get(Constants.TOTAL1_N) : (long) cv.get(Constants.TOTAL1);
-                tot2 = isNight[1] ? (long) cv.get(Constants.TOTAL2_N) : (long) cv.get(Constants.TOTAL2);
-                tot3 = isNight[2] ? (long) cv.get(Constants.TOTAL3_N) : (long) cv.get(Constants.TOTAL3);
-            }
-            long[] limits = CustomApplication.getTrafficSimLimitsValues();
-            if (limits[0] != Long.MAX_VALUE)
-                traffic = DataFormat.formatData(mContext, tot1);
-            else
-                traffic = getString(R.string.not_set);
-            if (mSimQuantity >= 2)
-                if (limits[1] != Long.MAX_VALUE)
-                    traffic += "  ||  " + DataFormat.formatData(mContext, tot2);
-                else
-                    traffic += "  ||  " + getString(R.string.not_set);
-            if (mSimQuantity == 3)
-                if (limits[2] != Long.MAX_VALUE)
-                    traffic += "  ||  " + DataFormat.formatData(mContext, tot3);
-                else
-                    traffic += "  ||  " + getString(R.string.not_set);
-        }
-        return CustomNotification.getNotification(mContext, traffic, text);
     }
 }
