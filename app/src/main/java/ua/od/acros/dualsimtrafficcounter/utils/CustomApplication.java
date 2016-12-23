@@ -59,7 +59,7 @@ public class CustomApplication extends Application {
 
     private static WeakReference<Context> mWeakReference;
     private static Boolean mIsOldMtkDevice = null;
-    private static boolean mCanSwitchSim;
+    private static boolean mCanToggleOn;
     private static Boolean mHasRoot = null;
     private static Boolean mHasGeminiSupport = null;
     private static boolean mIsActivityVisible;
@@ -207,7 +207,10 @@ public class CustomApplication extends Application {
         mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (context.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
-        mCanSwitchSim = isOldMtkDevice() && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
+        int simQuantity = preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
+                : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1"));
+        mCanToggleOn = isOldMtkDevice() ||
+                (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && simQuantity == 1);
 
         setOnOffAlarms();
         setCallResetAlarm();
@@ -340,9 +343,10 @@ public class CustomApplication extends Application {
 
     public static boolean isOldMtkDevice() {
         if (mIsOldMtkDevice == null)
-            mIsOldMtkDevice = OLD_MTK_DEVICES.contains(Build.HARDWARE.toLowerCase()) ||
+            mIsOldMtkDevice = (OLD_MTK_DEVICES.contains(Build.HARDWARE.toLowerCase()) ||
                     OLD_MTK_DEVICES.contains(System.getProperty("ro.mediatek.platform", "")) ||
-                    OLD_MTK_DEVICES.contains(System.getProperty("ro.board.platform", ""));
+                    OLD_MTK_DEVICES.contains(System.getProperty("ro.board.platform", ""))) &&
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
         return mIsOldMtkDevice;
     }
 
@@ -564,8 +568,8 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static boolean canSwitchSim() {
-        return mCanSwitchSim;
+    public static boolean canToggleOn() {
+        return mCanToggleOn;
     }
 
     public static void setOnOffAlarms() {

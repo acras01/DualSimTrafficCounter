@@ -57,12 +57,12 @@ public class ChooseActionDialog extends AppCompatActivity {
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                 : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ||
-                !CustomApplication.canSwitchSim() ||
+                !CustomApplication.canToggleOn() ||
                 prefs.getBoolean(Constants.PREF_OTHER[10], false) || simQuantity == 1)
             change.setEnabled(false);
         if (!CustomApplication.isDataUsageAvailable())
             mobileData.setEnabled(false);
-        if (!CustomApplication.canSwitchSim() ||
+        if (!CustomApplication.canToggleOn() ||
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !CustomApplication.hasRoot()))
             off.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);

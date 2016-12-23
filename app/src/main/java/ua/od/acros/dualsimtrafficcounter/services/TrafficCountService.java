@@ -310,7 +310,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
                 case Constants.CONTINUE_ACTION:
                     if (!MobileUtils.isMobileDataActive(mContext)) {
-                        if (CustomApplication.canSwitchSim())
+                        if (CustomApplication.canToggleOn())
                             MobileUtils.toggleMobileDataConnection(true, mContext, sim);
                         else
                             mHandler.post(new Runnable() {
@@ -339,7 +339,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     break;
                 case Constants.OFF_ACTION:
                     MobileUtils.toggleMobileDataConnection(false, mContext, mActiveSIM);
-                    if (CustomApplication.canSwitchSim())
+                    if (CustomApplication.canToggleOn())
                         startNewTimerTask(Constants.CHECK);
                     else {
                         switch (mActiveSIM) {

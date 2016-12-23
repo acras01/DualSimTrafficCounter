@@ -146,7 +146,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
 
-        if (CustomApplication.canSwitchSim()) {
+        if (CustomApplication.canToggleOn()) {
             changeSIM.setEnabled(true);
             autoff1.setEnabled(true);
             autoff2.setEnabled(true);
@@ -520,7 +520,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             if (sharedPreferences.getBoolean(key, false)) {
                 changeSIM.setChecked(false);
                 changeSIM.setEnabled(false);
-            } else if (CustomApplication.canSwitchSim())
+            } else if (CustomApplication.canToggleOn() && mSimQuantity > 1)
                 changeSIM.setEnabled(true);
         }
 
