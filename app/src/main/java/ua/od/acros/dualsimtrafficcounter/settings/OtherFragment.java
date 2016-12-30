@@ -103,7 +103,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             int count = getPreferenceScreen().getPreferenceCount();
             for (int i = 0; i < count; ++i) {
                 android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);
-                boolean state = mSwitch == null ? mPrefs.getBoolean(Constants.PREF_OTHER[32], true) : mSwitch.get().isSwitchOn();
+                boolean state = (mSwitch == null || mSwitch.get() == null) ? mPrefs.getBoolean(Constants.PREF_OTHER[32], true)
+                        : mSwitch.get().isSwitchOn();
                 pref.setEnabled(state);
                 if (pref.getKey().equals(Constants.PREF_OTHER[41]))
                     pref.setEnabled(state && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false));
