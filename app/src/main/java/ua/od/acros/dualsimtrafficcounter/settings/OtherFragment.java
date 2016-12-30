@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -101,8 +100,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         PreferenceScreen ps = getPreferenceScreen();
         if (ps != null && ps.getKey() != null && ps.getKey().equals("float")) {
             int count = getPreferenceScreen().getPreferenceCount();
-            boolean state = (mSwitch == null || mSwitch.get() == null) ? mPrefs.getBoolean(Constants.PREF_OTHER[32], true)
-                    : mSwitch.get().isSwitchOn();
+            boolean state = (mSwitch != null && mSwitch.get() != null) ? mSwitch.get().isSwitchOn()
+                    : mPrefs.getBoolean(Constants.PREF_OTHER[32], true);
             for (int i = 0; i < count; ++i) {
                 android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);
                 pref.setEnabled(state);
@@ -113,8 +112,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         mIsAttached = true;
     }
 

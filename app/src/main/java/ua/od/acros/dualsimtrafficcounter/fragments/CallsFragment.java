@@ -182,7 +182,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onCallsFragmentInteraction(uri);
@@ -190,12 +189,15 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = null;
+        if (context instanceof Activity)
+            activity = (Activity) context;
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -336,7 +338,6 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onCallsFragmentInteraction(Uri uri);
     }
 
@@ -422,7 +423,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             cv.put(Constants.LAST_DATE, (String) mCallsData.get(Constants.LAST_DATE));
             CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(0));
             if (mSimQuantity >= 2) {
-                cv = new ContentValues();;
+                cv = new ContentValues();
                 cv.put("calls", (long) mCallsData.get(Constants.CALLS2));
                 cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS2_EX));
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD2));
@@ -431,7 +432,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.CALLS + "_" + mIMSI.get(1));
             }
             if (mSimQuantity == 3) {
-                cv = new ContentValues();;
+                cv = new ContentValues();
                 cv.put("calls", (long) mCallsData.get(Constants.CALLS3));
                 cv.put("calls_ex", (long) mCallsData.get(Constants.CALLS3_EX));
                 cv.put("period", (int) mCallsData.get(Constants.PERIOD3));

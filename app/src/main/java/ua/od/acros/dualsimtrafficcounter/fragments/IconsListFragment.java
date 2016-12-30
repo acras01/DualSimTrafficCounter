@@ -1,6 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.ListViewCompat;
@@ -43,7 +44,10 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
         mListItems = getResources().getStringArray(R.array.icons);
         View view = inflater.inflate(R.layout.icons_list_layout, container, false);
         listView = (ListViewCompat) view.findViewById(R.id.list);
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        Window w = getDialog().getWindow();
+        if (w != null) {
+            w.requestFeature(Window.FEATURE_NO_TITLE);
+        }
         return view;
     }
 
@@ -65,13 +69,16 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
         void onComplete(int position, String logo);
     }
 
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = null;
+        if (context instanceof Activity)
+            activity = (Activity) context;
         try {
-            this.mListener = (OnCompleteListener) activity;
+            mListener = (OnCompleteListener) activity;
         }
         catch (final ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnCompleteListener");
+            throw new ClassCastException(context.toString() + " must implement OnCompleteListener");
         }
     }
 

@@ -134,11 +134,9 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onTestFragmentInteraction(Uri uri);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onTestFragmentInteraction(uri);
@@ -146,12 +144,15 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = null;
+        if (context instanceof Activity)
+            activity = (Activity) context;
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }

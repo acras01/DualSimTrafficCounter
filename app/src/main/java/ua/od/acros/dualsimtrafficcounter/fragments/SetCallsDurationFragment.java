@@ -87,7 +87,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         spinner.setEnabled(false);
         buttonOk = (AppCompatButton) view.findViewById(R.id.buttonOK);
         buttonOk.setOnClickListener(this);
-        buttonOk.setEnabled(false);;
+        buttonOk.setEnabled(false);
         if (savedInstanceState != null) {
             int sim = savedInstanceState.getInt("sim");
             switch (sim) {
@@ -174,11 +174,9 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onSetDurationFragmentInteraction(Uri uri);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onSetDurationFragmentInteraction(uri);
@@ -186,12 +184,15 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = null;
+        if (context instanceof Activity)
+            activity = (Activity) context;
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }

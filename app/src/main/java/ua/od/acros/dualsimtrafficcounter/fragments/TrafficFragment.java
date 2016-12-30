@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -489,7 +490,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onTrafficFragmentInteraction(uri);
@@ -499,8 +499,11 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Activity activity = null;
+        if (context instanceof Activity)
+            activity = (Activity) context;
         try {
-            mListener = (OnFragmentInteractionListener) context;
+            mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -519,7 +522,6 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onTrafficFragmentInteraction(Uri uri);
     }
 

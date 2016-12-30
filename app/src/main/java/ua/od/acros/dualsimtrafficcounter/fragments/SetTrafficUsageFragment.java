@@ -240,11 +240,9 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onSetUsageFragmentInteraction(Uri uri);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onSetUsageFragmentInteraction(uri);
@@ -252,12 +250,15 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = null;
+        if (context instanceof Activity)
+            activity = (Activity) context;
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
