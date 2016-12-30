@@ -68,7 +68,8 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     public void onResume() {
         super.onResume();
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mSwitch.resume();
+        if (mSwitch != null)
+            mSwitch.resume();
         updateSettings();
     }
 
@@ -76,7 +77,8 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     public void onPause() {
         super.onPause();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-        mSwitch.pause();
+        if (mSwitch != null)
+            mSwitch.pause();
     }
 
     @Override

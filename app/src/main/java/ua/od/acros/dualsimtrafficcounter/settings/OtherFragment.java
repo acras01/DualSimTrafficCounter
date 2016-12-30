@@ -127,7 +127,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     public void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.other_title);
-        if (mSwitch != null)
+        if (mSwitch != null && mSwitch.get() != null)
             mSwitch.get().resume();
         updateSummary();
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -136,7 +136,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     @Override
     public void onPause() {
         super.onPause();
-        if (mSwitch != null)
+        if (mSwitch != null && mSwitch.get() != null)
             mSwitch.get().pause();
         updateSummary();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
