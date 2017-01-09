@@ -84,7 +84,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
             public void onReceive(Context context, Intent intent) {
                 int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                long[] limit = CustomApplication.getCallsSimLimitsValues(true);
+                int[] limit = CustomApplication.getCallsSimLimitsValues(true);
                 TypedValue typedValue = new TypedValue();
                 Resources.Theme theme = getActivity().getTheme();
                 theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -219,7 +219,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
         readCallsDataFromDatabase();
-        long[] limit = CustomApplication.getCallsSimLimitsValues(true);
+        int[] limit = CustomApplication.getCallsSimLimitsValues(true);
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
@@ -344,12 +344,12 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     private void setButtonLimitText() {
 
         String limit1, limit2, limit3;
-        long[] limit = CustomApplication.getCallsSimLimitsValues(false);
-        limit1 = limit[0] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[0])) : getString(R.string.not_set);
-        limit2 = limit[1] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[1])) : getString(R.string.not_set);
-        limit3 = limit[2] < Long.MAX_VALUE ? String.format(getString(R.string.minutes), String.valueOf(limit[2])) : getString(R.string.not_set);
+        int[] limit = CustomApplication.getCallsSimLimitsValues(false);
+        limit1 = limit[0] < Integer.MAX_VALUE ? String.format(getString(R.string.minutes), limit[0]) : getString(R.string.not_set);
+        limit2 = limit[1] < Integer.MAX_VALUE ? String.format(getString(R.string.minutes), limit[1]) : getString(R.string.not_set);
+        limit3 = limit[2] < Integer.MAX_VALUE ? String.format(getString(R.string.minutes), limit[2]) : getString(R.string.not_set);
 
-        String[] listitems = getResources().getStringArray(R.array.period_values);
+        String[] listitems = getResources().getStringArray(R.array.three_values);
         String[] list = getResources().getStringArray(R.array.limit);
 
         for (int i = 0; i < listitems.length; i++) {

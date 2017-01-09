@@ -40,7 +40,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class OtherFragment extends PreferenceFragmentCompatFix implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
     private TwoLineEditTextPreference timer, simQuantity, floatWindow;
-    private TwoLineListPreference theme, fullInfo, dataRemain, infoStatus, callsRemain, hudRemain;
+    private TwoLineListPreference theme, fullInfo, dataRemain, infoStatus, callsRemain, hudRemain, hudInfo;
     private Context mContext;
     private boolean mIsAttached;
     private SharedPreferences mPrefs;
@@ -70,6 +70,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         infoStatus = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[16]);
         callsRemain = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[27]);
         hudRemain = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[39]);
+        hudInfo = (TwoLineListPreference) findPreference(Constants.PREF_OTHER[53]);
         if (mIsAttached) {
             findPreference(Constants.PREF_OTHER[41]).setEnabled(!mPrefs.getBoolean(Constants.PREF_OTHER[47], false));
             findPreference("hud_reset").setOnPreferenceClickListener(this);
@@ -79,7 +80,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
 
     private void updateSummary() {
         if (timer != null && timer.isEnabled())
-            timer.setSummary(String.format(getResources().getString(R.string.minutes), timer.getText()));
+            timer.setSummary(String.format(getResources().getString(R.string.minutes), Integer.valueOf(timer.getText())));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
         if (floatWindow != null && floatWindow.isEnabled()) {
@@ -95,8 +96,6 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             infoStatus.setSummary(infoStatus.getEntry());
         if (callsRemain != null)
             callsRemain.setSummary(callsRemain.getEntry());
-        if (hudRemain != null)
-            hudRemain.setSummary(hudRemain.getEntry());
         PreferenceScreen ps = getPreferenceScreen();
         if (ps != null && ps.getKey() != null && ps.getKey().equals("float")) {
             int count = getPreferenceScreen().getPreferenceCount();
@@ -108,6 +107,10 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 if (pref.getKey().equals(Constants.PREF_OTHER[41]))
                     pref.setEnabled(state && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false));
             }
+            if (hudRemain != null)
+                hudRemain.setSummary(hudRemain.getEntry());
+            if (hudInfo != null)
+                hudInfo.setSummary(hudInfo.getEntry());
         }
     }
 

@@ -1,7 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -483,7 +482,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach(activity);
         mIsAttached = true;
     }

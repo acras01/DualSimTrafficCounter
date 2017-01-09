@@ -407,34 +407,34 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static long[] getCallsSimLimitsValues(boolean min) {
+    public static int[] getCallsSimLimitsValues(boolean min) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mWeakReference.get());
-        long limit1, limit2, limit3;
+        int limit1, limit2, limit3;
         try {
             if (min)
-                limit1 = Long.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], "")) * Constants.MINUTE;
+                limit1 = Integer.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], "")) * Constants.MINUTE;
             else
-                limit1 = Long.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], ""));
+                limit1 = Integer.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], ""));
         } catch (Exception e) {
-            limit1 = Long.MAX_VALUE;
+            limit1 = Integer.MAX_VALUE;
         }
         try {
             if (min)
-                limit2 = Long.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], "")) * Constants.MINUTE;
+                limit2 = Integer.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], "")) * Constants.MINUTE;
             else
-                limit2 = Long.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], ""));
+                limit2 = Integer.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], ""));
         } catch (Exception e) {
-            limit2 = Long.MAX_VALUE;
+            limit2 = Integer.MAX_VALUE;
         }
         try {
             if (min)
-                limit3 = Long.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], "")) * Constants.MINUTE;
+                limit3 = Integer.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], "")) * Constants.MINUTE;
             else
-                limit3 = Long.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], ""));
+                limit3 = Integer.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], ""));
         } catch (Exception e) {
-            limit3 = Long.MAX_VALUE;
+            limit3 = Integer.MAX_VALUE;
         }
-        return new long[]{limit1, limit2, limit3};
+        return new int[]{limit1, limit2, limit3};
     }
 
     public static long[] getTrafficSimLimitsValues() {

@@ -161,19 +161,37 @@ public class FloatingWindowService extends StandOutWindow {
                             .apply();
                 }
                 long seconds = System.currentTimeMillis() / 1000L;
-                String changedText;
+                String changedText = "";
                 int textSize = Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10"));
-                if (mPrefs.getBoolean(Constants.PREF_OTHER[42], false) && seconds % 3 == 0) {
-                    changedText = String.format(getResources().getString(R.string.speed),
-                            DataFormat.formatData(mContext, data.getLong(Constants.SPEEDRX, 0L))) +
-                            "\n" + String.format(getResources().getString(R.string.speed),
-                            DataFormat.formatData(mContext, data.getLong(Constants.SPEEDTX, 0L)));
-                    textSize = (int) ((double) textSize * 0.5);
-                } else {
-                    if (data.getLong("total") == -1)
-                        changedText = mContext.getString(R.string.not_set);
-                    else
-                        changedText = DataFormat.formatData(mContext, data.getLong("total"));
+                String choice = mPrefs.getString(Constants.PREF_OTHER[53], "0");
+                switch (choice) {
+                    case "0":
+                        if (data.getLong("total") == -1)
+                            changedText = mContext.getString(R.string.not_set);
+                        else
+                            changedText = DataFormat.formatData(mContext, data.getLong("total"));
+                        break;
+                    case "1":
+                        changedText = String.format(getResources().getString(R.string.speed),
+                                DataFormat.formatData(mContext, data.getLong(Constants.SPEEDRX, 0L))) +
+                                "\n" + String.format(getResources().getString(R.string.speed),
+                                DataFormat.formatData(mContext, data.getLong(Constants.SPEEDTX, 0L)));
+                        textSize = (int) ((double) textSize * 0.5);
+                        break;
+                    case "2":
+                        if (seconds % 3 == 0) {
+                            changedText = String.format(getResources().getString(R.string.speed),
+                                    DataFormat.formatData(mContext, data.getLong(Constants.SPEEDRX, 0L))) +
+                                    "\n" + String.format(getResources().getString(R.string.speed),
+                                    DataFormat.formatData(mContext, data.getLong(Constants.SPEEDTX, 0L)));
+                            textSize = (int) ((double) textSize * 0.5);
+                        } else {
+                            if (data.getLong("total") == -1)
+                                changedText = mContext.getString(R.string.not_set);
+                            else
+                                changedText = DataFormat.formatData(mContext, data.getLong("total"));
+                        }
+                        break;
                 }
                 TextView status = (TextView) window.findViewById(R.id.tv);
                 status.setTextSize(textSize);

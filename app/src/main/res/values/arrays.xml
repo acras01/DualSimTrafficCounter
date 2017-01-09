@@ -10,16 +10,16 @@
         <item>Month</item>
         <item>User</item>
     </string-array>
+    <string-array name="floating">
+        <item>Traffic</item>
+        <item>Speed</item>
+        <item>Both</item>
+    </string-array>
     <string-array name="limit">
         <item>day</item>
         <item>mon.</item>
     </string-array>
-    <string-array name="measure_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-    <string-array name="period_values">
+    <string-array name="three_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>

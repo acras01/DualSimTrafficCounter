@@ -65,7 +65,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private boolean mIsDialogShown = false;
     private final String[] mNumber = new String[1];
     private boolean mLimitHasChanged;
-    private long[] mLimits = new long[3];
+    private int[] mLimits = new int[3];
     private BroadcastReceiver mCallStartedReceiver, mCallAnsweredReceiver, mCallEndedReceiver;
     private ArrayList<String> mIMSI = null;
     private Service mService = null;

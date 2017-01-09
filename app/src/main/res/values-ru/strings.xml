@@ -149,8 +149,8 @@
     <string name="traffic">Передача данных</string>
     <string name="test">Тест</string>
     <string name="app_version">Версия %1$s</string>
-    <string name="seconds">0 мин. %1$d с</string>
-    <string name="minutes_seconds">%1$d мин. %2$d с</string>
+    <string name="seconds">00 мин. %1$02d с</string>
+    <string name="minutes_seconds">%1$02d мин. %2$02d с</string>
     <string name="calls_fragment">Статистика исходящих вызовов</string>
     <string name="calls">Исходящие вызовы</string>
     <string name="outgoing_duration">Длительность исходящих вызовов</string>
@@ -158,7 +158,7 @@
     <string name="tariffication">Интервал тарификации</string>
     <string name="calls_limit_title">Ограничение исходящих вызовов</string>
     <string name="calls_limit_summary">Настройка ограничения исходящих вызовов</string>
-    <string name="minutes">%1$s мин.</string>
+    <string name="minutes">%1$02d мин.</string>
     <string name="tip_calls">Отображаемая длительность вызовов не является точной, а округлена в соответствии с интервалом тарификации</string>
     <string name="traffic_rest">%1$s (остаток): %2$s</string>
     <string name="body">Отладочная информация</string>
@@ -219,7 +219,7 @@
     <string name="visual_summary">Выбор темы оформления и другое</string>
     <string name="hud_moveable">Плавающее окно под статусбаром (можно перемещать)</string>
     <string name="hud_mobile_data">Показывать только при активной передаче данных</string>
-    <string name="show_hud_speed">Показывать скорость соединения  на плавающем окне</string>
+    <string name="show_hud_speed">Показывать на плавающем окне</string>
     <string name="count_only_incoming">Учитывать только входящий трафик</string>
     <string name="exit">Выход с остановкой сервиса</string>
     <string name="show_minus">Показывать потребление трафика сверх лимита</string>

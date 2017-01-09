@@ -131,12 +131,11 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
 
     private void updateSummary() {
         if (limit1 != null)
-            limit1.setSummary(String.format(getResources().getString(R.string.minutes), limit1.getText()));
-        if (limit2 != null)
-            limit2.setSummary(String.format(getResources().getString(R.string.minutes), limit2.getText()));
-        if (limit3 != null)
-            limit3.setSummary(String.format(getResources().getString(R.string.minutes), limit3.getText()));
+            try {
+            limit1.setSummary(String.format(getResources().getString(R.string.minutes), Integer.valueOf(limit1.getText())));
+            } catch (Exception e) {
 
+            }
         if (period1 != null) {
             period1.setSummary(period1.getEntry());
             if (period1.getValue().equals("0") && day1 != null)
@@ -149,60 +148,72 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                     day1.setTitle(getResources().getString(R.string.day_in_period));
             }
         }
-
-        if (period2 != null) {
-            period2.setSummary(period2.getEntry());
-            if (period2.getValue().equals("0") && day2 != null)
-                day2.setEnabled(false);
-            if ((period2.getValue().equals("1") || period2.getValue().equals("2")) && day2 != null) {
-                day2.setEnabled(true);
-                if (period2.getValue().equals("1"))
-                    day2.setTitle(getResources().getString(R.string.day));
-                else
-                    day2.setTitle(getResources().getString(R.string.day_in_period));
-            }
-        }
-
-        if (period3 != null) {
-            period3.setSummary(period3.getEntry());
-            if (period3.getValue().equals("0") && day3 != null)
-                day3.setEnabled(false);
-            if ((period3.getValue().equals("1") || period3.getValue().equals("2")) && day3 != null) {
-                day3.setEnabled(true);
-                if (period3.getValue().equals("1"))
-                    day3.setTitle(getResources().getString(R.string.day));
-                else
-                    day3.setTitle(getResources().getString(R.string.day_in_period));
-            }
-        }
-
         if (day1 != null && day1.isEnabled())
             day1.setSummary(day1.getText());
-        if (day2 != null && day2.isEnabled())
-            day2.setSummary(day2.getText());
-        if (day3 != null && day3.isEnabled())
-            day3.setSummary(day3.getText());
-
         if (round1 != null)
-            round1.setSummary(String.format(getResources().getString(R.string.seconds), round1.getText()));
-        if (round2 != null)
-            round2.setSummary(String.format(getResources().getString(R.string.seconds), round2.getText()));
-        if (round3 != null)
-            round3.setSummary(String.format(getResources().getString(R.string.seconds), round3.getText()));
-
+            round1.setSummary(String.format(getResources().getString(R.string.seconds), Integer.valueOf(round1.getText())));
         if (time1 != null)
             time1.setSummary(mPrefs.getString(Constants.PREF_SIM1_CALLS[4], "00:00"));
-        if (time2 != null)
-            time2.setSummary(mPrefs.getString(Constants.PREF_SIM2_CALLS[4], "00:00"));
-        if (time3 != null)
-            time3.setSummary(mPrefs.getString(Constants.PREF_SIM3_CALLS[4], "00:00"));
-
         if (opValue1 != null)
             opValue1.setSummary(opValue1.getEntry());
-        if (opValue2 != null)
-            opValue2.setSummary(opValue2.getEntry());
-        if (opValue3 != null)
-            opValue3.setSummary(opValue3.getEntry());
+
+        if (mSimQuantity >= 2) {
+            if (limit2 != null)
+                try {
+                    limit2.setSummary(String.format(getResources().getString(R.string.minutes), Integer.valueOf(limit2.getText())));
+                } catch (Exception e) {
+
+                }
+            if (period2 != null) {
+                period2.setSummary(period2.getEntry());
+                if (period2.getValue().equals("0") && day2 != null)
+                    day2.setEnabled(false);
+                if ((period2.getValue().equals("1") || period2.getValue().equals("2")) && day2 != null) {
+                    day2.setEnabled(true);
+                    if (period2.getValue().equals("1"))
+                        day2.setTitle(getResources().getString(R.string.day));
+                    else
+                        day2.setTitle(getResources().getString(R.string.day_in_period));
+                }
+            }
+            if (day2 != null && day2.isEnabled())
+                day2.setSummary(day2.getText());
+            if (round2 != null)
+                round2.setSummary(String.format(getResources().getString(R.string.seconds), Integer.valueOf(round2.getText())));
+            if (time2 != null)
+                time2.setSummary(mPrefs.getString(Constants.PREF_SIM2_CALLS[4], "00:00"));
+            if (opValue2 != null)
+                opValue2.setSummary(opValue2.getEntry());
+        }
+
+        if (mSimQuantity == 3) {
+            if (limit3 != null)
+                try {
+                    limit3.setSummary(String.format(getResources().getString(R.string.minutes), Integer.valueOf(limit3.getText())));
+                } catch (Exception e) {
+
+                }
+            if (period3 != null) {
+                period3.setSummary(period3.getEntry());
+                if (period3.getValue().equals("0") && day3 != null)
+                    day3.setEnabled(false);
+                if ((period3.getValue().equals("1") || period3.getValue().equals("2")) && day3 != null) {
+                    day3.setEnabled(true);
+                    if (period3.getValue().equals("1"))
+                        day3.setTitle(getResources().getString(R.string.day));
+                    else
+                        day3.setTitle(getResources().getString(R.string.day_in_period));
+                }
+            }
+            if (day3 != null && day3.isEnabled())
+                day3.setSummary(day3.getText());
+            if (round3 != null)
+                round3.setSummary(String.format(getResources().getString(R.string.seconds), Integer.valueOf(round3.getText())));
+            if (time3 != null)
+                time3.setSummary(mPrefs.getString(Constants.PREF_SIM3_CALLS[4], "00:00"));
+            if (opValue3 != null)
+                opValue3.setSummary(opValue3.getEntry());
+        }
     }
 
     @Override

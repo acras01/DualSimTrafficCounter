@@ -102,12 +102,12 @@
             android:summaryOff="@string/off"
             android:defaultValue="true"/>
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-            android:key="hud_speed"
+        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
+            android:key="hud_info"
             android:title="@string/show_hud_speed"
-            android:summaryOn="@string/on"
-            android:summaryOff="@string/off"
-            android:defaultValue="false"/>
+            android:defaultValue="0"
+            android:entries="@array/floating"
+            android:entryValues="@array/three_values"/>
 
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
             android:key="hud_flash"

@@ -770,7 +770,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         limit2 = limit[1] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[1]) : getString(R.string.not_set);
         limit3 = limit[2] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[2]) : getString(R.string.not_set);
 
-        String[] listitems = getResources().getStringArray(R.array.period_values);
+        String[] listitems = getResources().getStringArray(R.array.three_values);
         String[] list = getResources().getStringArray(R.array.limit);
 
         for (int i = 0; i < listitems.length; i++) {

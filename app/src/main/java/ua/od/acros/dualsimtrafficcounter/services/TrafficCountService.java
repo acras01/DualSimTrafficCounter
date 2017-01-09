@@ -1958,7 +1958,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             tot2 = (long) cv.get(Constants.CALLS2);
             tot3 = (long) cv.get(Constants.CALLS3);
         }
-        long[] limits = CustomApplication.getCallsSimLimitsValues(true);
+        int[] limits = CustomApplication.getCallsSimLimitsValues(true);
         if (limits[0] != Long.MAX_VALUE)
             calls += DataFormat.formatCallDuration(mContext, tot1);
         else

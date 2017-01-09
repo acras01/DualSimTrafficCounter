@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.settings;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -156,7 +155,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach(activity);
         mIsAttached = true;
     }

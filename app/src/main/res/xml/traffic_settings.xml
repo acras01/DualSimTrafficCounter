@@ -105,7 +105,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="2"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="value1"
             android:summary=""
             android:title="@string/measure_value" />
@@ -125,7 +125,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="0"
             android:entries="@array/period"
-            android:entryValues="@array/period_values"
+            android:entryValues="@array/three_values"
             android:key="period1"
             android:summary=""
             android:title="@string/period_value" />
@@ -185,7 +185,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="0"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="op_value1"
             android:dependency="op_round1"
             android:summary=""
@@ -213,7 +213,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="2"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="valuenight1"
             android:dependency="usenight1"
             android:summary=""
@@ -328,7 +328,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="2"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="value2"
             android:summary=""
             android:title="@string/measure_value" />
@@ -348,7 +348,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="0"
             android:entries="@array/period"
-            android:entryValues="@array/period_values"
+            android:entryValues="@array/three_values"
             android:key="period2"
             android:summary=""
             android:title="@string/period_value" />
@@ -408,7 +408,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="0"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="op_value2"
             android:dependency="op_round2"
             android:summary=""
@@ -436,7 +436,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="2"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="valuenight2"
             android:dependency="usenight2"
             android:summary=""
@@ -551,7 +551,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="2"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="value3"
             android:summary=""
             android:title="@string/measure_value" />
@@ -571,7 +571,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="0"
             android:entries="@array/period"
-            android:entryValues="@array/period_values"
+            android:entryValues="@array/three_values"
             android:key="period3"
             android:summary=""
             android:title="@string/period_value" />
@@ -631,7 +631,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="0"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="op_value3"
             android:dependency="op_round3"
             android:summary=""
@@ -659,7 +659,7 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
             android:defaultValue="2"
             android:entries="@array/measure"
-            android:entryValues="@array/measure_values"
+            android:entryValues="@array/three_values"
             android:key="valuenight3"
             android:dependency="usenight3"
             android:summary=""
