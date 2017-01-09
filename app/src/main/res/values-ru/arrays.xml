@@ -10,6 +10,11 @@
         <item>Месяц</item>
         <item>Пользов.</item>
     </string-array>
+    <string-array name="floating">
+        <item>Траффик</item>
+        <item>Скорость</item>
+        <item>Все</item>
+    </string-array>
     <string-array name="limit">
         <item>день</item>
         <item>мес.</item>

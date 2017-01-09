@@ -245,4 +245,5 @@
     <string name="widget">Виджет №%1$d</string>
     <string name="day_theme">День</string>
     <string name="next_reset">"\nДо "</string>
+    <string name="hud_text_color">Цвет текста</string>
 </resources>

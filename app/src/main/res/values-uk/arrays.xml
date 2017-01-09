@@ -10,6 +10,11 @@
         <item>Місяць</item>
         <item>Корист.</item>
     </string-array>
+    <string-array name="floating">
+        <item>Трафік</item>
+        <item>Швидкість</item>
+        <item>Обидва</item>
+    </string-array>
     <string-array name="limit">
         <item>день</item>
         <item>міс.</item>

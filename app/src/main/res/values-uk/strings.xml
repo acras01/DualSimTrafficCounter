@@ -245,4 +245,5 @@
     <string name="widgets_title">Віджети</string>
     <string name="widget">Віджет №%1$d</string>
     <string name="next_reset">"\nДо "</string>
+    <string name="hud_text_color">Колір тексту</string>
 </resources>

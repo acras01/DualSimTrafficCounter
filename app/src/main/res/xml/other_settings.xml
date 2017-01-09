@@ -92,6 +92,7 @@
             android:key="hud_remain"
             android:title="@string/show_hud_remaining"
             android:defaultValue="0"
+            android:summary=""
             android:entries="@array/remain"
             android:entryValues="@array/values"/>
 
@@ -106,6 +107,7 @@
             android:key="hud_info"
             android:title="@string/show_hud_speed"
             android:defaultValue="0"
+            android:summary=""
             android:entries="@array/floating"
             android:entryValues="@array/three_values"/>
 
@@ -126,7 +128,7 @@
         <yuku.ambilwarna.widget.AmbilWarnaPreference
             android:defaultValue="0xffffffff"
             android:key="hud_textcolor"
-            android:title="@string/text_color"
+            android:title="@string/hud_text_color"
             app:supportsAlpha="true"/>
 
         <yuku.ambilwarna.widget.AmbilWarnaPreference

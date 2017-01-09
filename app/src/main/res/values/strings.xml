@@ -253,4 +253,5 @@
     <string name="widgets_title">Widgets</string>
     <string name="widget">Widget #%1$d</string>
     <string name="next_reset">"\nTill "</string>
+    <string name="hud_text_color">Text color</string>
 </resources>
