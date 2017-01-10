@@ -83,9 +83,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             timer.setSummary(String.format(getResources().getString(R.string.minutes), Integer.valueOf(timer.getText())));
         if (simQuantity != null && simQuantity.isEnabled())
             simQuantity.setSummary(simQuantity.getText());
-        if (floatWindow != null && floatWindow.isEnabled()) {
+        if (floatWindow != null && floatWindow.isEnabled())
             floatWindow.setSummary(floatWindow.getText());
-        }
         if (theme != null)
             theme.setSummary(theme.getEntry());
         if (fullInfo != null)
@@ -96,6 +95,10 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             infoStatus.setSummary(infoStatus.getEntry());
         if (callsRemain != null)
             callsRemain.setSummary(callsRemain.getEntry());
+        if (hudRemain != null)
+            hudRemain.setSummary(hudRemain.getEntry());
+        if (hudInfo != null)
+            hudInfo.setSummary(hudInfo.getEntry());
         PreferenceScreen ps = getPreferenceScreen();
         if (ps != null && ps.getKey() != null && ps.getKey().equals("float")) {
             int count = getPreferenceScreen().getPreferenceCount();
@@ -107,10 +110,6 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 if (pref.getKey().equals(Constants.PREF_OTHER[41]))
                     pref.setEnabled(state && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false));
             }
-            if (hudRemain != null)
-                hudRemain.setSummary(hudRemain.getEntry());
-            if (hudInfo != null)
-                hudInfo.setSummary(hudInfo.getEntry());
         }
     }
 
