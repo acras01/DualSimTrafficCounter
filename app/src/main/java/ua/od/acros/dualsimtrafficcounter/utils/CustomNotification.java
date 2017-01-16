@@ -60,10 +60,14 @@ public class CustomNotification extends Notification {
         if (calls.equals(""))
             calls = mCalls;
         NotificationCompat.Builder b = newInstance(context);
-        int activeSIM;
-        if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
+        int activeSIM = -1;
+        boolean choice = false;
+        if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
             activeSIM = MobileUtils.getActiveSimForCall(context);
-        else {
+            if (activeSIM == Constants.DISABLED)
+                choice = true;
+        }
+        if (choice) {
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 activeSIM = TrafficCountService.getActiveSIM();
             else
