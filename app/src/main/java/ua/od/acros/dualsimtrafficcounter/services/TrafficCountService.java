@@ -2037,17 +2037,19 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     ACRA.getErrorReporter().handleException(e);
                 }
             }
-        } else if (!mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
-            mDoNotStopService = true;
-            EventBus.getDefault().post(new ActionTrafficEvent(sim, Constants.CONTINUE_ACTION));
-        } else {
-            mDoNotStopService = true;
-            Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
-            dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);
-            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (!ChooseActionDialog.isActive())
-                mContext.startActivity(dialogIntent);
-            choice = true;
+        } else if (!mPrefs.getBoolean(keys[7], false)) {
+            if (!mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
+                mDoNotStopService = true;
+                EventBus.getDefault().post(new ActionTrafficEvent(sim, Constants.CONTINUE_ACTION));
+            } else {
+                mDoNotStopService = true;
+                Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
+                dialogIntent.putExtra(Constants.SIM_ACTIVE, sim);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (!ChooseActionDialog.isActive())
+                    mContext.startActivity(dialogIntent);
+                choice = true;
+            }
         }
 
         if (choice) {
