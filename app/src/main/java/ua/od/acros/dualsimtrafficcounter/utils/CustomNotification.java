@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationCompat;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.receivers.NotificationTapReceiver;
-import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 
 public class CustomNotification extends Notification {
@@ -22,9 +21,11 @@ public class CustomNotification extends Notification {
     private final static int TAP = 19810506;
     private static SharedPreferences mPrefs;
     private static PendingIntent piTraffic, piCalls, piSettings;
+    private static boolean mInCall;
 
     private static NotificationCompat.Builder newInstance(Context context) {
         if (mBuilder == null) {
+            mInCall = false;
             //traffic button
             Intent trafficIntent = new Intent(context, NotificationTapReceiver.class);
             trafficIntent.setAction(Constants.TRAFFIC_TAP);
@@ -60,14 +61,10 @@ public class CustomNotification extends Notification {
         if (calls.equals(""))
             calls = mCalls;
         NotificationCompat.Builder b = newInstance(context);
-        int activeSIM = -1;
-        boolean choice = false;
-        if (CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
+        int activeSIM;
+        if (mInCall)
             activeSIM = MobileUtils.getActiveSimForCall(context);
-            if (activeSIM == Constants.DISABLED)
-                choice = true;
-        }
-        if (choice) {
+        else {
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 activeSIM = TrafficCountService.getActiveSIM();
             else
@@ -118,5 +115,9 @@ public class CustomNotification extends Notification {
                 return context.getResources().getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
         } else
             return R.drawable.ic_launcher_small;
+    }
+
+    public static void setInCallOperatorLogo(boolean state) {
+        mInCall = state;
     }
 }

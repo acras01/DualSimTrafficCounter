@@ -688,6 +688,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public void onDestroy() {
         super.onDestroy();
+        CustomNotification.setInCallOperatorLogo(false);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         mPrefs.edit()
