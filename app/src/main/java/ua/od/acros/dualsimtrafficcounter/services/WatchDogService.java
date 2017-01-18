@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -27,7 +29,7 @@ public class WatchDogService extends Service{
     private Context mContext;
     private CustomDatabaseHelper mDbHelper;
     private Timer mTimer;
-    private boolean mIsFirstRun;
+    private boolean mIsFirstRun, mInCall;
     private ArrayList<String> mIMSI;
     private long mInterval;
 
@@ -55,7 +57,21 @@ public class WatchDogService extends Service{
             // recreate new
             mTimer = new Timer();
         }
+        final TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        tm.listen(new PhoneStateListener() {
 
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                    switch (state) {
+                        case TelephonyManager.CALL_STATE_OFFHOOK:
+                            mInCall = true;
+                            break;
+                        case TelephonyManager.CALL_STATE_IDLE:
+                            mInCall = false;
+                            break;
+                    }
+            }
+        }, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override
@@ -143,6 +159,8 @@ public class WatchDogService extends Service{
                 stopService(new Intent(mContext, TrafficCountService.class));
                 startService(new Intent(mContext, TrafficCountService.class));
             }
+            if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mInCall)
+                stopService(new Intent(mContext, CallLoggerService.class));
         }
     }
 }

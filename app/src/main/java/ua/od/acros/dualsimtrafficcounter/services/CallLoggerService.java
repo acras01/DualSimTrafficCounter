@@ -102,7 +102,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     @Subscribe
     public void onMessageEvent(NewOutgoingCallEvent event) {
-        startTask(mContext, event.number);
+        startTask(event.number);
     }
 
     @Subscribe(sticky = true)
@@ -175,7 +175,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         }
     }
 
-    private void startTask(Context context, String number) {
+    private void startTask(String number) {
         DateTime now = DateTime.now();
         DateTime mResetTime1 = Constants.DATE_TIME_FORMATTER.parseDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(Constants.DATE_TIME_FORMATTER)));
         boolean mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1_CALLS[9], true);
@@ -230,10 +230,10 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 pushResetNotification(Constants.SIM3);
         }
         mIsOutgoing = false;
-        final Context ctx = context;
+        final Context ctx = mContext;
         this.mNumber[0] = number.replaceAll("[\\s\\-()]", "");
         //this.mNumber[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
-        final TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+        final TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         tm.listen(new PhoneStateListener() {
 
             @Override
@@ -546,7 +546,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             IntentFilter end = new IntentFilter(Constants.OUTGOING_CALL_ENDED);
             registerReceiver(mCallEndedReceiver, end);
             startForeground(Constants.STARTED_ID, buildNotification());
-            startTask(mContext, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
+            startTask(intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         } else
             mService.stopSelf();
         return START_STICKY;
