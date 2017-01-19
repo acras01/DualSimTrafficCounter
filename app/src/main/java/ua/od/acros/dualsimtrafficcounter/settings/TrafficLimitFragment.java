@@ -246,12 +246,25 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         if (value3 != null)
             value3.setSummary(value3.getEntry());
         //night
-        if (limit1N != null)
-            limit1N.setSummary(limit1N.getText());
-        if (limit2N != null)
-            limit2N.setSummary(limit2N.getText());
-        if (limit3N != null)
-            limit3N.setSummary(limit3N.getText());
+        String limit;
+        if (limit1N != null) {
+            limit = limit1N.getText();
+            if (limit == null || limit.equals("null"))
+                limit = "";
+            limit1N.setSummary(limit);
+        }
+        if (limit2N != null) {
+            limit = limit2N.getText();
+            if (limit == null || limit.equals("null"))
+                limit = "";
+            limit2N.setSummary(limit);
+        }
+        if (limit3N != null) {
+            limit = limit3N.getText();
+            if (limit == null || limit.equals("null"))
+                limit = "";
+            limit3N.setSummary(limit);
+        }
         if (value1N != null)
             value1N.setSummary(value1N.getEntry());
         if (value2N != null)
@@ -451,18 +464,42 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             }
         }
 
-        if (tOn1 != null)
-            tOn1.setSummary(mPrefs.getString(Constants.PREF_SIM1[13], "00:05"));
-        if (tOn2 != null)
-            tOn2.setSummary(mPrefs.getString(Constants.PREF_SIM2[13], "00:05"));
-        if (tOn3 != null)
-            tOn3.setSummary(mPrefs.getString(Constants.PREF_SIM3[13], "00:05"));
-        if (tOff1 != null)
-            tOff1.setSummary(mPrefs.getString(Constants.PREF_SIM1[12], "23:55"));
-        if (tOff2 != null)
-            tOff2.setSummary(mPrefs.getString(Constants.PREF_SIM2[12], "23:55"));
-        if (tOff3 != null)
-            tOff3.setSummary(mPrefs.getString(Constants.PREF_SIM3[12], "23:55"));
+        if (tOn1 != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM1[13], "00:05");
+            if (limit.equals("null"))
+                limit = "00:05";
+            tOn1.setSummary(limit);
+        }
+        if (tOn2 != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM2[13], "00:05");
+            if (limit.equals("null"))
+                limit = "00:05";
+            tOn2.setSummary(limit);
+        }
+        if (tOn3 != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM3[13], "00:05");
+            if (limit.equals("null"))
+                limit = "00:05";
+            tOn3.setSummary(limit);
+        }
+        if (tOff1 != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM1[12], "23:55");
+            if (limit.equals("null"))
+                limit = "23:55";
+            tOff1.setSummary(limit);
+        }
+        if (tOff2 != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM2[12], "23:55");
+            if (limit.equals("null"))
+                limit = "23:55";
+            tOff2.setSummary(limit);
+        }
+        if (tOff3 != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM3[12], "23:55");
+            if (limit.equals("null"))
+                limit = "23:55";
+            tOff3.setSummary(limit);
+        }
 
         //night
         if (round1N != null)
@@ -471,18 +508,42 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             round2N.setSummary(round2N.getText() + "%");
         if (round3N != null)
             round3N.setSummary(round3N.getText() + "%");
-        if (tOn1N != null)
-            tOn1N.setSummary(mPrefs.getString(Constants.PREF_SIM1[20], "23:00"));
-        if (tOn2N != null)
-            tOn2N.setSummary(mPrefs.getString(Constants.PREF_SIM2[20], "23:00"));
-        if (tOn3N != null)
-            tOn3N.setSummary(mPrefs.getString(Constants.PREF_SIM3[20], "23:00"));
-        if (tOff1N != null)
-            tOff1N.setSummary(mPrefs.getString(Constants.PREF_SIM1[21], "06:00"));
-        if (tOff2N != null)
-            tOff2N.setSummary(mPrefs.getString(Constants.PREF_SIM2[21], "06:00"));
-        if (tOff3N != null)
-            tOff3N.setSummary(mPrefs.getString(Constants.PREF_SIM3[21], "06:00"));
+        if (tOn1N != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM1[20], "23:00");
+            if (limit.equals("null"))
+                limit = "23:00";
+            tOn1N.setSummary(limit);
+        }
+        if (tOn2N != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM2[20], "23:00");
+            if (limit.equals("null"))
+                limit = "23:00";
+            tOn2N.setSummary(limit);
+        }
+        if (tOn3N != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM3[20], "23:00");
+            if (limit.equals("null"))
+                limit = "23:00";
+            tOn3N.setSummary(limit);
+        }
+        if (tOff1N != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM1[21], "06:00");
+            if (limit.equals("null"))
+                limit = "06:00";
+            tOff1N.setSummary(limit);
+        }
+        if (tOff2N != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM2[21], "06:00");
+            if (limit.equals("null"))
+                limit = "06:00";
+            tOff2N.setSummary(limit);
+        }
+        if (tOff3N != null) {
+            limit = mPrefs.getString(Constants.PREF_SIM3[21], "06:00");
+            if (limit.equals("null"))
+                limit = "06:00";
+            tOff3N.setSummary(limit);
+        }
 
         if (opLimit1 != null)
             opLimit1.setSummary(opLimit1.getText());
