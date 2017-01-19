@@ -50,7 +50,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             opLimit1, opLimit2, opLimit3,
             prelimitValue1, prelimitValue2, prelimitValue3;
     private TwoLineListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3, value1N, value2N, value3N;
-    private TwoLineCheckPreference prefer1, prefer2, prefer3, changeSIM, chooseActions;
+    private TwoLineCheckPreference prefer1, prefer2, prefer3, changeSIM, chooseActions, autoenable1, autoenable2, autoenable3, autoload;
     private TwoLineListPreference everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
     private SharedPreferences mPrefs;
@@ -91,9 +91,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         TwoLineCheckPreference autoff1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[7]);
         TwoLineCheckPreference autoff2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[7]);
         TwoLineCheckPreference autoff3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[7]);
-        TwoLineCheckPreference autoenable1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[31]);
-        TwoLineCheckPreference autoenable2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[31]);
-        TwoLineCheckPreference autoenable3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[31]);
+        autoenable1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[31]);
+        autoenable2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[31]);
+        autoenable3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[31]);
         prefer1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[8]);
         prefer2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[8]);
         prefer3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[8]);
@@ -141,6 +141,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
         changeSIM = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[10]);
         chooseActions = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[51]);
+        autoload = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[47]);
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
@@ -150,9 +151,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             autoff1.setEnabled(true);
             autoff2.setEnabled(true);
             autoff3.setEnabled(true);
-            autoenable1.setEnabled(true);
-            autoenable2.setEnabled(true);
-            autoenable3.setEnabled(true);
+            if (!autoload.isChecked()) {
+                autoenable1.setEnabled(true);
+                autoenable2.setEnabled(true);
+                autoenable3.setEnabled(true);
+            }
             getPreferenceScreen().findPreference("everyday1").setEnabled(true);
             getPreferenceScreen().findPreference("everyday2").setEnabled(true);
             getPreferenceScreen().findPreference("everyday3").setEnabled(true);
@@ -229,7 +232,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
     }
 
-    private void updateSummary() {
+    public void updateSummary() {
         if (limit1 != null)
             limit1.setSummary(limit1.getText());
         if (limit2 != null)
@@ -311,42 +314,69 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             round2.setSummary(round2.getText() + "%");
         if (round3 != null)
             round3.setSummary(round3.getText() + "%");
-        if (mSimQuantity == 3)
-            if (prefer1 != null && prefer2 != null && prefer3 != null) {
-                if (prefer1.isChecked()) {
-                    prefer2.setEnabled(false);
-                    prefer2.setChecked(false);
-                    prefer3.setEnabled(false);
-                    prefer3.setChecked(false);
-                } else if (prefer2.isChecked()) {
-                    prefer1.setEnabled(false);
-                    prefer1.setChecked(false);
-                    prefer3.setEnabled(false);
-                    prefer3.setChecked(false);
-                } else if (prefer3.isChecked()) {
-                    prefer1.setEnabled(false);
-                    prefer1.setChecked(false);
-                    prefer2.setEnabled(false);
-                    prefer2.setChecked(false);
-                } else {
-                    prefer1.setEnabled(true);
-                    prefer2.setEnabled(true);
-                    prefer3.setEnabled(true);
+        if (autoload.isChecked()) {
+            if (prefer1 != null) {
+                prefer1.setEnabled(false);
+                prefer1.setChecked(false);
+            }if (prefer2 != null) {
+                prefer2.setEnabled(false);
+                prefer2.setChecked(false);
+            }
+            if (prefer3 != null) {
+                prefer3.setEnabled(false);
+                prefer3.setChecked(false);
+            }
+            if (autoenable1 != null) {
+                autoenable1.setEnabled(false);
+                autoenable1.setChecked(false);
+            }
+            if (autoenable2 != null) {
+                autoenable2.setEnabled(false);
+                autoenable2.setChecked(false);
+            }
+            if (autoenable3 != null) {
+                autoenable3.setEnabled(false);
+                autoenable3.setChecked(false);
+            }
+        } else {
+            if (mSimQuantity == 3) {
+                if (prefer1 != null && prefer2 != null && prefer3 != null) {
+                    if (prefer1.isChecked()) {
+                        prefer2.setEnabled(false);
+                        prefer2.setChecked(false);
+                        prefer3.setEnabled(false);
+                        prefer3.setChecked(false);
+                    } else if (prefer2.isChecked()) {
+                        prefer1.setEnabled(false);
+                        prefer1.setChecked(false);
+                        prefer3.setEnabled(false);
+                        prefer3.setChecked(false);
+                    } else if (prefer3.isChecked()) {
+                        prefer1.setEnabled(false);
+                        prefer1.setChecked(false);
+                        prefer2.setEnabled(false);
+                        prefer2.setChecked(false);
+                    } else {
+                        prefer1.setEnabled(true);
+                        prefer2.setEnabled(true);
+                        prefer3.setEnabled(true);
+                    }
+                }
+            } else if (mSimQuantity == 2) {
+                if (prefer1 != null && prefer2 != null && prefer3 != null) {
+                    if (prefer1.isChecked()) {
+                        prefer2.setEnabled(false);
+                        prefer2.setChecked(false);
+                    } else if (prefer2.isChecked()) {
+                        prefer1.setEnabled(false);
+                        prefer1.setChecked(false);
+                    } else {
+                        prefer1.setEnabled(true);
+                        prefer2.setEnabled(true);
+                    }
                 }
             }
-        if (mSimQuantity == 2)
-            if (prefer1 != null && prefer2 != null && prefer3 != null) {
-                if (prefer1.isChecked()) {
-                    prefer2.setEnabled(false);
-                    prefer2.setChecked(false);
-                } else if (prefer2.isChecked()) {
-                    prefer1.setEnabled(false);
-                    prefer1.setChecked(false);
-                } else {
-                    prefer1.setEnabled(true);
-                    prefer2.setEnabled(true);
-                }
-            }
+        }
         if (time1 != null)
             time1.setSummary(mPrefs.getString(Constants.PREF_SIM1[9], "00:00"));
         if (time2 != null)

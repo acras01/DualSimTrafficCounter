@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
+
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.settings.CallsLimitFragment;
@@ -34,14 +36,14 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private static ActionBar mActionBar;
     private static String mTag, mAction;
     private static PreferenceFragmentCompat mFragment;
-    private static Context mContext;
+    private static WeakReference<Context> mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAction = getIntent().getAction();
-        mContext = CustomApplication.getAppContext();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mContext = new WeakReference<>(CustomApplication.getAppContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext.get());
         if (savedInstanceState == null) {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -124,9 +126,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             setResult(RESULT_OK, null);
             finish();
             if (mAction != null && mAction.equals(Constants.SETTINGS_TAP)) {
-                Intent activityIntent = new Intent(mContext, MainActivity.class);
+                Intent activityIntent = new Intent(mContext.get(), MainActivity.class);
                 activityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(activityIntent);
+                startActivity(activityIntent);
             }
         }
         else
@@ -173,7 +175,8 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             tv.setText(R.string.floating_window);
             SwitchCompat actionBarSwitch = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
             if (actionBarSwitch != null)
-                OtherFragment.setSwitch(new CustomSwitch(mContext, actionBarSwitch, Constants.PREF_OTHER[32]));
-        }
+                OtherFragment.setSwitch(new CustomSwitch(mContext.get(), actionBarSwitch, Constants.PREF_OTHER[32]));
+        } else if (mFragment instanceof TrafficLimitFragment)
+            ((TrafficLimitFragment) mFragment).updateSummary();
     }
 }
