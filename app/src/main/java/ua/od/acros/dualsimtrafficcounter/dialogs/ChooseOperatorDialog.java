@@ -85,10 +85,9 @@ public class ChooseOperatorDialog extends AppCompatActivity {
                     }
                 })
                 .create();
-
-        mDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+        if (mDialog.getWindow() != null)
+            mDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
-
         if(!this.isFinishing()){
             mDialog.show();
         }

@@ -202,7 +202,7 @@ public class CallLogger implements IXposedHookLoadPackage {
         Context context = AndroidAppHelper.currentApplication();
         String key = (String) XposedHelpers.callMethod(call, "getId");
         long start;
-        int sim = MobileUtils.getActiveSimForCall(context);;
+        int sim = MobileUtils.getActiveSimForCall(context);
         // register outgoing call
         if (state == CallState.DIALING && mOutgoingCall == null) {
             mOutgoingCall = call;

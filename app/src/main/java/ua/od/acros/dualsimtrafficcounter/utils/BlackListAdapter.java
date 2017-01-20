@@ -21,12 +21,12 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
 
     // класс view holder-а с помощью которого мы получаем ссылку на каждый элемент
     // отдельного пункта списка
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         // наш пункт состоит только из одного TextView
-        public AppCompatCheckBox checkBox;
-        public TextView textView;
+        AppCompatCheckBox checkBox;
+        TextView textView;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             checkBox = (AppCompatCheckBox) v.findViewById(R.id.checkBox);
             textView = (TextView) v.findViewById(R.id.textView);

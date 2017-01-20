@@ -1,13 +1,12 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -786,7 +785,7 @@ public class MobileUtils {
         return name;
     }
 
-    public static ArrayList<String> getOperatorCodes(Context context) {
+    private static ArrayList<String> getOperatorCodes(Context context) {
         ArrayList<String> code = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
@@ -881,7 +880,8 @@ public class MobileUtils {
         return code;
     }
 
-    public static ArrayList<String> getDeviceIds(Context context) {
+    @SuppressLint("HardwareIds")
+    static ArrayList<String> getDeviceIds(Context context) {
         ArrayList<String> imei = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
@@ -1006,6 +1006,7 @@ public class MobileUtils {
         return imei;
     }
 
+    @SuppressLint("HardwareIds")
     public static ArrayList<String> getSimIds(Context context) {
         ArrayList<String> imsi = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -1111,7 +1112,7 @@ public class MobileUtils {
         return imsi;
     }
 
-    private static boolean getNetworkFromDB(Context context, String code, String apn) {
+    /*private static boolean getNetworkFromDB(Context context, String code, String apn) {
         boolean operatorFound = false;
         final Uri APN_TABLE_URI = Uri.parse("content://telephony/carriers");
         context.enforceCallingOrSelfPermission("android.permission.WRITE_APN_SETTINGS", "No permission to write APN settings");
@@ -1126,7 +1127,7 @@ public class MobileUtils {
             cursor.close();
         }
         return operatorFound;
-    }
+    }*/
 
     private static boolean getNetworkFromApnsFile(String code, String apn) {
         FileReader reader = null;
@@ -1763,6 +1764,8 @@ public class MobileUtils {
                         return "vodafone";
                     case "25011":
                         return "yota";
+                    case "40102":
+                        return "kcell";
                     default:
                         return "none";
                 }
@@ -1773,7 +1776,7 @@ public class MobileUtils {
         return "none";
     }
 
-    private static String getCountryZipCode(Context context){
+    /*private static String getCountryZipCode(Context context){
         String CountryID;
         String CountryZipCode = "";
 
@@ -1798,7 +1801,7 @@ public class MobileUtils {
                     .replaceAll("(.)(\\++)(.)", "$1$3")         //if there are left out +'s in the middle by mistake, remove them
                     .replaceAll("(^0{2}|^\\+)(.+)", "$2")       //make 00XXX... mNumbers and +XXXXX.. mNumbers into XXXX...
                     .replaceAll("^0([1-9])", countryCode + "$1");
-    }
+    }*/
 
     public static void getTelephonyManagerMethods(Context context) {
         String out;

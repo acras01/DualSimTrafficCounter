@@ -1,6 +1,5 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
-import android.app.AlarmManager;
 import android.content.SharedPreferences;
 
 import org.joda.time.DateTime;
@@ -117,7 +116,7 @@ public class DateUtils {
         return null;
     }
 
-    public static long getInterval(SharedPreferences sharedPreferences, int sim) {
+    /*public static long getInterval(SharedPreferences sharedPreferences, int sim) {
         long interval;
         DateTime now = new DateTime().withTimeAtStartOfDay();
         String[] pref = new String[Constants.PREF_SIM1.length];
@@ -161,5 +160,5 @@ public class DateUtils {
                 break;
         }
         return interval;
-    }
+    }*/
 }

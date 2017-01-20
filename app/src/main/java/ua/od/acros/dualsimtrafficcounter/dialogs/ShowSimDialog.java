@@ -126,7 +126,7 @@ public class ShowSimDialog extends DialogFragment {
         private List<Item> list;
         private int layout;
 
-        public CustomListAdapter(Context context, int layout, List<Item> list) {
+        CustomListAdapter(Context context, int layout, List<Item> list) {
             super(context, layout, list);
             this.list = list;
             this.layout = layout;
@@ -136,7 +136,8 @@ public class ShowSimDialog extends DialogFragment {
             AppCompatCheckBox item;
         }
 
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
             if (convertView == null ) {
                 holder = new ViewHolder();
                 convertView = getActivity().getLayoutInflater().inflate(layout, null);

@@ -70,7 +70,8 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
         getDialog().setTitle(id);
         // Show soft keyboard automatically
         mEditText.requestFocus();
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        if (getDialog().getWindow() != null)
+            getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         mEditText.setOnEditorActionListener(this);
         return view;
     }
