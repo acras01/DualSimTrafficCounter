@@ -35,6 +35,7 @@ import org.joda.time.DateTimeFieldType;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,6 +114,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private Service mService = null;
     private UidObserver mUidObserver;
     private boolean mDoNotStopService = false;
+    private String mOut = "";
 
     public TrafficCountService() {
     }
@@ -450,6 +452,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                 @Override
                 public void onFinish() {
+                    mOut += new DateTime().toString(Constants.DATE_TIME_FORMATTER_SECONDS) + " No connection\n";
                     //stop WatchDogService
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
                         mContext.stopService(new Intent(mContext, WatchDogService.class));
@@ -540,6 +543,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     .putBoolean(Constants.PREF_OTHER[48], true)
                     .apply();
         }
+        mOut += new DateTime().toString(Constants.DATE_TIME_FORMATTER_SECONDS) + " Start\n";
         return START_STICKY;
     }
 
@@ -1737,17 +1741,17 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             ContentValues cv = new ContentValues();
             switch (sim) {
                 case Constants.SIM1:
-                    putDataSIM(cv, 1);
+                    putDataForSim(cv, 1);
                     break;
                 case Constants.SIM2:
-                    putDataSIM(cv, 2);
+                    putDataForSim(cv, 2);
                     break;
                 case Constants.SIM3:
-                    putDataSIM(cv, 3);
+                    putDataForSim(cv, 3);
                     break;
                 case Constants.DISABLED:
                     for (int i = 0; i < mIMSI.size(); i++) {
-                        putDataSIM(cv, i + 1);
+                        putDataForSim(cv, i + 1);
                         CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(i));
                     }
             }
@@ -1757,7 +1761,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             CustomDatabaseHelper.writeData(mTrafficData, mDbHelper, Constants.TRAFFIC);
     }
 
-    private void putDataSIM(ContentValues cv, int i) {
+    private void putDataForSim(ContentValues cv, int i) {
         cv.put("rx", (long) mTrafficData.get("sim" + i + "rx"));
         cv.put("tx", (long) mTrafficData.get("sim" + i + "tx"));
         cv.put("total", (long) mTrafficData.get("total" + i));
@@ -2153,5 +2157,17 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             getContentResolver().unregisterContentObserver(mUidObserver);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
+        mOut += new DateTime().toString(Constants.DATE_TIME_FORMATTER_SECONDS) + " Stop\n";
+        try {
+            File dir = new File(String.valueOf(mContext.getFilesDir()));
+            // create the file in which we will write the contents
+            String fileName = "stopservice.txt";
+            File file = new File(dir, fileName);
+            FileOutputStream os = new FileOutputStream(file, true);
+            os.write(mOut.getBytes());
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

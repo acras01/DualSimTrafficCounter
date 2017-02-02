@@ -144,6 +144,7 @@ public class Constants {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat.forPattern(TIME_FORMAT + ":ss");
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT + " " + TIME_FORMAT);
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_SECONDS = DateTimeFormat.forPattern(DATE_FORMAT + " " + TIME_FORMAT + ":ss");
     public static final String TRAFFIC = "data";
     public static final String CALLS = "calls";
     public static final String SETTINGS_TAP = "ua.od.acros.dualsimtrafficcounter.SETTINGS";
