@@ -233,6 +233,19 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     }
 
     public void updateSummary() {
+
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
+            changeSIM.setChecked(false);
+            changeSIM.setEnabled(false);
+        } else if (CustomApplication.canToggleOn() && mSimQuantity > 1)
+            changeSIM.setEnabled(true);
+
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[10], false)) {
+            chooseActions.setChecked(false);
+            chooseActions.setEnabled(false);
+        } else
+            chooseActions.setEnabled(true);
+
         if (limit1 != null)
             limit1.setSummary(limit1.getText());
         if (limit2 != null)
@@ -586,8 +599,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (mIsAttached)
-            updateSummary();
 
         if (key.equals(Constants.PREF_OTHER[44])) {
             if (sharedPreferences.getBoolean(key, false)) {
@@ -596,22 +607,6 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 }
             } else
                 new DeleteTask().execute();
-        }
-
-        if (key.equals(Constants.PREF_OTHER[10])) {
-            if (sharedPreferences.getBoolean(key, false)) {
-                chooseActions.setChecked(false);
-                chooseActions.setEnabled(false);
-            } else
-                chooseActions.setEnabled(true);
-        }
-
-        if (key.equals(Constants.PREF_OTHER[51])) {
-            if (sharedPreferences.getBoolean(key, false)) {
-                changeSIM.setChecked(false);
-                changeSIM.setEnabled(false);
-            } else if (CustomApplication.canToggleOn() && mSimQuantity > 1)
-                changeSIM.setEnabled(true);
         }
 
         if (key.equals(Constants.PREF_OTHER[47])) {
@@ -774,6 +769,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             } else
                 am.cancel(pi3On);
         }
+
+        if (mIsAttached)
+            updateSummary();
     }
 
     @Override
