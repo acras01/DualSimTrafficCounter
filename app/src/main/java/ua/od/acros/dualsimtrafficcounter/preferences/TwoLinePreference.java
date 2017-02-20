@@ -7,16 +7,16 @@ import android.widget.TextView;
 
 public class TwoLinePreference extends android.support.v7.preference.Preference {
 
-    public TwoLinePreference(Context ctx, AttributeSet attrs, int defStyle) {
-        super(ctx, attrs, defStyle);
+    public TwoLinePreference(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
-    public TwoLinePreference(Context ctx, AttributeSet attrs) {
-        super(ctx, attrs);
+    public TwoLinePreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public TwoLinePreference(Context ctx) {
-        super(ctx);
+    public TwoLinePreference(Context context) {
+        super(context);
     }
 
     @Override

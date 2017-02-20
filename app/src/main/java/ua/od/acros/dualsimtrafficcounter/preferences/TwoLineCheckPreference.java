@@ -7,16 +7,16 @@ import android.widget.TextView;
 
 public class TwoLineCheckPreference extends android.support.v7.preference.CheckBoxPreference {
 
-    public TwoLineCheckPreference(Context ctx, AttributeSet attrs, int defStyle) {
-        super(ctx, attrs, defStyle);
+    public TwoLineCheckPreference(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
-    public TwoLineCheckPreference(Context ctx, AttributeSet attrs) {
-        super(ctx, attrs);
+    public TwoLineCheckPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public TwoLineCheckPreference(Context ctx) {
-        super(ctx);
+    public TwoLineCheckPreference(Context context) {
+        super(context);
     }
 
     @Override

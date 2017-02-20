@@ -2,13 +2,18 @@ package ua.od.acros.dualsimtrafficcounter.preferences;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
+
+import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 public class TimePreference extends DialogPreference {
 
     public int mHour = 0;
     public int mMinute = 0;
+    private static WeakReference<Context> mContext;
 
     private static int parseHour(String value) {
         try {
@@ -29,11 +34,19 @@ public class TimePreference extends DialogPreference {
     }
 
     public static String timeToString(int h, int m) {
-        return String.format("%02d", h) + ":" + String.format("%02d", m);
+        Locale current;
+        Context context = mContext.get();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            current = context.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            current = context.getResources().getConfiguration().locale;
+        }
+        return String.format(current, "%02d", h) + ":" + String.format(current, "%02d", m);
     }
 
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = new WeakReference<>(context);
     }
 
     @Override

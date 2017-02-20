@@ -10,16 +10,16 @@ import android.widget.TextView;
 public class TwoLineListPreference extends android.support.v7.preference.ListPreference {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public TwoLineListPreference(Context ctx, AttributeSet attrs, int defStyle) {
-        super(ctx, attrs, defStyle);
+    public TwoLineListPreference(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
-    public TwoLineListPreference(Context ctx, AttributeSet attrs) {
-        super(ctx, attrs);
+    public TwoLineListPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public TwoLineListPreference(Context ctx) {
-        super(ctx);
+    public TwoLineListPreference(Context context) {
+        super(context);
     }
 
     @Override

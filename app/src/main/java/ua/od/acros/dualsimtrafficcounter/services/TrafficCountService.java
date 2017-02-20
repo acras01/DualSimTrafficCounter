@@ -35,7 +35,6 @@ import org.joda.time.DateTimeFieldType;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -114,7 +113,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private Service mService = null;
     private UidObserver mUidObserver;
     private boolean mDoNotStopService = false;
-    private String mOut = "";
 
     public TrafficCountService() {
     }
@@ -452,7 +450,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
                 @Override
                 public void onFinish() {
-                    mOut += new DateTime().toString(Constants.DATE_TIME_FORMATTER_SECONDS) + " No connection\n";
                     //stop WatchDogService
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[4], true))
                         mContext.stopService(new Intent(mContext, WatchDogService.class));
@@ -543,7 +540,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     .putBoolean(Constants.PREF_OTHER[48], true)
                     .apply();
         }
-        mOut += new DateTime().toString(Constants.DATE_TIME_FORMATTER_SECONDS) + " Start\n";
         return START_STICKY;
     }
 
@@ -2157,17 +2153,5 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             getContentResolver().unregisterContentObserver(mUidObserver);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
-        mOut += new DateTime().toString(Constants.DATE_TIME_FORMATTER_SECONDS) + " Stop\n";
-        try {
-            File dir = new File(String.valueOf(mContext.getFilesDir()));
-            // create the file in which we will write the contents
-            String fileName = "stopservice.txt";
-            File file = new File(dir, fileName);
-            FileOutputStream os = new FileOutputStream(file, true);
-            os.write(mOut.getBytes());
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
