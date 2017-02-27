@@ -38,10 +38,11 @@ public class TimePreference extends DialogPreference {
 
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mCurrentLocale = context.getResources().getConfiguration().getLocales().get(0);
-        } else {
-            mCurrentLocale = context.getResources().getConfiguration().locale;
+        if (mCurrentLocale == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                mCurrentLocale = context.getResources().getConfiguration().getLocales().get(0);
+            else
+                mCurrentLocale = context.getResources().getConfiguration().locale;
         }
     }
 
