@@ -212,10 +212,10 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         }
         if (key.contains("hud") && !(key.equals(Constants.PREF_OTHER[32]) ||
                 key.equals(Constants.PREF_OTHER[36]) || key.equals(Constants.PREF_OTHER[37]) ||
-                key.equals(Constants.PREF_OTHER[38])))
+                key.equals(Constants.PREF_OTHER[54]) || key.equals(Constants.PREF_OTHER[38])))
             show = bool;
         if (key.contains("hud") && !(key.equals(Constants.PREF_OTHER[36]) || key.equals(Constants.PREF_OTHER[37]) ||
-                key.equals(Constants.PREF_OTHER[38]))) {
+                key.equals(Constants.PREF_OTHER[54]) || key.equals(Constants.PREF_OTHER[38]))) {
             if (show)
                 FloatingWindowService.showFloatingWindow(mContext, mPrefs);
             else

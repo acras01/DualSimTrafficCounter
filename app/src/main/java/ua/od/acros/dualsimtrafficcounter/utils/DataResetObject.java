@@ -1,17 +1,17 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 public class DataResetObject {
     private int period;
-    private DateTime dt;
+    private LocalDateTime dt;
 
-    DataResetObject(int period, DateTime dt) {
+    DataResetObject(int period, LocalDateTime dt) {
         this.period = period;
         this.dt = dt;
     }
 
-    public DateTime getDate() {
+    public LocalDateTime getDate() {
         return dt;
     }
 

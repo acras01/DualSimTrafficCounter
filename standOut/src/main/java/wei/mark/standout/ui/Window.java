@@ -538,13 +538,19 @@ public class Window extends FrameLayout {
 		 */
 		int displayWidth, displayHeight;
 
+        private int[] getDisplayDimensions() {
+            DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+            int width = metrics.widthPixels;
+            int height = (int) (metrics.heightPixels - 25 * metrics.density);
+            return new int[] {width, height};
+        }
+
 		public Editor() {
 			mParams = getLayoutParams();
 			anchorX = anchorY = 0;
-
-			DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-			displayWidth = metrics.widthPixels;
-			displayHeight = (int) (metrics.heightPixels - 25 * metrics.density);
+            int[] dim = getDisplayDimensions();
+            displayWidth = dim[0];
+            displayHeight = dim[1];
 		}
 
 		public Editor setAnchorPoint(float x, float y) {

@@ -10,13 +10,13 @@ android {
         }
     }
     compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 16
         targetSdkVersion 16
-        versionCode 116
-        versionName '2.1.6'
+        versionCode 117
+        versionName '2.1.7'
         signingConfig signingConfigs.acras
         vectorDrawables.useSupportLibrary = true
     }
@@ -40,10 +40,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:recyclerview-v7:25.0.1'
-    compile 'com.android.support:preference-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:preference-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'joda-time:joda-time:2.9.4'

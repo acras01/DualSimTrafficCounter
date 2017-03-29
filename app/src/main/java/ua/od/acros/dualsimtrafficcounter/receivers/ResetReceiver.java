@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class ResetReceiver extends BroadcastReceiver {
         String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
                 Constants.PREF_SIM1_CALLS[5]};
         if (!prefs.getBoolean(Constants.PREF_SIM1_CALLS[9], false)) {
-            DateTime mResetTime1 = DateUtils.setResetDate(prefs, simPref);
+            LocalDateTime mResetTime1 = DateUtils.setResetDate(prefs, simPref);
             if (mResetTime1 != null) {
                 prefs.edit()
                         .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
@@ -58,7 +58,7 @@ public class ResetReceiver extends BroadcastReceiver {
             if (!prefs.getBoolean(Constants.PREF_SIM2_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
                         Constants.PREF_SIM2_CALLS[5]};
-                DateTime mResetTime2 = DateUtils.setResetDate(prefs, simPref);
+                LocalDateTime mResetTime2 = DateUtils.setResetDate(prefs, simPref);
                 if (mResetTime2 != null) {
                     prefs.edit()
                             .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
@@ -73,7 +73,7 @@ public class ResetReceiver extends BroadcastReceiver {
             if (!prefs.getBoolean(Constants.PREF_SIM3_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
                         Constants.PREF_SIM3_CALLS[5]};
-                DateTime mResetTime3 = DateUtils.setResetDate(prefs, simPref);
+                LocalDateTime mResetTime3 = DateUtils.setResetDate(prefs, simPref);
                 if (mResetTime3 != null) {
                     prefs.edit()
                             .putBoolean(Constants.PREF_SIM3_CALLS[9], true)

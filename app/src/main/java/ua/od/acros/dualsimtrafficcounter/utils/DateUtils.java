@@ -4,13 +4,14 @@ import android.content.SharedPreferences;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDateTime;
 
 import static java.lang.Integer.parseInt;
 
 public class DateUtils {
 
-    public static boolean isNextDayOrMonth(DateTime date, String period) {
-        DateTime now = new DateTime().withTimeAtStartOfDay();
+    public static boolean isNextDayOrMonth(LocalDateTime date, String period) {
+        LocalDateTime now = new DateTime().withTimeAtStartOfDay().toLocalDateTime();
         switch (period) {
             case "0":
                 return now.getDayOfYear() != date.getDayOfYear();
@@ -22,14 +23,14 @@ public class DateUtils {
     }
 
     public static DataResetObject getResetDate(SharedPreferences preferences, String[] simPref) {
-        DateTime now = new DateTime().withTimeAtStartOfDay();
+        LocalDateTime now = new DateTime().withTimeAtStartOfDay().toLocalDateTime();
         int delta = parseInt(preferences.getString(simPref[2], "1"));
-        DateTime last;
+        LocalDateTime last;
         String date = preferences.getString(simPref[3], "");
         if (!date.equals(""))
-            last = Constants.DATE_TIME_FORMATTER.parseDateTime(date).withTimeAtStartOfDay();
+            last = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(date);
         else
-            last = Constants.DATE_FORMATTER.parseDateTime("1970-01-01");
+            last = Constants.DATE_FORMATTER.parseLocalDateTime("1970-01-01");
         switch (preferences.getString(simPref[0], "")) {
             case "0":
                 delta = 1;
@@ -53,7 +54,7 @@ public class DateUtils {
                     }
                 break;
         }
-        int diff = Days.daysBetween(last.toLocalDate(), now.toLocalDate()).getDays();
+        int diff = Days.daysBetween(last, now).getDays();
         if (preferences.getString(simPref[0], "").equals("1")) {
             int month = now.getMonthOfYear();
             int daysInMonth = 31;
@@ -80,7 +81,7 @@ public class DateUtils {
                 }
             }
             date = year + "-" + month + "-" + delta;
-            return new DataResetObject(0, Constants.DATE_TIME_FORMATTER.parseDateTime(date + " " + preferences.getString(simPref[1], "00:00")));
+            return new DataResetObject(0, Constants.DATE_TIME_FORMATTER.parseLocalDateTime(date + " " + preferences.getString(simPref[1], "00:00")));
         } else {
             int period = 0;
             if (preferences.getString(simPref[0], "").equals("2"))
@@ -88,16 +89,16 @@ public class DateUtils {
             if (diff >= delta) {
                 if (preferences.getString(simPref[0], "").equals("2"))
                     period = diff - delta;
-                return new DataResetObject(period, Constants.DATE_TIME_FORMATTER.parseDateTime(now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(simPref[1], "00:00")));
+                return new DataResetObject(period, Constants.DATE_TIME_FORMATTER.parseLocalDateTime(now.toString(Constants.DATE_FORMATTER) + " " + preferences.getString(simPref[1], "00:00")));
             } else
                 return null;
         }
     }
 
-    public static DateTime setResetDate(SharedPreferences preferences, String[] simPref) {
-        DateTime now;
+    public static LocalDateTime setResetDate(SharedPreferences preferences, String[] simPref) {
+        LocalDateTime now;
         String time = preferences.getString(simPref[1], "00:00");
-        now = new DateTime()
+        now = new LocalDateTime()
                 .withHourOfDay(Integer.valueOf(time.split(":")[0]))
                 .withMinuteOfHour(Integer.valueOf(time.split(":")[1]));
         int delta = parseInt(preferences.getString(simPref[2], "1"));

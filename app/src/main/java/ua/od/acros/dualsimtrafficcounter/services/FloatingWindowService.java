@@ -2,15 +2,17 @@ package ua.od.acros.dualsimtrafficcounter.services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -89,8 +91,8 @@ public class FloatingWindowService extends StandOutWindow {
         if (mPrefs == null)
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		// create a new layout from .xml
-		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.floating_window, frame, true);
+		//LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View view = View.inflate(mContext, R.layout.floating_window, frame);
 		TextView status = (TextView) view.findViewById(R.id.tv);
         String changedText = DataFormat.formatData(mContext, 0L);
         status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
@@ -127,7 +129,8 @@ public class FloatingWindowService extends StandOutWindow {
                     int[] location = new int[2];
                     window.getLocationOnScreen(location);
                     mPrefs.edit()
-                            .putInt(Constants.PREF_OTHER[36], location[0])
+                            .putInt(Constants.PREF_OTHER[36], -2)
+                            .putFloat(Constants.PREF_OTHER[54], getWindowPositionRelative(location[0]))
                             .putInt(Constants.PREF_OTHER[37], location[1])
                             .apply();
                 }
@@ -156,7 +159,8 @@ public class FloatingWindowService extends StandOutWindow {
                     int[] location = new int[2];
                     window.getLocationOnScreen(location);
                     mPrefs.edit()
-                            .putInt(Constants.PREF_OTHER[36], location[0])
+                            .putInt(Constants.PREF_OTHER[36], -2)
+                            .putFloat(Constants.PREF_OTHER[54], getWindowPositionRelative(location[0]))
                             .putInt(Constants.PREF_OTHER[37], location[1])
                             .apply();
                 }
@@ -216,7 +220,12 @@ public class FloatingWindowService extends StandOutWindow {
     @Override
     public StandOutLayoutParams getParams(int id, Window window) {
         int x = mPrefs.getInt(Constants.PREF_OTHER[36], -1);
-        if (x < 0)
+        float _x;
+        if (x == -2) {
+            _x = mPrefs.getFloat(Constants.PREF_OTHER[54], -1);
+            x = getWindowPosition(_x);
+        }
+        else if (x == -1)
             x = StandOutLayoutParams.CENTER;
         int y = mPrefs.getInt(Constants.PREF_OTHER[37], -1);
         if (y < 0)
@@ -240,11 +249,18 @@ public class FloatingWindowService extends StandOutWindow {
             int[] location = new int[2];
             window.getLocationOnScreen(location);
             mPrefs.edit()
-                    .putInt(Constants.PREF_OTHER[36], location[0])
+                    .putInt(Constants.PREF_OTHER[36], -2)
+                    .putFloat(Constants.PREF_OTHER[54], getWindowPositionRelative(location[0]))
                     .putInt(Constants.PREF_OTHER[37], location[1])
                     .apply();
         }
         return false;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        showFloatingWindow(mContext, mPrefs);
     }
 
     public static void showFloatingWindow(Context context, SharedPreferences preferences) {
@@ -262,5 +278,22 @@ public class FloatingWindowService extends StandOutWindow {
             StandOutWindow.close(context, FloatingWindowService.class, id);
         else
             StandOutWindow.closeAll(context, FloatingWindowService.class);
+    }
+
+    private float getWindowPositionRelative(int x) {
+        int width = getDisplayMetrics().widthPixels;
+        return (float) x / width;
+    }
+
+    private int getWindowPosition(float x) {
+        int width = getDisplayMetrics().widthPixels;
+        return (int) (x * width);
+    }
+
+    private DisplayMetrics getDisplayMetrics() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics;
     }
 }
