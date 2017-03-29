@@ -11,6 +11,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -99,23 +100,23 @@ public class WatchDogService extends Service{
             }
             ContentValues cv;
             String lastUpdate = "";
-            DateTime now = new DateTime(), last = null;
+            LocalDateTime now = DateTime.now().toLocalDateTime(), last = null;
             DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
             if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
-                DateTime t1 = null, t2 = null, t3 = null;
+                LocalDateTime t1 = null, t2 = null, t3 = null;
                 if (mIMSI == null)
                     mIMSI = MobileUtils.getSimIds(mContext);
                 cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(0));
                 lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
                 try {
-                    t1 = fmt.parseDateTime(lastUpdate);
+                    t1 = fmt.parseLocalDateTime(lastUpdate);
                 } catch (Exception e) {
                 }
                 if (mIMSI.size() >= 2) {
                     cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
                     lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
                     try {
-                    t2 = fmt.parseDateTime(lastUpdate);
+                    t2 = fmt.parseLocalDateTime(lastUpdate);
                     } catch (Exception e) {
                     }
                 }
@@ -123,7 +124,7 @@ public class WatchDogService extends Service{
                     cv = CustomDatabaseHelper.readTrafficDataForSim(mDbHelper, mIMSI.get(1));
                     lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
                     try {
-                        t3 = fmt.parseDateTime(lastUpdate);
+                        t3 = fmt.parseLocalDateTime(lastUpdate);
                     } catch (Exception e) {
                     }
                 }
@@ -150,9 +151,9 @@ public class WatchDogService extends Service{
                     cv.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
                 }
                 lastUpdate = cv.get(Constants.LAST_DATE) + " " + cv.get(Constants.LAST_TIME);
-                last = fmt.parseDateTime(lastUpdate);
+                last = fmt.parseLocalDateTime(lastUpdate);
             }
-            if ((now.getMillis() - last.getMillis()) > 61 * 1000 &&
+            if ((now.toDateTime().getMillis() - last.toDateTime().getMillis()) > 61 * 1000 &&
                     (MobileUtils.isMobileDataActive(mContext) &&
                             MobileUtils.getActiveSimForData(mContext) > Constants.DISABLED) &&
                     !mPrefs.getBoolean(Constants.PREF_OTHER[5], false)) {

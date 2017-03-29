@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -467,9 +468,10 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
 
         mSqLiteDatabase = dbHelper.getReadableDatabase();
 
-        DateTime queried = Constants.DATE_FORMATTER.parseDateTime(date);
+        LocalDateTime queried = Constants.DATE_FORMATTER.parseLocalDateTime(date);
+        LocalDateTime now = DateTime.now().toLocalDateTime();
 
-        if (queried.isAfterNow())
+        if (queried.isAfter(now))
             return null;
 
         String dayBeforeDate = queried.minusDays(1).toString(Constants.DATE_FORMATTER);

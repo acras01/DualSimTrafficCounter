@@ -30,6 +30,7 @@ import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 
@@ -871,7 +872,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         } else
             mTrafficData = CustomDatabaseHelper.readTrafficData(mDbHelper);
         if (mTrafficData.get(Constants.LAST_DATE).equals("")) {
-            DateTime dateTime = new DateTime();
+            LocalDateTime dateTime = DateTime.now().toLocalDateTime();
             mTrafficData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
             mTrafficData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
         }

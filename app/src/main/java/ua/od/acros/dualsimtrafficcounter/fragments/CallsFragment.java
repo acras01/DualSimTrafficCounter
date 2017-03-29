@@ -26,6 +26,7 @@ import android.widget.TextView;
 import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 
@@ -475,7 +476,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         } else
             mCallsData = CustomDatabaseHelper.readCallsData(mDbHelper);
         if (mCallsData.get(Constants.LAST_DATE).equals("")) {
-            DateTime dateTime = new DateTime();
+            LocalDateTime dateTime = DateTime.now().toLocalDateTime();
             mCallsData.put(Constants.LAST_TIME, dateTime.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.LAST_DATE, dateTime.toString(Constants.DATE_FORMATTER));
         }

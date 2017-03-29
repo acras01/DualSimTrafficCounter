@@ -63,9 +63,9 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDay = new DateTime().getDayOfMonth();
-        mMonth = new DateTime().getMonthOfYear();
-        mYear = new DateTime().getYear();
+        mDay = DateTime.now().toLocalDate().getDayOfMonth();
+        mMonth = DateTime.now().toLocalDate().getMonthOfYear();
+        mYear = DateTime.now().toLocalDate().getYear();
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
