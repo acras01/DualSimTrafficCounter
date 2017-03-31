@@ -95,6 +95,9 @@ public class MyListActivity extends AppCompatActivity {
             List<ListItem> myList = new ArrayList<>();
             mAdapter = new MyListAdapter(myList);
             recyclerView.setAdapter(mAdapter);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemViewCacheSize(20);
+            recyclerView.setDrawingCacheEnabled(true);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
                 new LoadTask(recyclerView).execute();

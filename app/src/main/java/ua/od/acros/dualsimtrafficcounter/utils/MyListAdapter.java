@@ -18,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,9 +39,8 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
     private List<ListItem> mList;
     private Picasso mPicasso;
-    private Context mContext;
+    private int mDim;
 
-    /** Uri scheme for app icons */
     private static final String SCHEME_APP_ICON = "app_icon";
     private static final String SCHEME_CONTACT_PHOTO = "contact_photo";
 
@@ -52,52 +50,46 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             this.mList = list;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
         AppCompatCheckBox checkBox;
         TextView txtViewName;
         TextView txtViewNumber;
         ImageView imgIcon;
 
 
-        ViewHolder(View v) {
-            super(v);
-            checkBox = (AppCompatCheckBox) v.findViewById(R.id.checkBox);
-            txtViewName = (TextView) v.findViewById(R.id.name);
-            txtViewNumber = (TextView) v.findViewById(R.id.number);
-            imgIcon = (ImageView) v.findViewById(R.id.icon);
+        ViewHolder(View view) {
+            super(view);
+            checkBox = (AppCompatCheckBox) view.findViewById(R.id.checkBox);
+            txtViewName = (TextView) view.findViewById(R.id.name);
+            txtViewNumber = (TextView) view.findViewById(R.id.number);
+            imgIcon = (ImageView) view.findViewById(R.id.icon);
+            txtViewName.setOnClickListener(this);
+            txtViewNumber.setOnClickListener(this);
+            imgIcon.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            boolean isChecked = ((ListItem) view.getTag()).isChecked();
+            ((ListItem) view.getTag()).setChecked(!isChecked);
+            checkBox.setChecked(!isChecked);
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            ((ListItem) compoundButton.getTag()).setChecked(isChecked);
         }
     }
 
     @Override
     public MyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_list_row, parent, false);
-
-        // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
-        ViewHolder viewHolder = new ViewHolder(v);
-        final CheckBox checkBox = viewHolder.checkBox;
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ((ListItem) buttonView.getTag()).setChecked(isChecked);
-            }
-        });
-        View.OnClickListener click = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isChecked = ((ListItem) v.getTag()).isChecked();
-                ((ListItem) v.getTag()).setChecked(!isChecked);
-                checkBox.setChecked(!isChecked);
-            }
-        };
-        viewHolder.txtViewName.setOnClickListener(click);
-        viewHolder.txtViewNumber.setOnClickListener(click);
-        viewHolder.imgIcon.setOnClickListener(click);
-        mContext = CustomApplication.getAppContext();
-        Picasso.Builder builder = new Picasso.Builder(mContext);
-        builder.addRequestHandler(new CustomRequestHandler(mContext));
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.my_list_row, parent, false);
+        mDim = (int) context.getResources().getDimension(R.dimen.logo_size);
+        Picasso.Builder builder = new Picasso.Builder(context);
+        builder.addRequestHandler(new CustomRequestHandler(context));
         mPicasso = builder.build();
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -108,18 +100,18 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         holder.txtViewNumber.setTag(mList.get(position));
         holder.checkBox.setTag(mList.get(position));
         holder.checkBox.setChecked(mList.get(position).isChecked());
-        int dim = (int) mContext.getResources().getDimension(R.dimen.logo_size);
         Uri icon = mList.get(position).getIcon();
         if (icon.toString().contains(SCHEME_CONTACT_PHOTO))
             mPicasso.load(icon)
-                    .resize(dim, dim)
+                    .resize(mDim, mDim)
+                    //.fit()
                     .transform(new CircularTransformation(0))
                     .centerInside()
                     //.error(R.drawable.ic_person_black_24dp)
                     .into(holder.imgIcon);
         else
             mPicasso.load(icon)
-                    .resize(dim, dim)
+                    .resize(mDim, mDim)
                     .centerInside()
                     //.error(R.drawable.ic_android_black_24dp)
                     .into(holder.imgIcon);
@@ -134,7 +126,6 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         return list;
     }
 
-    // кол-во элементов
     @Override
     public int getItemCount() {
         if (mList != null)
@@ -143,12 +134,10 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             return 0;
     }
 
-    // элемент по позиции
     public ListItem getItem(int position) {
         return mList.get(position);
     }
 
-    // id по позиции
     @Override
     public long getItemId(int position) {
         return position;
@@ -162,17 +151,16 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
     private class CustomRequestHandler extends RequestHandler {
 
-        private PackageManager pm;
-        private Context ctx;
+        private PackageManager packageManager;
+        private Context context;
 
         CustomRequestHandler(Context context) {
-            ctx = context;
-            pm = context.getPackageManager();
+            this.context = context;
+            packageManager = context.getPackageManager();
         }
 
         @Override
         public boolean canHandleRequest(Request data) {
-            // only handle Uris matching our scheme
             return data.uri.getScheme().contains(SCHEME_APP_ICON) || data.uri.getScheme().contains(SCHEME_CONTACT_PHOTO);
         }
 
@@ -181,7 +169,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             Bitmap bmp = null;
             if (request.uri.toString().contains(SCHEME_APP_ICON)) {
                 try {
-                    bmp = ((BitmapDrawable) pm.getApplicationIcon(request.uri.toString().replace(SCHEME_APP_ICON + "://", ""))).getBitmap();
+                    bmp = ((BitmapDrawable) packageManager.getApplicationIcon(request.uri.toString().replace(SCHEME_APP_ICON + "://", ""))).getBitmap();
                 } catch (Exception e) {
                 }
                 if (bmp != null)
@@ -191,7 +179,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 long contactID = Long.parseLong(request.uri.toString().replace(SCHEME_CONTACT_PHOTO + "://", ""));
                 Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactID);
                 Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-                Cursor cursor = ctx.getContentResolver().query(photoUri,
+                Cursor cursor = context.getContentResolver().query(photoUri,
                         new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
                 if (cursor != null)
                     try {
@@ -209,7 +197,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 else
                     choice = true;
                 if (choice) {
-                    bmp = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.ic_contact_picture);
+                    bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_contact_picture);
                     return new Result(bmp, Picasso.LoadedFrom.DISK);
                 }
             }
@@ -219,10 +207,10 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
     private class CircularTransformation implements Transformation {
 
-        private int mRadius = 10;
+        private int radius = 10;
 
         CircularTransformation(final int radius) {
-            this.mRadius = radius;
+            this.radius = radius;
         }
 
         @Override
@@ -232,10 +220,10 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
             final Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
             final Canvas canvas = new Canvas(output);
-            if (mRadius == 0)
+            if (radius == 0)
                 canvas.drawCircle(source.getWidth() / 2, source.getHeight() / 2, source.getWidth() / 2, paint);
             else
-                canvas.drawCircle(source.getWidth() / 2, source.getHeight() / 2, mRadius, paint);
+                canvas.drawCircle(source.getWidth() / 2, source.getHeight() / 2, radius, paint);
             if (source != output)
                 source.recycle();
             return output;
@@ -243,7 +231,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
         @Override
         public String key() {
-            return "circular" + String.valueOf(mRadius);
+            return "circular" + String.valueOf(radius);
         }
     }
 }

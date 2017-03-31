@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -19,10 +18,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
 
     private List<ListItem> mList;
 
-    // класс view holder-а с помощью которого мы получаем ссылку на каждый элемент
-    // отдельного пункта списка
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        // наш пункт состоит только из одного TextView
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
         AppCompatCheckBox checkBox;
         TextView textView;
 
@@ -30,52 +26,41 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
             super(v);
             checkBox = (AppCompatCheckBox) v.findViewById(R.id.checkBox);
             textView = (TextView) v.findViewById(R.id.textView);
+            checkBox.setOnCheckedChangeListener(this);
+            textView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            boolean isChecked = ((ListItem) view.getTag()).isChecked();
+            ((ListItem) view.getTag()).setChecked(!isChecked);
+            checkBox.setChecked(!isChecked);
+            if (!isChecked)
+                textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            else
+                textView.setPaintFlags(0);
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            ((ListItem) compoundButton.getTag()).setChecked(isChecked);
+            if (isChecked)
+                textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            else
+                textView.setPaintFlags(0);
         }
     }
 
-    // Конструктор
     public BlackListAdapter(List<ListItem> list) {
         this.mList = list;
     }
 
-    // Создает новые views (вызывается layout manager-ом)
     @Override
     public BlackListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.black_list_row, parent, false);
-
-        // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
-        ViewHolder viewHolder = new ViewHolder(v);
-        final TextView textView = viewHolder.textView;
-        final CheckBox checkBox = viewHolder.checkBox;
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ((ListItem) buttonView.getTag()).setChecked(isChecked);
-                if (isChecked)
-                    textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-                else
-                    textView.setPaintFlags(0);
-
-            }
-        });
-        View.OnClickListener click = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isChecked = ((ListItem) v.getTag()).isChecked();
-                ((ListItem) v.getTag()).setChecked(!isChecked);
-                checkBox.setChecked(!isChecked);
-                if (!isChecked)
-                    textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-                else
-                    textView.setPaintFlags(0);
-            }
-        };
-        textView.setOnClickListener(click);
-        return viewHolder;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.black_list_row, parent, false);
+        return new ViewHolder(view);
     }
 
-    // Заменяет контент отдельного view (вызывается layout manager-ом)
     @Override
     public void onBindViewHolder(BlackListAdapter.ViewHolder holder, int position) {
         holder.textView.setText(mList.get(position).getNumber());
@@ -89,7 +74,6 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
             holder.textView.setPaintFlags(0);
     }
 
-    // Возвращает размер данных (вызывается layout manager-ом)
     @Override
     public int getItemCount() {
         if (mList != null)
@@ -97,7 +81,6 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         else
             return 0;
     }
-
 
     public ArrayList<String> getCheckedItems(){
         ArrayList<String> list = new ArrayList<>();
@@ -107,12 +90,10 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         return list;
     }
 
-    // элемент по позиции
     public Object getItem(int position) {
         return mList.get(position);
     }
 
-    // id по позиции
     @Override
     public long getItemId(int position) {
         return position;
