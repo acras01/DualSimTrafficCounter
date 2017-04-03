@@ -63,6 +63,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             txtViewName = (TextView) view.findViewById(R.id.name);
             txtViewNumber = (TextView) view.findViewById(R.id.number);
             imgIcon = (ImageView) view.findViewById(R.id.icon);
+            checkBox.setOnCheckedChangeListener(this);
             txtViewName.setOnClickListener(this);
             txtViewNumber.setOnClickListener(this);
             imgIcon.setOnClickListener(this);
@@ -100,6 +101,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         holder.txtViewNumber.setTag(mList.get(position));
         holder.checkBox.setTag(mList.get(position));
         holder.checkBox.setChecked(mList.get(position).isChecked());
+        holder.imgIcon.setTag(mList.get(position));
         Uri icon = mList.get(position).getIcon();
         if (icon.toString().contains(SCHEME_CONTACT_PHOTO))
             mPicasso.load(icon)

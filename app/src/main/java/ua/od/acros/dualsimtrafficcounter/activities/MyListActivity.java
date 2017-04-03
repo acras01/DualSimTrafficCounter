@@ -100,7 +100,7 @@ public class MyListActivity extends AppCompatActivity {
             recyclerView.setDrawingCacheEnabled(true);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
-                new LoadTask(recyclerView).execute();
+            new LoadTask(recyclerView).execute();
         }
     }
 
