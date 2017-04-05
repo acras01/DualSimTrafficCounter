@@ -48,6 +48,8 @@ import wei.mark.standout.ui.Window;
 public class FloatingWindowService extends StandOutWindow {
     private Context mContext;
     private SharedPreferences mPrefs;
+    private int mY;
+    private float mX;
 
     @Override
 	public String getAppName() {
@@ -128,10 +130,12 @@ public class FloatingWindowService extends StandOutWindow {
                 if (newId == id) {
                     int[] location = new int[2];
                     window.getLocationOnScreen(location);
+                    mY = location[1];
+                    mX = getWindowPositionRelative(location[0]);
                     mPrefs.edit()
                             .putInt(Constants.PREF_OTHER[36], -2)
-                            .putFloat(Constants.PREF_OTHER[54], getWindowPositionRelative(location[0]))
-                            .putInt(Constants.PREF_OTHER[37], location[1])
+                            .putFloat(Constants.PREF_OTHER[54], mX)
+                            .putInt(Constants.PREF_OTHER[37], mY)
                             .apply();
                 }
                 break;
@@ -156,12 +160,10 @@ public class FloatingWindowService extends StandOutWindow {
 
                 int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
                 if (newId == id) {
-                    int[] location = new int[2];
-                    window.getLocationOnScreen(location);
                     mPrefs.edit()
                             .putInt(Constants.PREF_OTHER[36], -2)
-                            .putFloat(Constants.PREF_OTHER[54], getWindowPositionRelative(location[0]))
-                            .putInt(Constants.PREF_OTHER[37], location[1])
+                            .putFloat(Constants.PREF_OTHER[54], mX)
+                            .putInt(Constants.PREF_OTHER[37], mY)
                             .apply();
                 }
                 long seconds = System.currentTimeMillis() / 1000L;
@@ -246,12 +248,10 @@ public class FloatingWindowService extends StandOutWindow {
     public boolean onClose(int id, Window window) {
         int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
         if (newId == id) {
-            int[] location = new int[2];
-            window.getLocationOnScreen(location);
             mPrefs.edit()
                     .putInt(Constants.PREF_OTHER[36], -2)
-                    .putFloat(Constants.PREF_OTHER[54], getWindowPositionRelative(location[0]))
-                    .putInt(Constants.PREF_OTHER[37], location[1])
+                    .putFloat(Constants.PREF_OTHER[54], mX)
+                    .putInt(Constants.PREF_OTHER[37], mY)
                     .apply();
         }
         return false;

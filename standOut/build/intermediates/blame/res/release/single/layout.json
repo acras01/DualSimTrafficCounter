@@ -1,99 +1,19 @@
 [
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_popup_menu_header_item_layout.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_popup_menu_header_item_layout.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_action.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_action.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_big_media_narrow.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\0fa23d96d5f95cc5aa0dc95830412f64fcdd7bd5\\output\\res\\layout\\notification_template_big_media_narrow.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple_overlay_action_mode.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_action_tombstone.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_action_tombstone.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_search_view.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_search_view.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_content_include.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_screen_content_include.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\system_window_decorators.xml",
-        "source": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\src\\main\\res\\layout\\system_window_decorators.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_popup_menu_item_layout.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_popup_menu_item_layout.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_alert_dialog_title_material.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_alert_dialog_title_material.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_mode_bar.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_action_mode_bar.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_big_media.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\0fa23d96d5f95cc5aa0dc95830412f64fcdd7bd5\\output\\res\\layout\\notification_template_big_media.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media_custom.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_media_custom.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_checkbox.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_multichoice_material.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\select_dialog_multichoice_material.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_item_material.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\select_dialog_item_material.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_toolbar.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_screen_toolbar.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_select_dialog_material.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_select_dialog_material.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_part_chronometer.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_part_chronometer.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_alert_dialog_material.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_alert_dialog_material.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_part_time.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_part_time.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_media.xml"
-    },
-    {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_activity_chooser_view_list_item.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_activity_chooser_view_list_item.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_screen_simple.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_popup_menu_header_item_layout.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_popup_menu_header_item_layout.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_action.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_action.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_alert_dialog_button_bar_material.xml",
@@ -112,8 +32,8 @@
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_list_menu_item_layout.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_media_action.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\0fa23d96d5f95cc5aa0dc95830412f64fcdd7bd5\\output\\res\\layout\\notification_media_action.xml"
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple_overlay_action_mode.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_bar_up_container.xml",
@@ -132,16 +52,32 @@
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_custom_big.xml"
     },
     {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_action_tombstone.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_action_tombstone.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_search_view.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_search_view.xml"
+    },
+    {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_bar_title_item.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_action_bar_title_item.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_content_include.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_screen_content_include.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\system_window_decorators.xml",
+        "source": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\src\\main\\res\\layout\\system_window_decorators.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\support_simple_spinner_dropdown_item.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\support_simple_spinner_dropdown_item.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_big_media_custom.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\0fa23d96d5f95cc5aa0dc95830412f64fcdd7bd5\\output\\res\\layout\\notification_template_big_media_custom.xml"
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_popup_menu_item_layout.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_popup_menu_item_layout.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_icon_group.xml",
@@ -152,20 +88,36 @@
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_dialog_title_material.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_big_media_narrow_custom.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\0fa23d96d5f95cc5aa0dc95830412f64fcdd7bd5\\output\\res\\layout\\notification_template_big_media_narrow_custom.xml"
-    },
-    {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_lines_media.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_lines_media.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_alert_dialog_title_material.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_alert_dialog_title_material.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_singlechoice_material.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\select_dialog_singlechoice_material.xml"
     },
     {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_mode_bar.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_action_mode_bar.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media_custom.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_media_custom.xml"
+    },
+    {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_radio.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_list_menu_item_radio.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_list_menu_item_checkbox.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_multichoice_material.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\select_dialog_multichoice_material.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_bar_view_list_nav_layout.xml",
@@ -176,12 +128,24 @@
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_list_menu_item_icon.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_media_cancel_action.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\0fa23d96d5f95cc5aa0dc95830412f64fcdd7bd5\\output\\res\\layout\\notification_media_cancel_action.xml"
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_item_material.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\select_dialog_item_material.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_expanded_menu_layout.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_expanded_menu_layout.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_toolbar.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_screen_toolbar.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_select_dialog_material.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_select_dialog_material.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_part_chronometer.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_part_chronometer.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_mode_close_item_material.xml",
@@ -190,5 +154,17 @@
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_action_menu_item_layout.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_action_menu_item_layout.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\abc_alert_dialog_material.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\abc_alert_dialog_material.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_part_time.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_part_time.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_media.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\layout\\notification_template_media.xml"
     }
 ]
