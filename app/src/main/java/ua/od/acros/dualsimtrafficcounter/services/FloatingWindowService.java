@@ -222,17 +222,18 @@ public class FloatingWindowService extends StandOutWindow {
     @Override
     public StandOutLayoutParams getParams(int id, Window window) {
         int x = mPrefs.getInt(Constants.PREF_OTHER[36], -1);
-        float _x;
         if (x == -2) {
-            _x = mPrefs.getFloat(Constants.PREF_OTHER[54], -1);
-            x = getWindowPosition(_x);
+            mX = mPrefs.getFloat(Constants.PREF_OTHER[54], -1.0f);
+            if (mX < 0)
+                mX = 0.5f;
+            x = getWindowPosition(mX);
         }
         else if (x == -1)
             x = StandOutLayoutParams.CENTER;
-        int y = mPrefs.getInt(Constants.PREF_OTHER[37], -1);
-        if (y < 0)
-            y = StandOutLayoutParams.CENTER;
-        return new StandOutLayoutParams(id, StandOutLayoutParams.WRAP_CONTENT, StandOutLayoutParams.WRAP_CONTENT, x, y);
+        mY = mPrefs.getInt(Constants.PREF_OTHER[37], -1);
+        if (mY < 0)
+            mY = StandOutLayoutParams.CENTER;
+        return new StandOutLayoutParams(id, StandOutLayoutParams.WRAP_CONTENT, StandOutLayoutParams.WRAP_CONTENT, x, mY);
     }
 
     @Override
