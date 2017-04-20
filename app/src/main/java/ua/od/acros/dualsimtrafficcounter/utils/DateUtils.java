@@ -23,7 +23,7 @@ public class DateUtils {
     }
 
     public static DataResetObject getResetDate(SharedPreferences preferences, String[] simPref) {
-        LocalDateTime now = new DateTime().withTimeAtStartOfDay().toLocalDateTime();
+        LocalDateTime now = new DateTime().toLocalDateTime();
         int delta = parseInt(preferences.getString(simPref[2], "1"));
         LocalDateTime last;
         String date = preferences.getString(simPref[3], "");
