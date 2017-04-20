@@ -3,7 +3,6 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 import android.content.SharedPreferences;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.LocalDateTime;
 
 import static java.lang.Integer.parseInt;
@@ -22,6 +21,7 @@ public class DateUtils {
         }
     }
 
+/*    @Nullable
     public static DataResetObject getResetDate(SharedPreferences preferences, String[] simPref) {
         LocalDateTime now = new DateTime().toLocalDateTime();
         int delta = parseInt(preferences.getString(simPref[2], "1"));
@@ -95,7 +95,7 @@ public class DateUtils {
             } else
                 return null;
         }
-    }
+    } */
 
     public static LocalDateTime setResetDate(SharedPreferences preferences, String[] simPref) {
         LocalDateTime now;
