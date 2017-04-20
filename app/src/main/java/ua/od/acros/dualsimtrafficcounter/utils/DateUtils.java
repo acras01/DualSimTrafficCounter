@@ -31,6 +31,8 @@ public class DateUtils {
             last = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(date);
         else
             last = Constants.DATE_FORMATTER.parseLocalDateTime("1970-01-01");
+        String[] time = preferences.getString(simPref[1], "00:00").split(":");
+        last = last.withTime(Integer.valueOf(time[0]), Integer.valueOf(time[1]), 0, 0);
         switch (preferences.getString(simPref[0], "")) {
             case "0":
                 delta = 1;
