@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 
-import org.joda.time.LocalDateTime;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -44,44 +42,35 @@ public class ResetReceiver extends BroadcastReceiver {
         String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
                 Constants.PREF_SIM1_CALLS[5]};
         if (!prefs.getBoolean(Constants.PREF_SIM1_CALLS[9], false)) {
-            LocalDateTime mResetTime1 = DateUtils.setResetDate(prefs, simPref);
-            if (mResetTime1 != null) {
-                prefs.edit()
-                        .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
-                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(Constants.DATE_TIME_FORMATTER))
-                        .apply();
-                if (mIMSI != null)
-                    saveSimSettings(context, prefs, 0);
-            }
+            prefs.edit()
+                    .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
+                    .putString(Constants.PREF_SIM1_CALLS[8], DateUtils.setResetDate(prefs, simPref).toString(Constants.DATE_TIME_FORMATTER))
+                    .apply();
+            if (mIMSI != null)
+                saveSimSettings(context, prefs, 0);
         }
         if (simQuantity >= 2) {
             if (!prefs.getBoolean(Constants.PREF_SIM2_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
                         Constants.PREF_SIM2_CALLS[5]};
-                LocalDateTime mResetTime2 = DateUtils.setResetDate(prefs, simPref);
-                if (mResetTime2 != null) {
-                    prefs.edit()
-                            .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
-                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(Constants.DATE_TIME_FORMATTER))
-                            .apply();
-                    if (mIMSI != null)
-                        saveSimSettings(context, prefs, 1);
-                }
+                prefs.edit()
+                        .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
+                        .putString(Constants.PREF_SIM2_CALLS[8], DateUtils.setResetDate(prefs, simPref).toString(Constants.DATE_TIME_FORMATTER))
+                        .apply();
+                if (mIMSI != null)
+                    saveSimSettings(context, prefs, 1);
             }
         }
         if (simQuantity == 3) {
             if (!prefs.getBoolean(Constants.PREF_SIM3_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
                         Constants.PREF_SIM3_CALLS[5]};
-                LocalDateTime mResetTime3 = DateUtils.setResetDate(prefs, simPref);
-                if (mResetTime3 != null) {
-                    prefs.edit()
-                            .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
-                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(Constants.DATE_TIME_FORMATTER))
-                            .apply();
-                    if (mIMSI != null)
-                        saveSimSettings(context, prefs, 2);
-                }
+                prefs.edit()
+                        .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
+                        .putString(Constants.PREF_SIM3_CALLS[8], DateUtils.setResetDate(prefs, simPref).toString(Constants.DATE_TIME_FORMATTER))
+                        .apply();
+                if (mIMSI != null)
+                    saveSimSettings(context, prefs, 2);
             }
         }
         if (wl.isHeld())

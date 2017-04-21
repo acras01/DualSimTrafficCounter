@@ -329,32 +329,32 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             LocalDateTime now = DateTime.now().toLocalDateTime();
             String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
                     Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
-            LocalDateTime mResetTime1 = DateUtils.setResetDate(sharedPreferences, simPref);
-            if (mResetTime1 != null && mResetTime1.isAfter(now)) {
+            LocalDateTime resetTime1 = DateUtils.setResetDate(sharedPreferences, simPref);
+            if (resetTime1.isAfter(now)) {
                 sharedPreferences.edit()
                         .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
-                        .putString(Constants.PREF_SIM1_CALLS[8], mResetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                        .putString(Constants.PREF_SIM1_CALLS[8], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
                         .apply();
             }
             if (simQuantity >= 2) {
                 simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
                         Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
-                LocalDateTime mResetTime2 = DateUtils.setResetDate(sharedPreferences, simPref);
-                if (mResetTime2 != null && mResetTime2.isAfter(now)) {
+                LocalDateTime resetTime2 = DateUtils.setResetDate(sharedPreferences, simPref);
+                if (resetTime2.isAfter(now)) {
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
-                            .putString(Constants.PREF_SIM2_CALLS[8], mResetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                            .putString(Constants.PREF_SIM2_CALLS[8], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
                             .apply();
                 }
             }
             if (simQuantity == 3) {
                 simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
                         Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
-                LocalDateTime mResetTime3 = DateUtils.setResetDate(sharedPreferences, simPref);
-                if (mResetTime3 != null && mResetTime3.isAfter(now)) {
+                LocalDateTime resetTime3 = DateUtils.setResetDate(sharedPreferences, simPref);
+                if (resetTime3.isAfter(now)) {
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
-                            .putString(Constants.PREF_SIM3_CALLS[8], mResetTime3.toString(Constants.DATE_TIME_FORMATTER))
+                            .putString(Constants.PREF_SIM3_CALLS[8], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
                             .apply();
                 }
             }

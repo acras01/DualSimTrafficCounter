@@ -91,7 +91,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private int mSimQuantity;
     private static int mActiveSIM = Constants.DISABLED;
     private static int mLastActiveSIM = Constants.DISABLED;
-    private LocalDateTime mNowDate, mLastDate, mResetTime1, mResetTime2, mResetTime3;
+    private LocalDateTime mNowDate, mLastDate; //mResetTime1, mResetTime2, mResetTime3;
     private ContentValues mTrafficData;
     private CustomDatabaseHelper mDbHelper;
     private ScheduledExecutorService mTaskExecutor = null;
@@ -500,14 +500,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 mHasActionChosen3 = mPrefs.getBoolean(Constants.PREF_SIM3[28], false);
 
                 mIsResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1[25], false);
-                if (mIsResetNeeded1)
-                    mResetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+                //if (mIsResetNeeded1)
+                //    mResetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
                 mIsResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2[25], false);
-                if (mIsResetNeeded2)
-                    mResetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
+                //if (mIsResetNeeded2)
+                //    mResetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
                 mIsResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3[25], false);
-                if (mIsResetNeeded3)
-                    mResetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+                //if (mIsResetNeeded3)
+                //    mResetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
 
                 mLimits = CustomApplication.getTrafficSimLimitsValues();
 
@@ -770,46 +770,37 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void checkIfResetNeeded() {
         String[] simPref = new String[]{Constants.PREF_SIM1[3], Constants.PREF_SIM1[9], Constants.PREF_SIM1[10]};
-        mResetTime1 = DateUtils.setResetDate(mPrefs, simPref);
-        if (mResetTime1 != null) {
+        LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+        if (mNowDate.compareTo(resetTime1) >= 0) {
+            resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
+            mIsResetNeeded1 = true;
             mPrefs.edit()
-                    .putString(Constants.PREF_SIM1[26], mResetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                    .putString(Constants.PREF_SIM1[26], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                     .apply();
-            if (mNowDate.compareTo(mResetTime1) >= 0) {
-                mIsResetNeeded1 = true;
-                mPrefs.edit()
-                        .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
-                        .apply();
-            }
         }
         if (mSimQuantity >= 2) {
             simPref = new String[]{Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10]};
-            mResetTime2 = DateUtils.setResetDate(mPrefs, simPref);
-            if (mResetTime2 != null) {
+            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
+            if (mNowDate.compareTo(resetTime2) >= 0) {
+                resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
+                mIsResetNeeded2 = true;
                 mPrefs.edit()
-                        .putString(Constants.PREF_SIM2[26], mResetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                        .putString(Constants.PREF_SIM2[26], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                        .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                         .apply();
-                if (mNowDate.compareTo(mResetTime2) >= 0) {
-                    mIsResetNeeded2 = true;
-                    mPrefs.edit()
-                            .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
-                            .apply();
-                }
             }
         }
         if (mSimQuantity == 3) {
             simPref = new String[]{Constants.PREF_SIM3[3], Constants.PREF_SIM3[9], Constants.PREF_SIM3[10]};
-            mResetTime3 = DateUtils.setResetDate(mPrefs, simPref);
-            if (mResetTime3 != null) {
+            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+            if (mNowDate.compareTo(resetTime3) >= 0) {
+                resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
+                mIsResetNeeded3 = true;
                 mPrefs.edit()
-                        .putString(Constants.PREF_SIM3[26], mResetTime3.toString(Constants.DATE_TIME_FORMATTER))
+                        .putString(Constants.PREF_SIM3[26], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                        .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                         .apply();
-                if (mNowDate.compareTo(mResetTime3) >= 0) {
-                    mIsResetNeeded3 = true;
-                    mPrefs.edit()
-                            .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded3)
-                            .apply();
-                }
             }
         }
     }

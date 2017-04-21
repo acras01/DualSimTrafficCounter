@@ -98,9 +98,8 @@ public class DateUtils {
     } */
 
     public static LocalDateTime setResetDate(SharedPreferences preferences, String[] simPref) {
-        LocalDateTime now;
         String time = preferences.getString(simPref[1], "00:00");
-        now = new LocalDateTime()
+        LocalDateTime now = new LocalDateTime()
                 .withHourOfDay(Integer.valueOf(time.split(":")[0]))
                 .withMinuteOfHour(Integer.valueOf(time.split(":")[1]));
         int delta = parseInt(preferences.getString(simPref[2], "1"));
@@ -116,7 +115,7 @@ public class DateUtils {
             case "2":
                 return now.plusDays(delta);
         }
-        return null;
+        return Constants.DATE_TIME_FORMATTER.parseLocalDateTime("1970-01-01 00:00");
     }
 
     /*public static long getInterval(SharedPreferences sharedPreferences, int sim) {
