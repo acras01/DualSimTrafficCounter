@@ -789,7 +789,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (mSimQuantity >= 2) {
             simPref = new String[]{Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10]};
             LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
-            if (mNowDate.compareTo(resetTime2) >= 0) {
+            if (mNowDate.compareTo(resetTime2) >= 0 || settingsChanged) {
                 resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime2 != null) {
                     mPrefs.edit()
@@ -807,7 +807,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (mSimQuantity == 3) {
             simPref = new String[]{Constants.PREF_SIM3[3], Constants.PREF_SIM3[9], Constants.PREF_SIM3[10]};
             LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
-            if (mNowDate.compareTo(resetTime3) >= 0) {
+            if (mNowDate.compareTo(resetTime3) >= 0 || settingsChanged) {
                 resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime3 != null) {
                     mPrefs.edit()
