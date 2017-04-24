@@ -634,12 +634,18 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
                 out.putLong("tot_n", (long) cv1.get("total_n"));
                 break;
             case 2:
-                out.putLong("rx", (long) cv1.get("rx") - (long) cv2.get("rx"));
-                out.putLong("tx", (long) cv1.get("tx") - (long) cv2.get("tx"));
-                out.putLong("tot", (long) cv1.get("total") - (long) cv2.get("total"));
-                out.putLong("rx_n", (long) cv1.get("rx_n") - (long) cv2.get("rx_n"));
-                out.putLong("tx_n", (long) cv1.get("tx_n") - (long) cv2.get("tx_n"));
-                out.putLong("tot_n", (long) cv1.get("total_n") - (long) cv2.get("total_n"));
+                out.putLong("rx", ((long) cv1.get("rx") - (long) cv2.get("rx")) >= 0 ?
+                        (long) cv1.get("rx") - (long) cv2.get("rx") : 0);
+                out.putLong("tx", ((long) cv1.get("tx") - (long) cv2.get("tx")) >= 0 ?
+                        (long) cv1.get("tx") - (long) cv2.get("tx") : 0);
+                out.putLong("tot", ((long) cv1.get("total") - (long) cv2.get("total")) >= 0 ?
+                        (long) cv1.get("total") - (long) cv2.get("total") : 0);
+                out.putLong("rx_n", ((long) cv1.get("rx_n") - (long) cv2.get("rx_n")) >= 0 ?
+                        (long) cv1.get("rx_n") - (long) cv2.get("rx_n") : 0);
+                out.putLong("tx_n", ((long) cv1.get("tx_n") - (long) cv2.get("tx_n")) >= 0 ?
+                        (long) cv1.get("tx_n") - (long) cv2.get("tx_n") : 0);
+                out.putLong("tot_n", ((long) cv1.get("total_n") - (long) cv2.get("total_n")) >= 0 ?
+                        (long) cv1.get("total_n") - (long) cv2.get("total_n") : 0);
                 break;
         }
         cursorToDate.close();
