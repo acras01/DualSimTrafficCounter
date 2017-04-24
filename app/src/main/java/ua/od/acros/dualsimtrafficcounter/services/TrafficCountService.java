@@ -712,8 +712,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
         if (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
                 key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
-                key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))
-            checkIfResetNeeded();
+                key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10])) {
+            checkIfResetNeeded(true);
+        }
         if (key.equals(Constants.PREF_SIM1[1]) || key.equals(Constants.PREF_SIM1[2]) || key.equals(Constants.PREF_SIM1[4]) ||
                 key.equals(Constants.PREF_SIM1[29]) || key.equals(Constants.PREF_SIM1[30]) ||
                 key.equals(Constants.PREF_SIM2[1]) || key.equals(Constants.PREF_SIM2[2]) || key.equals(Constants.PREF_SIM2[4]) ||
@@ -768,17 +769,21 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         }
     }
 
-    private void checkIfResetNeeded() {
+    private void checkIfResetNeeded(boolean settingsChanged) {
         String[] simPref = new String[]{Constants.PREF_SIM1[3], Constants.PREF_SIM1[9], Constants.PREF_SIM1[10]};
         LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
-        if (mNowDate.compareTo(resetTime1) >= 0) {
+        if (mNowDate.compareTo(resetTime1) >= 0 || settingsChanged) {
             resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
             if (resetTime1 != null) {
-                mIsResetNeeded1 = true;
                 mPrefs.edit()
                         .putString(Constants.PREF_SIM1[26], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
-                        .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
                         .apply();
+                if (!settingsChanged) {
+                    mIsResetNeeded1 = true;
+                    mPrefs.edit()
+                            .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
+                            .apply();
+                }
             }
         }
         if (mSimQuantity >= 2) {
@@ -787,11 +792,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (mNowDate.compareTo(resetTime2) >= 0) {
                 resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime2 != null) {
-                    mIsResetNeeded2 = true;
                     mPrefs.edit()
                             .putString(Constants.PREF_SIM2[26], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
-                            .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
                             .apply();
+                    if (!settingsChanged) {
+                        mIsResetNeeded2 = true;
+                        mPrefs.edit()
+                                .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                                .apply();
+                    }
                 }
             }
         }
@@ -801,11 +810,15 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             if (mNowDate.compareTo(resetTime3) >= 0) {
                 resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime3 != null) {
-                    mIsResetNeeded3 = true;
                     mPrefs.edit()
                             .putString(Constants.PREF_SIM3[26], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
-                            .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
                             .apply();
+                    if (!settingsChanged) {
+                        mIsResetNeeded3 = true;
+                        mPrefs.edit()
+                                .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                                .apply();
+                    }
                 }
             }
         }
@@ -916,7 +929,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     LocalDateTime lastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = DateTime.now().toLocalDateTime();
                     if (mNowDate.getDayOfYear() != lastDate.getDayOfYear())
-                        checkIfResetNeeded();
+                        checkIfResetNeeded(false);
 
                     mIsNight1 = CustomApplication.getIsNightState()[0];
                     mIsNight2 = CustomApplication.getIsNightState()[1];
@@ -1178,7 +1191,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     LocalDateTime lastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = DateTime.now().toLocalDateTime();
                     if (mNowDate.getDayOfYear() != lastDate.getDayOfYear())
-                        checkIfResetNeeded();
+                        checkIfResetNeeded(false);
 
                     mIsNight1 = CustomApplication.getIsNightState()[0];
                     mIsNight2 = CustomApplication.getIsNightState()[1];
@@ -1440,7 +1453,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     LocalDateTime lastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = DateTime.now().toLocalDateTime();
                     if (mNowDate.getDayOfYear() != lastDate.getDayOfYear())
-                        checkIfResetNeeded();
+                        checkIfResetNeeded(false);
 
                     mIsNight1 = CustomApplication.getIsNightState()[0];
                     mIsNight2 = CustomApplication.getIsNightState()[1];
