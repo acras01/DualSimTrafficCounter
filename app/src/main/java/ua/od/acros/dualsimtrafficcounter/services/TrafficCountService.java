@@ -91,7 +91,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private int mSimQuantity;
     private static int mActiveSIM = Constants.DISABLED;
     private static int mLastActiveSIM = Constants.DISABLED;
-    private LocalDateTime mNowDate, mLastDate; //mResetTime1, mResetTime2, mResetTime3;
+    private LocalDateTime mNowDate;// mLastDate, mResetTime1, mResetTime2, mResetTime3;
     private ContentValues mTrafficData;
     private CustomDatabaseHelper mDbHelper;
     private ScheduledExecutorService mTaskExecutor = null;
@@ -773,22 +773,26 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
         if (mNowDate.compareTo(resetTime1) >= 0) {
             resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
-            mIsResetNeeded1 = true;
-            mPrefs.edit()
-                    .putString(Constants.PREF_SIM1[26], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
-                    .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
-                    .apply();
+            if (resetTime1 != null) {
+                mIsResetNeeded1 = true;
+                mPrefs.edit()
+                        .putString(Constants.PREF_SIM1[26], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                        .putBoolean(Constants.PREF_SIM1[25], mIsResetNeeded1)
+                        .apply();
+            }
         }
         if (mSimQuantity >= 2) {
             simPref = new String[]{Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10]};
             LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
             if (mNowDate.compareTo(resetTime2) >= 0) {
                 resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
-                mIsResetNeeded2 = true;
-                mPrefs.edit()
-                        .putString(Constants.PREF_SIM2[26], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
-                        .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
-                        .apply();
+                if (resetTime2 != null) {
+                    mIsResetNeeded2 = true;
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM2[26], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                            .putBoolean(Constants.PREF_SIM2[25], mIsResetNeeded2)
+                            .apply();
+                }
             }
         }
         if (mSimQuantity == 3) {
@@ -796,11 +800,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
             if (mNowDate.compareTo(resetTime3) >= 0) {
                 resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
-                mIsResetNeeded3 = true;
-                mPrefs.edit()
-                        .putString(Constants.PREF_SIM3[26], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
-                        .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
-                        .apply();
+                if (resetTime3 != null) {
+                    mIsResetNeeded3 = true;
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM3[26], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
+                            .putBoolean(Constants.PREF_SIM3[25], mIsResetNeeded3)
+                            .apply();
+                }
             }
         }
     }
@@ -907,9 +913,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long tx = 0;
                     long tot = 0;
 
-                    mLastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
+                    LocalDateTime lastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = DateTime.now().toLocalDateTime();
-                    if (mNowDate.getDayOfYear() != mLastDate.getDayOfYear())
+                    if (mNowDate.getDayOfYear() != lastDate.getDayOfYear())
                         checkIfResetNeeded();
 
                     mIsNight1 = CustomApplication.getIsNightState()[0];
@@ -1169,9 +1175,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long tx = 0;
                     long tot = 0;
 
-                    mLastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
+                    LocalDateTime lastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = DateTime.now().toLocalDateTime();
-                    if (mNowDate.getDayOfYear() != mLastDate.getDayOfYear())
+                    if (mNowDate.getDayOfYear() != lastDate.getDayOfYear())
                         checkIfResetNeeded();
 
                     mIsNight1 = CustomApplication.getIsNightState()[0];
@@ -1431,9 +1437,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     long tx = 0;
                     long tot = 0;
 
-                    mLastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
+                    LocalDateTime lastDate = Constants.DATE_FORMATTER.parseLocalDateTime((String) mTrafficData.get(Constants.LAST_DATE));
                     mNowDate = DateTime.now().toLocalDateTime();
-                    if (mNowDate.getDayOfYear() != mLastDate.getDayOfYear())
+                    if (mNowDate.getDayOfYear() != lastDate.getDayOfYear())
                         checkIfResetNeeded();
 
                     mIsNight1 = CustomApplication.getIsNightState()[0];

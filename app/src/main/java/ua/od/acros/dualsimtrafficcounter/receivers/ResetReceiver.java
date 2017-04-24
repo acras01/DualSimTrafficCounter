@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -39,13 +41,17 @@ public class ResetReceiver extends BroadcastReceiver {
             prefs = PreferenceManager.getDefaultSharedPreferences(context);
         }
 
+        LocalDateTime resetDate;
         String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
                 Constants.PREF_SIM1_CALLS[5]};
         if (!prefs.getBoolean(Constants.PREF_SIM1_CALLS[9], false)) {
-            prefs.edit()
-                    .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
-                    .putString(Constants.PREF_SIM1_CALLS[8], DateUtils.setResetDate(prefs, simPref).toString(Constants.DATE_TIME_FORMATTER))
-                    .apply();
+            resetDate = DateUtils.setResetDate(prefs, simPref);
+            if (resetDate != null) {
+                prefs.edit()
+                        .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
+                        .putString(Constants.PREF_SIM1_CALLS[8], resetDate.toString(Constants.DATE_TIME_FORMATTER))
+                        .apply();
+            }
             if (mIMSI != null)
                 saveSimSettings(context, prefs, 0);
         }
@@ -53,10 +59,13 @@ public class ResetReceiver extends BroadcastReceiver {
             if (!prefs.getBoolean(Constants.PREF_SIM2_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
                         Constants.PREF_SIM2_CALLS[5]};
-                prefs.edit()
-                        .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
-                        .putString(Constants.PREF_SIM2_CALLS[8], DateUtils.setResetDate(prefs, simPref).toString(Constants.DATE_TIME_FORMATTER))
-                        .apply();
+                resetDate = DateUtils.setResetDate(prefs, simPref);
+                if (resetDate != null) {
+                    prefs.edit()
+                            .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
+                            .putString(Constants.PREF_SIM2_CALLS[8], resetDate.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
                 if (mIMSI != null)
                     saveSimSettings(context, prefs, 1);
             }
@@ -65,10 +74,13 @@ public class ResetReceiver extends BroadcastReceiver {
             if (!prefs.getBoolean(Constants.PREF_SIM3_CALLS[9], false)) {
                 simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
                         Constants.PREF_SIM3_CALLS[5]};
-                prefs.edit()
-                        .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
-                        .putString(Constants.PREF_SIM3_CALLS[8], DateUtils.setResetDate(prefs, simPref).toString(Constants.DATE_TIME_FORMATTER))
-                        .apply();
+                resetDate = DateUtils.setResetDate(prefs, simPref);
+                if (resetDate != null) {
+                    prefs.edit()
+                            .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
+                            .putString(Constants.PREF_SIM3_CALLS[8], resetDate.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
                 if (mIMSI != null)
                     saveSimSettings(context, prefs, 2);
             }
