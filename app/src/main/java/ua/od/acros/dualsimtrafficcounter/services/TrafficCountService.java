@@ -772,6 +772,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     private void checkIfResetNeeded(boolean settingsChanged) {
         String[] simPref = new String[]{Constants.PREF_SIM1[3], Constants.PREF_SIM1[9], Constants.PREF_SIM1[10]};
         LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+        if (mNowDate == null)
+            mNowDate = DateTime.now().toLocalDateTime();
         if (mNowDate.compareTo(resetTime1) >= 0 || settingsChanged) {
             resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
             if (resetTime1 != null) {
