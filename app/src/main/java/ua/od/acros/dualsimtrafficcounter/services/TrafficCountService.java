@@ -2144,9 +2144,12 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 .putBoolean(Constants.PREF_SIM1[28], mHasActionChosen1)
                 .putBoolean(Constants.PREF_SIM2[28], mHasActionChosen2)
                 .putBoolean(Constants.PREF_SIM3[28], mHasActionChosen3)
-                .putInt(Constants.PREF_OTHER[46], mActiveSIM)
                 .putBoolean(Constants.PREF_OTHER[48], false)
                 .apply();
+        if (mActiveSIM != -1)
+            mPrefs.edit()
+                    .putInt(Constants.PREF_OTHER[46], mActiveSIM)
+                    .apply();
         if (mTaskResult != null) {
             mTaskResult.cancel(false);
             mTaskExecutor.shutdown();

@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MobileUtils.getTelephonyManagerMethods(mContext);
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
-                ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.hasActiveNetworkInfo(mContext) == 2) ||
+                ((mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && MobileUtils.isMobileDataActive(mContext)) ||
                         (!mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false))))
             FloatingWindowService.showFloatingWindow(mContext, mPrefs);
         if (!CustomApplication.isMyServiceRunning(TrafficCountService.class))

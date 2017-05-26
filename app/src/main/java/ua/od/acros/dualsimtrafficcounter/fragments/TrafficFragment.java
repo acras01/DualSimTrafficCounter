@@ -364,19 +364,24 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             case R.id.action_service_start_stop:
                 if (mIsRunning) {
                     FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
-                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], true).apply();
+                    mPrefs.edit()
+                            .putBoolean(Constants.PREF_OTHER[5], true)
+                            .apply();
                     mContext.stopService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.service_disabled));
                 } else {
                     if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) &&
-                            (!mPrefs.getBoolean(Constants.PREF_OTHER[41], false) || MobileUtils.hasActiveNetworkInfo(mContext) == 2))
+                            (!mPrefs.getBoolean(Constants.PREF_OTHER[41], false) || MobileUtils.isMobileDataActive(mContext)))
                         FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-                    mPrefs.edit().putBoolean(Constants.PREF_OTHER[5], false).apply();
+                    mPrefs.edit()
+                            .putBoolean(Constants.PREF_OTHER[5], false)
+                            .apply();
                     mContext.startService(new Intent(mContext, TrafficCountService.class));
                     TIP.setText(getString(R.string.tip));
                 }
+                mIsRunning = !mIsRunning;
                 setOptionsMenuButton(item);
-                item.setEnabled(false);
+                //item.setEnabled(false);
                 break;
             case R.id.action_mobile_data_on_off:
                 showDialog(Constants.ON_OFF);

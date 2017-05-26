@@ -28,7 +28,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         boolean bool = floatingWindow && !alwaysShow;
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE) ||
-                    MobileUtils.hasActiveNetworkInfo(context) != 2) {
+                    !MobileUtils.isMobileDataActive(context)) {
                 if (bool)
                     FloatingWindowService.closeFloatingWindow(context, prefs);
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))

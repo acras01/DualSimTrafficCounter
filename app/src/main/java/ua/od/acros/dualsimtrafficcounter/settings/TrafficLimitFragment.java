@@ -613,7 +613,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             boolean autoLoad = sharedPreferences.getBoolean(key, false);
             boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
             boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
-            boolean mobileData = MobileUtils.hasActiveNetworkInfo(mContext) == 2;
+            boolean mobileData = MobileUtils.isMobileDataActive(mContext);
             boolean show = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));
             if (floatingWindow && show)
                 FloatingWindowService.showFloatingWindow(mContext, mPrefs);
@@ -638,6 +638,15 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 CustomApplication.putObject(editor, key.substring(0, key.length() - 1), o);
                 editor.apply();
             }
+        }
+
+        if (key.equals(Constants.PREF_OTHER[47])) {
+            if (sharedPreferences.getBoolean(Constants.PREF_OTHER[47], false) && !MobileUtils.isMobileDataActive(mContext)
+                    && CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                mContext.stopService(new Intent(mContext, TrafficCountService.class));
+            if (!sharedPreferences.getBoolean(Constants.PREF_OTHER[47], false)
+                    && !CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                mContext.startService(new Intent(mContext, TrafficCountService.class));
         }
 
         if (key.equals(Constants.PREF_OTHER[43])) {

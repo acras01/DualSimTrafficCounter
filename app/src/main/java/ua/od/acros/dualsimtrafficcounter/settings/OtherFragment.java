@@ -198,7 +198,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         boolean autoLoad = sharedPreferences.getBoolean(Constants.PREF_OTHER[47], false);
         boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
-        boolean mobileData = MobileUtils.hasActiveNetworkInfo(mContext) == 2;
+        boolean mobileData = MobileUtils.isMobileDataActive(mContext);
         boolean bool = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));
         boolean show = false;
         if (key.equals(Constants.PREF_OTHER[32])) {
