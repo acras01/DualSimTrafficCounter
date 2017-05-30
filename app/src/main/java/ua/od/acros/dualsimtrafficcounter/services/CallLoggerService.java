@@ -693,8 +693,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 .putBoolean(Constants.PREF_OTHER[49], false)
                 .apply();
         writeCallsDataToDatabase(mLastActiveSIM);
-        if (mDbHelper != null && !CustomApplication.isMyServiceRunning(TrafficCountService.class))
-            mDbHelper.close();
+        /*if (mDbHelper != null && !CustomApplication.isMyServiceRunning(TrafficCountService.class))
+            CustomDatabaseHelper.deleteInstance();*/
         if (mCallAnsweredReceiver != null)
             unregisterReceiver(mCallAnsweredReceiver);
         if (mCallEndedReceiver != null)

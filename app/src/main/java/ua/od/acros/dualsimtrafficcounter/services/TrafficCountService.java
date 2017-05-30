@@ -2158,8 +2158,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         nm.cancel(Constants.STARTED_ID);
         if (mTrafficData != null)
             writeTrafficDataToDatabase(mActiveSIM);
-        if (mDbHelper != null && !CustomApplication.isMyServiceRunning(CallLoggerService.class))
-            mDbHelper.close();
+        /*if (mDbHelper != null && !CustomApplication.isMyServiceRunning(CallLoggerService.class))
+            CustomDatabaseHelper.deleteInstance();*/
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         if (mUidObserver != null)
             getContentResolver().unregisterContentObserver(mUidObserver);

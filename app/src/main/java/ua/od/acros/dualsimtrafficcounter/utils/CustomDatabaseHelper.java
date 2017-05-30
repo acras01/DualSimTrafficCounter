@@ -832,7 +832,7 @@ public class CustomDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static void deleteInstance() {
+    /*public static void deleteInstance() {
         mInstance.close();
-    }
+    }*/
 }
