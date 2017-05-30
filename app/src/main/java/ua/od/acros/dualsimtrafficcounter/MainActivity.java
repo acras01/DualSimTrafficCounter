@@ -49,6 +49,7 @@ import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
+import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -528,6 +529,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onDestroy();
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
+                !CustomApplication.isMyServiceRunning(CallLoggerService.class))
+            CustomDatabaseHelper.deleteInstance();
     }
 
     @Override
