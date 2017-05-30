@@ -103,7 +103,7 @@ public class FloatingWindowService extends StandOutWindow {
             status.setTextColor(mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text)));
             status.setText(changedText);
         } else
-            onDestroy();
+            stopSelf();
 	}
 
     @Override
