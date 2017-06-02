@@ -84,27 +84,26 @@ public class FloatingWindowService extends StandOutWindow {
             mContext = CustomApplication.getAppContext();
         if (mPrefs == null)
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class))
+            stopSelf();
     }
 
 	@Override
 	public void createAndAttachView(int id, FrameLayout frame) {
-        if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
-            if (mContext == null)
-                mContext = CustomApplication.getAppContext();
-            if (mPrefs == null)
-                mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-            // create a new layout from .xml
-            //LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            View view = View.inflate(mContext, R.layout.floating_window, frame);
-            TextView status = (TextView) view.findViewById(R.id.tv);
-            String changedText = DataFormat.formatData(mContext, 0L);
-            status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
-            status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
-            status.setTextColor(mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text)));
-            status.setText(changedText);
-        } else
-            stopSelf();
-	}
+        if (mContext == null)
+            mContext = CustomApplication.getAppContext();
+        if (mPrefs == null)
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        // create a new layout from .xml
+        //LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = View.inflate(mContext, R.layout.floating_window, frame);
+        TextView status = (TextView) view.findViewById(R.id.tv);
+        String changedText = DataFormat.formatData(mContext, 0L);
+        status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
+        status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
+        status.setTextColor(mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text)));
+        status.setText(changedText);
+    }
 
     @Override
 	public Animation getShowAnimation(int id) {
