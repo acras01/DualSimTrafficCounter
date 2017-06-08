@@ -1777,6 +1777,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     }
 
     private void sendDataBroadcast(long speedRX, long speedTX) {
+        int sim = mActiveSIM;
         Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
         intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(Constants.TRAFFIC));
         intent.putExtra(Constants.SPEEDRX, speedRX);
@@ -1803,15 +1804,14 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             intent.putExtra(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
             intent.putExtra(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
         }
-        if (mActiveSIM == Constants.DISABLED)
+        if (sim == Constants.DISABLED)
             intent.putExtra(Constants.SIM_ACTIVE, mLastActiveSIM);
         else
-            intent.putExtra(Constants.SIM_ACTIVE, mActiveSIM);
+            intent.putExtra(Constants.SIM_ACTIVE, sim);
         intent.putExtra(Constants.OPERATOR1, mOperatorNames[0]);
         intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
         intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
         mContext.sendBroadcast(intent);
-        int sim = mActiveSIM;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) && sim != Constants.DISABLED) {
             long total = 0;
             int limit = 0;
