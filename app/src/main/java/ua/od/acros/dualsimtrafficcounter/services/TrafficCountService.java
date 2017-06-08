@@ -1777,87 +1777,90 @@ public class TrafficCountService extends Service implements SharedPreferences.On
     }
 
     private void sendDataBroadcast(long speedRX, long speedTX) {
-        int sim = mActiveSIM;
-        Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
-        intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(Constants.TRAFFIC));
-        intent.putExtra(Constants.SPEEDRX, speedRX);
-        intent.putExtra(Constants.SPEEDTX, speedTX);
-        intent.putExtra(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
-        intent.putExtra(Constants.SIM1TX, (long) mTrafficData.get(Constants.SIM1TX));
-        intent.putExtra(Constants.TOTAL1, (long) mTrafficData.get(Constants.TOTAL1));
-        intent.putExtra(Constants.SIM1RX_N, (long) mTrafficData.get(Constants.SIM1RX_N));
-        intent.putExtra(Constants.SIM1TX_N, (long) mTrafficData.get(Constants.SIM1TX_N));
-        intent.putExtra(Constants.TOTAL1_N, (long) mTrafficData.get(Constants.TOTAL1_N));
-        if (mSimQuantity >= 2) {
-            intent.putExtra(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
-            intent.putExtra(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
-            intent.putExtra(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
-            intent.putExtra(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
-            intent.putExtra(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
-            intent.putExtra(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
-        }
-        if (mSimQuantity == 3) {
-            intent.putExtra(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
-            intent.putExtra(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
-            intent.putExtra(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
-            intent.putExtra(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
-            intent.putExtra(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
-            intent.putExtra(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
-        }
-        if (sim == Constants.DISABLED)
-            intent.putExtra(Constants.SIM_ACTIVE, mLastActiveSIM);
+        int sim;
+        if (mActiveSIM == Constants.DISABLED)
+            sim = mLastActiveSIM;
         else
-            intent.putExtra(Constants.SIM_ACTIVE, sim);
-        intent.putExtra(Constants.OPERATOR1, mOperatorNames[0]);
-        intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
-        intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
-        mContext.sendBroadcast(intent);
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) && sim != Constants.DISABLED) {
-            long total = 0;
-            int limit = 0;
-            switch (sim) {
-                case Constants.SIM1:
-                    if (mIsNight1)
-                        total = (long) mTrafficData.get(Constants.TOTAL1_N);
-                    else
-                        total = (long) mTrafficData.get(Constants.TOTAL1);
-                    if (mPrefs.getString(Constants.PREF_SIM1[1], "").equals(""))
-                        limit = -1;
-                    break;
-                case Constants.SIM2:
-                    if (mIsNight2)
-                        total = (long) mTrafficData.get(Constants.TOTAL2_N);
-                    else
-                        total = (long) mTrafficData.get(Constants.TOTAL2);
-                    if (mPrefs.getString(Constants.PREF_SIM2[1], "").equals(""))
-                        limit = -1;
-                    break;
-                case Constants.SIM3:
-                    if (mIsNight3)
-                        total = (long) mTrafficData.get(Constants.TOTAL3_N);
-                    else
-                        total = (long) mTrafficData.get(Constants.TOTAL3);
-                    if (mPrefs.getString(Constants.PREF_SIM3[1], "").equals(""))
-                        limit = -1;
-                    break;
+            sim = mActiveSIM;
+        if (sim >= 0) {
+            Intent intent = new Intent(Constants.TRAFFIC_BROADCAST_ACTION);
+            intent.putExtra(Constants.WIDGET_IDS, CustomApplication.getWidgetIds(Constants.TRAFFIC));
+            intent.putExtra(Constants.SPEEDRX, speedRX);
+            intent.putExtra(Constants.SPEEDTX, speedTX);
+            intent.putExtra(Constants.SIM1RX, (long) mTrafficData.get(Constants.SIM1RX));
+            intent.putExtra(Constants.SIM1TX, (long) mTrafficData.get(Constants.SIM1TX));
+            intent.putExtra(Constants.TOTAL1, (long) mTrafficData.get(Constants.TOTAL1));
+            intent.putExtra(Constants.SIM1RX_N, (long) mTrafficData.get(Constants.SIM1RX_N));
+            intent.putExtra(Constants.SIM1TX_N, (long) mTrafficData.get(Constants.SIM1TX_N));
+            intent.putExtra(Constants.TOTAL1_N, (long) mTrafficData.get(Constants.TOTAL1_N));
+            if (mSimQuantity >= 2) {
+                intent.putExtra(Constants.SIM2RX, (long) mTrafficData.get(Constants.SIM2RX));
+                intent.putExtra(Constants.SIM2TX, (long) mTrafficData.get(Constants.SIM2TX));
+                intent.putExtra(Constants.TOTAL2, (long) mTrafficData.get(Constants.TOTAL2));
+                intent.putExtra(Constants.SIM2RX_N, (long) mTrafficData.get(Constants.SIM2RX_N));
+                intent.putExtra(Constants.SIM2TX_N, (long) mTrafficData.get(Constants.SIM2TX_N));
+                intent.putExtra(Constants.TOTAL2_N, (long) mTrafficData.get(Constants.TOTAL2_N));
             }
-            if (mPrefs.getString(Constants.PREF_OTHER[39], "1").equals("0")) {
-                if (limit < 0)
-                    total = -1;
-                else
-                    total = mLimits[sim] - total;
+            if (mSimQuantity == 3) {
+                intent.putExtra(Constants.SIM3RX, (long) mTrafficData.get(Constants.SIM3RX));
+                intent.putExtra(Constants.SIM3TX, (long) mTrafficData.get(Constants.SIM3TX));
+                intent.putExtra(Constants.TOTAL3, (long) mTrafficData.get(Constants.TOTAL3));
+                intent.putExtra(Constants.SIM3RX_N, (long) mTrafficData.get(Constants.SIM3RX_N));
+                intent.putExtra(Constants.SIM3TX_N, (long) mTrafficData.get(Constants.SIM3TX_N));
+                intent.putExtra(Constants.TOTAL3_N, (long) mTrafficData.get(Constants.TOTAL3_N));
+            }
+            intent.putExtra(Constants.SIM_ACTIVE, sim);
+            intent.putExtra(Constants.OPERATOR1, mOperatorNames[0]);
+            intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
+            intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
+            mContext.sendBroadcast(intent);
+            if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) && sim != Constants.DISABLED) {
+                long total = 0;
+                int limit = 0;
+                switch (sim) {
+                    case Constants.SIM1:
+                        if (mIsNight1)
+                            total = (long) mTrafficData.get(Constants.TOTAL1_N);
+                        else
+                            total = (long) mTrafficData.get(Constants.TOTAL1);
+                        if (mPrefs.getString(Constants.PREF_SIM1[1], "").equals(""))
+                            limit = -1;
+                        break;
+                    case Constants.SIM2:
+                        if (mIsNight2)
+                            total = (long) mTrafficData.get(Constants.TOTAL2_N);
+                        else
+                            total = (long) mTrafficData.get(Constants.TOTAL2);
+                        if (mPrefs.getString(Constants.PREF_SIM2[1], "").equals(""))
+                            limit = -1;
+                        break;
+                    case Constants.SIM3:
+                        if (mIsNight3)
+                            total = (long) mTrafficData.get(Constants.TOTAL3_N);
+                        else
+                            total = (long) mTrafficData.get(Constants.TOTAL3);
+                        if (mPrefs.getString(Constants.PREF_SIM3[1], "").equals(""))
+                            limit = -1;
+                        break;
+                }
+                if (mPrefs.getString(Constants.PREF_OTHER[39], "1").equals("0")) {
+                    if (limit < 0)
+                        total = -1;
+                    else
+                        total = mLimits[sim] - total;
                 /*if (total < 0)
                     total = 0;*/
+                }
+                Bundle bundle = new Bundle();
+                bundle.putLong("total", total);
+                bundle.putBoolean("flash", mFlashPreOverLimit[sim]);
+                bundle.putLong(Constants.SPEEDRX, speedRX);
+                bundle.putLong(Constants.SPEEDTX, speedTX);
+                if (!CustomApplication.isMyServiceRunning(FloatingWindowService.class))
+                    FloatingWindowService.showFloatingWindow(mContext, mPrefs);
+                StandOutWindow.sendData(mContext, FloatingWindowService.class,
+                        mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID), Constants.FLOATING_WINDOW, bundle, null, -1);
             }
-            Bundle bundle = new Bundle();
-            bundle.putLong("total", total);
-            bundle.putBoolean("flash", mFlashPreOverLimit[sim]);
-            bundle.putLong(Constants.SPEEDRX, speedRX);
-            bundle.putLong(Constants.SPEEDTX, speedTX);
-            if (!CustomApplication.isMyServiceRunning(FloatingWindowService.class))
-                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
-            StandOutWindow.sendData(mContext, FloatingWindowService.class,
-                    mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID), Constants.FLOATING_WINDOW, bundle, null, -1);
         }
     }
 
