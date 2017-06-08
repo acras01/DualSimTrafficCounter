@@ -23,7 +23,7 @@
     <string name="period_value">Період обчислення</string>
     <string name="received">Отримано</string>
     <string name="reset">Скидання</string>
-    <string name="round">Точність обчислення (%)</string>
+    <string name="round">Зменшити ліміт на (%)</string>
     <string name="service_disabled">Сервіс зупинено користувачем</string>
     <string name="tip">Після довгої перерви в роботі сервісу рекомендується встановити обсяг отриманого/відправленого трафіку вручну. Для отримання актуальної інформації про обсяги використовуйте меню Налаштування - Використання даних.</string>
     <string name="count_stopped_tip">Підрахунок було зупинено через досягнення ліміту. Ви можете вручну вімкнути мобільні дані для іншої SIM-карти. В іншому випадку, мобільні дані буде ввімкнено на початку наступного звітного періоду (день/місяць) відповідно до Ваших налаштувань. Якщо Ви збільшите ліміт, мобільні дані буде автоматично ввімкнено.</string>
@@ -127,11 +127,11 @@
     <string name="operator_round">Округлення трафіку</string>
     <string name="days">дн.</string>
     <string name="view_result">Результат</string>
-    <string name="show_logo_in_statusbar">Відображати лого оператора замість іконки додатку в статус барі</string>
+    <string name="show_logo_in_statusbar">Відображати лого оператора замість іконки додатку в статус барі та панелi повiдомлень</string>
     <string name="name_sim1">Назва для SIM1</string>
     <string name="name_sim2">Назва для SIM2</string>
     <string name="name_sim3">Назва для SIM3</string>
-    <string name="show_logo">Лого операторів в статусбарі</string>
+    <string name="show_logo">Лого операторів в статусбарі/панелі повідомлень</string>
     <string name="go_to_settings">Перейти в Налаштування - Використання даних</string>
     <string name="ask_for_logo">Додати своє лого</string>
     <string name="ask_for_logo_sum">Лист розробнику з проханням додати своє лого</string>
