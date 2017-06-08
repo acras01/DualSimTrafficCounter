@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
@@ -39,7 +40,7 @@ public class CustomNotification extends Notification {
             settingsIntent.setAction(Constants.SETTINGS_TAP);
             piSettings = PendingIntent.getBroadcast(context, TAP, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+            //Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
             Intent hideIntent = new Intent(context, NotificationTapReceiver.class);
             hideIntent.setAction(Constants.HIDE);
             PendingIntent piHide = PendingIntent.getBroadcast(context, TAP, hideIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -48,7 +49,7 @@ public class CustomNotification extends Notification {
                     .setContentIntent(piHide)
                     .setWhen(System.currentTimeMillis())
                     .setOngoing(true)
-                    .setLargeIcon(bm)
+                    //.setLargeIcon(bm)
                     .setContentTitle(context.getString(R.string.app_name));
         }
         return mBuilder;
@@ -70,7 +71,9 @@ public class CustomNotification extends Notification {
             else
                 activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
         }
-        b.setSmallIcon(getOperatorLogoID(context, activeSIM));
+        Object[] icon = getOperatorLogoID(context, activeSIM);
+        b.setSmallIcon((int) icon[0]);
+        b.setLargeIcon((Bitmap )icon[1]);
         b.setPriority(mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX :
                 NotificationCompat.PRIORITY_MIN);
         b.setContentText(traffic);
@@ -95,7 +98,11 @@ public class CustomNotification extends Notification {
         return new NotificationCompat.BigTextStyle(b).bigText(bigText).build();
     }
 
-    private static int getOperatorLogoID(Context context, int sim) {
+    private static Object[] getOperatorLogoID(Context context, int sim) {
+        Object[] result = new Object[2];
+        Resources resources = context.getResources();
+        int height = (int) resources.getDimension(android.R.dimen.notification_large_icon_height);
+        int width = (int) resources.getDimension(android.R.dimen.notification_large_icon_width);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
             String[] pref = new String[Constants.PREF_SIM1.length];
             switch (sim) {
@@ -109,12 +116,19 @@ public class CustomNotification extends Notification {
                     pref = Constants.PREF_SIM3;
                     break;
             }
-            if (mPrefs.getString(pref[23], "none").equals("auto"))
-                return context.getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, sim), "drawable", context.getPackageName());
-            else
-                return context.getResources().getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
-        } else
-            return R.drawable.ic_launcher_small;
+            if (mPrefs.getString(pref[23], "none").equals("auto")) {
+                result[0] = resources.getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, sim), "drawable", context.getPackageName());
+                result[1] = BitmapFactory.decodeResource(resources, context.getResources().getIdentifier(MobileUtils.getLogoFromCode(context, sim), "drawable", context.getPackageName()));
+            } else {
+                result[0] = resources.getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
+                result[1] = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
+            }
+        } else {
+            result[0] = R.drawable.ic_launcher_small;
+            result[1] = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
+        }
+        result[1] = Bitmap.createScaledBitmap((Bitmap) result[1], width, height, false);
+        return result;
     }
 
     public static void setInCallOperatorLogo(boolean state) {

@@ -1811,10 +1811,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         intent.putExtra(Constants.OPERATOR2, mOperatorNames[1]);
         intent.putExtra(Constants.OPERATOR3, mOperatorNames[2]);
         mContext.sendBroadcast(intent);
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) && mActiveSIM != Constants.DISABLED) {
+        int sim = mActiveSIM;
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[32], false) && sim != Constants.DISABLED) {
             long total = 0;
             int limit = 0;
-            switch (mActiveSIM) {
+            switch (sim) {
                 case Constants.SIM1:
                     if (mIsNight1)
                         total = (long) mTrafficData.get(Constants.TOTAL1_N);
@@ -1844,13 +1845,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 if (limit < 0)
                     total = -1;
                 else
-                    total = mLimits[mActiveSIM] - total;
+                    total = mLimits[sim] - total;
                 /*if (total < 0)
                     total = 0;*/
             }
             Bundle bundle = new Bundle();
             bundle.putLong("total", total);
-            bundle.putBoolean("flash", mFlashPreOverLimit[mActiveSIM]);
+            bundle.putBoolean("flash", mFlashPreOverLimit[sim]);
             bundle.putLong(Constants.SPEEDRX, speedRX);
             bundle.putLong(Constants.SPEEDTX, speedTX);
             if (!CustomApplication.isMyServiceRunning(FloatingWindowService.class))
