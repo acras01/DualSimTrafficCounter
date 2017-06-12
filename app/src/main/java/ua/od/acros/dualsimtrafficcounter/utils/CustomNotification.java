@@ -101,8 +101,7 @@ public class CustomNotification extends Notification {
     private static Object[] getOperatorLogoID(Context context, int sim) {
         Object[] result = new Object[2];
         Resources resources = context.getResources();
-        int height = (int) resources.getDimension(android.R.dimen.notification_large_icon_height);
-        int width = (int) resources.getDimension(android.R.dimen.notification_large_icon_width);
+        int dim = 24 * (int) resources.getDisplayMetrics().density;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
             String[] pref = new String[Constants.PREF_SIM1.length];
             switch (sim) {
@@ -127,7 +126,7 @@ public class CustomNotification extends Notification {
             result[0] = R.drawable.ic_launcher_small;
             result[1] = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
         }
-        result[1] = Bitmap.createScaledBitmap((Bitmap) result[1], width, height, false);
+        result[1] = Bitmap.createScaledBitmap((Bitmap) result[1], dim, dim, false);
         return result;
     }
 
