@@ -15,8 +15,8 @@ android {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 16
         targetSdkVersion 16
-        versionCode 119
-        versionName '2.1.9'
+        versionCode 120
+        versionName '2.2.0'
         signingConfig signingConfigs.acras
         vectorDrawables.useSupportLibrary = true
     }
@@ -52,4 +52,5 @@ dependencies {
     compile project(':RootShell')
     compile project(':ambilwarna')
     compile project(':standOut')
+    compile 'com.kirianov.multisim:multisim:2.0'
 }
