@@ -82,6 +82,7 @@ public class MobileUtils {
     private static final int NT_LTE_CMDA_EVDO_GSM_WCDMA = 10;
     private static final int NT_LTE_ONLY = 11;
     private static final int NT_LTE_WCDMA = 12;
+    private static MultiSimTelephonyManager mMultiSimTelephonyManager;
 
     private static Method getMethod (Class c, String name, int params) {
         Method[] cm = c.getDeclaredMethods();
@@ -104,7 +105,9 @@ public class MobileUtils {
             else
                 return 0;
         } else {
-            int simQuantity = new MultiSimTelephonyManager(context).sizeSlots();
+            if (mMultiSimTelephonyManager == null)
+                mMultiSimTelephonyManager = new MultiSimTelephonyManager(context);
+            int simQuantity = mMultiSimTelephonyManager.sizeSlots();
             if (simQuantity == 0) {
                 simQuantity = 1;
                 final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -686,10 +689,11 @@ public class MobileUtils {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            MultiSimTelephonyManager multiSimTelephonyManager = new MultiSimTelephonyManager(context);
+            if (mMultiSimTelephonyManager == null)
+                mMultiSimTelephonyManager = new MultiSimTelephonyManager(context);
             for (int i = 0; i < simQuantity; i++) {
-                if (multiSimTelephonyManager.getSlot(i) != null)
-                    name.add(i, multiSimTelephonyManager.getSlot(i).getNetworkOperatorName());
+                if (mMultiSimTelephonyManager.getSlot(i) != null)
+                    name.add(i, mMultiSimTelephonyManager.getSlot(i).getNetworkOperatorName());
             }
             if (name.size() == 0) {
                 final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -809,10 +813,11 @@ public class MobileUtils {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
                     : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
-            MultiSimTelephonyManager multiSimTelephonyManager = new MultiSimTelephonyManager(context);
+            if (mMultiSimTelephonyManager == null)
+                mMultiSimTelephonyManager = new MultiSimTelephonyManager(context);
             for (int i = 0; i < simQuantity; i++) {
-                if (multiSimTelephonyManager.getSlot(i) != null)
-                    code.add(i, multiSimTelephonyManager.getSlot(i).getSimOperator());
+                if (mMultiSimTelephonyManager.getSlot(i) != null)
+                    code.add(i, mMultiSimTelephonyManager.getSlot(i).getSimOperator());
             }
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (mTelephonyClass == null)
@@ -909,10 +914,11 @@ public class MobileUtils {
                     imei.add(i, tm.getDeviceId(i));
                 }
             else {
-                MultiSimTelephonyManager multiSimTelephonyManager = new MultiSimTelephonyManager(context);
+                if (mMultiSimTelephonyManager == null)
+                    mMultiSimTelephonyManager = new MultiSimTelephonyManager(context);
                 for (int i = 0; i < simQuantity; i++) {
-                    if (multiSimTelephonyManager.getSlot(i) != null)
-                        imei.add(i, multiSimTelephonyManager.getSlot(i).getImei());
+                    if (mMultiSimTelephonyManager.getSlot(i) != null)
+                        imei.add(i, mMultiSimTelephonyManager.getSlot(i).getImei());
                 }
                 if (imei.size() == 0) {
                     if (mTelephonyClass == null)
@@ -1059,10 +1065,11 @@ public class MobileUtils {
                         }
                     }
             } else {
-                MultiSimTelephonyManager multiSimTelephonyManager = new MultiSimTelephonyManager(context);
+                if (mMultiSimTelephonyManager == null) 
+                    mMultiSimTelephonyManager = new MultiSimTelephonyManager(context);
                 for (int i = 0; i < simQuantity; i++) {
-                    if (multiSimTelephonyManager.getSlot(i) != null)
-                        imsi.add(i, multiSimTelephonyManager.getSlot(i).getImsi());
+                    if (mMultiSimTelephonyManager.getSlot(i) != null)
+                        imsi.add(i, mMultiSimTelephonyManager.getSlot(i).getImsi());
                 }
                 if (imsi.size() == 0) {
                     if (CustomApplication.isOldMtkDevice()) {
