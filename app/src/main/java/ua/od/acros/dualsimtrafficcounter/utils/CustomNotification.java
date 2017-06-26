@@ -116,8 +116,9 @@ public class CustomNotification extends Notification {
                     break;
             }
             if (mPrefs.getString(pref[23], "none").equals("auto")) {
-                result[0] = resources.getIdentifier("logo_" + MobileUtils.getLogoFromCode(context, sim), "drawable", context.getPackageName());
-                result[1] = BitmapFactory.decodeResource(resources, context.getResources().getIdentifier(MobileUtils.getLogoFromCode(context, sim), "drawable", context.getPackageName()));
+                String logo = MobileUtils.getLogoFromCode(context, sim);
+                result[0] = resources.getIdentifier("logo_" + logo, "drawable", context.getPackageName());
+                result[1] = BitmapFactory.decodeResource(resources, context.getResources().getIdentifier(logo, "drawable", context.getPackageName()));
             } else {
                 result[0] = resources.getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
                 result[1] = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
