@@ -56,8 +56,7 @@ public class ShowSimDialog extends DialogFragment {
         mOperatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
-        mSimQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        mSimQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
     }
 
     @NonNull

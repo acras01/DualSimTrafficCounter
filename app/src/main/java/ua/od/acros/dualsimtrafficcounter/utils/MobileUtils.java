@@ -54,9 +54,12 @@ public class MobileUtils {
     private static final String GET_SUBID = "getSubIdBySlot";
     private static final String PUT_SETTINGS = "settings put global airplane_mode_on ";
     private static final String FLIGHT_MODE = "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state ";
+
     private static int mLastActiveSIM;
+
     private static ArrayList<Long> mSubIds = null;
     private static Class<?> mTelephonyClass = null;
+
     private static Method mGetDefaultDataSubscriptionInfo = null;
     private static Method mGetDeviceId = null;
     private static Method mGetSubscriberId = null;
@@ -69,6 +72,8 @@ public class MobileUtils {
     private static Method mFrom = null;
     private static Method mGetSimId = null;
     private static Method mGetDefaultDataSubId = null;
+
+    private static WeakReference<MultiSimTelephonyManager> mMultiSimTelephonyManager;
 
     private static final int NT_WCDMA_PREFERRED = 0;             // GSM/WCDMA (WCDMA preferred) (2g/3g)
     private static final int NT_GSM_ONLY = 1;                    // GSM Only (2g)
@@ -83,7 +88,6 @@ public class MobileUtils {
     private static final int NT_LTE_CMDA_EVDO_GSM_WCDMA = 10;
     private static final int NT_LTE_ONLY = 11;
     private static final int NT_LTE_WCDMA = 12;
-    private static WeakReference<MultiSimTelephonyManager> mMultiSimTelephonyManager;
 
     private static Method getMethod (Class c, String name, int params) {
         Method[] cm = c.getDeclaredMethods();
@@ -106,14 +110,9 @@ public class MobileUtils {
             else
                 return 0;
         } else {
-            int simQuantity = 0;
-            try {
-                if (mMultiSimTelephonyManager == null || mMultiSimTelephonyManager.get() == null)
-                    mMultiSimTelephonyManager = new WeakReference<>(new MultiSimTelephonyManager(context));
-                simQuantity = mMultiSimTelephonyManager.get().sizeSlots();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            if (mMultiSimTelephonyManager == null || mMultiSimTelephonyManager.get() == null)
+                mMultiSimTelephonyManager = new WeakReference<>(new MultiSimTelephonyManager(context));
+            int simQuantity = mMultiSimTelephonyManager.get().sizeSlots();
             if (simQuantity == 0) {
                 simQuantity = 1;
                 final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -297,8 +296,7 @@ public class MobileUtils {
             }
         } else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
-                    : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+            int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
             if (simQuantity > 1) {
                 final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
@@ -506,8 +504,7 @@ public class MobileUtils {
 
     public static int getActiveSimForCall(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (mTelephonyClass == null)
             try {
@@ -683,8 +680,7 @@ public class MobileUtils {
         String out = "";
         ArrayList<String> name = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -809,8 +805,7 @@ public class MobileUtils {
     private static ArrayList<String> getOperatorCodes(Context context) {
         ArrayList<String> code = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -914,8 +909,7 @@ public class MobileUtils {
     static ArrayList<String> getDeviceIds(Context context) {
         ArrayList<String> imei = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -1050,8 +1044,7 @@ public class MobileUtils {
     public static ArrayList<String> getSimIds(Context context) {
         ArrayList<String> imsi = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {

@@ -32,8 +32,7 @@ public class ResetReceiver extends BroadcastReceiver {
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
         wl.acquire();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (prefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             mIMSI = MobileUtils.getSimIds(context);
             CustomApplication.loadCallsPreferences(mIMSI);

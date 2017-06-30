@@ -58,8 +58,7 @@ public class OnOffDialog extends DialogFragment {
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (CustomApplication.canToggleOn()) {
-            int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                    : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+            int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
             if (simQuantity >= 1)
                 sim1rb.setEnabled(true);
             if (simQuantity >= 2)

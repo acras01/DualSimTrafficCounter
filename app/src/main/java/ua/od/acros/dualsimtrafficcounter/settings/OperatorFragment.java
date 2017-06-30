@@ -38,8 +38,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        int simNumber = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simNumber = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             mIMSI = MobileUtils.getSimIds(mContext);

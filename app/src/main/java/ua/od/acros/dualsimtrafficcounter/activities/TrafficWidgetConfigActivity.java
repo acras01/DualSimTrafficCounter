@@ -108,8 +108,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             // Now recreate for it to take effect
             recreate();
         }
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(prefsWidget.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
 
         mEdit = prefsWidget.edit();
         if (prefsWidget.getAll().size() == 0) {

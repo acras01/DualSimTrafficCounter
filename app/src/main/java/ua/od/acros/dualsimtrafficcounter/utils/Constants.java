@@ -77,7 +77,7 @@ public class Constants {
             "hud_id", "hud_remain", "hud_move", "hud_mobile_data", "hud_speed", //42
             "manual_sim", "save_profiles_traffic", "save_profiles_calls", "last_sim", // 46
             "auto_load", "traffic_running", "calls_running", "show_buttons", "choose_actions", //51
-            "hud_flash", "hud_info", "hud_x_relative"}; //54
+            "hud_flash", "hud_info", "hud_x_relative", "sim_quantity"}; //55
     public static final String[] PREF_WIDGET_TRAFFIC = {"stub", "mNames", "info", "speed", "icons", //4
             "logo1", "logo2", "logo3", //7
             "user_pick1", "user_pick2", "user_pick3", //10

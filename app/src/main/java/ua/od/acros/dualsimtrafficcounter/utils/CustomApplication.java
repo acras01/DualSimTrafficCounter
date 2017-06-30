@@ -207,8 +207,7 @@ public class CustomApplication extends Application {
         mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (context.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
-        int simQuantity = preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
         mCanToggleOn = isOldMtkDevice() ||
                 (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && simQuantity == 1);
 
@@ -693,8 +692,7 @@ public class CustomApplication extends Application {
     public static void loadTrafficPreferences(ArrayList imsi) {
         Context context = mWeakReference.get();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
         String path = context.getFilesDir().getParent() + "/shared_prefs/";
         SharedPreferences.Editor editor = preferences.edit();
         SharedPreferences prefSim;
@@ -745,8 +743,7 @@ public class CustomApplication extends Application {
     public static void loadCallsPreferences(ArrayList imsi) {
         Context context = mWeakReference.get();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
         String path = context.getFilesDir().getParent() + "/shared_prefs/";
         SharedPreferences.Editor editor = preferences.edit();
         SharedPreferences prefSim;

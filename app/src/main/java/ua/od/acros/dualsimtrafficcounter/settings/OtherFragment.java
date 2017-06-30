@@ -148,6 +148,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
+
         if (key.equals(Constants.PREF_OTHER[25])) {
             AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
             DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
@@ -170,11 +171,25 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 am.cancel(piReset);
             }
         }
+
         if (key.equals(Constants.PREF_OTHER[12]) && CustomApplication.isMyServiceRunning(WatchDogService.class)) {
             Intent i = new Intent(mContext, WatchDogService.class);
             mContext.stopService(i);
             mContext.startService(i);
         }
+
+        if (key.equals(Constants.PREF_OTHER[13]) || key.equals(Constants.PREF_OTHER[14])) {
+            sharedPreferences.edit()
+                .putInt(Constants.PREF_OTHER[55], sharedPreferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
+                        : Integer.valueOf(sharedPreferences.getString(Constants.PREF_OTHER[14], "1")))
+                .apply();
+            if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
+                Intent i = new Intent(mContext, TrafficCountService.class);
+                mContext.stopService(i);
+                mContext.startService(i);
+            }
+        }
+
         if (key.equals(Constants.PREF_OTHER[12])) {
             Intent i;
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
@@ -187,6 +202,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 mContext.startService(i);
             }
         }
+
         if (key.equals(Constants.PREF_OTHER[25])) {
             if (sharedPreferences.getBoolean(key, false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                     !Settings.canDrawOverlays(mContext)) {
@@ -195,6 +211,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL);
             }
         }
+
         boolean autoLoad = sharedPreferences.getBoolean(Constants.PREF_OTHER[47], false);
         boolean floatingWindow = sharedPreferences.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !sharedPreferences.getBoolean(Constants.PREF_OTHER[41], false);
@@ -210,10 +227,12 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             } else
                 show = floatingWindow && bool;
         }
+
         if (key.contains("hud") && !(key.equals(Constants.PREF_OTHER[32]) ||
                 key.equals(Constants.PREF_OTHER[36]) || key.equals(Constants.PREF_OTHER[37]) ||
                 key.equals(Constants.PREF_OTHER[54]) || key.equals(Constants.PREF_OTHER[38])))
             show = bool;
+
         if (key.contains("hud") && !(key.equals(Constants.PREF_OTHER[36]) || key.equals(Constants.PREF_OTHER[37]) ||
                 key.equals(Constants.PREF_OTHER[54]) || key.equals(Constants.PREF_OTHER[38]))) {
             if (show)

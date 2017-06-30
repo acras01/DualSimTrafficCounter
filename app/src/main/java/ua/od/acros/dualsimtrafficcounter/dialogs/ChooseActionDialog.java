@@ -22,7 +22,6 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class ChooseActionDialog extends AppCompatActivity {
 
@@ -54,8 +53,7 @@ public class ChooseActionDialog extends AppCompatActivity {
         AppCompatRadioButton change = (AppCompatRadioButton) view.findViewById(R.id.actionchange);
         AppCompatRadioButton mobileData = (AppCompatRadioButton) view.findViewById(R.id.actionmobiledata);
         AppCompatRadioButton off = (AppCompatRadioButton) view.findViewById(R.id.actionoff);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ||
                 !CustomApplication.canToggleOn() ||
                 prefs.getBoolean(Constants.PREF_OTHER[10], false) || simQuantity == 1)

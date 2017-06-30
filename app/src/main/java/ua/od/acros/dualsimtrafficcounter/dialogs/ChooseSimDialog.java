@@ -60,8 +60,7 @@ public class ChooseSimDialog extends AppCompatActivity {
         sim2rb.setText(operatorNames[1]);
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
-        int simQuantity = prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (simQuantity == 1) {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);

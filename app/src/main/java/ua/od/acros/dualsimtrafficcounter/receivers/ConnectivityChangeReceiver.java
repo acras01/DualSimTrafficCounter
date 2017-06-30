@@ -23,6 +23,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit()
+                .putInt(Constants.PREF_OTHER[55], prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
+                        : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1")))
+                .apply();
         boolean floatingWindow = prefs.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !prefs.getBoolean(Constants.PREF_OTHER[41], false) && !prefs.getBoolean(Constants.PREF_OTHER[47], false);
         boolean bool = floatingWindow && !alwaysShow;

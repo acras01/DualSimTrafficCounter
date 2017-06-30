@@ -65,8 +65,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
             if (mIMSI == null)

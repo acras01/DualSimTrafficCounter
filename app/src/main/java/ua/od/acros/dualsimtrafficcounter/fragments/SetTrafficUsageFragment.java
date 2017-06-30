@@ -85,8 +85,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        int simQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        int simQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
         if (simQuantity == 1) {
             sim2rb.setEnabled(false);
             sim3rb.setEnabled(false);

@@ -86,8 +86,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mPrefs.edit()
                 .putBoolean(Constants.PREF_OTHER[49], true)
                 .apply();
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
             mIMSI = MobileUtils.getSimIds(mContext);
             CustomApplication.loadCallsPreferences(mIMSI);
@@ -321,8 +320,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5])) {
-            int simQuantity = sharedPreferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                    : Integer.valueOf(sharedPreferences.getString(Constants.PREF_OTHER[14], "1"));
+            int simQuantity = sharedPreferences.getInt(Constants.PREF_OTHER[55], 1);
             LocalDateTime now = DateTime.now().toLocalDateTime();
             String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
                     Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};

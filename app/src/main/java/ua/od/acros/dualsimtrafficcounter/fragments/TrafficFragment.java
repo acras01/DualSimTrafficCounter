@@ -90,8 +90,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
         if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
             mIMSI = MobileUtils.getSimIds(mContext);
         mTrafficData = new ContentValues();

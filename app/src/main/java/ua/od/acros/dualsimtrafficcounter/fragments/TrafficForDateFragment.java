@@ -84,8 +84,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mSimQuantity = mPrefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                : Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[14], "1"));
+        mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
         AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
         AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
