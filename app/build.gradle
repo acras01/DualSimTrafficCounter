@@ -52,5 +52,5 @@ dependencies {
     compile project(':RootShell')
     compile project(':ambilwarna')
     compile project(':standOut')
-    compile 'com.kirianov.multisim:multisim:2.0'
+    compile project(':multisim-2.0')
 }

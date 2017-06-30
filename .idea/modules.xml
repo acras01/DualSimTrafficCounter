@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/acra/acra.iml" filepath="$PROJECT_DIR$/acra/acra.iml" />
       <module fileurl="file://$PROJECT_DIR$/ambilwarna/ambilwarna.iml" filepath="$PROJECT_DIR$/ambilwarna/ambilwarna.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multisim-2.0/multisim-2.0.iml" filepath="$PROJECT_DIR$/multisim-2.0/multisim-2.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/standOut/standOut.iml" filepath="$PROJECT_DIR$/standOut/standOut.iml" />
     </modules>
   </component>
