@@ -106,9 +106,14 @@ public class MobileUtils {
             else
                 return 0;
         } else {
-            if (mMultiSimTelephonyManager == null || mMultiSimTelephonyManager.get() == null)
-                mMultiSimTelephonyManager = new WeakReference<>(new MultiSimTelephonyManager(context));
-            int simQuantity = mMultiSimTelephonyManager.get().sizeSlots();
+            int simQuantity = 0;
+            try {
+                if (mMultiSimTelephonyManager == null || mMultiSimTelephonyManager.get() == null)
+                    mMultiSimTelephonyManager = new WeakReference<>(new MultiSimTelephonyManager(context));
+                simQuantity = mMultiSimTelephonyManager.get().sizeSlots();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (simQuantity == 0) {
                 simQuantity = 1;
                 final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
