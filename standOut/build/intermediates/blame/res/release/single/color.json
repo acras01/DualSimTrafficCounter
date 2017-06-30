@@ -1,11 +1,11 @@
 [
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_secondary_text_material_dark.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_secondary_text_material_dark.xml"
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_default.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_default.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_hint_foreground_material_light.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_hint_foreground_material_light.xml"
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_secondary_text_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_secondary_text_material_dark.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_secondary_text_material_light.xml",
@@ -14,10 +14,6 @@
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_switch_track.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_switch_track.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_default.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_default.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_disable_only_material_dark.xml",
@@ -32,24 +28,20 @@
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_switch_thumb.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_seek_thumb.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_seek_thumb.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_search_url_text.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_search_url_text.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_spinner.xml",
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_spinner.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_spinner.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_edittext.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_edittext.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_material_light.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_btn_colored_borderless_text_material.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_btn_colored_borderless_text_material.xml"
-    },
-    {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_dark.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_material_dark.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_edittext.xml",
@@ -60,12 +52,92 @@
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_btn_checkable.xml"
     },
     {
-        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_light.xml",
-        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_material_light.xml"
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\switch_thumb_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\switch_thumb_material_light.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_secondary_text_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_secondary_text_material_light.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_search_url_text.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_search_url_text.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_btn_colored_text_material.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_btn_colored_text_material.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_seek_thumb.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_seek_thumb.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_hint_foreground_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_hint_foreground_material_light.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_hint_foreground_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_hint_foreground_material_dark.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_hint_foreground_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_hint_foreground_material_light.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_btn_checkable.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_btn_checkable.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_disable_only_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_disable_only_material_light.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_secondary_text_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_secondary_text_material_dark.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_switch_track.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_switch_track.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_default.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_default.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_btn_colored_borderless_text_material.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_btn_colored_borderless_text_material.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_switch_thumb.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_switch_thumb.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_seek_thumb.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_seek_thumb.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_disable_only_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_disable_only_material_dark.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_search_url_text.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_search_url_text.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_tint_spinner.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_tint_spinner.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_material_dark.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\switch_thumb_material_light.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\switch_thumb_material_light.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_material_light.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_disable_only_material_light.xml",
@@ -74,6 +146,14 @@
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_hint_foreground_material_dark.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_hint_foreground_material_dark.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\abc_primary_text_material_dark.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\switch_thumb_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color\\switch_thumb_material_dark.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color\\abc_btn_colored_text_material.xml",

@@ -1,1 +1,1 @@
-include ':app', ':acra', ':XposedBridge', ':RootShell', ':ambilwarna', ':standOut', ':multisim-2.0'
+include ':app', ':acra', ':XposedBridge', ':RootShell', ':ambilwarna', ':standOut'

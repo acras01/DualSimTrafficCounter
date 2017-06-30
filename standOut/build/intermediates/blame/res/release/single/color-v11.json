@@ -1,10 +1,18 @@
 [
     {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_dark.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color-v11\\abc_background_cache_hint_selector_material_dark.xml"
+    },
+    {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_light.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color-v11\\abc_background_cache_hint_selector_material_light.xml"
     },
     {
         "merged": "D:\\android\\development\\DualSimTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_dark.xml",
         "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color-v11\\abc_background_cache_hint_selector_material_dark.xml"
+    },
+    {
+        "merged": "D:\\android\\development\\DualSIMTrafficCounter\\standOut\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_light.xml",
+        "source": "C:\\Users\\Пользователь\\.android\\build-cache\\5ba6cba337c8c3cb256362fb5e54b851c181f10d\\output\\res\\color-v11\\abc_background_cache_hint_selector_material_light.xml"
     }
 ]
