@@ -238,7 +238,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mIsOutgoing)
                     switch (state) {
                         case TelephonyManager.CALL_STATE_OFFHOOK:
-                            final int sim = MobileUtils.getActiveSimForCall(ctx);
+                            final int sim = MobileUtils.getActiveSimForCall(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
                             updateNotification();
                             mLastActiveSIM = sim;
                             /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";

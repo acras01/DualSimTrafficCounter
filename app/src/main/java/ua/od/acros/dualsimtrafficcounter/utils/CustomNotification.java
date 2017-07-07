@@ -64,7 +64,7 @@ public class CustomNotification extends Notification {
         NotificationCompat.Builder b = newInstance(context);
         int activeSIM;
         if (mInCall)
-            activeSIM = MobileUtils.getActiveSimForCall(context);
+            activeSIM = MobileUtils.getActiveSimForCall(context, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
         else {
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                 activeSIM = TrafficCountService.getActiveSIM();

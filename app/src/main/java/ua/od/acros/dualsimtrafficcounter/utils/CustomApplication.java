@@ -92,8 +92,15 @@ public class CustomApplication extends Application {
         if (preferences.getBoolean(Constants.PREF_OTHER[45], false))
             loadCallsPreferences(imsi);
 
-        Map<String, ?> keys = preferences.getAll();
+
         SharedPreferences.Editor edit = preferences.edit();
+
+        if (!preferences.contains(Constants.PREF_OTHER[55]))
+            edit.putInt(Constants.PREF_OTHER[55], preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
+                    : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1")))
+                    .apply();
+
+        Map<String, ?> keys = preferences.getAll();
         if (keys.get(Constants.PREF_OTHER[28]) != null && keys.get(Constants.PREF_OTHER[28]).getClass().equals(Boolean.class)) {
             if (preferences.getBoolean(Constants.PREF_OTHER[28], true))
                 edit.remove(Constants.PREF_OTHER[28])

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
@@ -73,7 +74,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         sim2rb.setText(mOperatorNames[1]);
         AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
-        SharedPreferences prefs = mContext.getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (simQuantity == 1) {
             sim2rb.setEnabled(false);

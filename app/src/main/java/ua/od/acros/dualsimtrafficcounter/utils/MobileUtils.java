@@ -493,9 +493,7 @@ public class MobileUtils {
         return sim;
     }
 
-    public static int getActiveSimForCall(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
+    public static int getActiveSimForCall(Context context, int simQuantity) {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (mTelephonyClass == null)
             try {
@@ -881,10 +879,8 @@ public class MobileUtils {
     }
 
     @SuppressLint("HardwareIds")
-    static ArrayList<String> getDeviceIds(Context context) {
+    static ArrayList<String> getDeviceIds(Context context, int simQuantity) {
         ArrayList<String> imei = new ArrayList<>();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -1344,6 +1340,7 @@ public class MobileUtils {
 
     private static void setMobileDataEnabled(Context context, boolean enabled, int sim) {
         try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             final ConnectivityManager conman = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             final Class conmanClass = Class.forName(conman.getClass().getName());
             final Field connectivityManagerField = conmanClass.getDeclaredField("mService");
@@ -1359,7 +1356,7 @@ public class MobileUtils {
                     else if (m.getParameterTypes().length == 2) {
                         if (!enabled)
                             sim = Constants.SIM1;
-                        final Object[] params = {getDeviceIds(context).get(sim), enabled};
+                        final Object[] params = {getDeviceIds(context, prefs.getInt(Constants.PREF_OTHER[55], 1)).get(sim), enabled};
                         m.invoke(connectivityManager, params);
                     }
                 }

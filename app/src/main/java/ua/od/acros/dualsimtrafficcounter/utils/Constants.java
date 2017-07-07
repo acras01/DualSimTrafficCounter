@@ -32,7 +32,6 @@ public class Constants {
     public static final String TRAFFIC_BROADCAST_ACTION = "ua.od.acros.dualsimtrafficcounter.DATA_BROADCAST";
     public static final String CALLS_BROADCAST_ACTION = "ua.od.acros.dualsimtrafficcounter.CALLS_BROADCAST";
     public static final String TIP = "tip";
-    public static final String APP_PREFERENCES = "ua.od.acros.dualsimtrafficcounter_preferences";
     public static final String WIDGET_PREFERENCES = "_widget_preferences";
     static final String DATA_DEFAULT_SIM = "android.intent.action.DATA_DEFAULT_SIM";
     public static final String LAST_ACTIVE_SIM = "last_sim";
