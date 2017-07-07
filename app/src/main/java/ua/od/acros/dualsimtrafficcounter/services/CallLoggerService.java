@@ -67,6 +67,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     private ArrayList<String> mIMSI = null;
     private Service mService = null;
     private Intent mDialogIntent = null;
+    private boolean mIsResetNeeded1, mIsResetNeeded2, mIsResetNeeded3;
 
     public CallLoggerService() {
     }
@@ -171,37 +172,92 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         }
     }
 
-    private void startTask(String number) {
-        LocalDateTime now = DateTime.now().toLocalDateTime();
-        LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], now.toString(Constants.DATE_TIME_FORMATTER)));
-        boolean isResetNeeded1 = mPrefs.getBoolean(Constants.PREF_SIM1_CALLS[9], true);
+    private void checkIfResetNeeded(boolean settingsChanged) {
+        String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
+                Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
+        LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], "1970-01-01 00:00"));
+        LocalDateTime nowDate = DateTime.now().toLocalDateTime();
+        if (resetTime1.isAfter(nowDate) || settingsChanged) {
+            resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
+            if (resetTime1 != null) {
+                mPrefs.edit()
+                        .putString(Constants.PREF_SIM1_CALLS[8], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                        .apply();
+                if (!settingsChanged) {
+                    mIsResetNeeded1 = true;
+                    mPrefs.edit()
+                            .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
+                            .apply();
+                }
+            }
+        }
+        if (mSimQuantity >= 2) {
+            simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
+                    Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[9], "1970-01-01 00:00"));
+            if (resetTime2.isAfter(nowDate) || settingsChanged) {
+                resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
+                if (resetTime2 != null) {
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM2_CALLS[8], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                    if (!settingsChanged) {
+                        mIsResetNeeded2 = true;
+                        mPrefs.edit()
+                                .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded1)
+                                .apply();
+                    }
+                }
+            }
+        }
+        if (mSimQuantity == 3) {
+            simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
+                    Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+            if (resetTime3.isAfter(nowDate) || settingsChanged) {
+                resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
+                if (resetTime3 != null) {
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM3_CALLS[8], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                    if (!settingsChanged) {
+                        mIsResetNeeded3 = true;
+                        mPrefs.edit()
+                                .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded1)
+                                .apply();
+                    }
+                }
+            }
+        }
+    }
 
-        if (now.compareTo(resetTime1) >= 0 && isResetNeeded1) {
+    private void startTask(String number) {
+        checkIfResetNeeded(false);
+        LocalDateTime now = DateTime.now().toLocalDateTime();
+        if (mIsResetNeeded1) {
             mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
             mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
             mCallsData.put(Constants.CALLS1, 0L);
             mCallsData.put(Constants.CALLS1_EX, 0L);
             writeCallsDataToDatabase(Constants.SIM1);
-            isResetNeeded1 = false;
+            mIsResetNeeded1 = false;
             mPrefs.edit()
-                    .putBoolean(Constants.PREF_SIM1_CALLS[9], isResetNeeded1)
+                    .putBoolean(Constants.PREF_SIM1_CALLS[9], mIsResetNeeded1)
                     .putString(Constants.PREF_SIM1_CALLS[10], now.toString(Constants.DATE_TIME_FORMATTER))
                     .apply();
             if (mPrefs.getBoolean(Constants.PREF_OTHER[31], false))
                 pushResetNotification(Constants.SIM1);
         }
         if (mSimQuantity >= 2) {
-            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[8], now.toString(Constants.DATE_TIME_FORMATTER)));
-            boolean isResetNeeded2 = mPrefs.getBoolean(Constants.PREF_SIM2_CALLS[9], true);
-            if (now.compareTo(resetTime2) >= 0 && isResetNeeded2) {
+            if (mIsResetNeeded2) {
                 mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
                 mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
                 mCallsData.put(Constants.CALLS2, 0L);
                 mCallsData.put(Constants.CALLS2_EX, 0L);
                 writeCallsDataToDatabase(Constants.SIM2);
-                isResetNeeded2 = false;
+                mIsResetNeeded2 = false;
                 mPrefs.edit()
-                        .putBoolean(Constants.PREF_SIM2_CALLS[9], isResetNeeded2)
+                        .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
                         .putString(Constants.PREF_SIM2_CALLS[10], now.toString(Constants.DATE_TIME_FORMATTER))
                         .apply();
                 if (mPrefs.getBoolean(Constants.PREF_OTHER[31], false))
@@ -209,17 +265,15 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             }
         }
         if (mSimQuantity == 3) {
-            LocalDateTime mResetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3_CALLS[8], now.toString(Constants.DATE_TIME_FORMATTER)));
-            boolean isResetNeeded3 = mPrefs.getBoolean(Constants.PREF_SIM3_CALLS[9], true);
-            if (now.compareTo(mResetTime3) >= 0 && isResetNeeded3) {
+            if (mIsResetNeeded3) {
                 mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
                 mCallsData.put(Constants.LAST_TIME, now.toString(Constants.TIME_FORMATTER));
                 mCallsData.put(Constants.CALLS3, 0L);
                 mCallsData.put(Constants.CALLS3_EX, 0L);
                 writeCallsDataToDatabase(Constants.SIM3);
-                isResetNeeded3 = false;
+                mIsResetNeeded3 = false;
                 mPrefs.edit()
-                        .putBoolean(Constants.PREF_SIM3_CALLS[9], isResetNeeded3)
+                        .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
                         .putString(Constants.PREF_SIM3_CALLS[10], now.toString(Constants.DATE_TIME_FORMATTER))
                         .apply();
                 if (mPrefs.getBoolean(Constants.PREF_OTHER[31], false))
@@ -320,39 +374,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5])) {
-            int simQuantity = sharedPreferences.getInt(Constants.PREF_OTHER[55], 1);
-            LocalDateTime now = DateTime.now().toLocalDateTime();
-            String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
-                    Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
-            LocalDateTime resetTime1 = DateUtils.setResetDate(sharedPreferences, simPref);
-            if (resetTime1 != null && resetTime1.isAfter(now)) {
-                sharedPreferences.edit()
-                        .putBoolean(Constants.PREF_SIM1_CALLS[9], true)
-                        .putString(Constants.PREF_SIM1_CALLS[8], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
-                        .apply();
-            }
-            if (simQuantity >= 2) {
-                simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
-                        Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
-                LocalDateTime resetTime2 = DateUtils.setResetDate(sharedPreferences, simPref);
-                if (resetTime2 != null && resetTime2.isAfter(now)) {
-                    sharedPreferences.edit()
-                            .putBoolean(Constants.PREF_SIM2_CALLS[9], true)
-                            .putString(Constants.PREF_SIM2_CALLS[8], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
-                            .apply();
-                }
-            }
-            if (simQuantity == 3) {
-                simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
-                        Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
-                LocalDateTime resetTime3 = DateUtils.setResetDate(sharedPreferences, simPref);
-                if (resetTime3 != null && resetTime3.isAfter(now)) {
-                    sharedPreferences.edit()
-                            .putBoolean(Constants.PREF_SIM3_CALLS[9], true)
-                            .putString(Constants.PREF_SIM3_CALLS[8], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
-                            .apply();
-                }
-            }
+            checkIfResetNeeded(true);
         }
         if (key.equals(Constants.PREF_SIM1_CALLS[1]) || key.equals(Constants.PREF_SIM2_CALLS[1]) || key.equals(Constants.PREF_SIM3_CALLS[1]))
             mLimitHasChanged = true;

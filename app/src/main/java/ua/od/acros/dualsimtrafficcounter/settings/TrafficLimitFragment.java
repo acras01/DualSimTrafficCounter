@@ -18,6 +18,7 @@ import android.text.InputFilter;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -654,6 +656,13 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             mContext.startService(new Intent(mContext, TrafficCountService.class));
         }
 
+        if (! CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
+                (key.equals(Constants.PREF_SIM1[3]) || key.equals(Constants.PREF_SIM1[9]) || key.equals(Constants.PREF_SIM1[10]) ||
+                key.equals(Constants.PREF_SIM2[3]) || key.equals(Constants.PREF_SIM2[9]) || key.equals(Constants.PREF_SIM2[10]) ||
+                key.equals(Constants.PREF_SIM3[3]) || key.equals(Constants.PREF_SIM3[9]) || key.equals(Constants.PREF_SIM3[10]))) {
+            checkIfResetNeeded();
+        }
+
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         DateTime alarmTime;
         //Scheduled ON/OFF
@@ -881,6 +890,44 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         protected void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void checkIfResetNeeded() {
+        String[] simPref = new String[]{Constants.PREF_SIM1[3], Constants.PREF_SIM1[9], Constants.PREF_SIM1[10]};
+        LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+        LocalDateTime nowDate = DateTime.now().toLocalDateTime();
+        if (resetTime1.isAfter(nowDate)) {
+            resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
+            if (resetTime1 != null) {
+                mPrefs.edit()
+                        .putString(Constants.PREF_SIM1[26], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                        .apply();
+            }
+        }
+        if (mSimQuantity >= 2) {
+            simPref = new String[]{Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10]};
+            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
+            if (resetTime2.isAfter(nowDate)) {
+                resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
+                if (resetTime2 != null) {
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM2[26], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
+            }
+        }
+        if (mSimQuantity == 3) {
+            simPref = new String[]{Constants.PREF_SIM3[3], Constants.PREF_SIM3[9], Constants.PREF_SIM3[10]};
+            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+            if (resetTime3.isAfter(nowDate)) {
+                resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
+                if (resetTime3 != null) {
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM3[26], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
+            }
         }
     }
 }

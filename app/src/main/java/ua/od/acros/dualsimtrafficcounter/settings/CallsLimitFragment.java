@@ -14,6 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -27,9 +30,11 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineEditTextPreference;
 import ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference;
+import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomDatabaseHelper;
+import ua.od.acros.dualsimtrafficcounter.utils.DateUtils;
 import ua.od.acros.dualsimtrafficcounter.utils.InputFilterMinMax;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
@@ -253,6 +258,41 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 }
             } else
                 new DeleteTask().execute();
+        }
+        if (!CustomApplication.isMyServiceRunning(CallLoggerService.class) &&
+                (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
+                key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
+                key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5]))) {
+            int simQuantity = sharedPreferences.getInt(Constants.PREF_OTHER[55], 1);
+            LocalDateTime now = DateTime.now().toLocalDateTime();
+            String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
+                    Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
+            LocalDateTime resetTime1 = DateUtils.setResetDate(sharedPreferences, simPref);
+            if (resetTime1 != null && resetTime1.isAfter(now)) {
+                sharedPreferences.edit()
+                        .putString(Constants.PREF_SIM1_CALLS[8], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                        .apply();
+            }
+            if (simQuantity >= 2) {
+                simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
+                        Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+                LocalDateTime resetTime2 = DateUtils.setResetDate(sharedPreferences, simPref);
+                if (resetTime2 != null && resetTime2.isAfter(now)) {
+                    sharedPreferences.edit()
+                            .putString(Constants.PREF_SIM2_CALLS[8], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
+            }
+            if (simQuantity == 3) {
+                simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
+                        Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+                LocalDateTime resetTime3 = DateUtils.setResetDate(sharedPreferences, simPref);
+                if (resetTime3 != null && resetTime3.isAfter(now)) {
+                    sharedPreferences.edit()
+                            .putString(Constants.PREF_SIM3_CALLS[8], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
+            }
         }
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
             int sim = Constants.DISABLED;
