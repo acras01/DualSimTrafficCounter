@@ -194,7 +194,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mSimQuantity >= 2) {
             simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
                     Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
-            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[9], "1970-01-01 00:00"));
+            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[8], "1970-01-01 00:00"));
             if (resetTime2.isAfter(nowDate) || settingsChanged) {
                 resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime2 != null) {
@@ -204,7 +204,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     if (!settingsChanged) {
                         mIsResetNeeded2 = true;
                         mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded1)
+                                .putBoolean(Constants.PREF_SIM2_CALLS[9], mIsResetNeeded2)
                                 .apply();
                     }
                 }
@@ -213,7 +213,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         if (mSimQuantity == 3) {
             simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
                     Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
-            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3_CALLS[8], "1970-01-01 00:00"));
             if (resetTime3.isAfter(nowDate) || settingsChanged) {
                 resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime3 != null) {
@@ -223,7 +223,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     if (!settingsChanged) {
                         mIsResetNeeded3 = true;
                         mPrefs.edit()
-                                .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded1)
+                                .putBoolean(Constants.PREF_SIM3_CALLS[9], mIsResetNeeded3)
                                 .apply();
                     }
                 }
