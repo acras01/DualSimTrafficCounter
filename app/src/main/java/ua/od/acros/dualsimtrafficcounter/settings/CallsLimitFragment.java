@@ -263,36 +263,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                 (key.equals(Constants.PREF_SIM1_CALLS[2]) || key.equals(Constants.PREF_SIM1_CALLS[4]) || key.equals(Constants.PREF_SIM1_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM2_CALLS[2]) || key.equals(Constants.PREF_SIM2_CALLS[4]) || key.equals(Constants.PREF_SIM2_CALLS[5]) ||
                 key.equals(Constants.PREF_SIM3_CALLS[2]) || key.equals(Constants.PREF_SIM3_CALLS[4]) || key.equals(Constants.PREF_SIM3_CALLS[5]))) {
-            int simQuantity = sharedPreferences.getInt(Constants.PREF_OTHER[55], 1);
-            LocalDateTime now = DateTime.now().toLocalDateTime();
-            String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
-                    Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
-            LocalDateTime resetTime1 = DateUtils.setResetDate(sharedPreferences, simPref);
-            if (resetTime1 != null && resetTime1.isAfter(now)) {
-                sharedPreferences.edit()
-                        .putString(Constants.PREF_SIM1_CALLS[8], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
-                        .apply();
-            }
-            if (simQuantity >= 2) {
-                simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
-                        Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
-                LocalDateTime resetTime2 = DateUtils.setResetDate(sharedPreferences, simPref);
-                if (resetTime2 != null && resetTime2.isAfter(now)) {
-                    sharedPreferences.edit()
-                            .putString(Constants.PREF_SIM2_CALLS[8], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
-                            .apply();
-                }
-            }
-            if (simQuantity == 3) {
-                simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
-                        Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
-                LocalDateTime resetTime3 = DateUtils.setResetDate(sharedPreferences, simPref);
-                if (resetTime3 != null && resetTime3.isAfter(now)) {
-                    sharedPreferences.edit()
-                            .putString(Constants.PREF_SIM3_CALLS[8], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
-                            .apply();
-                }
-            }
+            checkIfResetNeeded();
         }
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
             int sim = Constants.DISABLED;
@@ -389,6 +360,47 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         protected void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void checkIfResetNeeded() {
+        String[] simPref = new String[]{Constants.PREF_SIM1_CALLS[2], Constants.PREF_SIM1_CALLS[4],
+                Constants.PREF_SIM1_CALLS[5], Constants.PREF_SIM1_CALLS[8]};
+        LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1_CALLS[8], "1970-01-01 00:00"));
+        LocalDateTime nowDate = DateTime.now().toLocalDateTime();
+        if (resetTime1.isAfter(nowDate)) {
+            resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
+            if (resetTime1 != null) {
+                mPrefs.edit()
+                        .putString(Constants.PREF_SIM1_CALLS[8], resetTime1.toString(Constants.DATE_TIME_FORMATTER))
+                        .apply();
+            }
+        }
+        if (mSimQuantity >= 2) {
+            simPref = new String[]{Constants.PREF_SIM2_CALLS[2], Constants.PREF_SIM2_CALLS[4],
+                    Constants.PREF_SIM2_CALLS[5], Constants.PREF_SIM2_CALLS[8]};
+            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2_CALLS[8], "1970-01-01 00:00"));
+            if (resetTime2.isAfter(nowDate)) {
+                resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
+                if (resetTime2 != null) {
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM2_CALLS[8], resetTime2.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
+            }
+        }
+        if (mSimQuantity == 3) {
+            simPref = new String[]{Constants.PREF_SIM3_CALLS[2], Constants.PREF_SIM3_CALLS[4],
+                    Constants.PREF_SIM3_CALLS[5], Constants.PREF_SIM3_CALLS[8]};
+            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3_CALLS[8], "1970-01-01 00:00"));
+            if (resetTime3.isAfter(nowDate)) {
+                resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
+                if (resetTime3 != null) {
+                    mPrefs.edit()
+                            .putString(Constants.PREF_SIM3_CALLS[8], resetTime3.toString(Constants.DATE_TIME_FORMATTER))
+                            .apply();
+                }
+            }
         }
     }
 }
