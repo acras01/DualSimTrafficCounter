@@ -773,7 +773,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
         if (mNowDate == null)
             mNowDate = DateTime.now().toLocalDateTime();
-        if (resetTime1.isAfter(mNowDate) || settingsChanged) {
+        if (resetTime1.compareTo(mNowDate) >= 0 || settingsChanged) {
             resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
             if (resetTime1 != null) {
                 mPrefs.edit()
@@ -790,7 +790,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (mSimQuantity >= 2) {
             simPref = new String[]{Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10]};
             LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
-            if (resetTime2.isAfter(mNowDate) || settingsChanged) {
+            if (resetTime2.compareTo(mNowDate) >= 0 || settingsChanged) {
                 resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime2 != null) {
                     mPrefs.edit()
@@ -808,7 +808,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         if (mSimQuantity == 3) {
             simPref = new String[]{Constants.PREF_SIM3[3], Constants.PREF_SIM3[9], Constants.PREF_SIM3[10]};
             LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
-            if (resetTime3.isAfter(mNowDate) || settingsChanged) {
+            if (resetTime3.compareTo(mNowDate) >= 0 || settingsChanged) {
                 resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime3 != null) {
                     mPrefs.edit()
