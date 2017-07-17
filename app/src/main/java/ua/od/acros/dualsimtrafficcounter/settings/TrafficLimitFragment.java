@@ -897,7 +897,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         String[] simPref = new String[]{Constants.PREF_SIM1[3], Constants.PREF_SIM1[9], Constants.PREF_SIM1[10]};
         LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
         LocalDateTime nowDate = DateTime.now().toLocalDateTime();
-        if (resetTime1.compareTo(nowDate) >= 0) {
+        if (nowDate.compareTo(resetTime1) >= 0) {
             resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
             if (resetTime1 != null) {
                 mPrefs.edit()
@@ -908,7 +908,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         if (mSimQuantity >= 2) {
             simPref = new String[]{Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10]};
             LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
-            if (resetTime2.compareTo(nowDate) >= 0) {
+            if (nowDate.compareTo(resetTime2) >= 0) {
                 resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime2 != null) {
                     mPrefs.edit()
@@ -920,7 +920,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         if (mSimQuantity == 3) {
             simPref = new String[]{Constants.PREF_SIM3[3], Constants.PREF_SIM3[9], Constants.PREF_SIM3[10]};
             LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
-            if (resetTime3.compareTo(nowDate) >= 0) {
+            if (nowDate.compareTo(resetTime3) >= 0) {
                 resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime3 != null) {
                     mPrefs.edit()
