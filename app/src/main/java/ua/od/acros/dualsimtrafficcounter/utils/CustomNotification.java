@@ -70,7 +70,9 @@ public class CustomNotification extends Notification {
             else
                 activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
         }
-        b.setLargeIcon(getOperatorLogo(context, activeSIM));
+        Object[] icon = getOperatorLogo(context, activeSIM);
+        b.setSmallIcon((int) icon[0]);
+        b.setLargeIcon((Bitmap )icon[1]);
         b.setPriority(mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX :
                 NotificationCompat.PRIORITY_MIN);
         b.setContentText(traffic);
@@ -94,8 +96,8 @@ public class CustomNotification extends Notification {
         return new NotificationCompat.BigTextStyle(b).bigText(bigText).build();
     }
 
-    private static Bitmap getOperatorLogo(Context context, int sim) {
-        Bitmap result;
+    private static Object[] getOperatorLogo(Context context, int sim) {
+        Object[] result = new Object[2];
         Resources resources = context.getResources();
         int dim = 24 * (int) resources.getDisplayMetrics().density;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
@@ -113,13 +115,17 @@ public class CustomNotification extends Notification {
             }
             if (mPrefs.getString(pref[23], "none").equals("auto")) {
                 String logo = MobileUtils.getLogoFromCode(context, sim);
-                result = BitmapFactory.decodeResource(resources, context.getResources().getIdentifier(logo, "drawable", context.getPackageName()));
-            } else
-                result = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
-
-        } else
-            result = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
-        result = Bitmap.createScaledBitmap(result, dim, dim, false);
+                result[0] = resources.getIdentifier("logo_" + logo, "drawable", context.getPackageName());
+                result[1] = BitmapFactory.decodeResource(resources, context.getResources().getIdentifier(logo, "drawable", context.getPackageName()));
+            } else {
+                result[0] = resources.getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
+                result[1] = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
+            }
+        } else {
+            result[0] = R.drawable.ic_launcher_small;
+            result[1] = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
+        }
+        result[1] = Bitmap.createScaledBitmap((Bitmap) result[1], dim, dim, false);
         return result;
     }
 
