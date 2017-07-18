@@ -59,11 +59,10 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
 
         mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
 
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false)) {
-            if (mIMSI == null)
-                mIMSI = MobileUtils.getSimIds(mContext);
+        if (mIMSI == null)
+            mIMSI = MobileUtils.getSimIds(mContext);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
             CustomApplication.loadCallsPreferences(mIMSI);
-        }
 
         addPreferencesFromResource(R.xml.calls_settings);
 

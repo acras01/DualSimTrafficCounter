@@ -69,11 +69,10 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
         mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
 
-        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {
-            if (mIMSI == null)
-                mIMSI = MobileUtils.getSimIds(mContext);
+        if (mIMSI == null)
+            mIMSI = MobileUtils.getSimIds(mContext);
+        if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
             CustomApplication.loadTrafficPreferences(mIMSI);
-        }
 
         addPreferencesFromResource(R.xml.traffic_settings);
 
