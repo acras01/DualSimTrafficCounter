@@ -481,6 +481,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     stopService(new Intent(mContext, WatchDogService.class));
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     stopService(new Intent(mContext, TrafficCountService.class));
+                mPrefs.edit()
+                        .putBoolean(Constants.PREF_OTHER[5], true)
+                        .apply();
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
                     stopService(new Intent(mContext, CallLoggerService.class));
                 FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
