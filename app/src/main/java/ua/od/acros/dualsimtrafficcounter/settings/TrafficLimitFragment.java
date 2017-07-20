@@ -52,7 +52,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             opLimit1, opLimit2, opLimit3,
             prelimitValue1, prelimitValue2, prelimitValue3;
     private TwoLineListPreference value1, period1, value2, period2, value3, period3, opValue1, opValue2, opValue3, value1N, value2N, value3N;
-    private TwoLineCheckPreference prefer1, prefer2, prefer3, changeSIM, chooseActions, autoenable1, autoenable2, autoenable3, autoload;
+    private TwoLineCheckPreference prefer1, prefer2, prefer3, changeSIM, chooseActions, autoenable1, autoenable2, autoenable3, autoload,
+            autoff1, autoff2, autoff3;
     private TwoLineListPreference everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
     private SharedPreferences mPrefs;
@@ -88,9 +89,9 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         round1 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM1[4]);
         round2 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM2[4]);
         round3 = (TwoLineEditTextPreference) findPreference(Constants.PREF_SIM3[4]);
-        TwoLineCheckPreference autoff1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[7]);
-        TwoLineCheckPreference autoff2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[7]);
-        TwoLineCheckPreference autoff3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[7]);
+        autoff1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[7]);
+        autoff2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[7]);
+        autoff3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[7]);
         autoenable1 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM1[31]);
         autoenable2 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM2[31]);
         autoenable3 = (TwoLineCheckPreference) findPreference(Constants.PREF_SIM3[31]);
@@ -239,6 +240,15 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             changeSIM.setEnabled(false);
         } else if (CustomApplication.canToggleOn() && mSimQuantity > 1)
             changeSIM.setEnabled(true);
+
+        if (changeSIM.isChecked()) {
+            autoff1.setChecked(false);
+            autoff1.setEnabled(false);
+            autoff2.setChecked(false);
+            autoff2.setEnabled(false);
+            autoff3.setChecked(false);
+            autoff3.setEnabled(false);
+        }
 
         if (mPrefs.getBoolean(Constants.PREF_OTHER[10], false)) {
             chooseActions.setChecked(false);
@@ -607,6 +617,21 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 }
             } else
                 new DeleteTask().execute();
+        }
+
+        if (key.equals(Constants.PREF_OTHER[10])) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                autoff1.setChecked(false);
+                autoff1.setEnabled(false);
+                autoff2.setChecked(false);
+                autoff2.setEnabled(false);
+                autoff3.setChecked(false);
+                autoff3.setEnabled(false);
+            } else {
+                autoff1.setEnabled(true);
+                autoff2.setEnabled(true);
+                autoff3.setEnabled(true);
+            }
         }
 
         if (key.equals(Constants.PREF_OTHER[47])) {

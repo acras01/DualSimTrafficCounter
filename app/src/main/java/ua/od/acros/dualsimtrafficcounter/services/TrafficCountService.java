@@ -2017,7 +2017,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         boolean choice = false;
 
+        //check if can change sim
         if (mPrefs.getBoolean(Constants.PREF_OTHER[10], false)) {
+            //if all sim overlimit - push action dialog
             if (mIsSIM1OverLimit && mIsSIM2OverLimit && mIsSIM3OverLimit) {
                 mDoNotStopService = true;
                 Intent dialogIntent = new Intent(mContext, ChooseActionDialog.class);
@@ -2026,6 +2028,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 if (!ChooseActionDialog.isActive())
                     mContext.startActivity(dialogIntent);
             } else {
+                //else try to change active sim
                 try {
                     MobileUtils.toggleMobileDataConnection(false, mContext, Constants.DISABLED);
                     if (!mIsSIM2OverLimit && sim == Constants.SIM1 && mSimQuantity >= 2)
@@ -2047,7 +2050,18 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     ACRA.getErrorReporter().handleException(e);
                 }
             }
-        } else if (!mPrefs.getBoolean(keys[7], false)) {
+        } else {
+            //if can't change sim - check if needs to disable data
+            if (mPrefs.getBoolean(keys[7], false)) {
+                try {
+                    MobileUtils.toggleMobileDataConnection(false, mContext, Constants.DISABLED);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ACRA.getErrorReporter().handleException(e);
+                }
+                choice = true;
+            }
+            //check if needs to push action dialog
             if (!mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
                 mDoNotStopService = true;
                 EventBus.getDefault().post(new ActionTrafficEvent(sim, Constants.CONTINUE_ACTION));
@@ -2058,10 +2072,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 if (!ChooseActionDialog.isActive())
                     mContext.startActivity(dialogIntent);
-                choice = true;
             }
         }
-
         if (choice) {
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_disable);
             Intent notificationIntent = new Intent(mContext, MainActivity.class);
