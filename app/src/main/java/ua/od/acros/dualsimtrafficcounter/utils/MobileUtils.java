@@ -46,7 +46,8 @@ public class MobileUtils {
     private static final String GET_NAME = "getNetworkOperatorName";
     private static final String GET_IMEI = "getDeviceId";
     private static final String GET_IMSI = "getSubscriberId";
-    private static final String GET_CODE_NETWORK = "getNetworkOperatorForPhone";
+    private static final String GET_CODE_NETWORK_FOR_PHONE = "getNetworkOperatorForPhone";
+    private static final String GET_CODE_NETWORK = "getNetworkOperator";
     private static final String GET_CODE_SIM = "getSimOperator";
     private static final String GET_CALL = "getCallState";
     private static final String GET_DATA = "getDataState";
@@ -71,6 +72,7 @@ public class MobileUtils {
     private static Method mFrom = null;
     private static Method mGetSimId = null;
     private static Method mGetDefaultDataSubId = null;
+    private static Method mGetNetworkOperatorForPhone = null;
     private static Method mGetNetworkOperator = null;
 
     private static final int NT_WCDMA_PREFERRED = 0;             // GSM/WCDMA (WCDMA preferred) (2g/3g)
@@ -222,8 +224,6 @@ public class MobileUtils {
 
     public static int getActiveSimForData(Context context) {
         String out = " ";
-        if (mSubIds == null)
-            mSubIds = new ArrayList<>();
         int sim = Constants.DISABLED;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
@@ -256,6 +256,8 @@ public class MobileUtils {
                 }
                 if (sim == Constants.DISABLED) {
                     try {
+                        if (mSubIds == null)
+                        mSubIds = new ArrayList<>();
                         if (mGetDefaultDataSubId == null) {
                             mGetDefaultDataSubId = getMethod(sm.getClass(), "mGetDefaultDataSubId", 0);
                             if (mGetDefaultDataSubId != null) {
@@ -786,6 +788,7 @@ public class MobileUtils {
     }
 
     private static ArrayList<String> getOperatorCodes(Context context) {
+        String out = "";
         ArrayList<String> code = new ArrayList<>();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
@@ -804,6 +807,7 @@ public class MobileUtils {
                             mnc = "0" + mnc;
                         code.add(mcc + mnc);
                     }
+                out = "SubscriptionInfo_" + code.toString();
             } else {
                 if (CustomApplication.isOldMtkDevice()) {
                     try {
@@ -819,6 +823,8 @@ public class MobileUtils {
                     }
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
+                    else
+                        out = "GetSimOperator" + code.toString();
                     if (code.size() == 0) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
@@ -834,13 +840,15 @@ public class MobileUtils {
                     }
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
+                    else
+                        out = "GetSimOperatorLong" + code.toString();
                     if (code.size() == 0) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetNetworkOperator == null)
                                 mGetNetworkOperator = getMethod(c, GET_CODE_NETWORK, 1);
                             for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
+                                String _code = (String) mGetNetworkOperatorForPhone.invoke(c.getConstructor(Context.class).newInstance(context), i);
                                 code.add(i, _code == null || _code.equals("") ? null : _code);
                             }
                         } catch (Exception e) {
@@ -849,18 +857,21 @@ public class MobileUtils {
                     }
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
+                    else
+                        out = "GetNetworkOperator" + code.toString();
                     if (code.size() == 0) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetNetworkOperator == null)
                                 mGetNetworkOperator = getMethod(c, GET_CODE_NETWORK, 1);
                             for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
+                                String _code = (String) mGetNetworkOperatorForPhone.invoke(c.getConstructor(Context.class).newInstance(context), (long) i);
                                 code.add(i, _code == null || _code.equals("") ? null : _code);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        out = "GetNetworkOperatorLong" + code.toString();
                     }
                 } else {
                     if (mTelephonyClass == null)
@@ -881,12 +892,14 @@ public class MobileUtils {
                     }
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
+                    else
+                        out = "GetSimOperator_" + code.toString();
                     if (code.size() == 0) {
                         try {
-                            if (mGetNetworkOperator == null)
-                                mGetNetworkOperator = getMethod(mTelephonyClass, GET_CODE_NETWORK, 1);
+                            if (mGetNetworkOperatorForPhone == null)
+                                mGetNetworkOperatorForPhone = getMethod(mTelephonyClass, GET_CODE_NETWORK_FOR_PHONE, 1);
                             for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
                                 code.add(i, _code == null || _code.equals("") ? null : _code);
                             }
                         } catch (Exception e) {
@@ -894,63 +907,83 @@ public class MobileUtils {
                         }
                         if (!checkIfNonNullElementsExist(code))
                             code.clear();
-                        if (code.size() == 0) {
-                            try {
-                                if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                if (mGetSimOperator == null)
-                                    mGetSimOperator = getMethod(mTelephonyClass, GET_CODE_SIM, 1);
-                                for (long subId : mSubIds) {
-                                    String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
-                                    code.add(_code == null || _code.equals("") ? null : _code);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        else
+                            out = "GetNetworkOperator_" + code.toString();
+                    }
+                    if (code.size() == 0) {
+                        try {
+                            if (mSubIds == null)
+                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                            if (mGetSimOperator == null)
+                                mGetSimOperator = getMethod(mTelephonyClass, GET_CODE_SIM, 1);
+                            for (long subId : mSubIds) {
+                                String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
+                                code.add(_code == null || _code.equals("") ? null : _code);
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         if (!checkIfNonNullElementsExist(code))
                             code.clear();
-                        if (code.size() == 0) {
-                            try {
-                                if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                if (mGetNetworkOperator == null)
-                                    mGetNetworkOperator = getMethod(mTelephonyClass, GET_CODE_NETWORK, 1);
-                                for (long subId : mSubIds) {
-                                    String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
-                                    code.add(_code == null || _code.equals("") ? null : _code);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        else
+                            out = "GetSimOperatorSubId" + code.toString();
+                    }
+                    if (code.size() == 0) {
+                        try {
+                            if (mSubIds == null)
+                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                            if (mGetNetworkOperator == null)
+                                mGetNetworkOperator = getMethod(mTelephonyClass, GET_CODE_NETWORK, 1);
+                            for (long subId : mSubIds) {
+                                String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
+                                code.add(_code == null || _code.equals("") ? null : _code);
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         if (!checkIfNonNullElementsExist(code))
                             code.clear();
-                        if (code.size() == 0) {
-                            try {
-                                if (mFrom == null)
-                                    mFrom = getMethod(mTelephonyClass, "from", 2);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    final Object[] params = {context, i};
-                                    TelephonyManager mTelephonyStub = null;
-                                    if (mFrom != null) {
-                                        mTelephonyStub = (TelephonyManager) mFrom.invoke(tm, params);
-                                    }
-                                    if (mTelephonyStub != null) {
-                                        String _code = mTelephonyStub.getSimOperator();
-                                        code.add(_code == null || _code.equals("") ? null : _code);
-                                    }
-
+                        else
+                            out = "GetNetworkOperatorSubId" + code.toString();
+                    }
+                    if (code.size() == 0) {
+                        try {
+                            if (mFrom == null)
+                                mFrom = getMethod(mTelephonyClass, "from", 2);
+                            for (int i = 0; i < simQuantity; i++) {
+                                final Object[] params = {context, i};
+                                TelephonyManager mTelephonyStub = null;
+                                if (mFrom != null) {
+                                    mTelephonyStub = (TelephonyManager) mFrom.invoke(tm, params);
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                if (mTelephonyStub != null) {
+                                    String _code = mTelephonyStub.getSimOperator();
+                                    code.add(_code == null || _code.equals("") ? null : _code);
+                                }
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                        if (!checkIfNonNullElementsExist(code))
+                            code.clear();
+                        else
+                            out = "From" + code.toString();
                     }
                 }
             }
         } else
             code.add(tm.getSimOperator());
+        try {
+            File dir = new File(String.valueOf(context.getFilesDir()));
+            // create the file in which we will write the contents
+            String fileName = "code_log.txt";
+            File file = new File(dir, fileName);
+            FileOutputStream os = new FileOutputStream(file);
+            os.write(out.getBytes());
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return code;
     }
 

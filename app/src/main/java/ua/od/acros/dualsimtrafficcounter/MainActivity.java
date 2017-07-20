@@ -312,6 +312,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+                                //OperatorCodes
+                                fileName = "code_log.txt";
+                                file = new File(dir, fileName);
+                                try {
+                                    uris.add(Uri.fromFile(file));
+                                    InputStream is = openFileInput(fileName);
+                                    if (is != null) {
+                                        InputStreamReader isr = new InputStreamReader(is);
+                                        BufferedReader br = new BufferedReader(isr);
+                                        String read;
+                                        StringBuilder sb = new StringBuilder();
+                                        while ((read = br.readLine()) != null ) {
+                                            read += "\n";
+                                            sb.append(read);
+                                        }
+                                        is.close();
+                                        content += sb.toString();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 emailIntent.putExtra(Intent.EXTRA_TEXT, content);
                                 emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                                 startActivity(Intent.createChooser(emailIntent, getString(R.string.choose_client)));
