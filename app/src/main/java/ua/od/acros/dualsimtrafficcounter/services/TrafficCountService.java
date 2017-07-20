@@ -2001,19 +2001,6 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 keys = Constants.PREF_SIM3;
                 break;
         }
-        if (mPrefs.getBoolean(keys[7], false)) {
-            try {
-                MobileUtils.toggleMobileDataConnection(false, mContext, Constants.DISABLED);
-            } catch (Exception e) {
-                e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
-            }
-        }
-
-        if (mTaskResult != null) {
-            mTaskResult.cancel(false);
-            mTaskExecutor.shutdown();
-        }
 
         boolean choice = false;
 
@@ -2075,6 +2062,10 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             }
         }
         if (choice) {
+            if (mTaskResult != null) {
+                mTaskResult.cancel(false);
+                mTaskExecutor.shutdown();
+            }
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.ic_disable);
             Intent notificationIntent = new Intent(mContext, MainActivity.class);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
