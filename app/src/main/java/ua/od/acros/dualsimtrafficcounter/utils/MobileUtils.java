@@ -1022,14 +1022,18 @@ public class MobileUtils {
                     } else {
                         if (imei.size() == 0) {
                             try {
-                                if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                 if (mGetDeviceId == null)
                                     mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
-                                for (long subId : mSubIds) {
-                                    String imeiCurr = (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
-                                    if (!imeiCurr.equals(""))
-                                        imei.add(imeiCurr);
+                                if (mGetDeviceId.getParameterTypes()[0].equals(int.class)) {
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                    }
+                                } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
+                                    if (mSubIds == null)
+                                        mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -1147,14 +1151,18 @@ public class MobileUtils {
                         }
                     if (imsi.size() == 0) {
                         try {
-                            if (mSubIds == null)
-                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                             if (mGetSubscriberId == null)
                                 mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI, 1);
-                            for (long subId : mSubIds) {
-                                String imeiCurr = (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
-                                if (!imeiCurr.equals(""))
-                                    imsi.add(imeiCurr);
+                            if (mGetSubscriberId.getParameterTypes()[0].equals(int.class)) {
+                                for (int i = 0; i < simQuantity; i++) {
+                                    imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                }
+                            } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
+                                if (mSubIds == null)
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
