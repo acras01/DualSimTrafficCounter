@@ -881,13 +881,20 @@ public class MobileUtils {
                             e.printStackTrace();
                         }
                     try {
-                        if (mSubIds == null)
-                            mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                         if (mGetSimOperator == null)
                             mGetSimOperator = getMethod(mTelephonyClass, GET_CODE_SIM, 1);
-                        for (long subId : mSubIds) {
-                            String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
-                            code.add(_code == null || _code.equals("") ? null : _code);
+                        if (mGetSimOperator.getParameterTypes()[0].equals(int.class)) {
+                            for (int i = 0; i < simQuantity; i++) {
+                                String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                code.add(i, _code == null || _code.equals("") ? null : _code);
+                            }
+                        } else if (mGetSimOperator.getParameterTypes()[0].equals(long.class)) {
+                            if (mSubIds == null)
+                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                            for (int i = 0; i < simQuantity; i++) {
+                                String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                code.add(i, _code == null || _code.equals("") ? null : _code);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -898,13 +905,20 @@ public class MobileUtils {
                         out = "GetSimOperatorSubId" + code.toString();
                     if (code.size() == 0) {
                         try {
-                            if (mSubIds == null)
-                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                             if (mGetNetworkOperator == null)
                                 mGetNetworkOperator = getMethod(mTelephonyClass, GET_CODE_NETWORK, 1);
-                            for (long subId : mSubIds) {
-                                String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), subId);
-                                code.add(_code == null || _code.equals("") ? null : _code);
+                            if (mGetNetworkOperator.getParameterTypes()[0].equals(int.class)) {
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                }
+                            } else if (mGetNetworkOperator.getParameterTypes()[0].equals(long.class)) {
+                                if (mSubIds == null)
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -913,38 +927,6 @@ public class MobileUtils {
                             code.clear();
                         else
                             out = "GetNetworkOperatorSubId" + code.toString();
-                    }
-                    if (code.size() == 0) {
-                        try {
-                            if (mGetSimOperator == null)
-                                mGetSimOperator = getMethod(mTelephonyClass, GET_CODE_SIM, 1);
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        if (!checkIfNonNullElementsExist(code))
-                            code.clear();
-                        else
-                            out = "GetSimOperator_" + code.toString();
-                    }
-                    if (code.size() == 0) {
-                        try {
-                            if (mGetNetworkOperatorForPhone == null)
-                                mGetNetworkOperatorForPhone = getMethod(mTelephonyClass, GET_CODE_NETWORK_FOR_PHONE, 1);
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        if (!checkIfNonNullElementsExist(code))
-                            code.clear();
-                        else
-                            out = "GetNetworkOperator_" + code.toString();
                     }
                     if (code.size() == 0) {
                         try {
