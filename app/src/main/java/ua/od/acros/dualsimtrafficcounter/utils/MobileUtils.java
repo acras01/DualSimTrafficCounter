@@ -843,9 +843,19 @@ public class MobileUtils {
                         Class<?> c = Class.forName(MEDIATEK);
                         if (mGetSimOperator == null)
                             mGetSimOperator = getMethod(c, GET_CODE_SIM, 1);
-                        for (int i = 0; i < simQuantity; i++) {
-                            String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                            code.add(i, _code == null || _code.equals("") ? null : _code);
+                        if (mGetSimOperator.getParameterTypes()[0].equals(int.class)) {
+                            for (int i = 0; i < simQuantity; i++) {
+                                String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
+                                code.add(i, _code == null || _code.equals("") ? null : _code);
+                            }
+                        } else if (mGetSimOperator.getParameterTypes()[0].equals(long.class)) {
+                            if (mSubIds == null)
+                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                            for (int i = 0; i < simQuantity; i++) {
+                                String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                code.add(i, _code == null || _code.equals("") ? null : _code);
+                                out = "SubId";
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -853,15 +863,25 @@ public class MobileUtils {
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
                     else
-                        out = "GetSimOperatorMediatek" + code.toString();
+                        out = "GetSimOperatorMediatek" + out + code.toString();
                     if (code.size() == 0) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
-                            if (mGetSimOperator == null)
-                                mGetSimOperator = getMethod(c, GET_CODE_SIM, 1);
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
+                            if (mGetNetworkOperator == null)
+                                mGetNetworkOperator = getMethod(c, GET_CODE_NETWORK, 1);
+                            if (mGetNetworkOperator.getParameterTypes()[0].equals(int.class)) {
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                }
+                            } else if (mGetNetworkOperator.getParameterTypes()[0].equals(long.class)) {
+                                if (mSubIds == null)
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    out = "SubId";
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -870,40 +890,7 @@ public class MobileUtils {
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
                     else
-                        out = "GetSimOperatorSubIdMediatek" + code.toString();
-                    if (code.size() == 0) {
-                        try {
-                            Class<?> c = Class.forName(MEDIATEK);
-                            if (mGetNetworkOperator == null)
-                                mGetNetworkOperator = getMethod(c, GET_CODE_NETWORK, 1);
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (!checkIfNonNullElementsExist(code))
-                        code.clear();
-                    else
-                        out = "GetNetworkOperatorMediatek" + code.toString();
-                    if (code.size() == 0) {
-                        try {
-                            Class<?> c = Class.forName(MEDIATEK);
-                            if (mGetNetworkOperator == null)
-                                mGetNetworkOperator = getMethod(c, GET_CODE_NETWORK, 1);
-                            if (mSubIds == null)
-                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        out = "GetNetworkOperatorSubIdMediatek" + code.toString();
-                    }
+                        out = "GetNetworkOperatorMediatek" + out + code.toString();
                 } else {
                     if (mTelephonyClass == null)
                         try {
