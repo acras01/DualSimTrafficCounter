@@ -886,11 +886,11 @@ public class MobileUtils {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        if (!checkIfNonNullElementsExist(code))
+                            code.clear();
+                        else
+                            out = "GetNetworkOperatorMediatek" + out + code.toString();
                     }
-                    if (!checkIfNonNullElementsExist(code))
-                        code.clear();
-                    else
-                        out = "GetNetworkOperatorMediatek" + out + code.toString();
                 } else {
                     if (mTelephonyClass == null)
                         try {
