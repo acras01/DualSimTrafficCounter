@@ -853,7 +853,7 @@ public class MobileUtils {
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
                     else
-                        out = "GetSimOperator" + code.toString();
+                        out = "GetSimOperatorMediatek" + code.toString();
                     if (code.size() == 0) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
@@ -870,7 +870,7 @@ public class MobileUtils {
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
                     else
-                        out = "GetSimOperatorLong" + code.toString();
+                        out = "GetSimOperatorSubIdMediatek" + code.toString();
                     if (code.size() == 0) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
@@ -887,7 +887,7 @@ public class MobileUtils {
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
                     else
-                        out = "GetNetworkOperator" + code.toString();
+                        out = "GetNetworkOperatorMediatek" + code.toString();
                     if (code.size() == 0) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
@@ -902,7 +902,7 @@ public class MobileUtils {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        out = "GetNetworkOperatorLong" + code.toString();
+                        out = "GetNetworkOperatorSubIdMediatek" + code.toString();
                     }
                 } else {
                     if (mTelephonyClass == null)
@@ -925,6 +925,7 @@ public class MobileUtils {
                             for (int i = 0; i < simQuantity; i++) {
                                 String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
                                 code.add(i, _code == null || _code.equals("") ? null : _code);
+                                out = "SubId";
                             }
                         }
                     } catch (Exception e) {
@@ -933,7 +934,7 @@ public class MobileUtils {
                     if (!checkIfNonNullElementsExist(code))
                         code.clear();
                     else
-                        out = "GetSimOperatorSubId" + code.toString();
+                        out = "GetSimOperatorAll" + out + code.toString();
                     if (code.size() == 0) {
                         try {
                             if (mGetNetworkOperatorForPhone == null)
@@ -949,6 +950,7 @@ public class MobileUtils {
                                 for (int i = 0; i < simQuantity; i++) {
                                     String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
                                     code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    out = "SubId";
                                 }
                             }
                         } catch (Exception e) {
@@ -957,7 +959,7 @@ public class MobileUtils {
                         if (!checkIfNonNullElementsExist(code))
                             code.clear();
                         else
-                            out = "GetNetworkOperatorSubId" + code.toString();
+                            out = "GetNetworkOperatorForPhone" + out + code.toString();
                     }
                     if (code.size() == 0) {
                         try {
@@ -974,6 +976,7 @@ public class MobileUtils {
                                 for (int i = 0; i < simQuantity; i++) {
                                     String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
                                     code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    out = "SubId";
                                 }
                             }
                         } catch (Exception e) {
@@ -982,7 +985,7 @@ public class MobileUtils {
                         if (!checkIfNonNullElementsExist(code))
                             code.clear();
                         else
-                            out = "GetNetworkOperatorSubId" + code.toString();
+                            out = "GetNetworkOperatorAll" + out + code.toString();
                     }
                     if (code.size() == 0) {
                         try {
