@@ -245,10 +245,12 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(mContext)) {
-            if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL)
-                ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25])).setChecked(false);
-            else if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT)
-                ((TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[32])).setChecked(false);
+            TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
+            TwoLineCheckPreference hudService = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[32]);
+            if (callLogger != null && requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL)
+                callLogger.setChecked(false);
+            else if (hudService != null && requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT)
+                hudService.setChecked(false);
         }
     }
 
