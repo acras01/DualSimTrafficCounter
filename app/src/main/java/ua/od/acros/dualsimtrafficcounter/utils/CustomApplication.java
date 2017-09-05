@@ -87,9 +87,9 @@ public class CustomApplication extends Application {
         mWeakReference = new WeakReference<>(context);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         ArrayList imsi = MobileUtils.getSimIds(context);
-        if (preferences.getBoolean(Constants.PREF_OTHER[44], false))
+        if (imsi.size() > 0 && preferences.getBoolean(Constants.PREF_OTHER[44], false))
             loadTrafficPreferences(imsi);
-        if (preferences.getBoolean(Constants.PREF_OTHER[45], false))
+        if (imsi.size() > 0 && preferences.getBoolean(Constants.PREF_OTHER[45], false))
             loadCallsPreferences(imsi);
 
 
