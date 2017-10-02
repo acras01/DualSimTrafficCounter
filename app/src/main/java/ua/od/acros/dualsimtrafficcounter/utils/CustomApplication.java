@@ -697,104 +697,108 @@ public class CustomApplication extends Application {
     }
 
     public static void loadTrafficPreferences(ArrayList imsi) {
-        Context context = mWeakReference.get();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
-        String path = context.getFilesDir().getParent() + "/shared_prefs/";
-        SharedPreferences.Editor editor = preferences.edit();
-        SharedPreferences prefSim;
-        Map<String, ?> prefsMap;
-        String name = Constants.TRAFFIC + "_" + imsi.get(0);
-        if (new File(path + name + ".xml").exists()) {
-            prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-            prefsMap = prefSim.getAll();
-            if (prefsMap.size() != 0)
-                for (String key : prefsMap.keySet()) {
-                    Object o = prefsMap.get(key);
-                    key = key + 1;
-                    putObject(editor, key, o);
+        if (imsi != null && imsi.size() > 0) {
+            Context context = mWeakReference.get();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
+            String path = context.getFilesDir().getParent() + "/shared_prefs/";
+            SharedPreferences.Editor editor = preferences.edit();
+            SharedPreferences prefSim;
+            Map<String, ?> prefsMap;
+            String name = Constants.TRAFFIC + "_" + imsi.get(0);
+            if (new File(path + name + ".xml").exists()) {
+                prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+                prefsMap = prefSim.getAll();
+                if (prefsMap.size() != 0)
+                    for (String key : prefsMap.keySet()) {
+                        Object o = prefsMap.get(key);
+                        key = key + 1;
+                        putObject(editor, key, o);
+                    }
+                prefSim = null;
+            }
+            if (simQuantity >= 2) {
+                name = Constants.TRAFFIC + "_" + imsi.get(1);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefsMap = prefSim.getAll();
+                    if (prefsMap.size() != 0)
+                        for (String key : prefsMap.keySet()) {
+                            Object o = prefsMap.get(key);
+                            key = key + 2;
+                            putObject(editor, key, o);
+                        }
+                    prefSim = null;
                 }
-            prefSim = null;
-        }
-        if (simQuantity >= 2) {
-            name = Constants.TRAFFIC + "_" + imsi.get(1);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefsMap = prefSim.getAll();
-                if (prefsMap.size() != 0)
-                    for (String key : prefsMap.keySet()) {
-                        Object o = prefsMap.get(key);
-                        key = key + 2;
-                        putObject(editor, key, o);
-                    }
-                prefSim = null;
             }
-        }
-        if (simQuantity == 3) {
-            name = Constants.TRAFFIC + "_" + imsi.get(2);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefsMap = prefSim.getAll();
-                if (prefsMap.size() != 0)
-                    for (String key : prefsMap.keySet()) {
-                        Object o = prefsMap.get(key);
-                        key = key + 3;
-                        putObject(editor, key, o);
-                    }
-                prefSim = null;
+            if (simQuantity == 3) {
+                name = Constants.TRAFFIC + "_" + imsi.get(2);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefsMap = prefSim.getAll();
+                    if (prefsMap.size() != 0)
+                        for (String key : prefsMap.keySet()) {
+                            Object o = prefsMap.get(key);
+                            key = key + 3;
+                            putObject(editor, key, o);
+                        }
+                    prefSim = null;
+                }
             }
+            editor.apply();
         }
-        editor.apply();
     }
 
     public static void loadCallsPreferences(ArrayList imsi) {
-        Context context = mWeakReference.get();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
-        String path = context.getFilesDir().getParent() + "/shared_prefs/";
-        SharedPreferences.Editor editor = preferences.edit();
-        SharedPreferences prefSim;
-        Map<String, ?> prefs;
-        String name = Constants.CALLS + "_" + imsi.get(0);
-        if (new File(path + name + ".xml").exists()) {
-            prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-            prefs = prefSim.getAll();
-            if (prefs.size() != 0)
-                for (String key : prefs.keySet()) {
-                    Object o = prefs.get(key);
-                    key = key + 1;
-                    putObject(editor, key, o);
+        if (imsi != null && imsi.size() > 0) {
+            Context context = mWeakReference.get();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
+            String path = context.getFilesDir().getParent() + "/shared_prefs/";
+            SharedPreferences.Editor editor = preferences.edit();
+            SharedPreferences prefSim;
+            Map<String, ?> prefs;
+            String name = Constants.CALLS + "_" + imsi.get(0);
+            if (new File(path + name + ".xml").exists()) {
+                prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+                prefs = prefSim.getAll();
+                if (prefs.size() != 0)
+                    for (String key : prefs.keySet()) {
+                        Object o = prefs.get(key);
+                        key = key + 1;
+                        putObject(editor, key, o);
+                    }
+                prefSim = null;
+            }
+            if (simQuantity >= 2) {
+                name = Constants.CALLS + "_" + imsi.get(1);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    if (prefs.size() != 0)
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 2;
+                            putObject(editor, key, o);
+                        }
+                    prefSim = null;
                 }
-            prefSim = null;
-        }
-        if (simQuantity >= 2) {
-            name = Constants.CALLS + "_" + imsi.get(1);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefs = prefSim.getAll();
-                if (prefs.size() != 0)
-                    for (String key : prefs.keySet()) {
-                        Object o = prefs.get(key);
-                        key = key + 2;
-                        putObject(editor, key, o);
-                    }
-                prefSim = null;
             }
-        }
-        if (simQuantity == 3) {
-            name = Constants.CALLS + "_" + imsi.get(2);
-            if (new File(path + name + ".xml").exists()) {
-                prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-                prefs = prefSim.getAll();
-                if (prefs.size() != 0)
-                    for (String key : prefs.keySet()) {
-                        Object o = prefs.get(key);
-                        key = key + 3;
-                        putObject(editor, key, o);
-                    }
-                prefSim = null;
+            if (simQuantity == 3) {
+                name = Constants.CALLS + "_" + imsi.get(2);
+                if (new File(path + name + ".xml").exists()) {
+                    prefSim = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+                    prefs = prefSim.getAll();
+                    if (prefs.size() != 0)
+                        for (String key : prefs.keySet()) {
+                            Object o = prefs.get(key);
+                            key = key + 3;
+                            putObject(editor, key, o);
+                        }
+                    prefSim = null;
+                }
             }
+            editor.apply();
         }
-        editor.apply();
     }
 }
