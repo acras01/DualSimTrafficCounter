@@ -19,7 +19,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         //start CountService
-        if (!prefs.getBoolean(Constants.PREF_OTHER[5], false))
+        if (!prefs.getBoolean(Constants.PREF_OTHER[5], false) && !prefs.getBoolean(Constants.PREF_OTHER[47], false))
             context.startService(new Intent(context, TrafficCountService.class));
         else {
             //Update widgets
