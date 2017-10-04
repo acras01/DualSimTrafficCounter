@@ -8,13 +8,14 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.receivers.NotificationTapReceiver;
@@ -77,7 +78,7 @@ public class CustomNotification extends Notification {
         }
         Object[] icon = getOperatorLogo(context, activeSIM);
         b.setSmallIcon((int) icon[0]);
-        b.setLargeIcon((Bitmap )icon[1]);
+        b.setLargeIcon((Bitmap) icon[1]);
         b.setPriority(mPrefs.getBoolean(Constants.PREF_OTHER[12], true) ? NotificationCompat.PRIORITY_MAX :
                 NotificationCompat.PRIORITY_MIN);
         b.setContentText(traffic);
@@ -103,11 +104,9 @@ public class CustomNotification extends Notification {
 
     private static Object[] getOperatorLogo(Context context, int sim) {
         Object[] result = new Object[2];
-        boolean choice = false;
         Resources resources = context.getResources();
-        int dim = 24 * (int) resources.getDisplayMetrics().density;
+        int dim = 22 * (int) resources.getDisplayMetrics().density;
         if (mPrefs.getBoolean(Constants.PREF_OTHER[15], false) && sim >= 0) {
-            choice = true;
             String[] pref = new String[Constants.PREF_SIM1.length];
             switch (sim) {
                 case Constants.SIM1:
@@ -123,17 +122,19 @@ public class CustomNotification extends Notification {
             if (mPrefs.getString(pref[23], "none").equals("auto")) {
                 String logo = MobileUtils.getLogoFromCode(context, sim);
                 result[0] = resources.getIdentifier("logo_" + logo, "drawable", context.getPackageName());
-                result[1] = ContextCompat.getDrawable(context, resources.getIdentifier(logo, "drawable", context.getPackageName()));
+                result[1] = BitmapFactory.decodeResource(resources, context.getResources().getIdentifier(logo, "drawable", context.getPackageName()));
+                //result[1] = ContextCompat.getDrawable(context, resources.getIdentifier(logo, "drawable", context.getPackageName()));
             } else {
                 result[0] = resources.getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
-                result[1] = ContextCompat.getDrawable(context, resources.getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
+                result[1] = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
+                //result[1] = ContextCompat.getDrawable(context, resources.getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
             }
         } else {
             result[0] = R.drawable.ic_launcher_small;
             result[1] = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
         }
-        if (choice)
-            result[1] = convertToMonochrome((Drawable) result[1]);
+        /*if (choice)
+            result[1] = convertToMonochrome((Drawable) result[1]);*/
         result[1] = Bitmap.createScaledBitmap((Bitmap) result[1], dim, dim, false);
         return result;
     }
@@ -143,9 +144,14 @@ public class CustomNotification extends Notification {
     }
 
     private static Bitmap convertToMonochrome(Drawable drawable) {
-        ColorMatrix matrix = new ColorMatrix();
-        matrix.setSaturation(0);
-        drawable.setColorFilter(new ColorMatrixColorFilter(matrix));
-        return ((BitmapDrawable) drawable).getBitmap();
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+        ColorMatrixColorFilter colorMatrixFilter = new ColorMatrixColorFilter(colorMatrix);
+        Bitmap blackAndWhiteBitmap = ((BitmapDrawable) drawable).getBitmap().copy(Bitmap.Config.ARGB_8888, true);
+        Paint paint = new Paint();
+        paint.setColorFilter(colorMatrixFilter);
+        Canvas canvas = new Canvas(blackAndWhiteBitmap);
+        canvas.drawBitmap(blackAndWhiteBitmap, 0, 0, paint);
+        return blackAndWhiteBitmap;
     }
 }

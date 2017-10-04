@@ -218,16 +218,16 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
         if (state == CallState.DIALING && mOutgoingCall == null) {
             mOutgoingCall = call;
             mActiveCallSimList.putInt(key, sim);
-            XposedBridge.log("Outgoing call started: " + sim);
+            XposedBridge.log("Outgoing call started: " + sim + " " + mActiveCallSimList.toString());
             Intent i = new Intent(Constants.OUTGOING_CALL_STARTED);
             i.putExtra(Constants.SIM_ACTIVE, sim);
             context.sendBroadcast(i);
         }
         // outgoing call connected
-        if (state == CallState.ACTIVE && call == mOutgoingCall && !mActiveCallSimList.containsKey(key)) {
+        if (state == CallState.ACTIVE && call == mOutgoingCall && !mActiveCallStartList.containsKey(key)) {
             start = System.currentTimeMillis();
             mActiveCallStartList.putLong(key, start);
-            XposedBridge.log("Outgoing call answered: " + sim);
+            XposedBridge.log("Outgoing call answered: " + sim + ", Time: " + start + " " + mActiveCallSimList.toString() + " " + mActiveCallStartList.toString());
             Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
             i.putExtra(Constants.SIM_ACTIVE, sim);
             context.sendBroadcast(i);
@@ -236,8 +236,9 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
         if (state == CallState.DISCONNECTED && call == mOutgoingCall) {
             sim = mActiveCallSimList.getInt(key);
             start = mActiveCallStartList.getLong(key);
-            long durationMillis = System.currentTimeMillis() - start;
-            XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s");
+            long finish = System.currentTimeMillis();
+            long durationMillis = finish - start;
+            XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s, Time: " + start + "/" + finish + " " + mActiveCallSimList.toString() + " " + mActiveCallStartList.toString());
             Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
             i.putExtra(Constants.SIM_ACTIVE, sim);
             i.putExtra(Constants.CALL_DURATION, durationMillis);
