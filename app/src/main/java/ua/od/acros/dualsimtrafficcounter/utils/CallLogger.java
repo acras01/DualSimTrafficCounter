@@ -218,7 +218,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
         if (state == CallState.DIALING && mOutgoingCall == null) {
             mOutgoingCall = call;
             mActiveCallSimList.putInt(key, sim);
-            XposedBridge.log("Outgoing call started: " + sim + " " + mActiveCallSimList.toString());
+            XposedBridge.log("Outgoing call started: " + sim);
             Intent i = new Intent(Constants.OUTGOING_CALL_STARTED);
             i.putExtra(Constants.SIM_ACTIVE, sim);
             context.sendBroadcast(i);
@@ -227,7 +227,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
         if (state == CallState.ACTIVE && call == mOutgoingCall && !mActiveCallStartList.containsKey(key)) {
             start = System.currentTimeMillis();
             mActiveCallStartList.putLong(key, start);
-            XposedBridge.log("Outgoing call answered: " + sim + ", Time: " + start + " " + mActiveCallSimList.toString() + " " + mActiveCallStartList.toString());
+            XposedBridge.log("Outgoing call answered: " + sim);
             Intent i = new Intent(Constants.OUTGOING_CALL_ANSWERED);
             i.putExtra(Constants.SIM_ACTIVE, sim);
             context.sendBroadcast(i);
@@ -236,13 +236,17 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
         if (state == CallState.DISCONNECTED && call == mOutgoingCall) {
             sim = mActiveCallSimList.getInt(key);
             start = mActiveCallStartList.getLong(key);
-            long finish = System.currentTimeMillis();
-            long durationMillis = finish - start;
-            XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s, Time: " + start + "/" + finish + " " + mActiveCallSimList.toString() + " " + mActiveCallStartList.toString());
-            Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
-            i.putExtra(Constants.SIM_ACTIVE, sim);
-            i.putExtra(Constants.CALL_DURATION, durationMillis);
-            context.sendBroadcast(i);
+            if (start == 0)
+                XposedBridge.log(sim + " - Outgoing call ended without answer");
+            else {
+                long finish = System.currentTimeMillis();
+                long durationMillis = finish - start;
+                XposedBridge.log(sim + " - Outgoing call ended: " + durationMillis / 1000 + "s");
+                Intent i = new Intent(Constants.OUTGOING_CALL_ENDED);
+                i.putExtra(Constants.SIM_ACTIVE, sim);
+                i.putExtra(Constants.CALL_DURATION, durationMillis);
+                context.sendBroadcast(i);
+            }
             mOutgoingCall = null;
         }
     }
