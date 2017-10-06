@@ -527,11 +527,13 @@ public class MobileUtils {
         if (simQuantity > 1) {
             int sim = Constants.DISABLED;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                SubscriptionManager sm = SubscriptionManager.from(context);
+                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
                 if (mGetCallState == null)
                     mGetCallState = getMethod(mTelephonyClass, GET_CALL, 1);
                 for (int i = 0; i < simQuantity; i++) {
                     try {
-                        int state = (int) mGetCallState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                        int state = (int) mGetCallState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), sl.get(i).getSubscriptionId());
                         if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                             sim = i;
                             break;
