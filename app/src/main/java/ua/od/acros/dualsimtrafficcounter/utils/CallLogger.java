@@ -19,6 +19,7 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import ua.od.acros.dualsimtrafficcounter.MainActivity;
 
 public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
@@ -46,9 +47,11 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
-        String path = AndroidAppHelper.currentApplication().getFilesDir().getParent() + "/files/preferences_copy.xml";
+        String path = MainActivity.class.getPackage().getName() + "/files/preferences_copy.xml";
         File myFile = new File(path);
+        XposedBridge.log(myFile.toString());
         XSharedPreferences prefs = new XSharedPreferences(myFile);
+        XposedBridge.log(prefs.getAll().toString());
         XposedBridge.log(String.valueOf(prefs.contains(Constants.PREF_OTHER[55])));
         mSimQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         mList = new ArrayList<>(Arrays.asList(prefs.getString(Constants.PREF_OTHER[56], "").split(";")));
