@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,13 +42,17 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private Bundle mActiveCallStartList = new Bundle();
     private Bundle mActiveCallSimList = new Bundle();
     private int mSimQuantity;
+    private ArrayList<String> mList;
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
-        XSharedPreferences prefs = new XSharedPreferences(PACKAGE_NAME);
-        prefs.makeWorldReadable();
+        String path = AndroidAppHelper.currentApplication().getFilesDir().getParent() + "/files/preferences_copy.xml";
+        File myFile = new File(path);
+        XSharedPreferences prefs = new XSharedPreferences(myFile);
         XposedBridge.log(String.valueOf(prefs.contains(Constants.PREF_OTHER[55])));
         mSimQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
+        mList = new ArrayList<>(Arrays.asList(prefs.getString(Constants.PREF_OTHER[56], "").split(";")));
+        XposedBridge.log(mList.toString());
     }
 
     @Override
@@ -80,7 +85,11 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                             final Object conn = getConnection(fgPhone, activeCall);
                             if (activeCall != null) {
                                 final Object callState = XposedHelpers.callMethod(activeCall, "getState");
-                                int sim = MobileUtils.getActiveSimForCall(context, mSimQuantity);
+                                int sim;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+                                    sim = MobileUtils.getActiveSimForCallLP(context, mSimQuantity, mList);
+                                else
+                                    sim = MobileUtils.getActiveSimForCall(context, mSimQuantity);
                                 if (mOutgoingCall == null && (callState == Enum.valueOf(enumCallState, "DIALING") ||
                                         callState == Enum.valueOf(enumCallState, "ALERTING"))) {
                                     mOutgoingCall = activeCall;

@@ -17,6 +17,8 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -32,10 +34,15 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -214,12 +221,26 @@ public class CustomApplication extends Application {
         mSettingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (context.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
+        //Check if can toggle mobile data
         int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
         mCanToggleOn = isOldMtkDevice() ||
                 (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && simQuantity == 1);
-
+        //Store subids
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            SubscriptionManager sm = SubscriptionManager.from(context);
+            List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+            String subInfo = "";
+            for (SubscriptionInfo si : sl) {
+                subInfo += si.getSubscriptionId() + ";";
+            }
+            subInfo = subInfo.substring(0, subInfo.length() - 1);
+            preferences.edit()
+                    .putString(Constants.PREF_OTHER[56], subInfo)
+                    .apply();
+        }
         setOnOffAlarms();
         setCallResetAlarm();
+        saveSharedPreferences();
     }
 
     public static void setOnClickListenerWithChild(ViewGroup v, View.OnClickListener listener) {
@@ -799,6 +820,26 @@ public class CustomApplication extends Application {
                 }
             }
             editor.apply();
+        }
+    }
+
+    public static void saveSharedPreferences() {
+        String path = mWeakReference.get().getFilesDir().getParent() + "/shared_prefs/ua.od.acros.dualsimtrafficcounter_preferences.xml";
+        File sourceFile = new File(path);
+        path = mWeakReference.get().getFilesDir().getParent() + "/files/preferences_copy.xml";
+        File backupFile = new File(path);
+        try {
+            InputStream in = new FileInputStream(sourceFile);
+            OutputStream out = new FileOutputStream(backupFile);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
