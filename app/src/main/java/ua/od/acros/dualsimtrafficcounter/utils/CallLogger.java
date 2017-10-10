@@ -7,21 +7,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import ua.od.acros.dualsimtrafficcounter.MainActivity;
 
-public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage {
+import static ua.od.acros.dualsimtrafficcounter.utils.MobileUtils.getActiveSimForCall;
+import static ua.od.acros.dualsimtrafficcounter.utils.MobileUtils.getActiveSimForCallM;
+
+public class CallLogger implements IXposedHookLoadPackage {
 
     private static final List<String> PACKAGE_NAMES = new ArrayList<>(Arrays.asList(
             "com.google.android.dialer", "com.android.dialer", "com.android.phone", "com.android.server.telecom"));
@@ -39,31 +39,25 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private static final String CLASS_IN_CALL_PRESENTER = "com.android.incallui.InCallPresenter";
     private static final String ENUM_IN_CALL_STATE = "com.android.incallui.InCallPresenter$InCallState";
     private static final String CLASS_CALL_LIST = "com.android.incallui.CallList";
-    private Object mOutgoingCall;
-    private Bundle mActiveCallStartList = new Bundle();
-    private Bundle mActiveCallSimList = new Bundle();
-    private int mSimQuantity;
-    private ArrayList<String> mList;
-
-    @Override
-    public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
-        String path = MainActivity.class.getPackage().getName() + "/files/preferences_copy.xml";
-        File myFile = new File(path);
-        XposedBridge.log(myFile.toString());
-        XSharedPreferences prefs = new XSharedPreferences(myFile);
-        XposedBridge.log(prefs.getAll().toString());
-        XposedBridge.log(String.valueOf(prefs.contains(Constants.PREF_OTHER[55])));
-        mSimQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
-        mList = new ArrayList<>(Arrays.asList(prefs.getString(Constants.PREF_OTHER[56], "").split(";")));
-        XposedBridge.log(mList.toString());
-    }
+    private static Object mOutgoingCall;
+    private static Bundle mActiveCallStartList = new Bundle();
+    private static Bundle mActiveCallSimList = new Bundle();
+    private static int mSimQuantity;
+    private static ArrayList<String> mList;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         String name = loadPackageParam.packageName;
         ClassLoader classLoader = loadPackageParam.classLoader;
-        if (PACKAGE_NAMES.contains(name)) {
-            XposedBridge.log("Loaded app: " + loadPackageParam.packageName);
+        if (PACKAGE_NAMES.contains(name) || name.equals(PACKAGE_NAME)) {
+            XposedBridge.log("Loaded app: " + name);
+            if (name.equals(PACKAGE_NAME)) {
+                XSharedPreferences preferences = new XSharedPreferences(PACKAGE_NAME);
+                mSimQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
+                mList = new ArrayList<>(Arrays.asList(preferences.getString(Constants.PREF_OTHER[56], "").split(";")));
+                XposedBridge.log(String.valueOf(mSimQuantity));
+                XposedBridge.log(mList.toString());
+            }
             if (name.contains("phone") && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 final Class<?> classCallNotifier = XposedHelpers.findClass(CLASS_CALL_NOTIFIER, classLoader);
                 final Class<? extends Enum> enumPhoneState = (Class<? extends Enum>) Class.forName(ENUM_PHONE_STATE);
@@ -88,11 +82,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                             final Object conn = getConnection(fgPhone, activeCall);
                             if (activeCall != null) {
                                 final Object callState = XposedHelpers.callMethod(activeCall, "getState");
-                                int sim;
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
-                                    sim = MobileUtils.getActiveSimForCallLP(context, mSimQuantity, mList);
-                                else
-                                    sim = MobileUtils.getActiveSimForCall(context, mSimQuantity);
+                                int sim = getActiveSimForCall(context, mSimQuantity);
                                 if (mOutgoingCall == null && (callState == Enum.valueOf(enumCallState, "DIALING") ||
                                         callState == Enum.valueOf(enumCallState, "ALERTING"))) {
                                     mOutgoingCall = activeCall;
@@ -177,7 +167,7 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                     Object state = param.getResult();
                                     Object activeCall;
                                     String key;
-                                    int sim = MobileUtils.getActiveSimForCall(context, mSimQuantity);
+                                    int sim = getActiveSimForCall(context, mSimQuantity);
                                     if (state == Enum.valueOf(enumInCallState, "OUTGOING") && mOutgoingCall == null) {
                                         activeCall = XposedHelpers.callMethod(param.args[0], "getOutgoingCall");
                                         if (activeCall != null && mOutgoingCall == null) {
@@ -223,9 +213,10 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     private void onCallStateChanged(Object call, int state) {
         Context context = AndroidAppHelper.currentApplication();
+        XposedBridge.log(context.toString());
         String key = (String) XposedHelpers.callMethod(call, "getId");
         long start;
-        int sim = MobileUtils.getActiveSimForCall(context, mSimQuantity);
+        int sim = getActiveSimForCallM(context, mSimQuantity, mList);
         // register outgoing call
         if (state == CallState.DIALING && mOutgoingCall == null) {
             mOutgoingCall = call;
@@ -441,3 +432,4 @@ public class CallLogger implements IXposedHookZygoteInit, IXposedHookLoadPackage
         }
     }
 }
+

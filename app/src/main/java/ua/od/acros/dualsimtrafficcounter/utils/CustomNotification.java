@@ -28,11 +28,9 @@ public class CustomNotification extends Notification {
     private final static int TAP = 19810506;
     private static SharedPreferences mPrefs;
     private static PendingIntent piTraffic, piCalls, piSettings;
-    private static boolean mInCall;
 
     private static NotificationCompat.Builder newInstance(Context context) {
         if (mBuilder == null) {
-            mInCall = false;
             //traffic button
             Intent trafficIntent = new Intent(context, NotificationTapReceiver.class);
             trafficIntent.setAction(Constants.TRAFFIC_TAP);
@@ -68,14 +66,10 @@ public class CustomNotification extends Notification {
             calls = mCalls;
         NotificationCompat.Builder b = newInstance(context);
         int activeSIM;
-        if (mInCall)
-            activeSIM = MobileUtils.getActiveSimForCall(context, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
-        else {
-            if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
-                activeSIM = TrafficCountService.getActiveSIM();
-            else
-                activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
-        }
+        if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+            activeSIM = TrafficCountService.getActiveSIM();
+        else
+            activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
         Object[] icon = getOperatorLogo(context, activeSIM);
         b.setSmallIcon((int) icon[0]);
         b.setLargeIcon((Bitmap) icon[1]);
@@ -137,10 +131,6 @@ public class CustomNotification extends Notification {
             result[1] = convertToMonochrome((Drawable) result[1]);*/
         result[1] = Bitmap.createScaledBitmap((Bitmap) result[1], dim, dim, false);
         return result;
-    }
-
-    public static void setInCallOperatorLogo(boolean state) {
-        mInCall = state;
     }
 
     private static Bitmap convertToMonochrome(Drawable drawable) {

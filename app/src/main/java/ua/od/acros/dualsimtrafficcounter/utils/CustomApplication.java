@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -34,10 +35,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,6 +89,7 @@ public class CustomApplication extends Application {
         ACRA.init(this);
         Context context = getApplicationContext();
         mWeakReference = new WeakReference<>(context);
+        fixFolderPermissionsAsync();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         ArrayList imsi = MobileUtils.getSimIds(context);
         if (imsi.size() > 0 && preferences.getBoolean(Constants.PREF_OTHER[44], false))
@@ -240,7 +238,6 @@ public class CustomApplication extends Application {
         }
         setOnOffAlarms();
         setCallResetAlarm();
-        saveSharedPreferences();
     }
 
     public static void setOnClickListenerWithChild(ViewGroup v, View.OnClickListener listener) {
@@ -255,7 +252,7 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static String[] getStringArray(ListAdapter adapter){
+    public static String[] getStringArray(ListAdapter adapter) {
         String[] a = new String[adapter.getCount()];
         for (int i = 0; i < a.length; i++)
             a[i] = adapter.getItem(i).toString();
@@ -265,7 +262,7 @@ public class CustomApplication extends Application {
     public static String getRealPathFromURI(Uri contentUri) {
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
+            String[] proj = {MediaStore.Images.Media.DATA};
             cursor = mWeakReference.get().getContentResolver().query(contentUri, proj, null, null, null);
             int column_index;
             if (cursor != null) {
@@ -340,7 +337,7 @@ public class CustomApplication extends Application {
         return false;
     }
 
-    public static boolean isPackageExisted(String targetPackage){
+    public static boolean isPackageExisted(String targetPackage) {
         try {
             PackageInfo info = mWeakReference.get().getPackageManager().getPackageInfo(targetPackage, PackageManager.GET_META_DATA);
         } catch (PackageManager.NameNotFoundException e) {
@@ -511,7 +508,7 @@ public class CustomApplication extends Application {
         } catch (Exception e) {
             lim3 = Long.MAX_VALUE;
         }
-        return new long[] {lim1, lim2, lim3};
+        return new long[]{lim1, lim2, lim3};
     }
 
     public static boolean[] getIsNightState() {
@@ -555,7 +552,7 @@ public class CustomApplication extends Application {
         } else
             isNight3 = false;
 
-        return new boolean[] {isNight1, isNight2, isNight3};
+        return new boolean[]{isNight1, isNight2, isNight3};
     }
 
     public static void deletePreferenceFile(int quantity, String name) {
@@ -823,23 +820,16 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static void saveSharedPreferences() {
-        String path = mWeakReference.get().getFilesDir().getParent() + "/shared_prefs/ua.od.acros.dualsimtrafficcounter_preferences.xml";
-        File sourceFile = new File(path);
-        path = mWeakReference.get().getFilesDir().getParent() + "/files/preferences_copy.xml";
-        File backupFile = new File(path);
-        try {
-            InputStream in = new FileInputStream(sourceFile);
-            OutputStream out = new FileOutputStream(backupFile);
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
+    private static void fixFolderPermissionsAsync() {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                mWeakReference.get().getFilesDir().setExecutable(true, false);
+                mWeakReference.get().getFilesDir().setReadable(true, false);
+                File filesPrefsFolder = new File(mWeakReference.get().getFilesDir().getAbsolutePath() + "/../shared_prefs");
+                filesPrefsFolder.setExecutable(true, false);
+                filesPrefsFolder.setReadable(true, false);
             }
-            in.close();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 }

@@ -188,7 +188,6 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
                 mContext.stopService(i);
                 mContext.startService(i);
             }
-            CustomApplication.saveSharedPreferences();
         }
 
         if (key.equals(Constants.PREF_OTHER[12])) {

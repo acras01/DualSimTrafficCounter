@@ -383,12 +383,14 @@ public class MobileUtils {
                                 try {
                                     if (mGetDataState == null)
                                         mGetDataState = getMethod(mTelephonyClass, GET_DATA, 1);
-                                    if (mGetDataState.getParameterTypes()[0].equals(int.class)) {
-                                        state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
-                                    } else if (mGetDataState.getParameterTypes()[0].equals(long.class)) {
-                                        if (mSubIds == null)
-                                            mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                        state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), mSubIds.get(i));
+                                    if (mGetDataState != null) {
+                                        if (mGetDataState.getParameterTypes()[0].equals(int.class)) {
+                                            state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                        } else if (mGetDataState.getParameterTypes()[0].equals(long.class)) {
+                                            if (mSubIds == null)
+                                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                            state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                        }
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -516,8 +518,8 @@ public class MobileUtils {
         return sim;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    static int getActiveSimForCallLP(Context context, int simQuantity, ArrayList<String> list) {
+    @TargetApi(Build.VERSION_CODES.M)
+    public static int getActiveSimForCallM(final Context context, int simQuantity, ArrayList<String> list) {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         int sim = -1;
         if (mTelephonyClass == null)
@@ -526,14 +528,14 @@ public class MobileUtils {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        if (mTelephonyClass != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (mTelephonyClass != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (mGetCallState == null)
                 mGetCallState = getMethod(mTelephonyClass, GET_CALL, 1);
             if (mGetCallState != null)
                 for (int i = 0; i < simQuantity; i++) {
                     try {
                         int state = (int) mGetCallState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), Integer.valueOf(list.get(i)));
-                        if (state == TelephonyManager.CALL_STATE_RINGING) {
+                        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                             sim = i;
                             break;
                         }
@@ -863,18 +865,20 @@ public class MobileUtils {
                         Class<?> c = Class.forName(MEDIATEK);
                         if (mGetSimOperator == null)
                             mGetSimOperator = getMethod(c, GET_CODE_SIM, 1);
-                        if (mGetSimOperator.getParameterTypes()[0].equals(int.class)) {
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                            }
-                        } else if (mGetSimOperator.getParameterTypes()[0].equals(long.class)) {
-                            if (mSubIds == null)
-                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                                out = "SubId";
+                        if (mGetSimOperator != null) {
+                            if (mGetSimOperator.getParameterTypes()[0].equals(int.class)) {
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                }
+                            } else if (mGetSimOperator.getParameterTypes()[0].equals(long.class)) {
+                                if (mSubIds == null)
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetSimOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    out = "SubId";
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -889,18 +893,20 @@ public class MobileUtils {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetNetworkOperator == null)
                                 mGetNetworkOperator = getMethod(c, GET_CODE_NETWORK, 1);
-                            if (mGetNetworkOperator.getParameterTypes()[0].equals(int.class)) {
-                                for (int i = 0; i < simQuantity; i++) {
-                                    String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
-                                    code.add(i, _code == null || _code.equals("") ? null : _code);
-                                }
-                            } else if (mGetNetworkOperator.getParameterTypes()[0].equals(long.class)) {
-                                if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
-                                    code.add(i, _code == null || _code.equals("") ? null : _code);
-                                    out = "SubId";
+                            if (mGetNetworkOperator != null) {
+                                if (mGetNetworkOperator.getParameterTypes()[0].equals(int.class)) {
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), i);
+                                        code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    }
+                                } else if (mGetNetworkOperator.getParameterTypes()[0].equals(long.class)) {
+                                    if (mSubIds == null)
+                                        mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        String _code = (String) mGetNetworkOperator.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                        code.add(i, _code == null || _code.equals("") ? null : _code);
+                                        out = "SubId";
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -921,18 +927,20 @@ public class MobileUtils {
                     try {
                         if (mGetSimOperator == null)
                             mGetSimOperator = getMethod(mTelephonyClass, GET_CODE_SIM, 1);
-                        if (mGetSimOperator.getParameterTypes()[0].equals(int.class)) {
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                            }
-                        } else if (mGetSimOperator.getParameterTypes()[0].equals(long.class)) {
-                            if (mSubIds == null)
-                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                            for (int i = 0; i < simQuantity; i++) {
-                                String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
-                                code.add(i, _code == null || _code.equals("") ? null : _code);
-                                out = "SubId";
+                        if (mGetSimOperator != null) {
+                            if (mGetSimOperator.getParameterTypes()[0].equals(int.class)) {
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                }
+                            } else if (mGetSimOperator.getParameterTypes()[0].equals(long.class)) {
+                                if (mSubIds == null)
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    String _code = (String) mGetSimOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                    code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    out = "SubId";
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -946,18 +954,20 @@ public class MobileUtils {
                         try {
                             if (mGetNetworkOperatorForPhone == null)
                                 mGetNetworkOperatorForPhone = getMethod(mTelephonyClass, GET_CODE_NETWORK_FOR_PHONE, 1);
-                            if (mGetNetworkOperatorForPhone.getParameterTypes()[0].equals(int.class)) {
-                                for (int i = 0; i < simQuantity; i++) {
-                                    String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                    code.add(i, _code == null || _code.equals("") ? null : _code);
-                                }
-                            } else if (mGetNetworkOperatorForPhone.getParameterTypes()[0].equals(long.class)) {
-                                if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
-                                    code.add(i, _code == null || _code.equals("") ? null : _code);
-                                    out = "SubId";
+                            if (mGetNetworkOperatorForPhone != null) {
+                                if (mGetNetworkOperatorForPhone.getParameterTypes()[0].equals(int.class)) {
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                        code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    }
+                                } else if (mGetNetworkOperatorForPhone.getParameterTypes()[0].equals(long.class)) {
+                                    if (mSubIds == null)
+                                        mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        String _code = (String) mGetNetworkOperatorForPhone.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                        code.add(i, _code == null || _code.equals("") ? null : _code);
+                                        out = "SubId";
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -972,18 +982,20 @@ public class MobileUtils {
                         try {
                             if (mGetNetworkOperator == null)
                                 mGetNetworkOperator = getMethod(mTelephonyClass, GET_CODE_NETWORK, 1);
-                            if (mGetNetworkOperator.getParameterTypes()[0].equals(int.class)) {
-                                for (int i = 0; i < simQuantity; i++) {
-                                    String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
-                                    code.add(i, _code == null || _code.equals("") ? null : _code);
-                                }
-                            } else if (mGetNetworkOperator.getParameterTypes()[0].equals(long.class)) {
-                                if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
-                                    code.add(i, _code == null || _code.equals("") ? null : _code);
-                                    out = "SubId";
+                            if (mGetNetworkOperator != null) {
+                                if (mGetNetworkOperator.getParameterTypes()[0].equals(int.class)) {
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
+                                        code.add(i, _code == null || _code.equals("") ? null : _code);
+                                    }
+                                } else if (mGetNetworkOperator.getParameterTypes()[0].equals(long.class)) {
+                                    if (mSubIds == null)
+                                        mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        String _code = (String) mGetNetworkOperator.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i));
+                                        code.add(i, _code == null || _code.equals("") ? null : _code);
+                                        out = "SubId";
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -1090,15 +1102,17 @@ public class MobileUtils {
                             try {
                                 if (mGetDeviceId == null)
                                     mGetDeviceId = getMethod(mTelephonyClass, GET_IMEI, 1);
-                                if (mGetDeviceId.getParameterTypes()[0].equals(int.class)) {
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                    }
-                                } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
-                                    if (mSubIds == null)
-                                        mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                if (mGetDeviceId != null) {
+                                    if (mGetDeviceId.getParameterTypes()[0].equals(int.class)) {
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                        }
+                                    } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
+                                        if (mSubIds == null)
+                                            mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            imei.add(i, (String) mGetDeviceId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                        }
                                     }
                                 }
                             } catch (Exception e) {
@@ -1221,15 +1235,17 @@ public class MobileUtils {
                         try {
                             if (mGetSubscriberId == null)
                                 mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI, 1);
-                            if (mGetSubscriberId.getParameterTypes()[0].equals(int.class)) {
-                                for (int i = 0; i < simQuantity; i++) {
-                                    imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                                }
-                            } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
-                                if (mSubIds == null)
-                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                for (int i = 0; i < simQuantity; i++) {
-                                    imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                            if (mGetSubscriberId != null) {
+                                if (mGetSubscriberId.getParameterTypes()[0].equals(int.class)) {
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                    }
+                                } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
+                                    if (mSubIds == null)
+                                        mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                    for (int i = 0; i < simQuantity; i++) {
+                                        imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                    }
                                 }
                             }
                         } catch (Exception e) {

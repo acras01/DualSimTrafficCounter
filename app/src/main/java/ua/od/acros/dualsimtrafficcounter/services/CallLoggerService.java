@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -292,7 +293,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mIsOutgoing)
                     switch (state) {
                         case TelephonyManager.CALL_STATE_OFFHOOK:
-                            final int sim = MobileUtils.getActiveSimForCall(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
+                            final int sim;
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                                sim = MobileUtils.getActiveSimForCall(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
+                            else {
+                                ArrayList<String> list = new ArrayList<>(Arrays.asList(mPrefs.getString(Constants.PREF_OTHER[56], "").split(";")));
+                                sim = MobileUtils.getActiveSimForCallM(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1), list);
+                            }
                             updateNotification();
                             mLastActiveSIM = sim;
                             /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
@@ -706,7 +713,6 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Override
     public void onDestroy() {
         super.onDestroy();
-        CustomNotification.setInCallOperatorLogo(false);
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(Constants.STARTED_ID);
         mPrefs.edit()

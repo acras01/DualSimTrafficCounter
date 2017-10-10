@@ -12,7 +12,6 @@ import ua.od.acros.dualsimtrafficcounter.events.NewOutgoingCallEvent;
 import ua.od.acros.dualsimtrafficcounter.services.CallLoggerService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
-import ua.od.acros.dualsimtrafficcounter.utils.CustomNotification;
 
 public class OutgoingCallReceiver extends BroadcastReceiver {
 
@@ -20,7 +19,6 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL) && getResultData() != null && !prefs.getBoolean(Constants.PREF_OTHER[24], true)) {
-            CustomNotification.setInCallOperatorLogo(true);
             if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {
                 Intent i = new Intent(context, CallLoggerService.class);
                 i.setAction(intent.getAction());
