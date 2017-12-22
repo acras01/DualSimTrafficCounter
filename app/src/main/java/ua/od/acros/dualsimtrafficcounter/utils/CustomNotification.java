@@ -133,7 +133,7 @@ public class CustomNotification extends Notification {
         return result;
     }
 
-    private static Bitmap convertToMonochrome(Drawable drawable) {
+    /*private static Bitmap convertToMonochrome(Drawable drawable) {
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.setSaturation(0);
         ColorMatrixColorFilter colorMatrixFilter = new ColorMatrixColorFilter(colorMatrix);
@@ -143,5 +143,5 @@ public class CustomNotification extends Notification {
         Canvas canvas = new Canvas(blackAndWhiteBitmap);
         canvas.drawBitmap(blackAndWhiteBitmap, 0, 0, paint);
         return blackAndWhiteBitmap;
-    }
+    }*/
 }

@@ -261,14 +261,6 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 daynightSum.setText(R.string.off);
         }
 
-        remainL = (RelativeLayout) findViewById(R.id.remain_layout);
-        remainSum = (TextView) findViewById(R.id.remain_data_summary);
-        remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1"));
-        if (remainSel == 0)
-            remainSum.setText(R.string.remain);
-        else
-            remainSum.setText(R.string.used);
-
         rxtxL = (RelativeLayout) findViewById(R.id.rxtx_layout);
         rxtxSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0"));
         boolean rxtxState = rxtxSel == 0;
@@ -277,6 +269,14 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             rxtxSum.setText(R.string.show_rx_tx_sum);
         else
             rxtxSum.setText(R.string.show_used_left);
+
+        remainL = (RelativeLayout) findViewById(R.id.remain_layout);
+        remainSum = (TextView) findViewById(R.id.remain_data_summary);
+        remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1"));
+        if (remainSel == 0)
+            remainSum.setText(R.string.remain);
+        else
+            remainSum.setText(R.string.used);
 
         minus = (AppCompatCheckBox) findViewById(R.id.minus);
         minusL = (RelativeLayout) findViewById(R.id.minus_layout);
@@ -291,20 +291,20 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         }
 
         RelativeLayout infoL = (RelativeLayout) findViewById(R.id.info_layout);
-        ;
         infoSum = (TextView) findViewById(R.id.info_summary);
+        infoSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0"));
+        boolean infoState = infoSel == 0;
         if (infoL != null) {
-            infoSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0"));
-            boolean infoState = infoSel == 0;
             setOnClickListenerWithChild(infoL, this);
             onOff(rxtxL, infoState);
-            onOff(remainL, infoState);
-            onOff(minusL, !rxtxState && infoState);
             if (infoState)
                 infoSum.setText(R.string.all);
             else
                 infoSum.setText(R.string.only_total);
         }
+
+        onOff(remainL, !rxtxState && infoState);
+        onOff(minusL, !rxtxState && infoState);
 
         RelativeLayout simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
 
@@ -503,6 +503,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                         minus.setChecked(!isChecked);
                         mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], !isChecked);
                     }
+                    onOff(remainL, !isChecked);
                     onOff(minusL, !isChecked);
                     if (isChecked)
                         rxtxSum.setText(R.string.show_rx_tx_sum);

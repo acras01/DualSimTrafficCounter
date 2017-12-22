@@ -1107,7 +1107,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM1[30], "0"))) {
                                 mHasPreLimitNotificationShown1 = true;
                                 mFlashPreOverLimit[Constants.SIM1] = true;
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                vibrate(1000);
                                 showPreLimitToast(Constants.SIM1);
                             }
                         }
@@ -1369,7 +1369,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM2[30], "0"))) {
                                 mHasPreLimitNotificationShown2 = true;
                                 mFlashPreOverLimit[Constants.SIM2] = true;
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                vibrate(1000);
                                 showPreLimitToast(Constants.SIM2);
                             }
                         }
@@ -1631,7 +1631,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                             if (left < Integer.valueOf(mPrefs.getString(Constants.PREF_SIM3[30], "0"))) {
                                 mHasPreLimitNotificationShown3 = true;
                                 mFlashPreOverLimit[Constants.SIM3] = true;
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+                                vibrate(1000);
                                 showPreLimitToast(Constants.SIM3);
                             }
                         }
@@ -1665,6 +1665,13 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 e.printStackTrace();
                 ACRA.getErrorReporter().handleException(e);
             }
+        }
+    }
+
+    private void vibrate(int i) {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (v != null) {
+            v.vibrate(1000);
         }
     }
 
@@ -1733,7 +1740,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                 .setLargeIcon(bm)
                 .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText(text);
-        nm.notify(simID + 1977, builder.build());
+        if (nm != null) {
+            nm.notify(simID + 1977, builder.build());
+        }
     }
 
     private void writeTrafficDataToDatabase(int sim) {
@@ -1865,7 +1874,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
     private void updateNotification(int sim) {
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(Constants.STARTED_ID, buildNotification(sim));
+        if (nm != null) {
+            nm.notify(Constants.STARTED_ID, buildNotification(sim));
+        }
     }
 
     private Notification buildNotification(int sim) {
@@ -2137,7 +2148,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             n.sound = Uri.parse(mPrefs.getString(Constants.PREF_OTHER[1], ""));
             n.flags = Notification.FLAG_ONLY_ALERT_ONCE;
         }
-        nm.notify(sim, n);
+        if (nm != null) {
+            nm.notify(sim, n);
+        }
     }
 
     @Override
@@ -2161,7 +2174,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
             mTaskExecutor.shutdown();
         }
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(Constants.STARTED_ID);
+        if (nm != null) {
+            nm.cancel(Constants.STARTED_ID);
+        }
         if (mTrafficData != null)
             writeTrafficDataToDatabase(mActiveSIM);
         /*if (mDbHelper != null && !CustomApplication.isMyServiceRunning(CallLoggerService.class))

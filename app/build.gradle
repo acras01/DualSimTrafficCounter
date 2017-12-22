@@ -9,14 +9,13 @@ android {
             storePassword 'fpfhjdfbhbyf12091977'
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 26
     defaultConfig {
         applicationId "ua.od.acros.dualsimtrafficcounter"
         minSdkVersion 16
         targetSdkVersion 16
-        versionCode 121
-        versionName '2.2.1'
+        versionCode 122
+        versionName '2.2.2'
         signingConfig signingConfigs.acras
         vectorDrawables.useSupportLibrary = true
     }
@@ -39,17 +38,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:preference-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'joda-time:joda-time:2.9.4'
-    compile project(':acra')
-    provided project(':XposedBridge')
-    compile project(':RootShell')
-    compile project(':ambilwarna')
-    compile project(':standOut')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:preference-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'joda-time:joda-time:2.9.9'
+    implementation project(':acra')
+    compileOnly project(':XposedBridge')
+    implementation project(':RootShell')
+    implementation project(':ambilwarna')
+    implementation project(':standOut')
 }
