@@ -11,7 +11,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
-import ua.od.acros.dualsimtrafficcounter.services.FloatingWindowService;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
 import ua.od.acros.dualsimtrafficcounter.services.WatchDogService;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -27,22 +26,16 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 .putInt(Constants.PREF_OTHER[55], prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
                         : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1")))
                 .apply();
-        boolean floatingWindow = prefs.getBoolean(Constants.PREF_OTHER[32], false);
-        boolean alwaysShow = !prefs.getBoolean(Constants.PREF_OTHER[41], false) && !prefs.getBoolean(Constants.PREF_OTHER[47], false);
-        boolean bool = floatingWindow && !alwaysShow;
+
         if (intent.getAction() != null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE) ||
                     !MobileUtils.isMobileDataActive(context)) {
-                if (bool)
-                    FloatingWindowService.closeFloatingWindow(context, prefs);
                 if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
                     EventBus.getDefault().post(new NoConnectivityEvent());
             } else {
                 //start WatchDogService
                 if (prefs.getBoolean(Constants.PREF_OTHER[4], true))
                     context.startService(new Intent(context, WatchDogService.class));
-                if (bool)
-                    FloatingWindowService.showFloatingWindow(context, prefs);
                 if (!CustomApplication.isMyServiceRunning(TrafficCountService.class) &&
                         !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                     Intent i = new Intent(context, TrafficCountService.class);

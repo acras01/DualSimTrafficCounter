@@ -251,7 +251,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         writeTrafficDataToDatabase(mLastActiveSIM);
         sendDataBroadcast(0L, 0L);
-
+        boolean floatingWindow = mPrefs.getBoolean(Constants.PREF_OTHER[32], false);
+        boolean alwaysShow = !mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false);
+        boolean bool = floatingWindow && !alwaysShow;
+        if (bool)
+            FloatingWindowService.closeFloatingWindow(mContext, mPrefs);
         if (!mDoNotStopService && mPrefs.getBoolean(Constants.PREF_OTHER[47], false)) {
             mTimer.start();
         }
@@ -656,6 +660,11 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     .putInt(Constants.PREF_OTHER[46], mActiveSIM)
                     .apply();
             updateNotification(mActiveSIM);
+            boolean floatingWindow = mPrefs.getBoolean(Constants.PREF_OTHER[32], false);
+            boolean alwaysShow = !mPrefs.getBoolean(Constants.PREF_OTHER[41], false) && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false);
+            boolean bool = floatingWindow && !alwaysShow;
+            if (bool)
+                FloatingWindowService.showFloatingWindow(mContext, mPrefs);
         } else
             tTask = new CheckTimerTask();
         if (mTaskResult == null || mTaskResult.isCancelled())
