@@ -85,6 +85,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/splits-support" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/reports" />
@@ -114,6 +115,12 @@
     <orderEntry type="library" name="com.android.support:transition-26.1.0" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-ui-26.1.0" level="project" />
     <orderEntry type="library" name="org.greenrobot:eventbus:3.1.1@jar" level="project" />
+    <orderEntry type="module" module-name="standOut" />
+    <orderEntry type="module" module-name="RootShell" />
+    <orderEntry type="module" module-name="XposedBridge" />
+    <orderEntry type="module" module-name="standOut" />
+    <orderEntry type="module" module-name="RootShell" />
+    <orderEntry type="module" module-name="XposedBridge" />
     <orderEntry type="module" module-name="standOut" />
     <orderEntry type="module" module-name="RootShell" />
     <orderEntry type="module" module-name="XposedBridge" />

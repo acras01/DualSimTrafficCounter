@@ -8,12 +8,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
@@ -117,31 +111,15 @@ public class CustomNotification extends Notification {
                 String logo = MobileUtils.getLogoFromCode(context, sim);
                 result[0] = resources.getIdentifier("logo_" + logo, "drawable", context.getPackageName());
                 result[1] = BitmapFactory.decodeResource(resources, context.getResources().getIdentifier(logo, "drawable", context.getPackageName()));
-                //result[1] = ContextCompat.getDrawable(context, resources.getIdentifier(logo, "drawable", context.getPackageName()));
             } else {
                 result[0] = resources.getIdentifier(mPrefs.getString(pref[23], "logo_none"), "drawable", context.getPackageName());
                 result[1] = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
-                //result[1] = ContextCompat.getDrawable(context, resources.getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", context.getPackageName()));
             }
         } else {
             result[0] = R.drawable.ic_launcher_small;
             result[1] = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
         }
-        /*if (choice)
-            result[1] = convertToMonochrome((Drawable) result[1]);*/
         result[1] = Bitmap.createScaledBitmap((Bitmap) result[1], dim, dim, false);
         return result;
     }
-
-    /*private static Bitmap convertToMonochrome(Drawable drawable) {
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setSaturation(0);
-        ColorMatrixColorFilter colorMatrixFilter = new ColorMatrixColorFilter(colorMatrix);
-        Bitmap blackAndWhiteBitmap = ((BitmapDrawable) drawable).getBitmap().copy(Bitmap.Config.ARGB_8888, true);
-        Paint paint = new Paint();
-        paint.setColorFilter(colorMatrixFilter);
-        Canvas canvas = new Canvas(blackAndWhiteBitmap);
-        canvas.drawBitmap(blackAndWhiteBitmap, 0, 0, paint);
-        return blackAndWhiteBitmap;
-    }*/
 }
