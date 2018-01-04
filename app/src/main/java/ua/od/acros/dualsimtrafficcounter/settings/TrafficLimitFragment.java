@@ -233,7 +233,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
     }
 
-    private void updateSummary() {
+    public final void updateSummary() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
             changeSIM.setChecked(false);
             changeSIM.setEnabled(false);
