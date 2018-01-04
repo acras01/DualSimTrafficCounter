@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +39,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     private static PreferenceFragmentCompat mFragment;
     private static WeakReference<Context> mContext;
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             recreate();
         }
         setContentView(R.layout.activity_settings);
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         mActionBar = getSupportActionBar();
         if (mActionBar != null) {
@@ -169,11 +171,11 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             mActionBar.setDisplayShowCustomEnabled(true);
             mActionBar.setCustomView(R.layout.actionbar_switch);
             View custom = mActionBar.getCustomView();
-            TextView tv = (TextView) custom.findViewById(R.id.titleText);
+            TextView tv = custom.findViewById(R.id.titleText);
             tv.setText(R.string.other_title);
-            tv = (TextView) custom.findViewById(R.id.subTitleText);
+            tv = custom.findViewById(R.id.subTitleText);
             tv.setText(R.string.floating_window);
-            SwitchCompat actionBarSwitch = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
+            SwitchCompat actionBarSwitch = custom.findViewById(R.id.switchForActionBar);
             if (actionBarSwitch != null)
                 OtherFragment.setSwitch(new CustomSwitch(mContext.get(), actionBarSwitch, Constants.PREF_OTHER[32]));
         } else if (mFragment instanceof TrafficLimitFragment)

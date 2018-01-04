@@ -9,8 +9,8 @@ import java.util.Set;
 
 import wei.mark.standout.ui.Window;
 
-public class WindowCache {
-	public Map<Class<? extends StandOutWindow>, SparseArray<Window>> sWindows;
+class WindowCache {
+	private final Map<Class<? extends StandOutWindow>, SparseArray<Window>> sWindows;
 
 	public WindowCache() {
 		sWindows = new HashMap<>();

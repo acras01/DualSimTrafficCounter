@@ -19,13 +19,13 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     private List<ListItem> mList;
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
-        AppCompatCheckBox checkBox;
-        TextView textView;
+        final AppCompatCheckBox checkBox;
+        final TextView textView;
 
         ViewHolder(View v) {
             super(v);
-            checkBox = (AppCompatCheckBox) v.findViewById(R.id.checkBox);
-            textView = (TextView) v.findViewById(R.id.textView);
+            checkBox = v.findViewById(R.id.checkBox);
+            textView = v.findViewById(R.id.textView);
             checkBox.setOnCheckedChangeListener(this);
             textView.setOnClickListener(this);
         }

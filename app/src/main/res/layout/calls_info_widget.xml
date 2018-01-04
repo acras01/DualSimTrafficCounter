@@ -9,7 +9,8 @@
         android:src="@drawable/info_widget_bg"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitXY" >
+        android:scaleType="fitXY"
+        android:contentDescription="TODO">
     </ImageView>
 
     <LinearLayout
@@ -35,7 +36,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo1"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,7 +86,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:id="@+id/stub1"
-            android:src="@drawable/widget_divider" />
+            android:src="@drawable/widget_divider"
+            android:contentDescription="TODO" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -100,7 +103,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo2"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -149,7 +153,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:id="@+id/stub2"
-            android:src="@drawable/widget_divider" />
+            android:src="@drawable/widget_divider"
+            android:contentDescription="TODO" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -165,7 +170,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo3"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"

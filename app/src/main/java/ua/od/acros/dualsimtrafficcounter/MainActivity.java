@@ -99,10 +99,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setContentView(R.layout.activity_main);
 
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         if (drawer != null) {
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         toggle.syncState();
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView = findViewById(R.id.nav_view);
         if (mNavigationView != null) {
             mNavigationView.setNavigationItemSelectedListener(this);
             //Prepare Navigation View Menu
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //set Version in Navigation View Header
             //View headerLayout = mNavigationView.findViewById(R.id.headerLayout);
             View headerLayout = mNavigationView.getHeaderView(0);
-            TextView versionView = (TextView) headerLayout.findViewById(R.id.versioninfo);
+            TextView versionView = headerLayout.findViewById(R.id.versioninfo);
             String version;
             try {
                 version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Subscribe
     public void onMessageEvent(CustomDialogEvent event) {
         FragmentManager fm = getSupportFragmentManager();
-        if (CustomApplication.canToggleOn()) {
+        if (CustomApplication.isOldMtkDevice()) {
             fm.beginTransaction()
                     .replace(R.id.content_frame, new TestFragment())
                     .commit();
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void showDialog(String key) {
+    private void showDialog(String key) {
         switch (key) {
             default:
                 CustomDialog.newInstance(key).show(getSupportFragmentManager(), "dialog");
@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         openFragment(item.getItemId());
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer != null) {
             drawer.closeDrawer(GravityCompat.START);
         }

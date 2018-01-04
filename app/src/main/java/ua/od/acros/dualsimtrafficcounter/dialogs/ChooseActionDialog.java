@@ -50,9 +50,9 @@ public class ChooseActionDialog extends AppCompatActivity {
             recreate();
         }
         View view = View.inflate(this, R.layout.action_dialog, null);
-        AppCompatRadioButton change = (AppCompatRadioButton) view.findViewById(R.id.actionchange);
-        AppCompatRadioButton mobileData = (AppCompatRadioButton) view.findViewById(R.id.actionmobiledata);
-        AppCompatRadioButton off = (AppCompatRadioButton) view.findViewById(R.id.actionoff);
+        AppCompatRadioButton change = view.findViewById(R.id.actionchange);
+        AppCompatRadioButton mobileData = view.findViewById(R.id.actionmobiledata);
+        AppCompatRadioButton off = view.findViewById(R.id.actionoff);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ||
                 !CustomApplication.canToggleOn() ||
@@ -64,7 +64,7 @@ public class ChooseActionDialog extends AppCompatActivity {
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !CustomApplication.hasRoot()))
             off.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
         final ColorStateList[] textColor = new ColorStateList[] {ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

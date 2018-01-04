@@ -29,8 +29,13 @@ public class ResetReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
-        wl.acquire();
+        PowerManager.WakeLock wl = null;
+        if (pm != null) {
+            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
+        }
+        if (wl != null) {
+            wl.acquire(10*60*1000L /*10 minutes*/);
+        }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (prefs.getBoolean(Constants.PREF_OTHER[45], false)) {

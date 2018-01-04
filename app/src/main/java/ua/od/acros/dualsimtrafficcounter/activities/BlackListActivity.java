@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -41,6 +42,7 @@ public class BlackListActivity extends AppCompatActivity {
     private ProgressBar pb;
     private SharedPreferences mPrefs;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +66,11 @@ public class BlackListActivity extends AppCompatActivity {
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         setContentView(R.layout.activity_recyclerview);
-        pb = (ProgressBar) findViewById(R.id.progressBar);
+        pb = findViewById(R.id.progressBar);
         if (pb != null) {
             pb.setVisibility(View.GONE);
         }
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
@@ -77,7 +79,7 @@ public class BlackListActivity extends AppCompatActivity {
             bar.setSubtitle(mOperatorNames[mKey]);
             bar.setTitle(getString(R.string.black_list));
         }
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -110,7 +112,7 @@ public class BlackListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class SaveTask extends AsyncTask<Void, Void, Boolean> {
+    private static class SaveTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -134,9 +136,9 @@ public class BlackListActivity extends AppCompatActivity {
         }
     }
 
-    private class LoadContactsTask extends AsyncTask<Void, Void, List<ListItem>> {
+    private static class LoadContactsTask extends AsyncTask<Void, Void, List<ListItem>> {
 
-        RecyclerView rv;
+        final RecyclerView rv;
 
         LoadContactsTask(RecyclerView rv) {
             this.rv = rv;

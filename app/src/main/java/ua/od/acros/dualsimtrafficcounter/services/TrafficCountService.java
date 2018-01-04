@@ -2098,7 +2098,9 @@ public class TrafficCountService extends Service implements SharedPreferences.On
                     .setLargeIcon(bm)
                     .setWhen(System.currentTimeMillis())
                     .setContentTitle(getString(R.string.service_stopped_title));
-            nm.notify(Constants.STARTED_ID, builder.build());
+            if (nm != null) {
+                nm.notify(Constants.STARTED_ID, builder.build());
+            }
 
             EventBus.getDefault().post(new TipTrafficEvent());
 

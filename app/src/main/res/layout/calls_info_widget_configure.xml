@@ -261,7 +261,8 @@
                     android:maxWidth="@dimen/logo_size"
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"/>
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="TODO" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -307,7 +308,8 @@
                     android:maxWidth="@dimen/logo_size"
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"/>
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="TODO" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -352,7 +354,8 @@
                     android:maxWidth="@dimen/logo_size"
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
-                    android:layout_alignParentEnd="true"/>
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="TODO" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -400,7 +403,8 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:src="@android:drawable/ic_menu_preferences" />
+                    android:src="@android:drawable/ic_menu_preferences"
+                    android:contentDescription="TODO" />
 
             </RelativeLayout>
 
@@ -438,7 +442,8 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:src="@android:drawable/ic_menu_preferences" />
+                    android:src="@android:drawable/ic_menu_preferences"
+                    android:contentDescription="TODO" />
 
             </RelativeLayout>
 
@@ -514,7 +519,8 @@
                     android:minHeight="@dimen/logo_size"
                     android:minWidth="@dimen/logo_size"
                     android:layout_alignParentEnd="true"
-                    android:src="@android:drawable/ic_menu_preferences" />
+                    android:src="@android:drawable/ic_menu_preferences"
+                    android:contentDescription="TODO" />
 
             </RelativeLayout>
 

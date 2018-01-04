@@ -51,18 +51,18 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
-        AppCompatCheckBox checkBox;
-        TextView txtViewName;
-        TextView txtViewNumber;
-        ImageView imgIcon;
+        final AppCompatCheckBox checkBox;
+        final TextView txtViewName;
+        final TextView txtViewNumber;
+        final ImageView imgIcon;
 
 
         ViewHolder(View view) {
             super(view);
-            checkBox = (AppCompatCheckBox) view.findViewById(R.id.checkBox);
-            txtViewName = (TextView) view.findViewById(R.id.name);
-            txtViewNumber = (TextView) view.findViewById(R.id.number);
-            imgIcon = (ImageView) view.findViewById(R.id.icon);
+            checkBox = view.findViewById(R.id.checkBox);
+            txtViewName = view.findViewById(R.id.name);
+            txtViewNumber = view.findViewById(R.id.number);
+            imgIcon = view.findViewById(R.id.icon);
             checkBox.setOnCheckedChangeListener(this);
             txtViewName.setOnClickListener(this);
             txtViewNumber.setOnClickListener(this);
@@ -153,8 +153,8 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
     private class CustomRequestHandler extends RequestHandler {
 
-        private PackageManager packageManager;
-        private Context context;
+        private final PackageManager packageManager;
+        private final Context context;
 
         CustomRequestHandler(Context context) {
             this.context = context;
@@ -177,7 +177,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 if (bmp != null)
                     return new Result(bmp, Picasso.LoadedFrom.DISK);
             } else if (request.uri.toString().contains(SCHEME_CONTACT_PHOTO)) {
-                boolean choice = false;
+                boolean choice;
                 long contactID = Long.parseLong(request.uri.toString().replace(SCHEME_CONTACT_PHOTO + "://", ""));
                 Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactID);
                 Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);

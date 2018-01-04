@@ -14,7 +14,7 @@ import ua.od.acros.dualsimtrafficcounter.preferences.TimePreference;
 
 public class TimePreferenceDialog extends PreferenceDialogFragmentCompat implements DialogPreference.TargetFragment {
 
-    TimePicker mTimePicker = null;
+    private TimePicker mTimePicker = null;
 
     public static TimePreferenceDialog newInstance(Preference preference) {
         TimePreferenceDialog fragment = new TimePreferenceDialog();

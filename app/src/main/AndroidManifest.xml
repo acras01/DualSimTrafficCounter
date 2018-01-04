@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="ua.od.acros.dualsimtrafficcounter"
     android:installLocation="internalOnly">
 
@@ -161,7 +160,8 @@
         <receiver
             android:name=".receivers.OutgoingCallReceiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:permission="">
             <intent-filter android:priority="999">
                 <action android:name="ua.od.acros.dualsimtrafficcounter.NEW_OUTGOING_CALL" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />

@@ -44,12 +44,14 @@ public class TrafficInfoWidget extends AppWidgetProvider {
         //super.onReceive(context, intent);
         String action = intent.getAction();
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
-        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
-            final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
-                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
-        } else if (action.equals(Constants.TRAFFIC_BROADCAST_ACTION) && widgetIds != null)
-            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
+        if (action != null) {
+            if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
+                final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
+                    CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
+            } else if (action.equals(Constants.TRAFFIC_BROADCAST_ACTION) && widgetIds != null)
+                updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, intent.getExtras());
+        }
     }
 
     private Bundle readData(Context context) {
@@ -310,7 +312,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.vert12, View.VISIBLE);
                 }
 
-                String title1 = "";
+                String title1;
                 updateViews.setViewVisibility(R.id.operSIM1, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true)) {
                     if (bundle.getString(Constants.OPERATOR1, "").equals(""))
@@ -471,7 +473,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.vert21, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert22, View.VISIBLE);
                 }
-                String title2 = "";
+                String title2;
                 updateViews.setViewVisibility(R.id.operSIM2, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true)) {
                     if (bundle.getString(Constants.OPERATOR2, "").equals(""))
@@ -634,7 +636,7 @@ public class TrafficInfoWidget extends AppWidgetProvider {
                     updateViews.setViewVisibility(R.id.vert31, View.VISIBLE);
                     updateViews.setViewVisibility(R.id.vert32, View.VISIBLE);
                 }
-                String title3 = "";
+                String title3;
                 updateViews.setViewVisibility(R.id.operSIM3, View.GONE);
                 if (prefs.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true)) {
                     if (bundle.getString(Constants.OPERATOR3, "").equals(""))

@@ -3,9 +3,10 @@ package ua.od.acros.dualsimtrafficcounter.utils;
 import android.net.Uri;
 
 public class ListItem {
-    public Uri icon;
-    public String name, number;
-    public boolean checked;
+    private Uri icon;
+    private final String name;
+    private final String number;
+    private boolean checked;
 
     public ListItem(Uri icon, String name, String number, boolean checked) {
         this.icon = icon;

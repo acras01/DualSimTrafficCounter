@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -47,6 +48,7 @@ public class MyListActivity extends AppCompatActivity {
     private MyListAdapter mAdapter;
     private SharedPreferences mPrefs;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,11 +75,11 @@ public class MyListActivity extends AppCompatActivity {
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         setContentView(R.layout.activity_recyclerview);
-        pb = (ProgressBar) findViewById(R.id.progressBar);
+        pb = findViewById(R.id.progressBar);
         if (pb != null) {
             pb.setVisibility(View.GONE);
         }
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
@@ -89,7 +91,7 @@ public class MyListActivity extends AppCompatActivity {
             else
                 bar.setTitle(getString(R.string.uid_list));
         }
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             List<ListItem> myList = new ArrayList<>();
@@ -182,7 +184,7 @@ public class MyListActivity extends AppCompatActivity {
 
     private class LoadTask extends AsyncTask<Void, Void, List<ListItem>> {
 
-        RecyclerView rv;
+        final RecyclerView rv;
 
         LoadTask(RecyclerView rv) {
             this.rv = rv;

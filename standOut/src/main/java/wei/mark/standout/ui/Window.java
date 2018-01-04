@@ -34,16 +34,16 @@ public class Window extends FrameLayout {
 	public static final int VISIBILITY_VISIBLE = 1;
 	public static final int VISIBILITY_TRANSITION = 2;
 
-	static final String TAG = "Window";
+	private static final String TAG = "Window";
 
 	/**
 	 * Class of the window, indicating which application the window belongs to.
 	 */
-	public Class<? extends StandOutWindow> cls;
+    private Class<? extends StandOutWindow> cls;
 	/**
 	 * Id of the window.
 	 */
-	public int id;
+    private int id;
 
 	/**
 	 * Whether the window is shown, hidden/closed, or in transition.
@@ -53,12 +53,12 @@ public class Window extends FrameLayout {
 	/**
 	 * Whether the window is focused.
 	 */
-	public boolean focused;
+    private boolean focused;
 
 	/**
 	 * Original params from {@link StandOutWindow#getParams(int, Window)}.
 	 */
-	public StandOutLayoutParams originalParams;
+    private StandOutLayoutParams originalParams;
 	/**
 	 * Original flags from {@link StandOutWindow#getFlags(int)}.
 	 */
@@ -72,7 +72,7 @@ public class Window extends FrameLayout {
 	/**
 	 * Data attached to the window.
 	 */
-	public Bundle data;
+    private Bundle data;
 
 	/**
 	 * Context of the window.
@@ -105,7 +105,7 @@ public class Window extends FrameLayout {
 		if (Utils.isSet(flags, StandOutFlags.FLAG_DECORATION_SYSTEM)) {
 			// requested system window decorations
 			content = getSystemDecorations();
-			body = (FrameLayout) content.findViewById(R.id.body);
+			body = content.findViewById(R.id.body);
 		} else {
 			// did not request decorations. will provide own implementation
 			content = new FrameLayout(context);
@@ -342,7 +342,7 @@ public class Window extends FrameLayout {
 		final View decorations = View.inflate(mContext, R.layout.system_window_decorators, null);
 
 		// icon
-		final ImageView icon = (ImageView) decorations.findViewById(R.id.window_icon);
+		final ImageView icon = decorations.findViewById(R.id.window_icon);
 		icon.setImageBitmap(mContext.getAppIcon());
 		icon.setOnClickListener(new OnClickListener() {
 
@@ -356,7 +356,7 @@ public class Window extends FrameLayout {
 		});
 
 		// title
-		TextView title = (TextView) decorations.findViewById(R.id.title);
+		TextView title = decorations.findViewById(R.id.title);
 		title.setText(mContext.getTitle(id));
 
 		// hide
@@ -432,7 +432,7 @@ public class Window extends FrameLayout {
 	 * @param root
 	 *            The view hierarchy that is part of the window.
 	 */
-	void addFunctionality(View root) {
+    private void addFunctionality(View root) {
 		// corner for resize
 		if (!Utils.isSet(flags, StandOutFlags.FLAG_ADD_FUNCTIONALITY_RESIZE_DISABLE)) {
 			View corner = root.findViewById(R.id.corner);
@@ -479,7 +479,7 @@ public class Window extends FrameLayout {
 	 * @param root
 	 *            The root view hierarchy to iterate through and check.
 	 */
-	void fixCompatibility(View root) {
+    private void fixCompatibility(View root) {
 		Queue<View> queue = new LinkedList<>();
 		queue.add(root);
 
@@ -536,7 +536,8 @@ public class Window extends FrameLayout {
 		/**
 		 * Width and height of the screen.
 		 */
-		int displayWidth, displayHeight;
+		final int displayWidth;
+		final int displayHeight;
 
         private int[] getDisplayDimensions() {
             DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
@@ -606,8 +607,8 @@ public class Window extends FrameLayout {
 				int maxHeight = mParams.maxHeight;
 
 				if (Utils.isSet(flags, StandOutFlags.FLAG_WINDOW_EDGE_LIMITS_ENABLE)) {
-					maxWidth = (int) Math.min(maxWidth, displayWidth);
-					maxHeight = (int) Math.min(maxHeight, displayHeight);
+					maxWidth = Math.min(maxWidth, displayWidth);
+					maxHeight = Math.min(maxHeight, displayHeight);
 				}
 
 				// keep window between min and max

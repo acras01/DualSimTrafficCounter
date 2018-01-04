@@ -59,20 +59,22 @@ public class WatchDogService extends Service{
             mTimer = new Timer();
         }
         final TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        tm.listen(new PhoneStateListener() {
+        if (tm != null) {
+            tm.listen(new PhoneStateListener() {
 
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                    switch (state) {
-                        case TelephonyManager.CALL_STATE_OFFHOOK:
-                            mInCall = true;
-                            break;
-                        case TelephonyManager.CALL_STATE_IDLE:
-                            mInCall = false;
-                            break;
-                    }
-            }
-        }, PhoneStateListener.LISTEN_CALL_STATE);
+                @Override
+                public void onCallStateChanged(int state, String incomingNumber) {
+                        switch (state) {
+                            case TelephonyManager.CALL_STATE_OFFHOOK:
+                                mInCall = true;
+                                break;
+                            case TelephonyManager.CALL_STATE_IDLE:
+                                mInCall = false;
+                                break;
+                        }
+                }
+            }, PhoneStateListener.LISTEN_CALL_STATE);
+        }
     }
 
     @Override
@@ -99,7 +101,7 @@ public class WatchDogService extends Service{
                 mIsFirstRun = false;
             }
             ContentValues cv;
-            String lastUpdate = "";
+            String lastUpdate;
             LocalDateTime now = DateTime.now().toLocalDateTime(), last = null;
             DateTimeFormatter fmt = DateTimeFormat.forPattern(Constants.DATE_FORMAT + " " + Constants.TIME_FORMAT + ":ss");
             if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false)) {

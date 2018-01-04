@@ -44,8 +44,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     private Context mContext;
     private boolean mIsAttached;
     private SharedPreferences mPrefs;
-    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT = 5469;
-    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL = 5470;
+    private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_FLOAT = 5469;
+    private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE_CALL = 5470;
     private static WeakReference<CustomSwitch> mSwitch;
 
     @Override
@@ -151,24 +151,26 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
 
         if (key.equals(Constants.PREF_OTHER[25])) {
             AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-            DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
-            Intent iReset = new Intent(mContext, ResetReceiver.class);
-            iReset.setAction(Constants.RESET_ACTION);
-            final int RESET = 1981;
-            PendingIntent piReset = PendingIntent.getBroadcast(mContext, RESET, iReset, 0);
-            if (sharedPreferences.getBoolean(key, false)) {
-                sharedPreferences.edit()
-                        .putBoolean(Constants.PREF_OTHER[24], false)
-                        .apply();
-                am.cancel(piReset);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
-            } else {
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
-                    mContext.stopService(new Intent(mContext, CallLoggerService.class));
-                sharedPreferences.edit()
-                        .putBoolean(Constants.PREF_OTHER[24], true)
-                        .apply();
-                am.cancel(piReset);
+            if (am != null) {
+                DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
+                Intent iReset = new Intent(mContext, ResetReceiver.class);
+                iReset.setAction(Constants.RESET_ACTION);
+                final int RESET = 1981;
+                PendingIntent piReset = PendingIntent.getBroadcast(mContext, RESET, iReset, 0);
+                if (sharedPreferences.getBoolean(key, false)) {
+                    sharedPreferences.edit()
+                            .putBoolean(Constants.PREF_OTHER[24], false)
+                            .apply();
+                    am.cancel(piReset);
+                    am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
+                } else {
+                    if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
+                        mContext.stopService(new Intent(mContext, CallLoggerService.class));
+                    sharedPreferences.edit()
+                            .putBoolean(Constants.PREF_OTHER[24], true)
+                            .apply();
+                    am.cancel(piReset);
+                }
             }
         }
 

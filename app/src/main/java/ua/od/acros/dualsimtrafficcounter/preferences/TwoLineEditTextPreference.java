@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class TwoLineEditTextPreference extends EditTextPreference {
 
-    private AppCompatEditText mEditText;
+    private final AppCompatEditText mEditText;
 
     public TwoLineEditTextPreference(Context context) {
         this(context, null);

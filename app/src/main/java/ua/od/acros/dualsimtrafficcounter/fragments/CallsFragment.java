@@ -132,21 +132,21 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         View view = inflater.inflate(R.layout.calls_fragment, container, false);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
-        TOT1 = (TextView) view.findViewById(R.id.Tot1);
-        TOT2 = (TextView) view.findViewById(R.id.Tot2);
-        TOT3 = (TextView) view.findViewById(R.id.Tot3);
-        SIM1 = (TextView) view.findViewById(R.id.sim1_name);
-        SIM2 = (TextView) view.findViewById(R.id.sim2_name);
-        SIM3 = (TextView) view.findViewById(R.id.sim3_name);
-        TIP = (TextView) view.findViewById(R.id.tip);
+        TOT1 = view.findViewById(R.id.Tot1);
+        TOT2 = view.findViewById(R.id.Tot2);
+        TOT3 = view.findViewById(R.id.Tot3);
+        SIM1 = view.findViewById(R.id.sim1_name);
+        SIM2 = view.findViewById(R.id.sim2_name);
+        SIM3 = view.findViewById(R.id.sim3_name);
+        TIP = view.findViewById(R.id.tip);
 
-        bLim1 = (AppCompatButton) view.findViewById(R.id.limit1_calls);
-        bLim2 = (AppCompatButton) view.findViewById(R.id.limit2_calls);
-        bLim3 = (AppCompatButton) view.findViewById(R.id.limit3_calls);
+        bLim1 = view.findViewById(R.id.limit1_calls);
+        bLim2 = view.findViewById(R.id.limit2_calls);
+        bLim3 = view.findViewById(R.id.limit3_calls);
 
-        bClear1 = (AppCompatButton) view.findViewById(R.id.buttonClear1);
-        bClear2 = (AppCompatButton) view.findViewById(R.id.buttonClear2);
-        bClear3 = (AppCompatButton) view.findViewById(R.id.buttonClear3);
+        bClear1 = view.findViewById(R.id.buttonClear1);
+        bClear2 = view.findViewById(R.id.buttonClear2);
+        bClear3 = view.findViewById(R.id.buttonClear3);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             SIM2.setVisibility(View.GONE);
@@ -338,7 +338,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     public interface OnFragmentInteractionListener {
-        public void onCallsFragmentInteraction(Uri uri);
+        void onCallsFragmentInteraction(Uri uri);
     }
 
     private void setButtonLimitText() {
@@ -352,49 +352,55 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         String[] listitems = getResources().getStringArray(R.array.three_values);
         String[] list = getResources().getStringArray(R.array.limit);
 
+        StringBuilder limit1Builder = new StringBuilder(limit1);
+        StringBuilder limit2Builder = new StringBuilder(limit2);
+        StringBuilder limit3Builder = new StringBuilder(limit3);
         for (int i = 0; i < listitems.length; i++) {
-            if (!limit1.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1_CALLS[2], "0"))) {
+            if (!limit1Builder.toString().equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1_CALLS[2], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1_CALLS[5], "1") + getString(R.string.days);
+                    limit1Builder.append("/").append(mPrefs.getString(Constants.PREF_SIM1_CALLS[5], "1")).append(getString(R.string.days));
                 else
-                    limit1 += "/" + list[i];
+                    limit1Builder.append("/").append(list[i]);
                 String date = mPrefs.getString(Constants.PREF_SIM1_CALLS[8], getString(R.string.not_set));
                 try {
                     date = date.substring(0, 10);
-                    limit1 += getString(R.string.next_reset) + date;
+                    limit1Builder.append(getString(R.string.next_reset)).append(date);
                 } catch (Exception e) {
-                    limit1 += "\n" + date;
+                    limit1Builder.append("\n").append(date);
                 }
             }
             if (mSimQuantity >= 2)
-                if (!limit2.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2_CALLS[2], "0"))) {
+                if (!limit2Builder.toString().equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2_CALLS[2], "0"))) {
                     if (listitems[i].equals("2"))
-                        limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2_CALLS[5], "1") + getString(R.string.days);
+                        limit2Builder.append("/").append(mPrefs.getString(Constants.PREF_SIM2_CALLS[5], "1")).append(getString(R.string.days));
                     else
-                        limit2 += "/" + list[i];
+                        limit2Builder.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM2_CALLS[8], getString(R.string.not_set));
                     try {
                         date = date.substring(0, 10);
-                        limit2 += getString(R.string.next_reset) + date;
+                        limit2Builder.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
-                        limit2 += "\n" + date;
+                        limit2Builder.append("\n").append(date);
                     }
                 }
             if (mSimQuantity == 3)
-                if (!limit3.equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3_CALLS[2], "0"))) {
+                if (!limit3Builder.toString().equals(getResources().getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3_CALLS[2], "0"))) {
                     if (listitems[i].equals("2"))
-                        limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3_CALLS[5], "1") + getString(R.string.days);
+                        limit3Builder.append("/").append(mPrefs.getString(Constants.PREF_SIM3_CALLS[5], "1")).append(getString(R.string.days));
                     else
-                        limit3 += "/" + list[i];
+                        limit3Builder.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM3_CALLS[8], getString(R.string.not_set));
                     try {
                         date = date.substring(0, 10);
-                        limit3 += getString(R.string.next_reset) + date;
+                        limit3Builder.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
-                        limit3 += "\n" + date;
+                        limit3Builder.append("\n").append(date);
                     }
                 }
         }
+        limit3 = limit3Builder.toString();
+        limit2 = limit2Builder.toString();
+        limit1 = limit1Builder.toString();
 
         bLim1.setText(limit1);
         bLim2.setText(limit2);

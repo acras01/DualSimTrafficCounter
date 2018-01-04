@@ -31,13 +31,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import ua.od.acros.dualsimtrafficcounter.R;
 
 public class MobileUtils {
@@ -76,7 +77,6 @@ public class MobileUtils {
     private static Method mGetDefaultDataSubId = null;
     private static Method mGetNetworkOperatorForPhone = null;
     private static Method mGetNetworkOperator = null;
-    private static Method mSetDataEnabled = null;
 
     private static final int NT_WCDMA_PREFERRED = 0;             // GSM/WCDMA (WCDMA preferred) (2g/3g)
     private static final int NT_GSM_ONLY = 1;                    // GSM Only (2g)
@@ -97,7 +97,8 @@ public class MobileUtils {
         for (Method m : cm) {
             if (m.getName().equalsIgnoreCase(name)) {
                 m.setAccessible(true);
-                if (m.getParameterTypes().length == params)
+                int length = m.getParameterTypes().length;
+                if (length == params)
                     return m;
             }
         }
@@ -117,7 +118,9 @@ public class MobileUtils {
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (mTelephonyClass == null)
                 try {
-                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                    if (tm != null) {
+                        mTelephonyClass = Class.forName(tm.getClass().getName());
+                    }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -291,7 +294,10 @@ public class MobileUtils {
                 }
                 if (sim == Constants.DISABLED) {
                     final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+                    NetworkInfo activeNetworkInfo = null;
+                    if (cm != null) {
+                        activeNetworkInfo = cm.getActiveNetworkInfo();
+                    }
                     if (activeNetworkInfo != null) {
                         List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
                         if (sl != null)
@@ -310,7 +316,10 @@ public class MobileUtils {
             int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
             if (simQuantity > 1) {
                 final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+                NetworkInfo activeNetworkInfo = null;
+                if (cm != null) {
+                    activeNetworkInfo = cm.getActiveNetworkInfo();
+                }
                 if (activeNetworkInfo != null) {
                     Class c = null;
                     try {
@@ -376,7 +385,9 @@ public class MobileUtils {
                         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                         if (mTelephonyClass == null)
                             try {
-                                mTelephonyClass = Class.forName(tm.getClass().getName());
+                                if (tm != null) {
+                                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                                }
                             } catch (ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -527,7 +538,9 @@ public class MobileUtils {
         int sim = -1;
         if (mTelephonyClass == null)
             try {
-                mTelephonyClass = Class.forName(tm.getClass().getName());
+                if (tm != null) {
+                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -554,7 +567,9 @@ public class MobileUtils {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (mTelephonyClass == null)
             try {
-                mTelephonyClass = Class.forName(tm.getClass().getName());
+                if (tm != null) {
+                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -729,8 +744,11 @@ public class MobileUtils {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                SubscriptionManager sm = SubscriptionManager.from(context);
-                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                List<SubscriptionInfo> sl = null;
+                if (sm != null) {
+                    sl = sm.getActiveSubscriptionInfoList();
+                }
                 if (sl != null)
                     for (SubscriptionInfo si : sl) {
                         name.add((String) si.getCarrierName());
@@ -740,7 +758,9 @@ public class MobileUtils {
             } else {
                 if (mTelephonyClass == null)
                     try {
-                        mTelephonyClass = Class.forName(tm.getClass().getName());
+                        if (tm != null) {
+                            mTelephonyClass = Class.forName(tm.getClass().getName());
+                        }
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -825,8 +845,9 @@ public class MobileUtils {
                     }
                 }
             }
-        } else
+        } else if (tm != null) {
             name.add(tm.getNetworkOperatorName());
+        }
         try {
             File dir = new File(String.valueOf(context.getFilesDir()));
             // create the file in which we will write the contents
@@ -849,8 +870,11 @@ public class MobileUtils {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                SubscriptionManager sm = SubscriptionManager.from(context);
-                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
+                SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                List<SubscriptionInfo> sl = null;
+                if (sm != null) {
+                    sl = sm.getActiveSubscriptionInfoList();
+                }
                 if (sl != null)
                     for (SubscriptionInfo si : sl) {
                         String mcc = String.valueOf(si.getMcc());
@@ -923,7 +947,9 @@ public class MobileUtils {
                 } else {
                     if (mTelephonyClass == null)
                         try {
-                            mTelephonyClass = Class.forName(tm.getClass().getName());
+                            if (tm != null) {
+                                mTelephonyClass = Class.forName(tm.getClass().getName());
+                            }
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -1034,8 +1060,9 @@ public class MobileUtils {
                     }
                 }
             }
-        } else
+        } else if (tm != null) {
             code.add(tm.getSimOperator());
+        }
         try {
             File dir = new File(String.valueOf(context.getFilesDir()));
             // create the file in which we will write the contents
@@ -1057,12 +1084,16 @@ public class MobileUtils {
         if (simQuantity > 1) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 for (int i = 0; i < simQuantity; i++) {
-                    imei.add(i, tm.getDeviceId(i));
+                    if (tm != null) {
+                        imei.add(i, tm.getDeviceId(i));
+                    }
                 }
             else {
                 if (mTelephonyClass == null)
                     try {
-                        mTelephonyClass = Class.forName(tm.getClass().getName());
+                        if (tm != null) {
+                            mTelephonyClass = Class.forName(tm.getClass().getName());
+                        }
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -1176,8 +1207,9 @@ public class MobileUtils {
                     }
                 }
             }
-        } else
+        } else if (tm != null) {
             imei.add(tm.getDeviceId());
+        }
         return imei;
     }
 
@@ -1187,109 +1219,114 @@ public class MobileUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (simQuantity > 1) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-                if (mGetSubscriberId == null)
-                    mGetSubscriberId = getMethod(tm.getClass(), GET_IMSI, 1);
-                if (sl != null)
-                    for (SubscriptionInfo si : sl) {
-                        try {
-                            imsi.add((String) mGetSubscriberId.invoke(tm.getClass().getConstructor(Context.class).newInstance(context), si.getSubscriptionId()));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-            } else {
-                if (CustomApplication.isOldMtkDevice()) {
-                    try {
-                        Class<?> c = Class.forName(MEDIATEK);
+        if (tm != null) {
+            if (simQuantity > 1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                    List<SubscriptionInfo> sl;
+                    if (sm != null) {
+                        sl = sm.getActiveSubscriptionInfoList();
                         if (mGetSubscriberId == null)
-                            mGetSubscriberId = getMethod(c, GET_IMSI, 1);
-                        for (int i = 0; i < simQuantity; i++) {
-                            imsi.add(i, (String) mGetSubscriberId.invoke(c.getConstructor(Context.class).newInstance(context), i));
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            mGetSubscriberId = getMethod(tm.getClass(), GET_IMSI, 1);
+                        if (sl != null)
+                            for (SubscriptionInfo si : sl) {
+                                try {
+                                    imsi.add((String) mGetSubscriberId.invoke(tm.getClass().getConstructor(Context.class).newInstance(context), si.getSubscriptionId()));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                     }
-                    if (imsi.size() == 0) {
+                } else {
+                    if (CustomApplication.isOldMtkDevice()) {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetSubscriberId == null)
                                 mGetSubscriberId = getMethod(c, GET_IMSI, 1);
-                            if (mSubIds == null)
-                                mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                             for (int i = 0; i < simQuantity; i++) {
-                                imsi.add(i, (String) mGetSubscriberId.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                imsi.add(i, (String) mGetSubscriberId.invoke(c.getConstructor(Context.class).newInstance(context), i));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                } else {
-                    if (mTelephonyClass == null)
-                        try {
-                            mTelephonyClass = Class.forName(tm.getClass().getName());
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
+                        if (imsi.size() == 0) {
+                            try {
+                                Class<?> c = Class.forName(MEDIATEK);
+                                if (mGetSubscriberId == null)
+                                    mGetSubscriberId = getMethod(c, GET_IMSI, 1);
+                                if (mSubIds == null)
+                                    mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    imsi.add(i, (String) mGetSubscriberId.invoke(c.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    if (imsi.size() == 0) {
-                        try {
-                            if (mGetSubscriberId == null)
-                                mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI, 1);
-                            if (mGetSubscriberId != null) {
-                                if (mGetSubscriberId.getParameterTypes()[0].equals(int.class)) {
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                    } else {
+                        if (mTelephonyClass == null)
+                            try {
+                                mTelephonyClass = Class.forName(tm.getClass().getName());
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        if (imsi.size() == 0) {
+                            try {
+                                if (mGetSubscriberId == null)
+                                    mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI, 1);
+                                if (mGetSubscriberId != null) {
+                                    if (mGetSubscriberId.getParameterTypes()[0].equals(int.class)) {
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                        }
+                                    } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
+                                        if (mSubIds == null)
+                                            mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
+                                        for (int i = 0; i < simQuantity; i++) {
+                                            imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                        }
                                     }
-                                } else if (mGetDeviceId.getParameterTypes()[0].equals(long.class)) {
-                                    if (mSubIds == null)
-                                        mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-                                    for (int i = 0; i < simQuantity; i++) {
-                                        imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(i)));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (imsi.size() == 0) {
+                            try {
+                                if (mGetSubscriberId == null)
+                                    mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI + "Ext", 1);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (imsi.size() == 0) {
+                            try {
+                                if (mFrom == null)
+                                    mFrom = getMethod(mTelephonyClass, "from", 2);
+                                for (int i = 0; i < simQuantity; i++) {
+                                    final Object[] params = {context, i};
+                                    TelephonyManager mTelephonyStub = null;
+                                    if (mFrom != null) {
+                                        mTelephonyStub = (TelephonyManager) mFrom.invoke(tm, params);
+                                    }
+                                    if (mTelephonyStub != null) {
+                                        if (mGetSubscriberId == null)
+                                            mGetSubscriberId = getMethod(mTelephonyStub.getClass(), GET_IMSI, 1);
+                                        imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyStub.getClass().getConstructor(Context.class).newInstance(context), i));
                                     }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (imsi.size() == 0) {
-                        try {
-                            if (mGetSubscriberId == null)
-                                mGetSubscriberId = getMethod(mTelephonyClass, GET_IMSI + "Ext", 1);
-                            for (int i = 0; i < simQuantity; i++) {
-                                imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i));
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (imsi.size() == 0) {
-                        try {
-                            if (mFrom == null)
-                                mFrom = getMethod(mTelephonyClass, "from", 2);
-                            for (int i = 0; i < simQuantity; i++) {
-                                final Object[] params = {context, i};
-                                TelephonyManager mTelephonyStub = null;
-                                if (mFrom != null) {
-                                    mTelephonyStub = (TelephonyManager) mFrom.invoke(tm, params);
-                                }
-                                if (mTelephonyStub != null) {
-                                    if (mGetSubscriberId == null)
-                                        mGetSubscriberId = getMethod(mTelephonyStub.getClass(), GET_IMSI, 1);
-                                    imsi.add(i, (String) mGetSubscriberId.invoke(mTelephonyStub.getClass().getConstructor(Context.class).newInstance(context), i));
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
                     }
                 }
-            }
-        } else
-            imsi.add(tm.getDeviceId());
+            } else
+                imsi.add(tm.getDeviceId());
+        }
         return imsi;
     }
 
@@ -1354,8 +1391,8 @@ public class MobileUtils {
     }
 
     private static class Wrapper {
-        public Context context;
-        public int result;
+        public final Context context;
+        public final int result;
 
         private Wrapper(Context ctx, int res) {
             this.context = ctx;
@@ -1377,7 +1414,6 @@ public class MobileUtils {
             try {
                 if (oldState != swtch) {
                     int state = swtch ? 1 : 0;
-                    int id = -1;
                     // Get the value of the "TRANSACTION_setDataEnabled" field.
                     String transactionCode = getTransactionCode(context);
                     out[0] += transactionCode + "\n";
@@ -1475,45 +1511,54 @@ public class MobileUtils {
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             if (mTelephonyClass == null)
                 try {
-                    mTelephonyClass = Class.forName(tm.getClass().getName());
+                    if (tm != null) {
+                        mTelephonyClass = Class.forName(tm.getClass().getName());
+                    }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-            final Method telephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
-            telephonyMethod.setAccessible(true);
-            final Object telephonyStub = telephonyMethod.invoke(tm);
-            final Class<?> telephonyStubClass = Class.forName(telephonyStub.getClass().getName());
-            final Class<?> c = telephonyStubClass.getDeclaringClass();
-            final Field field = c.getDeclaredField("TRANSACTION_setDataEnabled");
-            field.setAccessible(true);
-            return String.valueOf(field.getInt(null));
+            final Method telephonyMethod;
+            if (mTelephonyClass != null) {
+                telephonyMethod = mTelephonyClass.getDeclaredMethod("getITelephony");
+                telephonyMethod.setAccessible(true);
+                final Object telephonyStub = telephonyMethod.invoke(tm);
+                final Class<?> telephonyStubClass = Class.forName(telephonyStub.getClass().getName());
+                final Class<?> c = telephonyStubClass.getDeclaringClass();
+                final Field field = c.getDeclaredField("TRANSACTION_setDataEnabled");
+                field.setAccessible(true);
+                return String.valueOf(field.getInt(null));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
             return null;
         }
+        return null;
     }
 
     private static void setMobileDataEnabled(Context context, boolean enabled, int sim) {
         try {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             final ConnectivityManager conman = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            final Class conmanClass = Class.forName(conman.getClass().getName());
-            final Field connectivityManagerField = conmanClass.getDeclaredField("mService");
-            connectivityManagerField.setAccessible(true);
-            final Object connectivityManager = connectivityManagerField.get(conman);
-            final Class connectivityManagerClass = Class.forName(connectivityManager.getClass().getName());
-            Method[] conmanMethods = connectivityManagerClass.getDeclaredMethods();
-            for (Method m : conmanMethods) {
-                if (m.getName().equals("setMobileDataEnabled")) {
-                    m.setAccessible(true);
-                    if (m.getParameterTypes().length == 1)
-                        m.invoke(connectivityManager, enabled);
-                    else if (m.getParameterTypes().length == 2) {
-                        if (!enabled)
-                            sim = Constants.SIM1;
-                        final Object[] params = {getDeviceIds(context, prefs.getInt(Constants.PREF_OTHER[55], 1)).get(sim), enabled};
-                        m.invoke(connectivityManager, params);
+            final Class conmanClass;
+            if (conman != null) {
+                conmanClass = Class.forName(conman.getClass().getName());
+                final Field connectivityManagerField = conmanClass.getDeclaredField("mService");
+                connectivityManagerField.setAccessible(true);
+                final Object connectivityManager = connectivityManagerField.get(conman);
+                final Class connectivityManagerClass = Class.forName(connectivityManager.getClass().getName());
+                Method[] conmanMethods = connectivityManagerClass.getDeclaredMethods();
+                for (Method m : conmanMethods) {
+                    if (m.getName().equals("setMobileDataEnabled")) {
+                        m.setAccessible(true);
+                        if (m.getParameterTypes().length == 1)
+                            m.invoke(connectivityManager, enabled);
+                        else if (m.getParameterTypes().length == 2) {
+                            if (!enabled)
+                                sim = Constants.SIM1;
+                            final Object[] params = {getDeviceIds(context, prefs.getInt(Constants.PREF_OTHER[55], 1)).get(sim), enabled};
+                            m.invoke(connectivityManager, params);
+                        }
                     }
                 }
             }
@@ -1523,28 +1568,22 @@ public class MobileUtils {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     private static void setMobileNetworkFromLollipop(Context context, int sim, boolean state) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
-        if (mTelephonyClass == null)
-            try {
-                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                mTelephonyClass = Class.forName(tm != null ? tm.getClass().getName() : null);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        if (mSubIds == null)
-            mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
-        if (mSetDataEnabled == null)
-            mSetDataEnabled = getMethod(mTelephonyClass, SET_DATA, 2);
-        if (mSetDataEnabled != null) {
-            try {
-                mSetDataEnabled.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), mSubIds.get(sim), state);
-            } catch (Exception e) {
-                e.printStackTrace();
-                ACRA.getErrorReporter().handleException(e);
-            }
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+        List<SubscriptionInfo> sl = null;
+        if (sm != null) {
+            sl = sm.getActiveSubscriptionInfoList();
         }
+        try {
+            if (sl != null && tm != null) {
+                XposedHelpers.callMethod(tm, SET_DATA, sl.get(sim), state);
+            }
+        } catch (Throwable t) {
+            XposedBridge.log(t);
+        }
+
     }
 
     public static boolean isMobileDataActive(Context context) {
@@ -1571,7 +1610,10 @@ public class MobileUtils {
     private static int isMobileDataEnabledFromConnectivityManager(Context context) {
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         try {
-            Class<?> c = Class.forName(cm.getClass().getName());
+            Class<?> c = null;
+            if (cm != null) {
+                c = Class.forName(cm.getClass().getName());
+            }
             Method m;
             if (c != null) {
                 m = getMethod(c, "getMobileDataEnabled", 0);
@@ -1590,7 +1632,10 @@ public class MobileUtils {
     public static int hasActiveNetworkInfo(Context context) {
         int state = 0; // Assume disabled
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mActiveNetworkInfo = cm.getActiveNetworkInfo();
+        NetworkInfo mActiveNetworkInfo = null;
+        if (cm != null) {
+            mActiveNetworkInfo = cm.getActiveNetworkInfo();
+        }
         if (mActiveNetworkInfo != null) {
             String typeName = mActiveNetworkInfo.getTypeName().toLowerCase();
             boolean isConnected = mActiveNetworkInfo.isConnectedOrConnecting();

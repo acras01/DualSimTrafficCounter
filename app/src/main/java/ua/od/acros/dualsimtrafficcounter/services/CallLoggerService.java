@@ -137,7 +137,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     @Subscribe
     public void onMessageEvent(ListEvent event) {
         mIsOutgoing = event.bundle.getBoolean("black");
-        new SaveListTask().execute(event.bundle);
+        new SaveListTask().execute(event.bundle, mDbHelper, mIMSI);
         if(!mIsOutgoing)
             mService.stopSelf();
     }
@@ -147,18 +147,20 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         mService.stopSelf();
     }
 
-    private class SaveListTask extends AsyncTask<Bundle, Void, Boolean> {
+    private static class SaveListTask extends AsyncTask<Object, Void, Boolean> {
         @Override
-        protected Boolean doInBackground(Bundle... params) {
-            Bundle bundle = params[0];
+        protected Boolean doInBackground(Object... params) {
+            Bundle bundle = (Bundle) params[0];
+            CustomDatabaseHelper dbHelper = (CustomDatabaseHelper) params[1];
+            ArrayList imsi = (ArrayList) params[2];
             ArrayList<String> list = bundle.getStringArrayList("list");
             int sim = bundle.getInt("sim");
             if (list != null) {
                 list.add(bundle.getString("number"));
                 if (bundle.getBoolean("black", false)) {
-                    CustomDatabaseHelper.writeList(sim, list, mDbHelper, mIMSI, "black");
+                    CustomDatabaseHelper.writeList(sim, list, dbHelper, imsi, "black");
                 } else {
-                    CustomDatabaseHelper.writeList(sim, list, mDbHelper, mIMSI, "white");
+                    CustomDatabaseHelper.writeList(sim, list, dbHelper, imsi, "white");
                 }
                 return true;
             } else
@@ -169,7 +171,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         @Override
         protected void onPostExecute(Boolean result) {
             if (result)
-                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+                Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -286,62 +288,64 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         this.mNumber[0] = number.replaceAll("[\\s\\-()]", "");
         //this.mNumber[0] = MobileUtils.getFullNumber(ctx, intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         final TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        tm.listen(new PhoneStateListener() {
+        if (tm != null) {
+            tm.listen(new PhoneStateListener() {
 
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mIsOutgoing)
-                    switch (state) {
-                        case TelephonyManager.CALL_STATE_OFFHOOK:
-                            final int sim;
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-                                sim = MobileUtils.getActiveSimForCall(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
-                            else {
-                                ArrayList<String> list = new ArrayList<>(Arrays.asList(mPrefs.getString(Constants.PREF_OTHER[56], "").split(";")));
-                                sim = MobileUtils.getActiveSimForCallM(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1), list);
-                            }
-                            updateNotification();
-                            mLastActiveSIM = sim;
-                            /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
-                            try {
-                                // to this path add a new directory path
-                                File dir = new File(String.valueOf(ctx.getFilesDir()));
-                                // create this directory if not already created
-                                dir.mkdir();
-                                // create the file in which we will write the contents
-                                String fileName = "call_log.txt";
-                                File file = new File(dir, fileName);
-                                FileOutputStream os = new FileOutputStream(file, true);
-                                os.write(out.getBytes());
-                                os.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }*/
-                            final ArrayList<String> whiteList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "white");
-                            final ArrayList<String> blackList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "black");
-                            boolean white = whiteList.contains(CallLoggerService.this.mNumber[0]);
-                            boolean black = blackList.contains(CallLoggerService.this.mNumber[0]);
-                            if (!white && !black && !mIsDialogShown) {
-                                mIsDialogShown = true;
-                                final Bundle bundle = new Bundle();
-                                bundle.putString("number", CallLoggerService.this.mNumber[0]);
-                                bundle.putInt("sim", sim);
-                                mDialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
-                                mDialogIntent.putExtra("bundle", bundle);
-                                mDialogIntent.putExtra("whitelist", whiteList);
-                                mDialogIntent.putExtra("blacklist", blackList);
-                                mDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            } else if (black)
-                                mIsOutgoing = true;
-                            else if (white)
+                @Override
+                public void onCallStateChanged(int state, String incomingNumber) {
+                    if (CustomApplication.isMyServiceRunning(CallLoggerService.class) && !mIsOutgoing)
+                        switch (state) {
+                            case TelephonyManager.CALL_STATE_OFFHOOK:
+                                final int sim;
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                                    sim = MobileUtils.getActiveSimForCall(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
+                                else {
+                                    ArrayList<String> list = new ArrayList<>(Arrays.asList(mPrefs.getString(Constants.PREF_OTHER[56], "").split(";")));
+                                    sim = MobileUtils.getActiveSimForCallM(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1), list);
+                                }
+                                updateNotification();
+                                mLastActiveSIM = sim;
+                                /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
+                                try {
+                                    // to this path add a new directory path
+                                    File dir = new File(String.valueOf(ctx.getFilesDir()));
+                                    // create this directory if not already created
+                                    dir.mkdir();
+                                    // create the file in which we will write the contents
+                                    String fileName = "call_log.txt";
+                                    File file = new File(dir, fileName);
+                                    FileOutputStream os = new FileOutputStream(file, true);
+                                    os.write(out.getBytes());
+                                    os.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
+                                final ArrayList<String> whiteList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "white");
+                                final ArrayList<String> blackList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "black");
+                                boolean white = whiteList.contains(CallLoggerService.this.mNumber[0]);
+                                boolean black = blackList.contains(CallLoggerService.this.mNumber[0]);
+                                if (!white && !black && !mIsDialogShown) {
+                                    mIsDialogShown = true;
+                                    final Bundle bundle = new Bundle();
+                                    bundle.putString("number", CallLoggerService.this.mNumber[0]);
+                                    bundle.putInt("sim", sim);
+                                    mDialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
+                                    mDialogIntent.putExtra("bundle", bundle);
+                                    mDialogIntent.putExtra("whitelist", whiteList);
+                                    mDialogIntent.putExtra("blacklist", blackList);
+                                    mDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                } else if (black)
+                                    mIsOutgoing = true;
+                                else if (white)
+                                    mService.stopSelf();
+                                break;
+                            /*case TelephonyManager.CALL_STATE_IDLE:
                                 mService.stopSelf();
-                            break;
-                        /*case TelephonyManager.CALL_STATE_IDLE:
-                            mService.stopSelf();
-                            break;*/
-                    }
-            }
-        }, PhoneStateListener.LISTEN_CALL_STATE);
+                                break;*/
+                        }
+                }
+            }, PhoneStateListener.LISTEN_CALL_STATE);
+        }
     }
 
     private void refreshWidgetAndNotification(int sim, long duration) {
@@ -618,12 +622,16 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 .setLargeIcon(bm)
                 .setContentTitle(getResources().getString(R.string.notification_title))
                 .setContentText(text);
-        nm.notify(simid + 1981, builder.build());
+        if (nm != null) {
+            nm.notify(simid + 1981, builder.build());
+        }
     }
 
     private void updateNotification() {
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(Constants.STARTED_ID, buildNotification());
+        if (nm != null) {
+            nm.notify(Constants.STARTED_ID, buildNotification());
+        }
     }
 
     private Notification buildNotification() {
@@ -714,7 +722,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     public void onDestroy() {
         super.onDestroy();
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.cancel(Constants.STARTED_ID);
+        if (nm != null) {
+            nm.cancel(Constants.STARTED_ID);
+        }
         mPrefs.edit()
                 .putBoolean(Constants.PREF_OTHER[49], false)
                 .apply();

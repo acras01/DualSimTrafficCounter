@@ -54,7 +54,7 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.text_size_fragment, container);
-        mEditText = (AppCompatEditText) view.findViewById(R.id.txtSize);
+        mEditText = view.findViewById(R.id.txtSize);
         mEditText.setText(mSize);
         int id = 0;
         switch (mDialog) {

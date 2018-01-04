@@ -10,7 +10,8 @@
         android:src="@drawable/info_widget_bg"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitXY" >
+        android:scaleType="fitXY"
+        android:contentDescription="TODO">
     </ImageView>
 
     <LinearLayout
@@ -37,7 +38,8 @@
                 android:id="@+id/ivTX"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="left|center"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -66,7 +68,8 @@
                 android:layout_marginLeft="15dp"
                 android:layout_gravity="left|center"
                 android:layout_toRightOf="@+id/tvSpeedTX"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -94,7 +97,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:id="@+id/stub1"
-            android:src="@drawable/widget_divider" />
+            android:src="@drawable/widget_divider"
+            android:contentDescription="TODO" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -110,14 +114,16 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo1"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/logo1_n"
                 android:layout_alignTop="@+id/logo1"
-                android:layout_toRightOf="@+id/logo1" />
+                android:layout_toRightOf="@+id/logo1"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -224,7 +230,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:id="@+id/stub2"
-            android:src="@drawable/widget_divider" />
+            android:src="@drawable/widget_divider"
+            android:contentDescription="TODO" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -240,14 +247,16 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo2"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/logo2_n"
                 android:layout_alignTop="@+id/logo2"
-                android:layout_toRightOf="@+id/logo2" />
+                android:layout_toRightOf="@+id/logo2"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -354,7 +363,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:id="@+id/stub3"
-            android:src="@drawable/widget_divider" />
+            android:src="@drawable/widget_divider"
+            android:contentDescription="TODO" />
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -370,14 +380,16 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo3"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:contentDescription="TODO" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/logo3_n"
                 android:layout_alignTop="@+id/logo3"
-                android:layout_toRightOf="@+id/logo3" />
+                android:layout_toRightOf="@+id/logo3"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:layout_width="wrap_content"

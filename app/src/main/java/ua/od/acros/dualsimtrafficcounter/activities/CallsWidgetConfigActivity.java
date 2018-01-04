@@ -152,42 +152,42 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         setResult(RESULT_CANCELED, mResultValueIntent);
 
         setContentView(R.layout.calls_info_widget_configure);
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        AppCompatCheckBox names = (AppCompatCheckBox) findViewById(R.id.names);
+        AppCompatCheckBox names = findViewById(R.id.names);
         names.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[1], true));
-        AppCompatCheckBox icons = (AppCompatCheckBox) findViewById(R.id.icons);
+        AppCompatCheckBox icons = findViewById(R.id.icons);
         icons.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[2], true));
-        AppCompatCheckBox back = (AppCompatCheckBox) findViewById(R.id.useBack);
+        AppCompatCheckBox back = findViewById(R.id.useBack);
         back.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[12], true));
-        AppCompatCheckBox div = (AppCompatCheckBox) findViewById(R.id.divider);
+        AppCompatCheckBox div = findViewById(R.id.divider);
         div.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[14], true));
 
-        namesSum = (TextView) findViewById(R.id.names_summary);
+        namesSum = findViewById(R.id.names_summary);
         if (names.isChecked())
             namesSum.setText(R.string.on);
         else
             namesSum.setText(R.string.off);
-        iconsSum = (TextView) findViewById(R.id.icons_summary);
+        iconsSum = findViewById(R.id.icons_summary);
         if (icons.isChecked())
             iconsSum.setText(R.string.on);
         else
             iconsSum.setText(R.string.off);
-        divSum = (TextView) findViewById(R.id.divider_summary);
+        divSum = findViewById(R.id.divider_summary);
         if (div.isChecked())
             divSum.setText(R.string.on);
         else
             divSum.setText(R.string.off);
-        backSum = (TextView) findViewById(R.id.back_summary);
+        backSum = findViewById(R.id.back_summary);
         if (back.isChecked())
             backSum.setText(R.string.on);
         else
             backSum.setText(R.string.off);
 
-        RelativeLayout remainL = (RelativeLayout) findViewById(R.id.remain_layout);
+        RelativeLayout remainL = findViewById(R.id.remain_layout);
         if (remainL != null) {
-            remainSum = (TextView) findViewById(R.id.remain_calls_summary);
+            remainSum = findViewById(R.id.remain_calls_summary);
             remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[18], "1"));
             if (remainSel == 0)
                 remainSum.setText(R.string.remain);
@@ -196,21 +196,21 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         }
 
 
-        logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
-        logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
-        logoL3 = (RelativeLayout) findViewById(R.id.logoLayout3);
+        logoL1 = findViewById(R.id.logoLayout1);
+        logoL2 = findViewById(R.id.logoLayout2);
+        logoL3 = findViewById(R.id.logoLayout3);
 
-        RelativeLayout simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
-        simLogoL = (RelativeLayout) findViewById(R.id.simLogoSize);
-        RelativeLayout showSimL = (RelativeLayout) findViewById(R.id.showSim);
-        backColorL = (RelativeLayout) findViewById(R.id.backColorLayout);
+        RelativeLayout simFontL = findViewById(R.id.simFontSize);
+        simLogoL = findViewById(R.id.simLogoSize);
+        RelativeLayout showSimL = findViewById(R.id.showSim);
+        backColorL = findViewById(R.id.backColorLayout);
 
         onOff(logoL1, icons.isChecked());
         onOff(logoL2, simQuantity >= 2 && icons.isChecked());
         onOff(logoL3, simQuantity == 3 && icons.isChecked());
         onOff(backColorL, back.isChecked());
 
-        showSimSum = (TextView) findViewById(R.id.simChooseSum);
+        showSimSum = findViewById(R.id.simChooseSum);
         String sum = "";
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[15], true))
             sum = "SIM1";
@@ -226,29 +226,29 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                 sum += ", SIM3";
         showSimSum.setText(sum);
 
-        textSizeSum = (TextView) findViewById(R.id.textSizeSum);
+        textSizeSum = findViewById(R.id.textSizeSum);
         textSizeSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[10], Constants.TEXT_SIZE));
 
-        iconsSizeSum = (TextView) findViewById(R.id.iconSizeSum);
+        iconsSizeSum = findViewById(R.id.iconSizeSum);
         iconsSizeSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE));
 
         names.setOnCheckedChangeListener(this);
         icons.setOnCheckedChangeListener(this);
         back.setOnCheckedChangeListener(this);
 
-        tiv = (ImageView) findViewById(R.id.textColorPreview);
-        tiv1 = (ImageView) findViewById(R.id.textColorPreview1);
-        biv = (ImageView) findViewById(R.id.backColorPreview);
+        tiv = findViewById(R.id.textColorPreview);
+        tiv1 = findViewById(R.id.textColorPreview1);
+        biv = findViewById(R.id.backColorPreview);
         tiv.setBackgroundColor(mTextColor);
         tiv1.setBackgroundColor(mTextColor1);
         biv.setBackgroundColor(mBackColor);
 
-        logo1 = (ImageView) findViewById(R.id.logoPreview1);
-        logo2 = (ImageView) findViewById(R.id.logoPreview2);
-        logo3 = (ImageView) findViewById(R.id.logoPreview3);
-        logoSum1 = (TextView) findViewById(R.id.logoSum1);
-        logoSum2 = (TextView) findViewById(R.id.logoSum2);
-        logoSum3 = (TextView) findViewById(R.id.logoSum3);
+        logo1 = findViewById(R.id.logoPreview1);
+        logo2 = findViewById(R.id.logoPreview2);
+        logo3 = findViewById(R.id.logoPreview3);
+        logoSum1 = findViewById(R.id.logoSum1);
+        logoSum2 = findViewById(R.id.logoSum2);
+        logoSum3 = findViewById(R.id.logoSum3);
 
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[6], false)) {
             Picasso.with(this)

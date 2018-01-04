@@ -20,8 +20,13 @@ public class OnOffReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
-        wl.acquire();
+        PowerManager.WakeLock wl = null;
+        if (pm != null) {
+            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
+        }
+        if (wl != null) {
+            wl.acquire(10*60*1000L /*10 minutes*/);
+        }
 
         try {
             int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);

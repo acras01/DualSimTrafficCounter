@@ -98,7 +98,7 @@ public class ShowSimDialog extends DialogFragment {
     }
 
     private class Item {
-        private String name;
+        private final String name;
         private boolean checked;
 
         Item(String name, boolean checked) {
@@ -122,8 +122,8 @@ public class ShowSimDialog extends DialogFragment {
     private class CustomListAdapter extends ArrayAdapter<Item> {
 
         private ViewHolder holder;
-        private List<Item> list;
-        private int layout;
+        private final List<Item> list;
+        private final int layout;
 
         CustomListAdapter(Context context, int layout, List<Item> list) {
             super(context, layout, list);
@@ -141,7 +141,7 @@ public class ShowSimDialog extends DialogFragment {
                 holder = new ViewHolder();
                 convertView = getActivity().getLayoutInflater().inflate(layout, null);
                 convertView.setTag(holder);
-                holder.item = (AppCompatCheckBox) convertView.findViewById(R.id.checkBox);
+                holder.item = convertView.findViewById(R.id.checkBox);
             }
             else
                 holder = (ViewHolder) convertView.getTag();

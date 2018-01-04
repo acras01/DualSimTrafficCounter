@@ -12,8 +12,8 @@ public class TouchInfo {
 	 * The state of the window.
 	 */
 	public int firstX, firstY, lastX, lastY;
-	public double dist, scale, firstWidth, firstHeight;
-	public float ratio;
+	double dist, scale, firstWidth, firstHeight;
+	float ratio;
 
 	/**
 	 * Whether we're past the move threshold already.

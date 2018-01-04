@@ -9,10 +9,10 @@ import android.widget.CompoundButton;
 
 public class CustomSwitch implements CompoundButton.OnCheckedChangeListener {
 
-    protected final Context mContext;
-    private SharedPreferences mPrefs;
+    private final Context mContext;
+    private final SharedPreferences mPrefs;
     private SwitchCompat mSwitch;
-    private String mKey;
+    private final String mKey;
 
     public CustomSwitch(Context context, SwitchCompat swtch, String key) {
         mContext = context;

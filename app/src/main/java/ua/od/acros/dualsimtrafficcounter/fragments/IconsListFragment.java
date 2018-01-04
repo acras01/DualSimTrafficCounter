@@ -43,7 +43,7 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mListItems = getResources().getStringArray(R.array.icons);
         View view = inflater.inflate(R.layout.icons_list_layout, container, false);
-        listView = (ListViewCompat) view.findViewById(R.id.list);
+        listView = view.findViewById(R.id.list);
         Window w = getDialog().getWindow();
         if (w != null) {
             w.requestFeature(Window.FEATURE_NO_TITLE);

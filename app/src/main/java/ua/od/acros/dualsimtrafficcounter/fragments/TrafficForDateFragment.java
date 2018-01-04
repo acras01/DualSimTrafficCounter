@@ -78,18 +78,18 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.traffic_for_date_fragment, container, false);
-        pb = (ProgressBar) view.findViewById(R.id.progressBar);
+        pb = view.findViewById(R.id.progressBar);
         pb.setVisibility(View.GONE);
-        radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
-        bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
+        radioGroup = view.findViewById(R.id.sim_group);
+        bSetDate = view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
-        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
+        AppCompatRadioButton sim1rb = view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
-        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = view.findViewById(R.id.sim2RB);
         sim2rb.setText(mOperatorNames[1]);
-        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         if (mSimQuantity == 1) {
             sim2rb.setEnabled(false);
@@ -98,18 +98,18 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         if (mSimQuantity == 2)
             sim3rb.setEnabled(false);
         radioGroup.setOnCheckedChangeListener(this);
-        RX = (TextView) view.findViewById(R.id.rx);
-        TX = (TextView) view.findViewById(R.id.tx);
-        RXN = (TextView) view.findViewById(R.id.rxnight);
-        TXN = (TextView) view.findViewById(R.id.txnight);
-        TOT = (TextView) view.findViewById(R.id.total);
-        TOTN = (TextView) view.findViewById(R.id.totalnight);
-        day = (TextView) view.findViewById(R.id.day);
-        night = (TextView) view.findViewById(R.id.night);
-        bOK = (AppCompatButton) view.findViewById(R.id.buttonOK);
+        RX = view.findViewById(R.id.rx);
+        TX = view.findViewById(R.id.tx);
+        RXN = view.findViewById(R.id.rxnight);
+        TXN = view.findViewById(R.id.txnight);
+        TOT = view.findViewById(R.id.total);
+        TOTN = view.findViewById(R.id.totalnight);
+        day = view.findViewById(R.id.day);
+        night = view.findViewById(R.id.night);
+        bOK = view.findViewById(R.id.buttonOK);
         bOK.setOnClickListener(this);
         bOK.setEnabled(false);
-        bSetDate = (AppCompatButton) view.findViewById(R.id.setdate);
+        bSetDate = view.findViewById(R.id.setdate);
         bSetDate.setOnClickListener(this);
         bSetDate.setEnabled(false);
         RXN.setVisibility(View.GONE);
@@ -305,7 +305,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
 
     }
 
-    DatePickerDialog.OnDateSetListener mCallBack = new DatePickerDialog.OnDateSetListener() {
+    private final DatePickerDialog.OnDateSetListener mCallBack = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             mYear = year;
             mMonth = monthOfYear + 1;

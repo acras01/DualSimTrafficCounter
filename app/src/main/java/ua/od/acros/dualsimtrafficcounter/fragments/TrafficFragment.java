@@ -389,7 +389,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         return super.onOptionsItemSelected(item);
     }
 
-    public void showDialog(String key) {
+    private void showDialog(String key) {
         DialogFragment dialog = null;
         switch (key) {
             case Constants.ON_OFF:
@@ -408,33 +408,33 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             mContext = CustomApplication.getAppContext();
         if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
             view = inflater.inflate(R.layout.traffic_fragment, container, false);
-            RX1 = (TextView) view.findViewById(R.id.RX1);
-            TX1 = (TextView) view.findViewById(R.id.TX1);
-            RX2 = (TextView) view.findViewById(R.id.RX2);
-            TX2 = (TextView) view.findViewById(R.id.TX2);
-            RX3 = (TextView) view.findViewById(R.id.RX3);
-            TX3 = (TextView) view.findViewById(R.id.TX3);
+            RX1 = view.findViewById(R.id.RX1);
+            TX1 = view.findViewById(R.id.TX1);
+            RX2 = view.findViewById(R.id.RX2);
+            TX2 = view.findViewById(R.id.TX2);
+            RX3 = view.findViewById(R.id.RX3);
+            TX3 = view.findViewById(R.id.TX3);
         } else
             view = inflater.inflate(R.layout.traffic_fragment_short, container, false);
 
-        TOT1 = (TextView) view.findViewById(R.id.Tot1);
-        TOT2 = (TextView) view.findViewById(R.id.Tot2);
-        TOT3 = (TextView) view.findViewById(R.id.Tot3);
-        SIM = (TextView) view.findViewById(R.id.sim);
-        TIP = (TextView) view.findViewById(R.id.tip);
-        SIM1 = (TextView) view.findViewById(R.id.sim1_name);
-        SIM2 = (TextView) view.findViewById(R.id.sim2_name);
-        SIM3 = (TextView) view.findViewById(R.id.sim3_name);
+        TOT1 = view.findViewById(R.id.Tot1);
+        TOT2 = view.findViewById(R.id.Tot2);
+        TOT3 = view.findViewById(R.id.Tot3);
+        SIM = view.findViewById(R.id.sim);
+        TIP = view.findViewById(R.id.tip);
+        SIM1 = view.findViewById(R.id.sim1_name);
+        SIM2 = view.findViewById(R.id.sim2_name);
+        SIM3 = view.findViewById(R.id.sim3_name);
 
-        bLim1 = (AppCompatButton) view.findViewById(R.id.limit1);
-        bLim2 = (AppCompatButton) view.findViewById(R.id.limit2);
-        bLim3 = (AppCompatButton) view.findViewById(R.id.limit3);
+        bLim1 = view.findViewById(R.id.limit1);
+        bLim2 = view.findViewById(R.id.limit2);
+        bLim3 = view.findViewById(R.id.limit3);
 
-        bClear1 = (AppCompatButton) view.findViewById(R.id.buttonClear1);
-        bClear2 = (AppCompatButton) view.findViewById(R.id.buttonClear2);
-        bClear3 = (AppCompatButton) view.findViewById(R.id.buttonClear3);
+        bClear1 = view.findViewById(R.id.buttonClear1);
+        bClear2 = view.findViewById(R.id.buttonClear2);
+        bClear3 = view.findViewById(R.id.buttonClear3);
 
-        bSet = (AppCompatButton) view.findViewById(R.id.settings);
+        bSet = view.findViewById(R.id.settings);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
@@ -527,7 +527,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     public interface OnFragmentInteractionListener {
-        public void onTrafficFragmentInteraction(Uri uri);
+        void onTrafficFragmentInteraction(Uri uri);
     }
 
     @Override
@@ -769,62 +769,67 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
     private void setButtonLimitText() {
 
-        String limit1, limit2, limit3;
+        String limit1;
+        String limit2;StringBuilder limit3;
         long[] limit = CustomApplication.getTrafficSimLimitsValues();
         limit1 = limit[0] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[0]) : getString(R.string.not_set);
         limit2 = limit[1] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[1]) : getString(R.string.not_set);
-        limit3 = limit[2] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[2]) : getString(R.string.not_set);
+        limit3 = new StringBuilder(limit[2] < Long.MAX_VALUE ? DataFormat.formatData(mContext, limit[2]) : getString(R.string.not_set));
 
         String[] listitems = getResources().getStringArray(R.array.three_values);
         String[] list = getResources().getStringArray(R.array.limit);
 
+        StringBuilder limit1Builder = new StringBuilder(limit1);
+        StringBuilder limit2Builder = new StringBuilder(limit2);
         for (int i = 0; i < listitems.length; i++) {
-            if (!limit1.equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1[3], "0"))) {
+            if (!limit1Builder.toString().equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM1[3], "0"))) {
                 if (listitems[i].equals("2"))
-                    limit1 += "/" + mPrefs.getString(Constants.PREF_SIM1[10], "1") + getString(R.string.days);
+                    limit1Builder.append("/").append(mPrefs.getString(Constants.PREF_SIM1[10], "1")).append(getString(R.string.days));
                 else
-                    limit1 += "/" + list[i];
+                    limit1Builder.append("/").append(list[i]);
                 String date = mPrefs.getString(Constants.PREF_SIM1[26], getString(R.string.not_set));
                 try {
                     date = date.substring(0, 10);
-                    limit1 += getString(R.string.next_reset) + date;
+                    limit1Builder.append(getString(R.string.next_reset)).append(date);
                 } catch (Exception e) {
-                    limit1 += "\n" + date;
+                    limit1Builder.append("\n").append(date);
                 }
             }
             if (mSimQuantity >= 2)
-                if (!limit2.equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2[3], "0"))) {
+                if (!limit2Builder.toString().equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM2[3], "0"))) {
                     if (listitems[i].equals("2"))
-                        limit2 += "/" + mPrefs.getString(Constants.PREF_SIM2[10], "1") + getString(R.string.days);
+                        limit2Builder.append("/").append(mPrefs.getString(Constants.PREF_SIM2[10], "1")).append(getString(R.string.days));
                     else
-                        limit2 += "/" + list[i];
+                        limit2Builder.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM2[26], getString(R.string.not_set));
                     try {
                         date = date.substring(0, 10);
-                        limit2 += getString(R.string.next_reset) + date;
+                        limit2Builder.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
-                        limit2 += "\n" + date;
+                        limit2Builder.append("\n").append(date);
                     }
                 }
             if (mSimQuantity == 3)
-                if (!limit3.equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3[3], "0"))) {
+                if (!limit3.toString().equals(getString(R.string.not_set)) && listitems[i].equals(mPrefs.getString(Constants.PREF_SIM3[3], "0"))) {
                     if (listitems[i].equals("2"))
-                        limit3 += "/" + mPrefs.getString(Constants.PREF_SIM3[10], "1") + getString(R.string.days);
+                        limit3.append("/").append(mPrefs.getString(Constants.PREF_SIM3[10], "1")).append(getString(R.string.days));
                     else
-                        limit3 += "/" + list[i];
+                        limit3.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM3[26], getString(R.string.not_set));
                     try {
                         date = date.substring(0, 10);
-                        limit3 += getString(R.string.next_reset) + date;
+                        limit3.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
-                        limit3 += "\n" + date;
+                        limit3.append("\n").append(date);
                     }
                 }
         }
+        limit2 = limit2Builder.toString();
+        limit1 = limit1Builder.toString();
 
         bLim1.setText(limit1);
         bLim2.setText(limit2);
-        bLim3.setText(limit3);
+        bLim3.setText(limit3.toString());
     }
 
     private void readTrafficDataFromDatabase() {
@@ -898,7 +903,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             cv.put(Constants.LAST_DATE, (String) mTrafficData.get(Constants.LAST_DATE));
             CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(0));
             if (mSimQuantity >= 2) {
-                cv = new ContentValues();;
+                cv = new ContentValues();
                 cv.put("rx", (long) mTrafficData.get(Constants.SIM2RX));
                 cv.put("tx", (long) mTrafficData.get(Constants.SIM2TX));
                 cv.put("total", (long) mTrafficData.get(Constants.TOTAL2));
@@ -911,7 +916,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 CustomDatabaseHelper.writeData(cv, mDbHelper, Constants.TRAFFIC + "_" + mIMSI.get(1));
             }
             if (mSimQuantity == 3) {
-                cv = new ContentValues();;
+                cv = new ContentValues();
                 cv.put("rx", (long) mTrafficData.get(Constants.SIM3RX));
                 cv.put("tx", (long) mTrafficData.get(Constants.SIM3TX));
                 cv.put("total", (long) mTrafficData.get(Constants.TOTAL3));

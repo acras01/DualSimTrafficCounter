@@ -55,7 +55,7 @@ import wei.mark.standout.ui.Window;
  * 
  */
 public abstract class StandOutWindow extends Service {
-	static final String TAG = "StandOutWindow";
+	private static final String TAG = "StandOutWindow";
 
 	/**
 	 * StandOut window id: You may use this sample id for your first window.
@@ -65,47 +65,47 @@ public abstract class StandOutWindow extends Service {
 	/**
 	 * Special StandOut window id: You may NOT use this id for any windows.
 	 */
-	public static final int ONGOING_NOTIFICATION_ID = -1;
+	private static final int ONGOING_NOTIFICATION_ID = -1;
 
 	/**
 	 * StandOut window id: You may use this id when you want it to be
 	 * disregarded. The system makes no distinction for this id; it is only used
 	 * to improve code readability.
 	 */
-	public static final int DISREGARD_ID = -2;
+	private static final int DISREGARD_ID = -2;
 
 	/**
 	 * Intent action: Show a new window corresponding to the id.
 	 */
-	public static final String ACTION_SHOW = "SHOW";
+	private static final String ACTION_SHOW = "SHOW";
 
 	/**
 	 * Intent action: Restore a previously hidden window corresponding to the
 	 * id. The window should be previously hidden with {@link #ACTION_HIDE}.
 	 */
-	public static final String ACTION_RESTORE = "RESTORE";
+	private static final String ACTION_RESTORE = "RESTORE";
 
 	/**
 	 * Intent action: Close an existing window with an existing id.
 	 */
-	public static final String ACTION_CLOSE = "CLOSE";
+	private static final String ACTION_CLOSE = "CLOSE";
 
 	/**
 	 * Intent action: Close all existing windows.
 	 */
-	public static final String ACTION_CLOSE_ALL = "CLOSE_ALL";
+	private static final String ACTION_CLOSE_ALL = "CLOSE_ALL";
 
 	/**
 	 * Intent action: Send data to a new or existing window.
 	 */
-	public static final String ACTION_SEND_DATA = "SEND_DATA";
+	private static final String ACTION_SEND_DATA = "SEND_DATA";
 
 	/**
 	 * Intent action: Hide an existing window with an existing id. To enable the
 	 * ability to restore this window, make sure you implement
 	 * {@link #getHiddenNotification(int)}.
 	 */
-	public static final String ACTION_HIDE = "HIDE";
+	private static final String ACTION_HIDE = "HIDE";
 
 	/**
 	 * Show a new window corresponding to the id, or restore a previously hidden
@@ -226,7 +226,7 @@ public abstract class StandOutWindow extends Service {
 	 * @return An {@link Intent} to use with
 	 *         {@link Context#startService(Intent)}.
 	 */
-	public static Intent getShowIntent(Context context, Class<? extends StandOutWindow> cls, int id) {
+	private static Intent getShowIntent(Context context, Class<? extends StandOutWindow> cls, int id) {
 		boolean cached = sWindowCache.isCached(id, cls);
 		String action = cached ? ACTION_RESTORE : ACTION_SHOW;
 		Uri uri = cached ? Uri.parse("standout://" + cls + '/' + id) : null;
@@ -267,7 +267,7 @@ public abstract class StandOutWindow extends Service {
 	 * @return An {@link Intent} to use with
 	 *         {@link Context#startService(Intent)}.
 	 */
-	public static Intent getCloseIntent(Context context, Class<? extends StandOutWindow> cls, int id) {
+	private static Intent getCloseIntent(Context context, Class<? extends StandOutWindow> cls, int id) {
 		return new Intent(context, cls).putExtra("id", id).setAction(ACTION_CLOSE);
 	}
 
@@ -282,7 +282,7 @@ public abstract class StandOutWindow extends Service {
 	 * @return An {@link Intent} to use with
 	 *         {@link Context#startService(Intent)}.
 	 */
-	public static Intent getCloseAllIntent(Context context, Class<? extends StandOutWindow> cls) {
+	private static Intent getCloseAllIntent(Context context, Class<? extends StandOutWindow> cls) {
 		return new Intent(context, cls).setAction(ACTION_CLOSE_ALL);
 	}
 
@@ -312,13 +312,13 @@ public abstract class StandOutWindow extends Service {
 	 * @return An {@link Intent} to use with
 	 *         {@link Context#startService(Intent)}.
 	 */
-	public static Intent getSendDataIntent(Context context, Class<? extends StandOutWindow> toCls, int toId, int requestCode, Bundle data, Class<? extends StandOutWindow> fromCls, int fromId) {
+	private static Intent getSendDataIntent(Context context, Class<? extends StandOutWindow> toCls, int toId, int requestCode, Bundle data, Class<? extends StandOutWindow> fromCls, int fromId) {
 		return new Intent(context, toCls).putExtra("id", toId).putExtra("requestCode", requestCode).putExtra("wei.mark.standout.data", data).putExtra("wei.mark.standout.fromCls", fromCls).putExtra("fromId", fromId).setAction(ACTION_SEND_DATA);
 	}
 
 	// internal map of ids to shown/hidden views
-	static WindowCache sWindowCache;
-	static Window sFocusedWindow;
+	private static final WindowCache sWindowCache;
+	private static Window sFocusedWindow;
 
 	// static constructors
 	static {
@@ -327,11 +327,11 @@ public abstract class StandOutWindow extends Service {
 	}
 
 	// internal system services
-	WindowManager mWindowManager;
+	private WindowManager mWindowManager;
 	private NotificationManager mNotificationManager;
 
 	// internal state variables
-	public static boolean startedForeground;
+	private static boolean startedForeground;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -408,7 +408,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @return The name.
 	 */
-	public abstract String getAppName();
+	protected abstract String getAppName();
 
 	/**
 	 * Return the icon resource for every window in this implementation. The
@@ -425,7 +425,7 @@ public abstract class StandOutWindow extends Service {
      *
      * @return The icon.
      */
-    public abstract int getNotificationIcon();
+    protected abstract int getNotificationIcon();
 
 	/**
 	 * Create a new {@link View} corresponding to the id, and add it as a child
@@ -518,7 +518,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window shown.
 	 * @return The title for the persistent notification.
 	 */
-	public String getPersistentNotificationTitle(int id) {
+	private String getPersistentNotificationTitle(int id) {
 		return getAppName() + " Running";
 	}
 
@@ -530,7 +530,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window shown.
 	 * @return The message for the persistent notification.
 	 */
-	public String getPersistentNotificationMessage(int id) {
+	private String getPersistentNotificationMessage(int id) {
 		return "";
 	}
 
@@ -546,7 +546,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window shown.
 	 * @return The intent for the persistent notification.
 	 */
-	public Intent getPersistentNotificationIntent(int id) {
+	private Intent getPersistentNotificationIntent(int id) {
 		return null;
 	}
 
@@ -557,7 +557,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @return The icon.
 	 */
-	public int getHiddenIcon() {
+	private int getHiddenIcon() {
 		return getNotificationIcon();
 	}
 
@@ -569,7 +569,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the hidden window.
 	 * @return The title for the hidden notification.
 	 */
-	public String getHiddenNotificationTitle(int id) {
+	private String getHiddenNotificationTitle(int id) {
 		return getAppName() + " Hidden";
 	}
 
@@ -581,7 +581,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the hidden window.
 	 * @return The message for the hidden notification.
 	 */
-	public String getHiddenNotificationMessage(int id) {
+	private String getHiddenNotificationMessage(int id) {
 		return "";
 	}
 
@@ -597,7 +597,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the hidden window.
 	 * @return The intent for the hidden notification.
 	 */
-	public Intent getHiddenNotificationIntent(int id) {
+	private Intent getHiddenNotificationIntent(int id) {
 		return null;
 	}
 
@@ -625,7 +625,7 @@ public abstract class StandOutWindow extends Service {
 	 * @return The {@link Notification} corresponding to the id, or null if
 	 *         you've previously returned a notification.
 	 */
-	public Notification getPersistentNotification(int id) {
+	private Notification getPersistentNotification(int id) {
 		// basic notification stuff
 		// http://developer.android.com/guide/topics/ui/notifiers/notifications.html
         Bitmap lIcon = getAppIcon();
@@ -679,7 +679,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window.
 	 * @return The {@link Notification} corresponding to the id or null.
 	 */
-	public Notification getHiddenNotification(int id) {
+	private Notification getHiddenNotification(int id) {
 		// same basics as getPersistentNotification()
         Bitmap lIcon = getAppIcon();
 		int sIcon = getHiddenIcon();
@@ -733,7 +733,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window.
 	 * @return The animation to play or null.
 	 */
-	public Animation getHideAnimation(int id) {
+	protected Animation getHideAnimation(int id) {
 		return AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
 	}
 
@@ -745,7 +745,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window.
 	 * @return The animation to play or null.
 	 */
-	public Animation getCloseAnimation(int id) {
+	private Animation getCloseAnimation(int id) {
 		return AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
 	}
 
@@ -806,10 +806,10 @@ public abstract class StandOutWindow extends Service {
 			ViewGroup listItem = (ViewGroup) View.inflate(this, R.layout.drop_down_list_item, null);
 			list.addView(listItem);
 
-			ImageView icon = (ImageView) listItem.findViewById(R.id.icon);
+			ImageView icon = listItem.findViewById(R.id.icon);
 			icon.setImageResource(item.icon);
 
-			TextView description = (TextView) listItem.findViewById(R.id.description);
+			TextView description = listItem.findViewById(R.id.description);
 			description.setText(item.description);
 
 			listItem.setOnClickListener(new OnClickListener() {
@@ -835,7 +835,7 @@ public abstract class StandOutWindow extends Service {
 	 * @return The list of items to show in the drop down menu, or null or empty
 	 *         to have no dropdown menu.
 	 */
-	public List<DropDownListItem> getDropDownItems(int id) {
+	private List<DropDownListItem> getDropDownItems(int id) {
 		return null;
 	}
 
@@ -875,7 +875,7 @@ public abstract class StandOutWindow extends Service {
 	 *            See linked method.
 	 * @see {@link #onTouchHandleMove(int, Window, View, MotionEvent)}
 	 */
-	public void onMove(int id, Window window, View view, MotionEvent event) {
+	protected void onMove(int id, Window window, View view, MotionEvent event) {
 	}
 
 	/**
@@ -892,7 +892,7 @@ public abstract class StandOutWindow extends Service {
 	 *            See linked method.
 	 * @see {@link #onTouchHandleResize(int, Window, View, MotionEvent)}
 	 */
-	public void onResize(int id, Window window, View view, MotionEvent event) {
+	private void onResize(int id, Window window, View view, MotionEvent event) {
 	}
 
 	/**
@@ -908,7 +908,7 @@ public abstract class StandOutWindow extends Service {
 	 *         continue.
 	 * @see #show(int)
 	 */
-	public boolean onShow(int id, Window window) {
+	private boolean onShow(int id, Window window) {
 		return false;
 	}
 
@@ -926,7 +926,7 @@ public abstract class StandOutWindow extends Service {
 	 *         continue.
 	 * @see #hide(int)
 	 */
-	public boolean onHide(int id, Window window) {
+	private boolean onHide(int id, Window window) {
 		return false;
 	}
 
@@ -943,7 +943,7 @@ public abstract class StandOutWindow extends Service {
 	 *         continue.
 	 * @see #close(int)
 	 */
-	public boolean onClose(int id, Window window) {
+	protected boolean onClose(int id, Window window) {
 		return false;
 	}
 
@@ -956,7 +956,7 @@ public abstract class StandOutWindow extends Service {
 	 *         continue.
 	 * @see #closeAll()
 	 */
-	public boolean onCloseAll() {
+	private boolean onCloseAll() {
 		return false;
 	}
 
@@ -981,7 +981,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The sending window's id. Provided if the sender wants a
 	 *            result.
 	 */
-	public void onReceiveData(int id, int requestCode, Bundle data, Class<? extends StandOutWindow> fromCls, int fromId) {
+	protected void onReceiveData(int id, int requestCode, Bundle data, Class<? extends StandOutWindow> fromCls, int fromId) {
 	}
 
 	/**
@@ -999,7 +999,7 @@ public abstract class StandOutWindow extends Service {
 	 *         continue.
 	 * @see #updateViewLayout(int, StandOutLayoutParams)
 	 */
-	public boolean onUpdate(int id, Window window, StandOutLayoutParams params) {
+	private boolean onUpdate(int id, Window window, StandOutLayoutParams params) {
 		return false;
 	}
 
@@ -1016,7 +1016,7 @@ public abstract class StandOutWindow extends Service {
 	 *         or false to continue.
 	 * @see #bringToFront(int)
 	 */
-	public boolean onBringToFront(int id, Window window) {
+	private boolean onBringToFront(int id, Window window) {
 		return false;
 	}
 
@@ -1066,7 +1066,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window.
 	 * @return The window shown.
 	 */
-	public final synchronized Window show(int id) {
+	private synchronized Window show(int id) {
 		// get the window corresponding to the id
 		Window cachedWindow = getWindow(id);
 		final Window window;
@@ -1311,7 +1311,7 @@ public abstract class StandOutWindow extends Service {
 	/**
 	 * Close all existing windows.
 	 */
-	public final synchronized void closeAll() {
+	private synchronized void closeAll() {
 		// alert callbacks and cancel if instructed
 		if (onCloseAll()) {
 			Log.w(TAG, "Windows close all cancelled by implementation.");
@@ -1320,9 +1320,7 @@ public abstract class StandOutWindow extends Service {
 
 		// add ids to temporary set to avoid concurrent modification
 		LinkedList<Integer> ids = new LinkedList<Integer>();
-		for (int id : getExistingIds()) {
-			ids.add(id);
-		}
+        ids.addAll(getExistingIds());
 
 		// close each window
 		for (int id : ids) {
@@ -1360,7 +1358,7 @@ public abstract class StandOutWindow extends Service {
 	 * @param id
 	 *            The id of the window to bring to the front.
 	 */
-	public final synchronized void bringToFront(int id) {
+	private synchronized void bringToFront(int id) {
 		Window window = getWindow(id);
 		if (window == null) {
 			throw new IllegalArgumentException("Tried to bringToFront(" + id + ") a null window.");
@@ -1461,7 +1459,7 @@ public abstract class StandOutWindow extends Service {
 	 *         hidden, or false if it has never been shown or was previously
 	 *         closed.
 	 */
-	public final boolean isExistingId(int id) {
+	protected final boolean isExistingId(int id) {
 		return sWindowCache.isCached(id, getClass());
 	}
 
@@ -1470,7 +1468,7 @@ public abstract class StandOutWindow extends Service {
 	 * 
 	 * @return A set of ids, or an empty set.
 	 */
-	public final Set<Integer> getExistingIds() {
+	private Set<Integer> getExistingIds() {
 		return sWindowCache.getCacheIds(getClass());
 	}
 
@@ -1484,7 +1482,7 @@ public abstract class StandOutWindow extends Service {
 	 *            The id of the window.
 	 * @return The window if it is shown/hidden, or null if it is closed.
 	 */
-	public final Window getWindow(int id) {
+	protected final Window getWindow(int id) {
 		return sWindowCache.getCache(id, getClass());
 	}
 
@@ -1624,7 +1622,7 @@ public abstract class StandOutWindow extends Service {
 	 * @return
 	 */
 	public boolean onTouchHandleResize(int id, Window window, View view, MotionEvent event) {
-		StandOutLayoutParams params = (StandOutLayoutParams) window.getLayoutParams();
+		StandOutLayoutParams params = window.getLayoutParams();
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
@@ -1760,7 +1758,10 @@ public abstract class StandOutWindow extends Service {
 		/**
 		 * Optional constraints of the window.
 		 */
-		public int minWidth, minHeight, maxWidth, maxHeight;
+		public int minWidth;
+		public int minHeight;
+		public final int maxWidth;
+		public final int maxHeight;
 
 		/**
 		 * @param id
@@ -1961,10 +1962,10 @@ public abstract class StandOutWindow extends Service {
 		}
 	}
 
-	protected class DropDownListItem {
-		public int icon;
-		public String description;
-		public Runnable action;
+	class DropDownListItem {
+		public final int icon;
+		public final String description;
+		public final Runnable action;
 
 		public DropDownListItem(int icon, String description, Runnable action) {
 			super();

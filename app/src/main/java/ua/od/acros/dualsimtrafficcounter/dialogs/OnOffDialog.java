@@ -48,16 +48,16 @@ public class OnOffDialog extends DialogFragment {
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
         View view = View.inflate(getActivity(), R.layout.onoff_dialog, null);
-        chbClose = (AppCompatCheckBox) view.findViewById(R.id.checkBox);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
+        chbClose = view.findViewById(R.id.checkBox);
+        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
+        AppCompatRadioButton sim1rb = view.findViewById(R.id.sim1RB);
         sim1rb.setText(operatorNames[0]);
-        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = view.findViewById(R.id.sim2RB);
         sim2rb.setText(operatorNames[1]);
-        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        if (CustomApplication.canToggleOn()) {
+        if (CustomApplication.isOldMtkDevice()) {
             int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
             if (simQuantity >= 1)
                 sim1rb.setEnabled(true);

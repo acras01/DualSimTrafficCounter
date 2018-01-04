@@ -70,6 +70,9 @@ public class CustomApplication extends Application {
     private static Intent mSettingsIntent;
     private static boolean mIsDataUsageAvailable = true;
 
+    private static final String XPOSED = "de.robv.android.xposed.installer";
+
+
         /*static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
@@ -220,20 +223,19 @@ public class CustomApplication extends Application {
         if (context.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
         //Check if can toggle mobile data
-        int simQuantity = preferences.getInt(Constants.PREF_OTHER[55], 1);
         mCanToggleOn = isOldMtkDevice() ||
-                (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && simQuantity == 1);
+                (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && CustomApplication.isPackageExisted(XPOSED));
         //Store subids
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
             List<SubscriptionInfo> sl = sm.getActiveSubscriptionInfoList();
-            String subInfo = "";
+            StringBuilder subInfo = new StringBuilder();
             for (SubscriptionInfo si : sl) {
-                subInfo += si.getSubscriptionId() + ";";
+                subInfo.append(si.getSubscriptionId()).append(";");
             }
-            subInfo = subInfo.substring(0, subInfo.length() - 1);
+            subInfo = new StringBuilder(subInfo.substring(0, subInfo.length() - 1));
             preferences.edit()
-                    .putString(Constants.PREF_OTHER[56], subInfo)
+                    .putString(Constants.PREF_OTHER[56], subInfo.toString())
                     .apply();
         }
         setOnOffAlarms();
@@ -318,18 +320,23 @@ public class CustomApplication extends Application {
 
     public static boolean isScreenOn() {
         PowerManager pm = (PowerManager) mWeakReference.get().getSystemService(Context.POWER_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
-            return pm.isInteractive();
-        else
-            return pm.isScreenOn();
+        if (pm != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+                return pm.isInteractive();
+            else
+                return pm.isScreenOn();
+        }
+        return false;
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
         try {
             ActivityManager manager = (ActivityManager) mWeakReference.get().getSystemService(Context.ACTIVITY_SERVICE);
-            for (ActivityManager.RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
-                if (serviceClass.getName().equals(serviceInfo.service.getClassName()))
-                    return true;
+            if (manager != null) {
+                for (ActivityManager.RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
+                    if (serviceClass.getName().equals(serviceInfo.service.getClassName()))
+                        return true;
+                }
             }
         } catch (Exception e) {
             return false;
@@ -596,14 +603,14 @@ public class CustomApplication extends Application {
         return mCanToggleOn;
     }
 
-    public static void setOnOffAlarms() {
+    private static void setOnOffAlarms() {
         Context context = mWeakReference.get();
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        DateTime alarmTime = new DateTime().withTimeAtStartOfDay();
+        DateTime alarmTime;
         //Scheduled ON/OFF
-        if (!prefs.getString(Constants.PREF_SIM1[11], "0").equals("3") || !prefs.getString(Constants.PREF_SIM2[11], "0").equals("3")
-                || !prefs.getString(Constants.PREF_SIM3[11], "0").equals("3")) {
+        if (am != null && (!prefs.getString(Constants.PREF_SIM1[11], "0").equals("3") || !prefs.getString(Constants.PREF_SIM2[11], "0").equals("3")
+                || !prefs.getString(Constants.PREF_SIM3[11], "0").equals("3"))) {
             if (prefs.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     prefs.getString(Constants.PREF_SIM1[11], "0").equals("1")) {
                 Intent i1Off = new Intent(context, OnOffReceiver.class);
@@ -617,7 +624,7 @@ public class CustomApplication extends Application {
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime = alarmTime.plusDays(1);
-                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
+                    am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, pi1Off);
             }
             if (prefs.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
                     prefs.getString(Constants.PREF_SIM1[11], "0").equals("2")) {
@@ -697,7 +704,7 @@ public class CustomApplication extends Application {
         }
     }
 
-    public static void setCallResetAlarm() {
+    private static void setCallResetAlarm() {
         Context context = mWeakReference.get();
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -710,7 +717,9 @@ public class CustomApplication extends Application {
             PendingIntent piReset = PendingIntent.getBroadcast(context, RESET, iReset, 0);
             if (alarmTime.getMillis() < System.currentTimeMillis())
                 alarmTime = alarmTime.plusDays(1);
-            am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
+            if (am != null) {
+                am.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), AlarmManager.INTERVAL_DAY, piReset);
+            }
         }
     }
 

@@ -41,18 +41,18 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.actionbar_switch);
             View custom = actionBar.getCustomView();
-            TextView tv = (TextView) custom.findViewById(R.id.titleText);
+            TextView tv = custom.findViewById(R.id.titleText);
             tv.setText(R.string.use_notification_title);
-            tv = (TextView) custom.findViewById(R.id.subTitleText);
+            tv = custom.findViewById(R.id.subTitleText);
             tv.setVisibility(View.GONE);
-            actionBarSwitch = (SwitchCompat) custom.findViewById(R.id.switchForActionBar);
+            actionBarSwitch = custom.findViewById(R.id.switchForActionBar);
         }
         if (actionBarSwitch != null)
             mSwitch = new CustomSwitch(getActivity(), actionBarSwitch, Constants.PREF_OTHER[3]);
         updateSettings();
     }
 
-    protected void updateSettings() {
+    private void updateSettings() {
         int count = getPreferenceScreen().getPreferenceCount();
         for (int i = 0; i < count; ++i) {
             android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);

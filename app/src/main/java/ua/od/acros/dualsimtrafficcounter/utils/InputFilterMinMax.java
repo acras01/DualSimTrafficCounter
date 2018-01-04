@@ -7,7 +7,8 @@ import org.acra.ACRA;
 
 public class InputFilterMinMax implements InputFilter {
 
-    private int minValue, maxValue;
+    private final int minValue;
+    private final int maxValue;
 
     public InputFilterMinMax(int min, int max) {
         this.minValue = min;

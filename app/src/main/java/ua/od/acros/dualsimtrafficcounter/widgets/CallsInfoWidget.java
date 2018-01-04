@@ -43,12 +43,16 @@ public class CallsInfoWidget extends AppWidgetProvider {
         //super.onReceive(context, intent);
         String action = intent.getAction();
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
-        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
-            final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
-                CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.CALLS_TAG);
-        } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null)
-            updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, readData(context));
+        if (action != null) {
+            if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
+                if (intent.getExtras() != null) {
+                    final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                    if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
+                        CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.CALLS_TAG);
+                }
+            } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null)
+                updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, readData(context));
+        }
     }
 
     private Bundle readData(Context context) {

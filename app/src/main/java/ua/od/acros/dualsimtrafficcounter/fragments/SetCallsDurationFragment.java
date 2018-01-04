@@ -64,15 +64,15 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.duration_fragment, container, false);
-        duration = (EditText) view.findViewById(R.id.duration);
+        duration = view.findViewById(R.id.duration);
         duration.setEnabled(false);
-        spinner = (AppCompatSpinner) view.findViewById(R.id.spinner);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
-        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
+        spinner = view.findViewById(R.id.spinner);
+        RadioGroup radioGroup = view.findViewById(R.id.sim_group);
+        AppCompatRadioButton sim1rb = view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
-        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = view.findViewById(R.id.sim2RB);
         sim2rb.setText(mOperatorNames[1]);
-        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
@@ -85,7 +85,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
         radioGroup.setOnCheckedChangeListener(this);
         spinner.setOnItemSelectedListener(this);
         spinner.setEnabled(false);
-        buttonOk = (AppCompatButton) view.findViewById(R.id.buttonOK);
+        buttonOk = view.findViewById(R.id.buttonOK);
         buttonOk.setOnClickListener(this);
         buttonOk.setEnabled(false);
         if (savedInstanceState != null) {

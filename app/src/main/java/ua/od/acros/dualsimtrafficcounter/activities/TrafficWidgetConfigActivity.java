@@ -165,11 +165,11 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         setResult(RESULT_CANCELED, mResultValueIntent);
 
         setContentView(R.layout.traffic_info_widget_configure);
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        AppCompatCheckBox names = (AppCompatCheckBox) findViewById(R.id.names);
-        namesSum = (TextView) findViewById(R.id.names_summary);
+        AppCompatCheckBox names = findViewById(R.id.names);
+        namesSum = findViewById(R.id.names_summary);
         if (names != null) {
             names.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[1], true));
             names.setOnCheckedChangeListener(this);
@@ -179,12 +179,12 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 namesSum.setText(R.string.off);
         }
 
-        AppCompatCheckBox icons = (AppCompatCheckBox) findViewById(R.id.icons);
-        iconsSum = (TextView) findViewById(R.id.icons_summary);
-        logoL1 = (RelativeLayout) findViewById(R.id.logoLayout1);
-        logoL2 = (RelativeLayout) findViewById(R.id.logoLayout2);
-        logoL3 = (RelativeLayout) findViewById(R.id.logoLayout3);
-        simLogoL = (RelativeLayout) findViewById(R.id.simLogoSize);
+        AppCompatCheckBox icons = findViewById(R.id.icons);
+        iconsSum = findViewById(R.id.icons_summary);
+        logoL1 = findViewById(R.id.logoLayout1);
+        logoL2 = findViewById(R.id.logoLayout2);
+        logoL3 = findViewById(R.id.logoLayout3);
+        simLogoL = findViewById(R.id.simLogoSize);
         if (icons != null) {
             icons.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[4], true));
             icons.setOnCheckedChangeListener(this);
@@ -198,10 +198,10 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 iconsSum.setText(R.string.off);
         }
 
-        AppCompatCheckBox speed = (AppCompatCheckBox) findViewById(R.id.speed);
-        speedSum = (TextView) findViewById(R.id.speed_summary);
-        speedFontL = (RelativeLayout) findViewById(R.id.speedFontSize);
-        speedArrowsL = (RelativeLayout) findViewById(R.id.speedArrowsSize);
+        AppCompatCheckBox speed = findViewById(R.id.speed);
+        speedSum = findViewById(R.id.speed_summary);
+        speedFontL = findViewById(R.id.speedFontSize);
+        speedArrowsL = findViewById(R.id.speedArrowsSize);
         if (speed != null) {
             speed.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[3], true));
             speed.setOnCheckedChangeListener(this);
@@ -213,9 +213,9 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 speedSum.setText(R.string.off);
         }
 
-        AppCompatCheckBox back = (AppCompatCheckBox) findViewById(R.id.useBack);
-        backSum = (TextView) findViewById(R.id.back_summary);
-        backColorL = (RelativeLayout) findViewById(R.id.backColorLayout);
+        AppCompatCheckBox back = findViewById(R.id.useBack);
+        backSum = findViewById(R.id.back_summary);
+        backColorL = findViewById(R.id.backColorLayout);
         if (back != null) {
             back.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[14], true));
             back.setOnCheckedChangeListener(this);
@@ -226,8 +226,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 backSum.setText(R.string.off);
         }
 
-        AppCompatCheckBox div = (AppCompatCheckBox) findViewById(R.id.divider);
-        divSum = (TextView) findViewById(R.id.divider_summary);
+        AppCompatCheckBox div = findViewById(R.id.divider);
+        divSum = findViewById(R.id.divider_summary);
         if (div != null) {
             div.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[21], true));
             div.setOnCheckedChangeListener(this);
@@ -237,9 +237,9 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 divSum.setText(R.string.off);
         }
 
-        AppCompatCheckBox active = (AppCompatCheckBox) findViewById(R.id.activesim);
-        activesum = (TextView) findViewById(R.id.activesim_summary);
-        showSimL = (RelativeLayout) findViewById(R.id.showSim);
+        AppCompatCheckBox active = findViewById(R.id.activesim);
+        activesum = findViewById(R.id.activesim_summary);
+        showSimL = findViewById(R.id.showSim);
         if (active != null) {
             active.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[22], false));
             active.setOnCheckedChangeListener(this);
@@ -250,8 +250,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 activesum.setText(R.string.off);
         }
 
-        AppCompatCheckBox daynight = (AppCompatCheckBox) findViewById(R.id.daynight_icons);
-        daynightSum = (TextView) findViewById(R.id.daynight_icons_summary);
+        AppCompatCheckBox daynight = findViewById(R.id.daynight_icons);
+        daynightSum = findViewById(R.id.daynight_icons_summary);
         if (daynight != null) {
             daynight.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[23], false));
             daynight.setOnCheckedChangeListener(this);
@@ -261,26 +261,26 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 daynightSum.setText(R.string.off);
         }
 
-        rxtxL = (RelativeLayout) findViewById(R.id.rxtx_layout);
+        rxtxL = findViewById(R.id.rxtx_layout);
         rxtxSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0"));
         boolean rxtxState = rxtxSel == 0;
-        rxtxSum = (TextView) findViewById(R.id.rx_tx_summary);
+        rxtxSum = findViewById(R.id.rx_tx_summary);
         if (rxtxState)
             rxtxSum.setText(R.string.show_rx_tx_sum);
         else
             rxtxSum.setText(R.string.show_used_left);
 
-        remainL = (RelativeLayout) findViewById(R.id.remain_layout);
-        remainSum = (TextView) findViewById(R.id.remain_data_summary);
+        remainL = findViewById(R.id.remain_layout);
+        remainSum = findViewById(R.id.remain_data_summary);
         remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1"));
         if (remainSel == 0)
             remainSum.setText(R.string.remain);
         else
             remainSum.setText(R.string.used);
 
-        minus = (AppCompatCheckBox) findViewById(R.id.minus);
-        minusL = (RelativeLayout) findViewById(R.id.minus_layout);
-        minusSum = (TextView) findViewById(R.id.minus_summary);
+        minus = findViewById(R.id.minus);
+        minusL = findViewById(R.id.minus_layout);
+        minusSum = findViewById(R.id.minus_summary);
         if (minus != null) {
             minus.setChecked(prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[26], true));
             minus.setOnCheckedChangeListener(this);
@@ -290,8 +290,8 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 minusSum.setText(R.string.off);
         }
 
-        RelativeLayout infoL = (RelativeLayout) findViewById(R.id.info_layout);
-        infoSum = (TextView) findViewById(R.id.info_summary);
+        RelativeLayout infoL = findViewById(R.id.info_layout);
+        infoSum = findViewById(R.id.info_summary);
         infoSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0"));
         boolean infoState = infoSel == 0;
         if (infoL != null) {
@@ -306,21 +306,21 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         onOff(remainL, !rxtxState && infoState);
         onOff(minusL, !rxtxState && infoState);
 
-        RelativeLayout simFontL = (RelativeLayout) findViewById(R.id.simFontSize);
+        RelativeLayout simFontL = findViewById(R.id.simFontSize);
 
-        textSizeSum = (TextView) findViewById(R.id.textSizeSum);
+        textSizeSum = findViewById(R.id.textSizeSum);
         textSizeSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[12], Constants.TEXT_SIZE));
 
-        iconsSizeSum = (TextView) findViewById(R.id.iconSizeSum);
+        iconsSizeSum = findViewById(R.id.iconSizeSum);
         iconsSizeSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[11], Constants.ICON_SIZE));
 
-        speedTextSum = (TextView) findViewById(R.id.speedTextSizeSum);
+        speedTextSum = findViewById(R.id.speedTextSizeSum);
         speedTextSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[16], Constants.TEXT_SIZE));
 
-        speedIconsSum = (TextView) findViewById(R.id.speedIconsSizeSum);
+        speedIconsSum = findViewById(R.id.speedIconsSizeSum);
         speedIconsSum.setText(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[17], Constants.ICON_SIZE));
 
-        showSimSum = (TextView) findViewById(R.id.simChooseSum);
+        showSimSum = findViewById(R.id.simChooseSum);
         String sum = "";
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[18], true))
             sum = "SIM1";
@@ -336,23 +336,23 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                 sum += ", SIM3";
         showSimSum.setText(sum);
 
-        tiv = (ImageView) findViewById(R.id.textColorPreview);
-        tiv1 = (ImageView) findViewById(R.id.textColorPreview1);
-        tiv2 = (ImageView) findViewById(R.id.textColorPreview2);
-        tiv3 = (ImageView) findViewById(R.id.textColorPreview3);
-        biv = (ImageView) findViewById(R.id.backColorPreview);
+        tiv = findViewById(R.id.textColorPreview);
+        tiv1 = findViewById(R.id.textColorPreview1);
+        tiv2 = findViewById(R.id.textColorPreview2);
+        tiv3 = findViewById(R.id.textColorPreview3);
+        biv = findViewById(R.id.backColorPreview);
         tiv.setBackgroundColor(mTextColor);
         tiv1.setBackgroundColor(mTextColor1);
         tiv2.setBackgroundColor(mTextColor2);
         tiv3.setBackgroundColor(mTextColor3);
         biv.setBackgroundColor(mBackColor);
 
-        logo1 = (ImageView) findViewById(R.id.logoPreview1);
-        logo2 = (ImageView) findViewById(R.id.logoPreview2);
-        logo3 = (ImageView) findViewById(R.id.logoPreview3);
-        logoSum1 = (TextView) findViewById(R.id.logoSum1);
-        logoSum2 = (TextView) findViewById(R.id.logoSum2);
-        logoSum3 = (TextView) findViewById(R.id.logoSum3);
+        logo1 = findViewById(R.id.logoPreview1);
+        logo2 = findViewById(R.id.logoPreview2);
+        logo3 = findViewById(R.id.logoPreview3);
+        logoSum1 = findViewById(R.id.logoSum1);
+        logoSum2 = findViewById(R.id.logoSum2);
+        logoSum3 = findViewById(R.id.logoSum3);
 
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false)) {
             Picasso.with(this)
@@ -460,7 +460,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
     private void showDialog(View view) {
         DialogFragment dialog = null;
         AlertDialog.Builder ldb = new AlertDialog.Builder(this);
-        ArrayAdapter<String> adapter = null;
+        ArrayAdapter<String> adapter;
         int selection = -1;
         String[] array = null;
         DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {

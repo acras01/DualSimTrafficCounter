@@ -41,7 +41,7 @@ public class WidgetsFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle(R.string.widgets_title);
         View view = inflater.inflate(R.layout.widgets_fragment, container, false);
-        LinearLayoutCompat widgets = (LinearLayoutCompat) view.findViewById(R.id.widgets_layout);
+        LinearLayoutCompat widgets = view.findViewById(R.id.widgets_layout);
         LinearLayoutCompat.LayoutParams lp = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT,
                 LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
         lp.setMargins(5, 50, 0, 0);

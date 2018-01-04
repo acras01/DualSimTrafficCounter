@@ -53,12 +53,12 @@ public class ChooseSimDialog extends AppCompatActivity {
                 MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
 
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
+        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
+        AppCompatRadioButton sim1rb = view.findViewById(R.id.sim1RB);
         sim1rb.setText(operatorNames[0]);
-        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = view.findViewById(R.id.sim2RB);
         sim2rb.setText(operatorNames[1]);
-        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (simQuantity == 1) {

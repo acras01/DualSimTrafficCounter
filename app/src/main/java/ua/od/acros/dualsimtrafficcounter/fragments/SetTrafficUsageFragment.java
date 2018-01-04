@@ -71,18 +71,18 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
-        txInput = (EditText) view.findViewById(R.id.txamount);
+        txInput = view.findViewById(R.id.txamount);
         txInput.setEnabled(false);
-        rxInput = (EditText) view.findViewById(R.id.rxamount);
+        rxInput = view.findViewById(R.id.rxamount);
         rxInput.setEnabled(false);
-        txSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnertx);
-        rxSpinner = (AppCompatSpinner) view.findViewById(R.id.spinnerrx);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.sim_group);
-        AppCompatRadioButton sim1rb = (AppCompatRadioButton) view.findViewById(R.id.sim1RB);
+        txSpinner = view.findViewById(R.id.spinnertx);
+        rxSpinner = view.findViewById(R.id.spinnerrx);
+        RadioGroup radioGroup = view.findViewById(R.id.sim_group);
+        AppCompatRadioButton sim1rb = view.findViewById(R.id.sim1RB);
         sim1rb.setText(mOperatorNames[0]);
-        AppCompatRadioButton sim2rb = (AppCompatRadioButton) view.findViewById(R.id.sim2RB);
+        AppCompatRadioButton sim2rb = view.findViewById(R.id.sim2RB);
         sim2rb.setText(mOperatorNames[1]);
-        AppCompatRadioButton sim3rb = (AppCompatRadioButton) view.findViewById(R.id.sim3RB);
+        AppCompatRadioButton sim3rb = view.findViewById(R.id.sim3RB);
         sim3rb.setText(mOperatorNames[2]);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         int simQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
@@ -92,7 +92,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         }
         if (simQuantity == 2)
             sim3rb.setEnabled(false);
-        total = (AppCompatCheckBox) view.findViewById(R.id.checktotal);
+        total = view.findViewById(R.id.checktotal);
         total.setChecked(false);
         total.setOnCheckedChangeListener(this);
         total.setEnabled(false);
@@ -101,7 +101,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         txSpinner.setEnabled(false);
         rxSpinner.setOnItemSelectedListener(this);
         rxSpinner.setEnabled(false);
-        buttonOk = (AppCompatButton) view.findViewById(R.id.buttonOK);
+        buttonOk = view.findViewById(R.id.buttonOK);
         buttonOk.setOnClickListener(this);
         buttonOk.setEnabled(false);
         if (savedInstanceState != null) {

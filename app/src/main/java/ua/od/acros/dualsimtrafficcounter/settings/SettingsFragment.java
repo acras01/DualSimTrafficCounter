@@ -35,10 +35,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle(R.string.action_settings);
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
-        RelativeLayout calls = (RelativeLayout) view.findViewById(R.id.calls_layout);
+        RelativeLayout calls = view.findViewById(R.id.calls_layout);
         if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
             calls.setVisibility(View.GONE);
-        RelativeLayout widgets = (RelativeLayout) view.findViewById(R.id.widgets_layout);
+        RelativeLayout widgets = view.findViewById(R.id.widgets_layout);
         if (CustomApplication.getWidgetIds(Constants.TRAFFIC).length == 0 &&
                 CustomApplication.getWidgetIds(Constants.CALLS).length == 0)
             widgets.setVisibility(View.GONE);
