@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Intent mStarterIntent;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mStarterIntent = getIntent();
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Subscribe
-    public void onMessageEvent(CustomDialogEvent event) {
+    public final void onMessageEvent(CustomDialogEvent event) {
         FragmentManager fm = getSupportFragmentManager();
         if (CustomApplication.isOldMtkDevice()) {
             fm.beginTransaction()
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onBackPressed() {
+    public final void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onPostResume() {
+    protected final void onPostResume() {
         super.onPostResume();
         FragmentManager fm = getSupportFragmentManager();
         Fragment currentFragment = fm.findFragmentById(R.id.content_frame);
@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[4])) {
             if (!sharedPreferences.getBoolean(key, false)) {
                 stopService(new Intent(mContext, WatchDogService.class));
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public final boolean onNavigationItemSelected(@NonNull MenuItem item) {
         openFragment(item.getItemId());
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer != null) {
@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected final void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
             setItemChecked(mLastMenuItem, true);
     }
@@ -548,7 +548,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onDestroy() {
+    protected final void onDestroy() {
         super.onDestroy();
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
