@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -84,8 +88,24 @@ public class FloatingWindowService extends StandOutWindow {
             mContext = CustomApplication.getAppContext();
         if (mPrefs == null)
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        if (!CustomApplication.isMyServiceRunning(TrafficCountService.class))
-            stopSelf();
+        Timer timer = new Timer();
+        final Handler handler = new Handler();
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        try {
+                            CheckServiceRunning performBackgroundTask = new CheckServiceRunning();
+                            performBackgroundTask.execute(mContext, mPrefs);
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 60000);
     }
 
 	@Override
@@ -97,7 +117,7 @@ public class FloatingWindowService extends StandOutWindow {
         // create a new layout from .xml
         //LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View view = View.inflate(mContext, R.layout.floating_window, frame);
-        TextView status = (TextView) view.findViewById(R.id.tv);
+        TextView status = view.findViewById(R.id.tv);
         String changedText = DataFormat.formatData(mContext, 0L);
         status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
         status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
@@ -201,7 +221,7 @@ public class FloatingWindowService extends StandOutWindow {
                         }
                         break;
                 }
-                TextView status = (TextView) window.findViewById(R.id.tv);
+                TextView status = window.findViewById(R.id.tv);
                 status.setTextSize(textSize);
                 int textColor = mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text));
                 if (mPrefs.getBoolean(Constants.PREF_OTHER[52], true) && data.getBoolean("flash", false) && seconds % 2 == 0) {
@@ -296,7 +316,24 @@ public class FloatingWindowService extends StandOutWindow {
     private DisplayMetrics getDisplayMetrics() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        if (windowManager != null) {
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        }
         return displayMetrics;
+    }
+
+    private static class CheckServiceRunning extends AsyncTask<Object, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Object ... params) {
+            Context context = (Context) params[0];
+            SharedPreferences prefs = (SharedPreferences) params[1];
+            boolean floatingWindow = prefs.getBoolean(Constants.PREF_OTHER[32], false);
+            boolean alwaysShow = !prefs.getBoolean(Constants.PREF_OTHER[41], false) && !prefs.getBoolean(Constants.PREF_OTHER[47], false);
+            boolean bool = floatingWindow && !alwaysShow;
+            if (bool && !CustomApplication.isMyServiceRunning(TrafficCountService.class))
+                closeFloatingWindow(context, prefs);
+            return null;
+        }
     }
 }
