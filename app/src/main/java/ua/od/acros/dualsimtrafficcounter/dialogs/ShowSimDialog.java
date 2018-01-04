@@ -1,5 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +30,11 @@ public class ShowSimDialog extends DialogFragment {
 
     private AppCompatButton bOK;
     private static boolean[] mSim = new boolean[3];
+    private static WeakReference<Activity> myActivity;
     private String mActivity;
     private Context mContext;
     private String[] mOperatorNames;
-    private int mSimQuantity;
+    private static int mSimQuantity;
 
     public static ShowSimDialog newInstance(String activity, boolean[] sim) {
         ShowSimDialog f = new ShowSimDialog();
@@ -47,10 +50,11 @@ public class ShowSimDialog extends DialogFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = CustomApplication.getAppContext();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        myActivity = new WeakReference<Activity>(getActivity());
         mActivity = getArguments().getString("activity");
         mSim = getArguments().getBooleanArray("sim");
         mOperatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -61,7 +65,7 @@ public class ShowSimDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public final Dialog onCreateDialog(Bundle savedInstanceState) {
         final List<Item> items = new ArrayList<>();
         for (int i = 0; i < mSim.length; i++) {
             items.add(new Item(mOperatorNames[i], mSim[i]));
@@ -97,7 +101,7 @@ public class ShowSimDialog extends DialogFragment {
         return dialog;
     }
 
-    private class Item {
+    private static class Item {
         private final String name;
         private boolean checked;
 
@@ -106,20 +110,20 @@ public class ShowSimDialog extends DialogFragment {
             this.checked = checked;
         }
 
-        public String getName() {
+        public final String getName() {
             return name;
         }
 
-        public boolean isChecked() {
+        public final boolean isChecked() {
             return checked;
         }
 
-        public void setChecked(boolean checked) {
+        public final void setChecked(boolean checked) {
             this.checked = checked;
         }
     }
 
-    private class CustomListAdapter extends ArrayAdapter<Item> {
+    private static class CustomListAdapter extends ArrayAdapter<Item> {
 
         private ViewHolder holder;
         private final List<Item> list;
@@ -131,15 +135,15 @@ public class ShowSimDialog extends DialogFragment {
             this.layout = layout;
         }
 
-        private class ViewHolder {
+        private static class ViewHolder {
             AppCompatCheckBox item;
         }
 
         @NonNull
-        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+        public final View getView(final int position, View convertView, @NonNull ViewGroup parent) {
             if (convertView == null ) {
                 holder = new ViewHolder();
-                convertView = getActivity().getLayoutInflater().inflate(layout, null);
+                convertView = myActivity.get().getLayoutInflater().inflate(layout, null);
                 convertView.setTag(holder);
                 holder.item = convertView.findViewById(R.id.checkBox);
             }
@@ -162,7 +166,7 @@ public class ShowSimDialog extends DialogFragment {
             return convertView;
         }
 
-        public List<Item> getList() {
+        public final List<Item> getList() {
             return list;
         }
     }

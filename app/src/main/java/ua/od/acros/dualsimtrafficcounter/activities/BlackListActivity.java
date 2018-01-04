@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import org.acra.ACRA;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,20 +35,19 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 
 public class BlackListActivity extends AppCompatActivity {
 
-    private Context mContext;
-    private int mKey;
-    private CustomDatabaseHelper mDbHelper;
-    private BlackListAdapter mAdapter;
-    private ArrayList<String> mList;
-    private ProgressBar pb;
-    private SharedPreferences mPrefs;
+    private static int mKey;
+    private static CustomDatabaseHelper mDbHelper;
+    private static BlackListAdapter mAdapter;
+    private static ArrayList<String> mList;
+    private static WeakReference<ProgressBar> pb;
+    private static SharedPreferences mPrefs;
 
     @SuppressLint("RestrictedApi")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = CustomApplication.getAppContext();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Context ctx = CustomApplication.getAppContext();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         if (savedInstanceState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -60,15 +60,16 @@ public class BlackListActivity extends AppCompatActivity {
             // Now recreate for it to take effect
             recreate();
         }
-        mDbHelper = CustomDatabaseHelper.getInstance(mContext);
+        mDbHelper = CustomDatabaseHelper.getInstance(ctx);
         mKey = Integer.valueOf(getIntent().getDataString());
-        String[] mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
-                MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
-                MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
+        String[] mOperatorNames = new String[]{MobileUtils.getName(ctx, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+                MobileUtils.getName(ctx, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
+                MobileUtils.getName(ctx, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         setContentView(R.layout.activity_recyclerview);
-        pb = findViewById(R.id.progressBar);
-        if (pb != null) {
-            pb.setVisibility(View.GONE);
+        ProgressBar pBar = findViewById(R.id.progressBar);
+        pb = new WeakReference<>(pBar);
+        if (pBar != null) {
+            pBar.setVisibility(View.GONE);
         }
         Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
@@ -91,13 +92,13 @@ public class BlackListActivity extends AppCompatActivity {
         }
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public final boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.widget_config_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public final boolean onOptionsItemSelected(MenuItem item) {
         try {
             switch (item.getItemId()) {
                 case R.id.save:
@@ -115,7 +116,8 @@ public class BlackListActivity extends AppCompatActivity {
     private static class SaveTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected final Boolean doInBackground(Void... params) {
+            Context ctx = CustomApplication.getAppContext();
             ArrayList<String> list = mAdapter.getCheckedItems();
             for (Iterator<String> i = mList.iterator(); i.hasNext(); ) {
                 if (list.contains(i.next())) {
@@ -124,37 +126,38 @@ public class BlackListActivity extends AppCompatActivity {
             }
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
-                imsi = MobileUtils.getSimIds(mContext);
+                imsi = MobileUtils.getSimIds(ctx);
             CustomDatabaseHelper.writeList(mKey, mList, mDbHelper, imsi, "black");
             return true;
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected final void onPostExecute(Boolean result) {
             if (result)
-                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+                Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
     }
 
     private static class LoadContactsTask extends AsyncTask<Void, Void, List<ListItem>> {
 
-        final RecyclerView rv;
+        final WeakReference<RecyclerView> rv;
 
         LoadContactsTask(RecyclerView rv) {
-            this.rv = rv;
+            this.rv = new WeakReference<>(rv);
         }
 
         @Override
-        protected void onPreExecute() {
+        protected final void onPreExecute() {
             super.onPreExecute();
-            pb.setVisibility(View.VISIBLE);
+            pb.get().setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected List<ListItem> doInBackground(Void... params) {
+        protected final List<ListItem> doInBackground(Void... params) {
             ArrayList<String> imsi = null;
+            Context ctx = CustomApplication.getAppContext();
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], true))
-                imsi = MobileUtils.getSimIds(mContext);
+                imsi = MobileUtils.getSimIds(ctx);
             mList = CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "black");
             List<ListItem> blackList = new ArrayList<>();
             for (String number : mList)
@@ -163,8 +166,8 @@ public class BlackListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<ListItem> result) {
-            pb.setVisibility(View.GONE);
+        protected final void onPostExecute(List<ListItem> result) {
+            pb.get().setVisibility(View.GONE);
             if (result != null) {
                 mAdapter.swapItems(result);
             }

@@ -26,7 +26,7 @@ public class ChooseOperatorDialog extends AppCompatActivity {
     private AlertDialog mDialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Context context = CustomApplication.getAppContext();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -94,7 +94,7 @@ public class ChooseOperatorDialog extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected final void onDestroy() {
         super.onDestroy();
         if (mDialog != null && mDialog.isShowing())
             mDialog.dismiss();

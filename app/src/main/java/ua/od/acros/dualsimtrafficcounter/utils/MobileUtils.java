@@ -1404,7 +1404,7 @@ public class MobileUtils {
     private static class SetMobileNetworkForLollipop extends AsyncTask<Object, Void, Wrapper> {
 
         @Override
-        protected Wrapper doInBackground(Object... params) {
+        protected final Wrapper doInBackground(Object... params) {
             Context context = (Context) params[0];
             boolean swtch = (boolean) params[1];
             boolean oldState = isMobileDataActive(context);
@@ -1465,7 +1465,7 @@ public class MobileUtils {
         }
 
         @Override
-        protected void onPostExecute(Wrapper wrapper) {
+        protected final void onPostExecute(Wrapper wrapper) {
             Context context = wrapper.context;
             int result = wrapper.result;
             switch (result) {
@@ -1676,24 +1676,18 @@ public class MobileUtils {
         boolean mAlternative = prefs.getBoolean(Constants.PREF_OTHER[20], false);
         if (!swtch) {
             mLastActiveSIM = getActiveSimForData(context);
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, mLastActiveSIM, false);
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                 new SetMobileNetworkForLollipop().execute(context, false);
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())
+            } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP || (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()))
                 toggleFlightMode(true);
-            else {
+            else if (CustomApplication.canToggleOn()){
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 localIntent.putExtra("simid", Constants.DISABLED);
                 context.sendBroadcast(localIntent);
             }
         }
         if (swtch && sim == Constants.DISABLED) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, mLastActiveSIM, true);
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
-                setMobileDataEnabled(context, true, sim);
-            } else {
+            if (CustomApplication.canToggleOn()) {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
                     int simAlt = Constants.DISABLED;
@@ -1715,11 +1709,7 @@ public class MobileUtils {
             }
             CustomApplication.sleep(1000);
         } else if (sim != Constants.DISABLED) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                setMobileNetworkFromLollipop(context, sim, true);
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()) {
-                setMobileDataEnabled(context, true, sim);
-            } else {
+            if (CustomApplication.canToggleOn()) {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
                     int sim_ = Constants.DISABLED;

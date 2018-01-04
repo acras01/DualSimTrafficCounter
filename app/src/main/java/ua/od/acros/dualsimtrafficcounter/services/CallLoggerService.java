@@ -149,7 +149,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
 
     private static class SaveListTask extends AsyncTask<Object, Void, Boolean> {
         @Override
-        protected Boolean doInBackground(Object... params) {
+        protected final Boolean doInBackground(Object... params) {
             Bundle bundle = (Bundle) params[0];
             CustomDatabaseHelper dbHelper = (CustomDatabaseHelper) params[1];
             ArrayList imsi = (ArrayList) params[2];
@@ -169,7 +169,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected final void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
@@ -361,7 +361,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[45], false)) {
             int sim = Constants.DISABLED;
             if (new ArrayList<>(Arrays.asList(Constants.PREF_SIM1_CALLS)).contains(key))
@@ -415,7 +415,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public final int onStartCommand(Intent intent, int flags, int startId) {
         int[] ids = CustomApplication.getWidgetIds(Constants.CALLS);
         if (ids.length != 0) {
             Intent i = new Intent(Constants.CALLS_BROADCAST_ACTION);
@@ -719,7 +719,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     @Override
-    public void onDestroy() {
+    public final void onDestroy() {
         super.onDestroy();
         NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) {

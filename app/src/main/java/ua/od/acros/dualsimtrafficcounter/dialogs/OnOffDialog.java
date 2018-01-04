@@ -40,7 +40,7 @@ public class OnOffDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public final Dialog onCreateDialog(Bundle savedInstanceState) {
 
         mContext = CustomApplication.getAppContext();
         String[] operatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
@@ -57,7 +57,7 @@ public class OnOffDialog extends DialogFragment {
         AppCompatRadioButton sim3rb = view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        if (CustomApplication.isOldMtkDevice()) {
+        if (CustomApplication.canToggleOn()) {
             int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
             if (simQuantity >= 1)
                 sim1rb.setEnabled(true);

@@ -25,13 +25,13 @@ public class TimePreferenceDialog extends PreferenceDialogFragmentCompat impleme
     }
 
     @Override
-    protected View onCreateDialogView(Context context) {
+    protected final View onCreateDialogView(Context context) {
         mTimePicker = new TimePicker(context);
         return (mTimePicker);
     }
 
     @Override
-    protected void onBindDialogView(View v) {
+    protected final void onBindDialogView(View v) {
         super.onBindDialogView(v);
         if (!DateFormat.is24HourFormat(getContext()))
             mTimePicker.setIs24HourView(false);
@@ -48,7 +48,7 @@ public class TimePreferenceDialog extends PreferenceDialogFragmentCompat impleme
     }
 
     @Override
-    public void onDialogClosed(boolean positiveResult) {
+    public final void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
             TimePreference pref = (TimePreference) getPreference();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -64,7 +64,7 @@ public class TimePreferenceDialog extends PreferenceDialogFragmentCompat impleme
     }
 
     @Override
-    public Preference findPreference(CharSequence charSequence) {
+    public final Preference findPreference(CharSequence charSequence) {
         return getPreference();
     }
 }

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import java.lang.ref.WeakReference;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,18 +40,20 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class TrafficForDateFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener{
 
     private int mYear, mMonth, mDay;
-    private int mSimChecked = Constants.NULL;
-    private int mSimQuantity;
-    private AppCompatButton bSetDate, bOK;
-    private ProgressBar pb;
-    private RadioGroup radioGroup;
+    private static int mSimChecked = Constants.NULL;
+    private static int mSimQuantity;
+    private static WeakReference<AppCompatButton> bSetDate, bOK;
+    private static WeakReference<ProgressBar> pb;
+    private static WeakReference<RadioGroup> radioGroup;
 
     private OnFragmentInteractionListener mListener;
 
     private TextView RX, TX, RXN, TXN, TOT, TOTN, day, night;
+    private static WeakReference<TextView> wRX, wTX, wRXN, wTXN, wTOT, wTOTN, wDay, wNight;
     private String[] mOperatorNames = new String[3];
     private Context mContext;
-    private SharedPreferences mPrefs;
+    private static SharedPreferences mPrefs;
+    private static boolean mIsDetached;
 
     public static TrafficForDateFragment newInstance() {
         return new TrafficForDateFragment();
@@ -61,7 +64,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDay = DateTime.now().toLocalDate().getDayOfMonth();
         mMonth = DateTime.now().toLocalDate().getMonthOfYear();
@@ -74,15 +77,18 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.traffic_for_date_fragment, container, false);
-        pb = view.findViewById(R.id.progressBar);
-        pb.setVisibility(View.GONE);
-        radioGroup = view.findViewById(R.id.sim_group);
-        bSetDate = view.findViewById(R.id.setdate);
-        bSetDate.setOnClickListener(this);
+        ProgressBar pBar = view.findViewById(R.id.progressBar);
+        pb = new WeakReference<>(pBar);
+        pBar.setVisibility(View.GONE);
+        RadioGroup rGroup = view.findViewById(R.id.sim_group);
+        radioGroup = new WeakReference<>(rGroup);
+        AppCompatButton bDate = view.findViewById(R.id.setdate);
+        bSetDate = new WeakReference<>(bDate);
+        bDate.setOnClickListener(this);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSimQuantity = mPrefs.getInt(Constants.PREF_OTHER[55], 1);
         AppCompatRadioButton sim1rb = view.findViewById(R.id.sim1RB);
@@ -97,21 +103,29 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
         }
         if (mSimQuantity == 2)
             sim3rb.setEnabled(false);
-        radioGroup.setOnCheckedChangeListener(this);
+        rGroup.setOnCheckedChangeListener(this);
         RX = view.findViewById(R.id.rx);
+        wRX = new WeakReference<>(RX);
         TX = view.findViewById(R.id.tx);
+        wTX = new WeakReference<>(TX);
         RXN = view.findViewById(R.id.rxnight);
+        wRXN = new WeakReference<>(RXN);
         TXN = view.findViewById(R.id.txnight);
+        wTXN = new WeakReference<>(TXN);
         TOT = view.findViewById(R.id.total);
+        wTOT = new WeakReference<>(TOT);
         TOTN = view.findViewById(R.id.totalnight);
+        wTOTN = new WeakReference<>(TOTN);
         day = view.findViewById(R.id.day);
+        wDay = new WeakReference<>(day);
         night = view.findViewById(R.id.night);
-        bOK = view.findViewById(R.id.buttonOK);
-        bOK.setOnClickListener(this);
-        bOK.setEnabled(false);
-        bSetDate = view.findViewById(R.id.setdate);
-        bSetDate.setOnClickListener(this);
-        bSetDate.setEnabled(false);
+        wNight = new WeakReference<>(night);
+        AppCompatButton butOK = view.findViewById(R.id.buttonOK);
+        bOK = new WeakReference<>(butOK);
+        butOK.setOnClickListener(this);
+        butOK.setEnabled(false);
+        bDate.setOnClickListener(this);
+        bDate.setEnabled(false);
         RXN.setVisibility(View.GONE);
         TXN.setVisibility(View.GONE);
         TOTN.setVisibility(View.GONE);
@@ -138,9 +152,9 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                 TXN.setText(savedInstanceState.getString("txn"));
                 TOT.setText(savedInstanceState.getString("tot"));
                 TOTN.setText(savedInstanceState.getString("totn"));
-                bSetDate.setText(savedInstanceState.getString("set"));
-                bSetDate.setEnabled(true);
-                bOK.setEnabled(true);
+                bDate.setText(savedInstanceState.getString("set"));
+                bDate.setEnabled(true);
+                butOK.setEnabled(true);
             }
         }
         // Inflate the layout for this fragment
@@ -148,7 +162,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public final void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (isVisible()) {
             outState.putInt("sim", mSimChecked);
@@ -160,24 +174,24 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             outState.putString("rxn", RXN.getText().toString());
             outState.putString("txn", TXN.getText().toString());
             outState.putString("totn", TOTN.getText().toString());
-            outState.putString("set", bSetDate.getText().toString());
+            outState.putString("set", bSetDate.get().getText().toString());
         }
     }
 
     @Override
-    public void onResume(){
+    public final void onResume(){
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_show_history);
     }
 
-    public void onButtonPressed(Uri uri) {
+    public final void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onTrafficForDateFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         Activity activity = null;
         if (context instanceof Activity)
@@ -191,12 +205,12 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
+    public final void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.sim1RB:
                 mSimChecked = Constants.SIM1;
@@ -208,54 +222,56 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                 mSimChecked = Constants.SIM3;
                 break;
         }
-        bOK.setEnabled(true);
-        bSetDate.setEnabled(true);
+        bOK.get().setEnabled(true);
+        bSetDate.get().setEnabled(true);
     }
 
     public interface OnFragmentInteractionListener {
         void onTrafficForDateFragmentInteraction(Uri uri);
     }
 
-    class GetTask extends AsyncTask<Integer, Void, Bundle> {
+    static class GetTask extends AsyncTask<Integer, Void, Bundle> {
 
         @Override
-        protected void onPreExecute() {
+        protected final void onPreExecute() {
             super.onPreExecute();
-            bOK.setEnabled(false);
-            radioGroup.setEnabled(false);
-            for (int i = 0; i < radioGroup.getChildCount(); i++) {
-                radioGroup.getChildAt(i).setEnabled(false);
+            bOK.get().setEnabled(false);
+            radioGroup.get().setEnabled(false);
+            for (int i = 0; i < radioGroup.get().getChildCount(); i++) {
+                radioGroup.get().getChildAt(i).setEnabled(false);
             }
-            bSetDate.setEnabled(false);
-            pb.setVisibility(View.VISIBLE);
+            bSetDate.get().setEnabled(false);
+            pb.get().setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected Bundle doInBackground(Integer... params) {
+        protected final Bundle doInBackground(Integer... params) {
+            Context ctx = CustomApplication.getAppContext();
             String date = params[0] + "-" + params[1] + "-" + params[2];
             if (isCancelled())
                 return null;
             else {
                 ArrayList<String> imsi = null;
                 if (mPrefs.getBoolean(Constants.PREF_OTHER[44], false))
-                    imsi = MobileUtils.getSimIds(mContext);
-                return CustomDatabaseHelper.getDataForDate(CustomDatabaseHelper.getInstance(mContext),
+                    imsi = MobileUtils.getSimIds(ctx);
+                return CustomDatabaseHelper.getDataForDate(CustomDatabaseHelper.getInstance(ctx),
                         date, params[3], mPrefs, imsi);
             }
         }
 
         @Override
-        protected void onPostExecute(Bundle result) {
+        protected final void onPostExecute(Bundle result) {
             super.onPostExecute(result);
-            if (!isDetached()) {
-                pb.setVisibility(View.GONE);
-                bOK.setEnabled(true);
-                radioGroup.setEnabled(true);
-                for (int i = 0; i < radioGroup.getChildCount(); i++) {
+            Context ctx = CustomApplication.getAppContext();
+            if (!mIsDetached) {
+                pb.get().setVisibility(View.GONE);
+                bOK.get().setEnabled(true);
+                radioGroup.get().setEnabled(true);
+                for (int i = 0; i < radioGroup.get().getChildCount(); i++) {
                     if (i < mSimQuantity)
-                        radioGroup.getChildAt(i).setEnabled(true);
+                        radioGroup.get().getChildAt(i).setEnabled(true);
                 }
-                bSetDate.setEnabled(true);
+                bSetDate.get().setEnabled(true);
                 if (result != null && mSimChecked != Constants.NULL) {
                     String[] prefsConst = new String[Constants.PREF_SIM1.length];
                     switch (mSimChecked) {
@@ -269,37 +285,38 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
                             prefsConst = Constants.PREF_SIM3;
                             break;
                     }
-                    String opName = MobileUtils.getName(mContext, prefsConst[5], prefsConst[6], mSimChecked);
-                    day.setText(opName);
-                    night.setText(String.format(getResources().getString(R.string.night), opName));
+                    String opName = MobileUtils.getName(ctx, prefsConst[5], prefsConst[6], mSimChecked);
+                    wDay.get().setText(opName);
+                    wNight.get().setText(String.format(ctx.getResources().getString(R.string.night), opName));
 
-                    RX.setText(DataFormat.formatData(mContext, result.getLong("rx")));
-                    TX.setText(DataFormat.formatData(mContext, result.getLong("tx")));
-                    TOT.setText(DataFormat.formatData(mContext, result.getLong("tot")));
+                    wRX.get().setText(DataFormat.formatData(ctx, result.getLong("rx")));
+                    wTX.get().setText(DataFormat.formatData(ctx, result.getLong("tx")));
+                    wTOT.get().setText(DataFormat.formatData(ctx, result.getLong("tot")));
 
                     if (mPrefs.getBoolean(prefsConst[17], false)) {
-                        RXN.setVisibility(View.VISIBLE);
-                        TXN.setVisibility(View.VISIBLE);
-                        TOTN.setVisibility(View.VISIBLE);
-                        night.setVisibility(View.VISIBLE);
-                        RXN.setText(DataFormat.formatData(mContext, result.getLong("rx_n")));
-                        TXN.setText(DataFormat.formatData(mContext, result.getLong("tx_n")));
-                        TOTN.setText(DataFormat.formatData(mContext, result.getLong("tot_n")));
+                        wRXN.get().setVisibility(View.VISIBLE);
+                        wTXN.get().setVisibility(View.VISIBLE);
+                        wTOTN.get().setVisibility(View.VISIBLE);
+                        wNight.get().setVisibility(View.VISIBLE);
+                        wRXN.get().setText(DataFormat.formatData(ctx, result.getLong("rx_n")));
+                        wTXN.get().setText(DataFormat.formatData(ctx, result.getLong("tx_n")));
+                        wTOTN.get().setText(DataFormat.formatData(ctx, result.getLong("tot_n")));
                     }
                 } else
-                    Toast.makeText(mContext, R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ctx, R.string.date_incorrect_or_data_missing, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     @Override
-    public void onClick(View v) {
+    public final void onClick(View v) {
         switch (v.getId()) {
             case R.id.setdate:
                 DatePickerDialog tpd = new DatePickerDialog(getActivity(), mCallBack, mYear, mMonth - 1, mDay);
                 tpd.show();
                 break;
             case R.id.buttonOK:
+                mIsDetached = isDetached();
                 new GetTask().execute(mYear, mMonth, mDay, mSimChecked);
         }
 
@@ -316,7 +333,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
             Format dateFormat = DateFormat.getDateFormat(mContext);
             String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
 
-            bSetDate.setText(new SimpleDateFormat(pattern).format(date.toDate()));
+            bSetDate.get().setText(new SimpleDateFormat(pattern).format(date.toDate()));
         }
     };
 

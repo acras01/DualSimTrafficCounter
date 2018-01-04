@@ -31,7 +31,7 @@ public class ChooseSimDialog extends AppCompatActivity {
     private AlertDialog mDialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIsActive = true;
         final Context context = CustomApplication.getAppContext();
@@ -125,19 +125,19 @@ public class ChooseSimDialog extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected final void onResume() {
         super.onResume();
         mIsActive = true;
     }
 
     @Override
-    protected void onPause() {
+    protected final void onPause() {
         super.onPause();
         mIsActive = false;
     }
 
     @Override
-    protected void onDestroy() {
+    protected final void onDestroy() {
         super.onDestroy();
         mIsActive = false;
         if (mDialog != null && mDialog.isShowing())

@@ -45,11 +45,11 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             day1, day2, day3, round1, round2, round3;
     private TwoLineListPreference period1, period2, period3, opValue1, opValue2, opValue3;
     private TimePreference time1, time2, time3;
-    private SharedPreferences mPrefs;
+    private static SharedPreferences mPrefs;
     private boolean mIsAttached = false;
     private Context mContext;
-    private ArrayList<String> mIMSI = null;
-    private int mSimQuantity;
+    private static ArrayList<String> mIMSI = null;
+    private static int mSimQuantity;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -299,10 +299,11 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         return false;
     }
 
-    private class SaveTask extends AsyncTask<Integer, Void, Boolean> {
+    private static class SaveTask extends AsyncTask<Integer, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Integer... params) {
+            Context ctx = CustomApplication.getAppContext();
             Map<String, ?> prefs = mPrefs.getAll();
             String[] keys = new String[Constants.PREF_SIM_CALLS.length];
             int sim = params[0];
@@ -317,7 +318,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
                     keys = Constants.PREF_SIM3_CALLS;
                     break;
             }
-            SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = ctx.getSharedPreferences(Constants.CALLS + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
             for (String key : keySet) {
@@ -328,7 +329,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
             }
             CustomApplication.putObject(editor, "stub", null);
             editor.apply();
-            CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+            CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(ctx);
             String[] list = new String[]{"black", "white"};
             for (String name : list) {
                 if (CustomDatabaseHelper.isTableEmpty(dbHelper, name + "_" + mIMSI.get(sim), false))
@@ -340,15 +341,15 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         @Override
         protected void onPostExecute(Boolean result) {
             if (result)
-                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+                Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
     }
 
-    private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
+    private static class DeleteTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(mContext);
+            CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(CustomApplication.getAppContext());
             CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
             CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS);
             CustomApplication.deletePreferenceFile(mSimQuantity, Constants.CALLS);
@@ -358,7 +359,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         @Override
         protected void onPostExecute(Boolean result) {
             if (result)
-                Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
+                Toast.makeText(CustomApplication.getAppContext(), R.string.deleted, Toast.LENGTH_LONG).show();
         }
     }
 

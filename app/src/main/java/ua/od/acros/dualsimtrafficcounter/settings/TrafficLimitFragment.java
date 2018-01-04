@@ -56,11 +56,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             autoff1, autoff2, autoff3;
     private TwoLineListPreference everyday1, everyday2, everyday3;
     private TimePreference time1, time2, time3, tOn1, tOff1, tOn2, tOff2, tOn3, tOff3, tOn1N, tOff1N, tOn2N, tOff2N, tOn3N, tOff3N;
-    private SharedPreferences mPrefs;
-    private int mSimQuantity;
+    private static SharedPreferences mPrefs;
+    private static int mSimQuantity;
     private Context mContext;
     private boolean mIsAttached = false;
-    private ArrayList<String> mIMSI = null;
+    private static ArrayList<String> mIMSI = null;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -852,11 +852,12 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         return false;
     }
 
-    private class SaveTask extends AsyncTask<Integer, Void, Boolean> {
+    private static class SaveTask extends AsyncTask<Integer, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Integer... params) {
             Map<String, ?> prefs = mPrefs.getAll();
+            Context ctx = CustomApplication.getAppContext();
             String[] keys = new String[Constants.PREF_SIM_DATA.length];
             int sim = params[0];
             switch (sim) {
@@ -871,8 +872,8 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                     break;
             }
             if (mIMSI == null)
-                mIMSI = MobileUtils.getSimIds(mContext);
-            SharedPreferences.Editor editor = mContext.getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
+                mIMSI = MobileUtils.getSimIds(ctx);
+            SharedPreferences.Editor editor = ctx.getSharedPreferences(Constants.TRAFFIC + "_" + mIMSI.get(sim), Context.MODE_PRIVATE).edit();
             Set<String> keySet = prefs.keySet();
             ArrayList<String> simKeys = new ArrayList<>(Arrays.asList(keys));
             for (String key : keySet) {
@@ -896,17 +897,18 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         @Override
         protected void onPostExecute(Boolean result) {
             if (result)
-                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+                Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
     }
 
-    private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
+    private static class DeleteTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            Context ctx = CustomApplication.getAppContext();
             if (mIMSI == null)
-                mIMSI = MobileUtils.getSimIds(mContext);
-            CustomDatabaseHelper.deleteDataTable(CustomDatabaseHelper.getInstance(mContext), mIMSI, Constants.TRAFFIC);
+                mIMSI = MobileUtils.getSimIds(ctx);
+            CustomDatabaseHelper.deleteDataTable(CustomDatabaseHelper.getInstance(ctx), mIMSI, Constants.TRAFFIC);
             CustomApplication.deletePreferenceFile(mSimQuantity, Constants.TRAFFIC);
             return true;
         }
@@ -914,7 +916,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         @Override
         protected void onPostExecute(Boolean result) {
             if (result)
-                Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_LONG).show();
+                Toast.makeText(CustomApplication.getAppContext(), R.string.deleted, Toast.LENGTH_LONG).show();
         }
     }
 

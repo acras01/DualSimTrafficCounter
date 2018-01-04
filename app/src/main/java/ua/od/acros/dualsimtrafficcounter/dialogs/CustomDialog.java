@@ -28,7 +28,7 @@ public class CustomDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public final Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setCancelable(false)
                 .setTitle(R.string.attention)

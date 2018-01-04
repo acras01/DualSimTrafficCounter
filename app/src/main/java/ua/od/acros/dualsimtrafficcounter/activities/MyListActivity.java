@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import org.acra.ACRA;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,19 +41,18 @@ import ua.od.acros.dualsimtrafficcounter.utils.MyListAdapter;
 public class MyListActivity extends AppCompatActivity {
 
 
-    private Context mContext = this;
-    private int mKey;
-    private boolean mChoice;
-    private CustomDatabaseHelper mDbHelper;
-    private ProgressBar pb;
-    private MyListAdapter mAdapter;
-    private SharedPreferences mPrefs;
+    private static int mKey;
+    private static boolean mChoice;
+    private static CustomDatabaseHelper mDbHelper;
+    private static WeakReference<ProgressBar> pb;
+    private static MyListAdapter mAdapter;
+    private static SharedPreferences mPrefs;
 
     @SuppressLint("RestrictedApi")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = CustomApplication.getAppContext();
+        Context mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         if (savedInstanceState == null) {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
@@ -75,9 +75,10 @@ public class MyListActivity extends AppCompatActivity {
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
         setContentView(R.layout.activity_recyclerview);
-        pb = findViewById(R.id.progressBar);
-        if (pb != null) {
-            pb.setVisibility(View.GONE);
+        ProgressBar pBar = findViewById(R.id.progressBar);
+        pb = new WeakReference<>(pBar);
+        if (pBar != null) {
+            pBar.setVisibility(View.GONE);
         }
         Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
@@ -106,7 +107,7 @@ public class MyListActivity extends AppCompatActivity {
         }
     }
 
-    private List<ListItem> loadContactsFromDB(Context context, ArrayList<String> list) {
+    private static List<ListItem> loadContactsFromDB(Context context, ArrayList<String> list) {
         List<ListItem> whiteList = new ArrayList<>();
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         Cursor cursor = context.getContentResolver().query(uri, new String[]{ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
@@ -127,26 +128,27 @@ public class MyListActivity extends AppCompatActivity {
         return whiteList;
     }
 
-    private List<ListItem> loadAppUids(ArrayList<String> list) {
+    private static List<ListItem> loadAppUids(ArrayList<String> list) {
         List<ListItem> uidList = new ArrayList<>();
-        PackageManager pm = getPackageManager();
+        Context ctx = CustomApplication.getAppContext();
+        PackageManager pm = ctx.getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
         for (ApplicationInfo pkg : packages) {
-            String label = (String)((pkg != null) ? pm.getApplicationLabel(pkg) : getString(R.string.unknown));
-            Uri icon = Uri.parse("app_icon://" + ((pkg != null) ? pkg.packageName : getString(R.string.unknown)));
-            String uid = String.valueOf((pkg != null) ? pkg.uid : getString(R.string.unknown));
+            String label = (String)((pkg != null) ? pm.getApplicationLabel(pkg) : ctx.getString(R.string.unknown));
+            Uri icon = Uri.parse("app_icon://" + ((pkg != null) ? pkg.packageName : ctx.getString(R.string.unknown)));
+            String uid = String.valueOf((pkg != null) ? pkg.uid : ctx.getString(R.string.unknown));
             uidList.add(new ListItem(icon, label, uid, list.contains(uid)));
         }
         return uidList;
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public final boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.widget_config_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public final boolean onOptionsItemSelected(MenuItem item) {
         try {
             switch (item.getItemId()) {
                 case R.id.save:
@@ -161,13 +163,13 @@ public class MyListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class SaveTask extends AsyncTask<Void, Void, Boolean> {
+    private static class SaveTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected final Boolean doInBackground(Void... params) {
             ArrayList<String> imsi = null;
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
-                imsi = MobileUtils.getSimIds(mContext);
+                imsi = MobileUtils.getSimIds(CustomApplication.getAppContext());
             if (mChoice)
                 CustomDatabaseHelper.writeList(mKey, mAdapter.getCheckedItems(), mDbHelper, imsi, "white");
             else
@@ -176,36 +178,37 @@ public class MyListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected final void onPostExecute(Boolean result) {
             if (result)
-                Toast.makeText(mContext, R.string.saved, Toast.LENGTH_LONG).show();
+                Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
     }
 
-    private class LoadTask extends AsyncTask<Void, Void, List<ListItem>> {
+    private static class LoadTask extends AsyncTask<Void, Void, List<ListItem>> {
 
-        final RecyclerView rv;
+        final WeakReference<RecyclerView> rv;
 
         LoadTask(RecyclerView rv) {
-            this.rv = rv;
+            this.rv = new WeakReference<>(rv);
         }
 
         @Override
-        protected void onPreExecute() {
+        protected final void onPreExecute() {
             super.onPreExecute();
-            pb.setVisibility(View.VISIBLE);
+            pb.get().setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected List<ListItem> doInBackground(Void... params) {
+        protected final List<ListItem> doInBackground(Void... params) {
             ArrayList<String> imsi = null;
+            Context ctx = CustomApplication.getAppContext();
             if (mPrefs.getBoolean(Constants.PREF_OTHER[45], false))
-                imsi = MobileUtils.getSimIds(mContext);
+                imsi = MobileUtils.getSimIds(ctx);
             ArrayList<String> myList;
             List<ListItem> listItems;
             if (mChoice) {
                 myList = CustomDatabaseHelper.readList(mKey, mDbHelper, imsi, "white");
-                listItems = loadContactsFromDB(mContext, myList);
+                listItems = loadContactsFromDB(ctx, myList);
                 List<String> numbers = new ArrayList<>();
                 for (ListItem item : listItems)
                     numbers.add(item.getNumber());
@@ -215,7 +218,7 @@ public class MyListActivity extends AppCompatActivity {
                     }
                 }
                 for (Iterator<String> i = myList.iterator(); i.hasNext(); ) {
-                    listItems.add(new ListItem(Uri.parse("contact_photo://" + getString(R.string.unknown)), getString(R.string.unknown), i.next(), true));
+                    listItems.add(new ListItem(Uri.parse("contact_photo://" + ctx.getString(R.string.unknown)), ctx.getString(R.string.unknown), i.next(), true));
                     i.remove();
                 }
             } else {
@@ -226,8 +229,8 @@ public class MyListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<ListItem> result) {
-            pb.setVisibility(View.GONE);
+        protected final void onPostExecute(List<ListItem> result) {
+            pb.get().setVisibility(View.GONE);
             if (result != null) {
                 mAdapter.swapItems(result);
             }

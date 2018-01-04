@@ -86,7 +86,7 @@ public class CustomApplication extends Application {
     }*/
 
     @Override
-    public void onCreate() {
+    public final void onCreate() {
         super.onCreate();
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
@@ -223,8 +223,7 @@ public class CustomApplication extends Application {
         if (context.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
         //Check if can toggle mobile data
-        mCanToggleOn = isOldMtkDevice() ||
-                (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && CustomApplication.isPackageExisted(XPOSED));
+        mCanToggleOn = isOldMtkDevice() && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
         //Store subids
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
