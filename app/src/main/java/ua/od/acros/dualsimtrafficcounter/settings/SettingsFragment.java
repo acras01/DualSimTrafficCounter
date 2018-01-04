@@ -24,7 +24,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private CustomSwitch mSwitch;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -32,7 +32,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle(R.string.action_settings);
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
         RelativeLayout calls = view.findViewById(R.id.calls_layout);
@@ -53,20 +53,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         mSwitch.resume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.action_settings);
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         mSwitch.pause();
     }
 
     @Override
-    public void onClick(View view) {
+    public final void onClick(View view) {
         switch (view.getId()) {
             case R.id.notif_touch_layout:
                 mSwitch.setChecked(true);

@@ -15,7 +15,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 public class BootBroadcastReceiver extends BroadcastReceiver {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         //start CountService

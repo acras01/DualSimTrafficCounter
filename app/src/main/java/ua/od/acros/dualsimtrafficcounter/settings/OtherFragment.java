@@ -49,7 +49,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     private static WeakReference<CustomSwitch> mSwitch;
 
     @Override
-    public void onCreatePreferences(Bundle bundle, String s) {
+    public final void onCreatePreferences(Bundle bundle, String s) {
 
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -114,19 +114,19 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         mIsAttached = true;
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mIsAttached = false;
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.other_title);
         if (mSwitch != null && mSwitch.get() != null)
@@ -136,7 +136,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         if (mSwitch != null && mSwitch.get() != null)
             mSwitch.get().pause();
@@ -145,7 +145,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
 
@@ -245,7 +245,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public final void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(mContext)) {
             TwoLineCheckPreference callLogger = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[25]);
             TwoLineCheckPreference hudService = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[32]);
@@ -257,7 +257,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object o) {
+    public final boolean onPreferenceChange(Preference preference, Object o) {
         String input = o.toString();
         switch (preference.getKey()) {
             case "watchdog_timer":
@@ -278,7 +278,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public boolean onPreferenceClick(Preference preference) {
+    public final boolean onPreferenceClick(Preference preference) {
         if (preference.getKey().equals("hud_reset")) {
             mPrefs.edit()
                     .putInt(Constants.PREF_OTHER[36], -1)

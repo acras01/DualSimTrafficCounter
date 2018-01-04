@@ -80,7 +80,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     @Override
-    public void onCreate() {
+    public final void onCreate() {
         super.onCreate();
         mService = this;
         mContext = CustomApplication.getAppContext();
@@ -99,12 +99,12 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     @Subscribe
-    public void onMessageEvent(NewOutgoingCallEvent event) {
+    public final void onMessageEvent(NewOutgoingCallEvent event) {
         startTask(event.number);
     }
 
     @Subscribe(sticky = true)
-    public void onMessageEvent(SetCallsEvent event) {
+    public final void onMessageEvent(SetCallsEvent event) {
         if (mCallsData == null)
             readCallsDataFromDatabase();
         DateTime now = new DateTime();
@@ -135,7 +135,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     @Subscribe
-    public void onMessageEvent(ListEvent event) {
+    public final void onMessageEvent(ListEvent event) {
         mIsOutgoing = event.bundle.getBoolean("black");
         new SaveListTask().execute(event.bundle, mDbHelper, mIMSI);
         if(!mIsOutgoing)
@@ -143,7 +143,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
     }
 
     @Subscribe
-    public void onMessageEvent(NoListEvent event) {
+    public final void onMessageEvent(NoListEvent event) {
         mService.stopSelf();
     }
 

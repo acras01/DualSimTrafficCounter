@@ -18,7 +18,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
 
     private List<ListItem> mList;
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
         final AppCompatCheckBox checkBox;
         final TextView textView;
 
@@ -31,7 +31,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         }
 
         @Override
-        public void onClick(View view) {
+        public final void onClick(View view) {
             boolean isChecked = ((ListItem) view.getTag()).isChecked();
             ((ListItem) view.getTag()).setChecked(!isChecked);
             checkBox.setChecked(!isChecked);
@@ -42,7 +42,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         }
 
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        public final void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             ((ListItem) compoundButton.getTag()).setChecked(isChecked);
             if (isChecked)
                 textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
@@ -56,13 +56,13 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     }
 
     @Override
-    public BlackListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public final BlackListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.black_list_row, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(BlackListAdapter.ViewHolder holder, int position) {
+    public final void onBindViewHolder(BlackListAdapter.ViewHolder holder, int position) {
         holder.textView.setText(mList.get(position).getNumber());
         holder.textView.setTag(mList.get(position));
         boolean checked = mList.get(position).isChecked();
@@ -75,14 +75,14 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         if (mList != null)
             return mList.size();
         else
             return 0;
     }
 
-    public ArrayList<String> getCheckedItems(){
+    public final ArrayList<String> getCheckedItems(){
         ArrayList<String> list = new ArrayList<>();
         for (ListItem item : mList)
         if (item.isChecked())
@@ -90,16 +90,16 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
         return list;
     }
 
-    public Object getItem(int position) {
+    public final Object getItem(int position) {
         return mList.get(position);
     }
 
     @Override
-    public long getItemId(int position) {
+    public final long getItemId(int position) {
         return position;
     }
 
-    public void swapItems(List<ListItem> list) {
+    public final void swapItems(List<ListItem> list) {
         if (list != null)
             this.mList = list;
         notifyDataSetChanged();

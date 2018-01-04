@@ -56,7 +56,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
@@ -67,7 +67,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
@@ -141,7 +141,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public final void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (isVisible()) {
             outState.putInt("sim", mSimChecked);
@@ -155,13 +155,13 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onResume(){
+    public final void onResume(){
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_set_usage);
     }
 
     @Override
-    public void onClick(View view) {
+    public final void onClick(View view) {
         if ((mSimChecked != Constants.DISABLED && !rxInput.getText().toString().equals("") &&
                 !txInput.getText().toString().equals("")) ||
                 (mSimChecked != Constants.DISABLED && total.isChecked() && !txInput.getText().toString().equals(""))) {
@@ -183,7 +183,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
+    public final void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.sim1RB:
                 mSimChecked = Constants.SIM1;
@@ -212,7 +212,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public final void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case (R.id.spinnertx):
                 mTXSpinnerSel = parent.getSelectedItemPosition();
@@ -224,12 +224,12 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public final void onNothingSelected(AdapterView<?> parent) {
 
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    public final void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         rxSpinner.setEnabled(!isChecked);
         rxInput.setEnabled(!isChecked);
         if (isChecked)
@@ -242,14 +242,14 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
         void onSetUsageFragmentInteraction(Uri uri);
     }
 
-    public void onButtonPressed(Uri uri) {
+    public final void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onSetUsageFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         Activity activity = null;
         if (context instanceof Activity)
@@ -263,7 +263,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mListener = null;
     }

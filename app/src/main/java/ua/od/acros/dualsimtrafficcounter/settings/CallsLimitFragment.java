@@ -52,7 +52,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     private static int mSimQuantity;
 
     @Override
-    public void onCreatePreferences(Bundle bundle, String s) {
+    public final void onCreatePreferences(Bundle bundle, String s) {
 
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -116,7 +116,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     }
 
     @Override
-    public void onDisplayPreferenceDialog(Preference preference) {
+    public final void onDisplayPreferenceDialog(Preference preference) {
         DialogFragment dialogFragment = null;
         if (preference instanceof TimePreference) {
             dialogFragment = TimePreferenceDialog.newInstance(preference);
@@ -220,32 +220,32 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.calls_limit_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public final void onAttach(Activity activity) {
         super.onAttach(activity);
         mIsAttached = true;
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mIsAttached = false;
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
         if (key.equals(Constants.PREF_OTHER[45])) {
@@ -285,7 +285,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object o) {
+    public final boolean onPreferenceChange(Preference preference, Object o) {
         switch (preference.getKey()) {
             case "calls_day1":
             case "calls_day2":
@@ -302,7 +302,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     private static class SaveTask extends AsyncTask<Integer, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Integer... params) {
+        protected final Boolean doInBackground(Integer... params) {
             Context ctx = CustomApplication.getAppContext();
             Map<String, ?> prefs = mPrefs.getAll();
             String[] keys = new String[Constants.PREF_SIM_CALLS.length];
@@ -339,7 +339,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected final void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
@@ -348,7 +348,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
     private static class DeleteTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected final Boolean doInBackground(Void... params) {
             CustomDatabaseHelper dbHelper = CustomDatabaseHelper.getInstance(CustomApplication.getAppContext());
             CustomDatabaseHelper.deleteListTables(dbHelper, mIMSI);
             CustomDatabaseHelper.deleteDataTable(dbHelper, mIMSI, Constants.CALLS);
@@ -357,7 +357,7 @@ public class CallsLimitFragment extends PreferenceFragmentCompatFix implements S
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected final void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(CustomApplication.getAppContext(), R.string.deleted, Toast.LENGTH_LONG).show();
         }

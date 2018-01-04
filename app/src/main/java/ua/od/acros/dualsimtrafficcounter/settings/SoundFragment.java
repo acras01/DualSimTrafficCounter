@@ -29,7 +29,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     private CustomSwitch mSwitch = null;
 
     @Override
-    public void onCreatePreferences(Bundle bundle, String s) {
+    public final void onCreatePreferences(Bundle bundle, String s) {
         mContext = getActivity().getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         addPreferencesFromResource(R.xml.notification_settings);
@@ -65,7 +65,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         if (mSwitch != null)
@@ -74,7 +74,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
         if (mSwitch != null)
@@ -82,7 +82,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public boolean onPreferenceTreeClick(Preference preference) {
+    public final boolean onPreferenceTreeClick(Preference preference) {
         if (preference.getKey().equals("ringtone")) {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
@@ -110,7 +110,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public final void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_ALERT_RINGTONE && data != null) {
             Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (ringtone != null) {
@@ -136,7 +136,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[3]))
             updateSettings();
     }

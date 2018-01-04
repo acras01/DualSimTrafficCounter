@@ -16,7 +16,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 public class OutgoingCallReceiver extends BroadcastReceiver {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (intent.getAction() != null && (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL) && getResultData() != null && !prefs.getBoolean(Constants.PREF_OTHER[24], true))) {
             if (!CustomApplication.isMyServiceRunning(CallLoggerService.class)) {

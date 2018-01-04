@@ -78,7 +78,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (mContext == null)
@@ -182,7 +182,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Subscribe
-    public void onMessageEvent(OnOffTrafficEvent event) {
+    public final void onMessageEvent(OnOffTrafficEvent event) {
         int sim = event.sim;
         boolean close = event.close;
         try {
@@ -201,7 +201,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Subscribe
-    public void onMessageEvent(TipTrafficEvent event) {
+    public final void onMessageEvent(TipTrafficEvent event) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -218,7 +218,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
@@ -283,7 +283,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
@@ -305,13 +305,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         CustomApplication.pauseActivity();
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.traffic_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public void onPrepareOptionsMenu (Menu menu) {
+    public final void onPrepareOptionsMenu (Menu menu) {
         /*MenuInflater inflater = new MenuInflater(mContext.getApplicationContext());
         menu.clear();
         onCreateOptionsMenu(menu, inflater);*/
@@ -355,7 +355,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public final boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -401,7 +401,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
         if (mContext == null)
@@ -495,14 +495,14 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
+    public final void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onTrafficFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         Activity activity = null;
         if (context instanceof Activity)
@@ -516,7 +516,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(Constants.PREF_OTHER[48])) {
             mIsRunning = sharedPreferences.getBoolean(key, true);
             if (mService != null) {
@@ -531,7 +531,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mListener = null;
         try {
@@ -580,7 +580,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onClick(View v) {
+    public final void onClick(View v) {
         boolean[] isNight =  CustomApplication.getIsNightState();
         switch (v.getId()) {
             case R.id.settings:

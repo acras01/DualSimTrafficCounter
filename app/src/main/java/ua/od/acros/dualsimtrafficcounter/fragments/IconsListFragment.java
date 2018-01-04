@@ -33,14 +33,14 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get back arguments
         mLogo = getArguments().getString(ID, "");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mListItems = getResources().getStringArray(R.array.icons);
         View view = inflater.inflate(R.layout.icons_list_layout, container, false);
         listView = view.findViewById(R.id.list);
@@ -52,7 +52,7 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mListItems);
         listView.setAdapter(adapter);
@@ -60,7 +60,7 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public final void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         dismiss();
         this.mListener.onComplete(position, mLogo);
     }
@@ -69,7 +69,7 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
         void onComplete(int position, String logo);
     }
 
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         Activity activity = null;
         if (context instanceof Activity)

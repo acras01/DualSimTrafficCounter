@@ -32,13 +32,13 @@ public class WidgetsFragment extends Fragment implements View.OnClickListener {
     private ArrayList<TextView> mTraffic, mCalls;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = CustomApplication.getAppContext();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle(R.string.widgets_title);
         View view = inflater.inflate(R.layout.widgets_fragment, container, false);
         LinearLayoutCompat widgets = view.findViewById(R.id.widgets_layout);
@@ -101,13 +101,13 @@ public class WidgetsFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.widgets_title);
     }
 
     @Override
-    public void onClick(View view) {
+    public final void onClick(View view) {
         if (view instanceof TextView) {
             Class activity = null;
             if (mTraffic != null && mTraffic.contains(view))

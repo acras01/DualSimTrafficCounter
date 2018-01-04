@@ -9,19 +9,17 @@ import android.widget.CompoundButton;
 
 public class CustomSwitch implements CompoundButton.OnCheckedChangeListener {
 
-    private final Context mContext;
     private final SharedPreferences mPrefs;
     private SwitchCompat mSwitch;
     private final String mKey;
 
     public CustomSwitch(Context context, SwitchCompat swtch, String key) {
-        mContext = context;
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mKey = key;
         setSwitch(swtch);
     }
 
-    public void setSwitch(SwitchCompat swtch) {
+    public final void setSwitch(SwitchCompat swtch) {
         if (mSwitch == swtch)
             return;
         if (mSwitch != null)
@@ -31,26 +29,26 @@ public class CustomSwitch implements CompoundButton.OnCheckedChangeListener {
         mSwitch.setChecked(isSwitchOn());
     }
 
-    public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+    public final void onCheckedChanged(CompoundButton view, boolean isChecked) {
         Editor editor = mPrefs.edit();
         editor.putBoolean(mKey, isChecked)
                 .apply();
     }
 
-    public boolean isSwitchOn() {
+    public final boolean isSwitchOn() {
         return mPrefs.getBoolean(mKey, true);
     }
 
-    public void resume() {
+    public final void resume() {
         mSwitch.setOnCheckedChangeListener(this);
         mSwitch.setChecked(isSwitchOn());
     }
 
-    public void pause() {
+    public final void pause() {
         mSwitch.setOnCheckedChangeListener(null);
     }
 
-    public void setChecked(boolean checked) {
+    public final void setChecked(boolean checked) {
         mSwitch.setChecked(checked);
     }
 }

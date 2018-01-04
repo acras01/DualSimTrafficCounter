@@ -18,7 +18,7 @@ public class NotificationTapReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         Intent activityIntent = null;
         String action = intent.getAction();
         if (action != null) {

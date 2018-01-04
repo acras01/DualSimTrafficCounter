@@ -34,18 +34,18 @@ public class TrafficInfoWidget extends AppWidgetProvider {
     private ArrayList<String> mIMSI;
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
+    public final void onUpdate(Context context, AppWidgetManager widgetManager, int[] widgetId) {
         //super.onUpdate(context, widgetManager, widgetId);
         updateWidget(context, widgetManager, widgetId, readData(context));
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         //super.onReceive(context, intent);
         String action = intent.getAction();
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
         if (action != null) {
-            if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
+            if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED) && intent.getExtras() != null) {
                 final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
                 if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
                     CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.TRAFFIC_TAG);
@@ -774,14 +774,14 @@ public class TrafficInfoWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
+    public final void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
         CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.TRAFFIC_TAG);
         //super.onDeleted(context, appWidgetIds);
     }
 
     @Override
-    public void onDisabled(Context context) {
+    public final void onDisabled(Context context) {
         Picasso.with(context).shutdown();
         //super.onDisabled(context);
     }

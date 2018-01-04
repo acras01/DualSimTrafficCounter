@@ -17,7 +17,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class OnOffReceiver extends BroadcastReceiver {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
 
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wl = null;
@@ -43,7 +43,7 @@ public class OnOffReceiver extends BroadcastReceiver {
             e.printStackTrace();
             ACRA.getErrorReporter().handleException(e);
         }
-        if (wl.isHeld())
+        if (wl != null && wl.isHeld())
             wl.release();
     }
 }

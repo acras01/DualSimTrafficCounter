@@ -40,7 +40,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
@@ -50,7 +50,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.test_fragment, container, false);
@@ -77,13 +77,13 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public void onResume(){
+    public final void onResume(){
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_show_test);
     }
 
     @Override
-    public void onClick(View v) {
+    public final void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonOK:
                 mEdit.putBoolean(Constants.PREF_OTHER[20], mAlternative);
@@ -118,7 +118,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
+    public final void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.sim1RB:
                 mSimChecked = "sim1";
@@ -136,14 +136,14 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
         void onTestFragmentInteraction(Uri uri);
     }
 
-    public void onButtonPressed(Uri uri) {
+    public final void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onTestFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         Activity activity = null;
         if (context instanceof Activity)
@@ -157,7 +157,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mListener = null;
     }

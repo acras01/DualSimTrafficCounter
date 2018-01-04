@@ -20,7 +20,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit()
                 .putInt(Constants.PREF_OTHER[55], prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)

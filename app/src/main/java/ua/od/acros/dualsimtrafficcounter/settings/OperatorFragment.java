@@ -33,7 +33,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     private ArrayList<String> mIMSI = null;
 
     @Override
-    public void onCreatePreferences(Bundle bundle, String s) {
+    public final void onCreatePreferences(Bundle bundle, String s) {
 
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -154,32 +154,32 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     }
 
     @Override
-    public void onAttach(Context activity) {
+    public final void onAttach(Context activity) {
         super.onAttach(activity);
         mIsAttached = true;
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mIsAttached = false;
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.name_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mIsAttached)
             updateSummary();
         if (sharedPreferences.getBoolean(Constants.PREF_OTHER[44], false)) {

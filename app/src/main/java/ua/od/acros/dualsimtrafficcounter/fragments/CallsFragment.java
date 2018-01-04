@@ -63,7 +63,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (mContext == null)
@@ -127,7 +127,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.calls_fragment, container, false);
         if (mContext == null)
@@ -182,14 +182,14 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
+    public final void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onCallsFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public final void onAttach(Context context) {
         super.onAttach(context);
         Activity activity = null;
         if (context instanceof Activity)
@@ -203,7 +203,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mListener = null;
         try {
@@ -214,7 +214,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
@@ -262,7 +262,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         bLim1.setOnClickListener(null);
         bClear1.setOnClickListener(this);
@@ -279,7 +279,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onClick(View v) {
+    public final void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonClear1:
                 if (CustomApplication.isMyServiceRunning(CallLoggerService.class))
@@ -408,7 +408,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
         if (key.equals(Constants.PREF_SIM1[5]) || key.equals(Constants.PREF_SIM1[6]))
             SIM1.setText(MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1));

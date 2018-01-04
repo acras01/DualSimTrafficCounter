@@ -50,7 +50,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             this.mList = list;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
         final AppCompatCheckBox checkBox;
         final TextView txtViewName;
         final TextView txtViewNumber;
@@ -70,20 +70,20 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         }
 
         @Override
-        public void onClick(View view) {
+        public final void onClick(View view) {
             boolean isChecked = ((ListItem) view.getTag()).isChecked();
             ((ListItem) view.getTag()).setChecked(!isChecked);
             checkBox.setChecked(!isChecked);
         }
 
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        public final void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             ((ListItem) compoundButton.getTag()).setChecked(isChecked);
         }
     }
 
     @Override
-    public MyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public final MyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.my_list_row, parent, false);
         mDim = (int) context.getResources().getDimension(R.dimen.logo_size);
@@ -94,7 +94,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public final void onBindViewHolder(ViewHolder holder, int position) {
         holder.txtViewName.setText(mList.get(position).getName());
         holder.txtViewName.setTag(mList.get(position));
         holder.txtViewNumber.setText(mList.get(position).getNumber());
@@ -120,7 +120,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         //holder.imgIcon.setImageDrawable(mList.get(position).getIcon());
     }
 
-    public ArrayList<String> getCheckedItems(){
+    public final ArrayList<String> getCheckedItems(){
         ArrayList<String> list = new ArrayList<>();
         for (ListItem item : mList)
             if (item.isChecked())
@@ -129,29 +129,29 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         if (mList != null)
             return mList.size();
         else
             return 0;
     }
 
-    public ListItem getItem(int position) {
+    public final ListItem getItem(int position) {
         return mList.get(position);
     }
 
     @Override
-    public long getItemId(int position) {
+    public final long getItemId(int position) {
         return position;
     }
 
-    public void swapItems(List<ListItem> list) {
+    public final void swapItems(List<ListItem> list) {
         if (list != null)
             this.mList = list;
         notifyDataSetChanged();
     }
 
-    private class CustomRequestHandler extends RequestHandler {
+    private static class CustomRequestHandler extends RequestHandler {
 
         private final PackageManager packageManager;
         private final Context context;
@@ -162,12 +162,12 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         }
 
         @Override
-        public boolean canHandleRequest(Request data) {
+        public final boolean canHandleRequest(Request data) {
             return data.uri.getScheme().contains(SCHEME_APP_ICON) || data.uri.getScheme().contains(SCHEME_CONTACT_PHOTO);
         }
 
         @Override
-        public Result load(Request request, int networkPolicy) throws IOException {
+        public final Result load(Request request, int networkPolicy) throws IOException {
             Bitmap bmp = null;
             if (request.uri.toString().contains(SCHEME_APP_ICON)) {
                 try {
@@ -207,7 +207,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         }
     }
 
-    private class CircularTransformation implements Transformation {
+    private static class CircularTransformation implements Transformation {
 
         private int radius = 10;
 
@@ -216,7 +216,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         }
 
         @Override
-        public Bitmap transform(final Bitmap source) {
+        public final Bitmap transform(final Bitmap source) {
             final Paint paint = new Paint();
             paint.setAntiAlias(true);
             paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
@@ -232,7 +232,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         }
 
         @Override
-        public String key() {
+        public final String key() {
             return "circular" + String.valueOf(radius);
         }
     }

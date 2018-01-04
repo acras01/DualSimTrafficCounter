@@ -33,23 +33,21 @@ public class CallsInfoWidget extends AppWidgetProvider {
     private ArrayList<String> mIMSI;
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public final void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         //super.onUpdate(context, appWidgetManager, appWidgetIds);
         updateWidget(context, appWidgetManager, appWidgetIds, readData(context));
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         //super.onReceive(context, intent);
         String action = intent.getAction();
         int[] widgetIds = intent.getIntArrayExtra(Constants.WIDGET_IDS);
         if (action != null) {
-            if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED)) {
-                if (intent.getExtras() != null) {
-                    final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-                    if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
-                        CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.CALLS_TAG);
-                }
+            if (action.equals(AppWidgetManager.ACTION_APPWIDGET_DELETED) && intent.getExtras() != null) {
+                final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
+                    CustomApplication.deleteWidgetPreferenceFile(new int[]{appWidgetId}, Constants.CALLS_TAG);
             } else if (action.equals(Constants.CALLS_BROADCAST_ACTION) && widgetIds != null)
                 updateWidget(context, AppWidgetManager.getInstance(context), widgetIds, readData(context));
         }
@@ -364,14 +362,14 @@ public class CallsInfoWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
+    public final void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it
         CustomApplication.deleteWidgetPreferenceFile(appWidgetIds, Constants.CALLS_TAG);
         //super.onDeleted(context, appWidgetIds);
     }
 
     @Override
-    public void onDisabled(Context context) {
+    public final void onDisabled(Context context) {
         Picasso.with(context).shutdown();
         //super.onDisabled(context);
     }

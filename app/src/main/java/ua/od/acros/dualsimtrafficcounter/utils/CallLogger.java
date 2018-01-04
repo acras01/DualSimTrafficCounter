@@ -321,7 +321,7 @@ public class CallLogger implements IXposedHookLoadPackage {
         }
     }
 
-    private class CallState {
+    private static class CallState {
         private CallState() {}
 
         /**

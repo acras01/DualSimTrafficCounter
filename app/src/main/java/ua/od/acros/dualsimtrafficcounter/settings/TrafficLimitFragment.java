@@ -63,7 +63,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private static ArrayList<String> mIMSI = null;
 
     @Override
-    public void onCreatePreferences(Bundle bundle, String s) {
+    public final void onCreatePreferences(Bundle bundle, String s) {
 
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -217,7 +217,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     }
 
     @Override
-    public void onDisplayPreferenceDialog(Preference preference) {
+    public final void onDisplayPreferenceDialog(Preference preference) {
         DialogFragment dialogFragment = null;
         if (preference instanceof TimePreference) {
             dialogFragment = TimePreferenceDialog.newInstance(preference);
@@ -233,8 +233,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
     }
 
-    public void updateSummary() {
-
+    private void updateSummary() {
         if (mPrefs.getBoolean(Constants.PREF_OTHER[51], false)) {
             changeSIM.setChecked(false);
             changeSIM.setEnabled(false);
@@ -583,32 +582,32 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     }
 
     @Override
-    public void onResume() {
+    public final void onResume() {
         super.onResume();
         ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.limit_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public void onPause() {
+    public final void onPause() {
         super.onPause();
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
-    public void onAttach(Context activity) {
+    public final void onAttach(Context activity) {
         super.onAttach(activity);
         mIsAttached = true;
     }
 
     @Override
-    public void onDetach() {
+    public final void onDetach() {
         super.onDetach();
         mIsAttached = false;
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public final void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
         if (key.equals(Constants.PREF_OTHER[44])) {
             if (sharedPreferences.getBoolean(key, false)) {
@@ -817,7 +816,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object o) {
+    public final boolean onPreferenceChange(Preference preference, Object o) {
         switch (preference.getKey()) {
             case "day1":
             case "day2":
@@ -855,7 +854,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private static class SaveTask extends AsyncTask<Integer, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Integer... params) {
+        protected final Boolean doInBackground(Integer... params) {
             Map<String, ?> prefs = mPrefs.getAll();
             Context ctx = CustomApplication.getAppContext();
             String[] keys = new String[Constants.PREF_SIM_DATA.length];
@@ -895,7 +894,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected final void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(CustomApplication.getAppContext(), R.string.saved, Toast.LENGTH_LONG).show();
         }
@@ -904,7 +903,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     private static class DeleteTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected final Boolean doInBackground(Void... params) {
             Context ctx = CustomApplication.getAppContext();
             if (mIMSI == null)
                 mIMSI = MobileUtils.getSimIds(ctx);
@@ -914,7 +913,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected final void onPostExecute(Boolean result) {
             if (result)
                 Toast.makeText(CustomApplication.getAppContext(), R.string.deleted, Toast.LENGTH_LONG).show();
         }
