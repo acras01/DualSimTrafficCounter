@@ -30,6 +30,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
 import ua.od.acros.dualsimtrafficcounter.utils.CustomApplication;
 import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
+import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import wei.mark.standout.StandOutWindow;
 import wei.mark.standout.constants.StandOutFlags;
 import wei.mark.standout.ui.Window;
@@ -283,7 +284,13 @@ public class FloatingWindowService extends StandOutWindow {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        showFloatingWindow(mContext, mPrefs);
+        boolean autoLoad = mPrefs.getBoolean(Constants.PREF_OTHER[47], false);
+        boolean floatingWindow = mPrefs.getBoolean(Constants.PREF_OTHER[32], false);
+        boolean alwaysShow = !mPrefs.getBoolean(Constants.PREF_OTHER[41], false);
+        boolean mobileData = MobileUtils.isMobileDataActive(mContext);
+        boolean bool = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));
+        if (floatingWindow && bool)
+            FloatingWindowService.showFloatingWindow(mContext, mPrefs);
     }
 
     public static void showFloatingWindow(Context context, SharedPreferences preferences) {
