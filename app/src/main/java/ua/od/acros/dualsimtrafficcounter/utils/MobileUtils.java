@@ -1401,12 +1401,13 @@ public class MobileUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static class SetMobileNetworkForLollipop extends AsyncTask<Object, Void, Wrapper> {
+    private static class SetMobileNetworkFromLollipop extends AsyncTask<Object, Void, Wrapper> {
 
         @Override
         protected final Wrapper doInBackground(Object... params) {
             Context context = (Context) params[0];
-            boolean swtch = (boolean) params[1];
+            int sim = (int) params[1];
+            boolean swtch = (boolean) params[2];
             boolean oldState = isMobileDataActive(context);
             String command = null;
             final String[] out = {new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()).toString() + "\n"};
@@ -1414,12 +1415,32 @@ public class MobileUtils {
             try {
                 if (oldState != swtch) {
                     int state = swtch ? 1 : 0;
+                    int id = -1;
                     // Get the value of the "TRANSACTION_setDataEnabled" field.
                     String transactionCode = getTransactionCode(context);
                     out[0] += transactionCode + "\n";
-                    // Android 5.0 (API 21) only.
-                    if (transactionCode != null && transactionCode.length() > 0)
+                    // Android 5.1+ (API 22) and later.
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                        SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                        List<SubscriptionInfo> sl = null;
+                        if (sm != null) {
+                            sl = sm.getActiveSubscriptionInfoList();
+                        }
+                        if (sl != null) {
+                            out[0] += sl.toString() + "\n";
+                            for (SubscriptionInfo si : sl) {
+                                if (transactionCode != null && transactionCode.length() > 0 && si.getSimSlotIndex() == sim) {
+                                    id = si.getSubscriptionId();
+                                    command = "service call phone " + transactionCode + " i32 " + id + " i32 " + state;
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                        // Android 5.0 (API 21) only.
+                        if (transactionCode != null && transactionCode.length() > 0)
                             command = "service call phone " + transactionCode + " i32 " + state;
+                    }
                     if (CustomApplication.hasRoot() && command != null) {
                         out[0] += command + "\n";
                         Command cmd = new Command(0, command) {
@@ -1439,7 +1460,20 @@ public class MobileUtils {
                                 out[0] += id + " " + exitcode + "\n";
                             }
                         };
+                        if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                            toggleFlightMode(true);
+                            RootShell.getShell(true).add(new Command(0, "settings put global multi_sim_data_call " + id));
+                        }
                         RootShell.getShell(true).add(cmd);
+                        /*for (int i = 1; i < 31; i++) {
+                            sleep(1000);
+                            if (oldState != isMobileDataActive(context)) {
+                                out[0] += i + " seconds\n";
+                                break;
+                            }
+                        }*/
+                        if (swtch && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+                            toggleFlightMode(false);
                     } else
                         return new Wrapper(context, 1);
                 }
@@ -1676,18 +1710,18 @@ public class MobileUtils {
         boolean mAlternative = prefs.getBoolean(Constants.PREF_OTHER[20], false);
         if (!swtch) {
             mLastActiveSIM = getActiveSimForData(context);
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
-                new SetMobileNetworkForLollipop().execute(context, false);
-            } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP || (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice()))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                new SetMobileNetworkFromLollipop().execute(context, mLastActiveSIM, false);
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && !CustomApplication.isOldMtkDevice())
                 toggleFlightMode(true);
-            else if (CustomApplication.canToggleOn()){
+            else {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 localIntent.putExtra("simid", Constants.DISABLED);
                 context.sendBroadcast(localIntent);
             }
         }
         if (swtch && sim == Constants.DISABLED) {
-            if (CustomApplication.canToggleOn()) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()) {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
                     int simAlt = Constants.DISABLED;
@@ -1709,7 +1743,7 @@ public class MobileUtils {
             }
             CustomApplication.sleep(1000);
         } else if (sim != Constants.DISABLED) {
-            if (CustomApplication.canToggleOn()) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()) {
                 Intent localIntent = new Intent(Constants.DATA_DEFAULT_SIM);
                 if (mAlternative) {
                     int sim_ = Constants.DISABLED;

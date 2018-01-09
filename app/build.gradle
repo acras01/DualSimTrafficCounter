@@ -50,5 +50,6 @@ dependencies {
     implementation project(':ambilwarna')
     implementation project(':standOut')
     implementation project(':RootShell')
-    compileOnly project(':XposedBridge')
+    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly 'de.robv.android.xposed:api:82:sources'
 }

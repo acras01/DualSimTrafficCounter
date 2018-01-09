@@ -21,8 +21,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.SecureRandom;
 import java.util.Locale;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -57,12 +57,12 @@ public class FloatingWindowService extends StandOutWindow {
     private float mX;
 
     @Override
-	public String getAppName() {
+	public final String getAppName() {
 		return getString(R.string.app_name);
 	}
 
 	@Override
-	public Bitmap getAppIcon() {
+	public final Bitmap getAppIcon() {
 		return BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 	}
 
@@ -73,17 +73,17 @@ public class FloatingWindowService extends StandOutWindow {
      * @return The icon.
      */
     @Override
-    public int getNotificationIcon() {
+    public final int getNotificationIcon() {
         return R.drawable.ic_launcher_small;
     }
 
     @Override
-	public String getTitle(int id) {
+	public final String getTitle(int id) {
 		return getAppName() + " " + id;
 	}
 
     @Override
-    public void onCreate() {
+    public final void onCreate() {
         super.onCreate();
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
@@ -110,7 +110,7 @@ public class FloatingWindowService extends StandOutWindow {
     }
 
 	@Override
-	public void createAndAttachView(int id, FrameLayout frame) {
+	public final void createAndAttachView(int id, FrameLayout frame) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         if (mPrefs == null)
@@ -127,7 +127,7 @@ public class FloatingWindowService extends StandOutWindow {
     }
 
     @Override
-	public Animation getShowAnimation(int id) {
+	public final Animation getShowAnimation(int id) {
 		if (isExistingId(id)) {
 			// restore
 			return AnimationUtils.loadAnimation(this,
@@ -139,13 +139,13 @@ public class FloatingWindowService extends StandOutWindow {
 	}
 
 	@Override
-	public Animation getHideAnimation(int id) {
+	public final Animation getHideAnimation(int id) {
 		return AnimationUtils.loadAnimation(this,
 				android.R.anim.slide_out_right);
 	}
 
     @Override
-    public void onMove(int id, Window window, View view, MotionEvent event) {
+    public final void onMove(int id, Window window, View view, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
             //case MotionEvent.ACTION_MOVE:
@@ -166,8 +166,8 @@ public class FloatingWindowService extends StandOutWindow {
     }
 
 	@Override
-	public void onReceiveData(int id, int requestCode, Bundle data,
-			Class<? extends StandOutWindow> fromCls, int fromId) {
+	public final void onReceiveData(int id, int requestCode, Bundle data,
+                                    Class<? extends StandOutWindow> fromCls, int fromId) {
 		// receive data from WidgetsWindow's button press
 		// to show off the data sending framework
 		switch (requestCode) {
@@ -243,7 +243,7 @@ public class FloatingWindowService extends StandOutWindow {
 	}
 
     @Override
-    public StandOutLayoutParams getParams(int id, Window window) {
+    public final StandOutLayoutParams getParams(int id, Window window) {
         int x = mPrefs.getInt(Constants.PREF_OTHER[36], -1);
         if (x == -2) {
             mX = mPrefs.getFloat(Constants.PREF_OTHER[54], -1.0f);
@@ -260,7 +260,7 @@ public class FloatingWindowService extends StandOutWindow {
     }
 
     @Override
-    public int getFlags(int id) {
+    public final int getFlags(int id) {
         return StandOutFlags.FLAG_BODY_MOVE_ENABLE
                 | StandOutFlags.FLAG_WINDOW_FOCUSABLE_DISABLE
                 | StandOutFlags.FLAG_WINDOW_HIDE_ENABLE
@@ -269,7 +269,7 @@ public class FloatingWindowService extends StandOutWindow {
     }
 
     @Override
-    public boolean onClose(int id, Window window) {
+    public final boolean onClose(int id, Window window) {
         int newId = mPrefs.getInt(Constants.PREF_OTHER[38], StandOutWindow.DEFAULT_ID);
         if (newId == id) {
             mPrefs.edit()
@@ -282,7 +282,7 @@ public class FloatingWindowService extends StandOutWindow {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public final void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         boolean autoLoad = mPrefs.getBoolean(Constants.PREF_OTHER[47], false);
         boolean floatingWindow = mPrefs.getBoolean(Constants.PREF_OTHER[32], false);
@@ -295,7 +295,7 @@ public class FloatingWindowService extends StandOutWindow {
 
     public static void showFloatingWindow(Context context, SharedPreferences preferences) {
         closeFloatingWindow(context, preferences);
-        int id = Math.abs(new Random().nextInt());
+        int id = Math.abs(new SecureRandom().nextInt());
         preferences.edit()
                 .putInt(Constants.PREF_OTHER[38], id)
                 .apply();
@@ -332,7 +332,7 @@ public class FloatingWindowService extends StandOutWindow {
     private static class CheckServiceRunning extends AsyncTask<Object, Void, Void> {
 
         @Override
-        protected Void doInBackground(Object ... params) {
+        protected final Void doInBackground(Object... params) {
             Context context = (Context) params[0];
             SharedPreferences prefs = (SharedPreferences) params[1];
             boolean floatingWindow = prefs.getBoolean(Constants.PREF_OTHER[32], false);

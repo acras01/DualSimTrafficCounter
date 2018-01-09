@@ -70,9 +70,6 @@ public class CustomApplication extends Application {
     private static Intent mSettingsIntent;
     private static boolean mIsDataUsageAvailable = true;
 
-    private static final String XPOSED = "de.robv.android.xposed.installer";
-
-
         /*static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
@@ -389,7 +386,8 @@ public class CustomApplication extends Application {
 
     public static boolean hasRoot() {
         if (mHasRoot == null)
-            mHasRoot = RootShell.isRootAvailable() && RootShell.isAccessGiven();
+            //mHasRoot = RootShell.isRootAvailable() && RootShell.isAccessGiven();
+            mHasRoot = RootShell.isAccessGiven();
         return mHasRoot;
     }
 

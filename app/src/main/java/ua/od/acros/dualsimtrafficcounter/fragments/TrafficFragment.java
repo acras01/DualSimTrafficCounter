@@ -329,11 +329,8 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
         MenuItem mobileData = menu.getItem(1);
         if (mobileData != null) {
-            if (!CustomApplication.canToggleOn() ||
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !CustomApplication.hasRoot())) {
-                mobileData.setEnabled(false);
-                mobileData.setVisible(false);
-            } else {
+            if (CustomApplication.canToggleOn() ||
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && CustomApplication.hasRoot())) {
                 switch (MobileUtils.hasActiveNetworkInfo(mContext)) {
                     case 0:
                         mobileData.setEnabled(true);
@@ -350,6 +347,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mobileData.setIcon(R.drawable.ic_action_mobile_off);
                         break;
                 }
+            } else {
+                mobileData.setEnabled(false);
+                mobileData.setVisible(false);
             }
         }
     }
