@@ -63,12 +63,13 @@ public class CustomApplication extends Application {
 
     private static WeakReference<Context> mWeakReference;
     private static Boolean mIsOldMtkDevice = null;
-    private static boolean mCanToggleOn;
+    private static boolean mCanToggleOff;
     private static Boolean mHasRoot = null;
     private static Boolean mHasGeminiSupport = null;
     private static boolean mIsActivityVisible;
     private static Intent mSettingsIntent;
     private static boolean mIsDataUsageAvailable = true;
+    private static boolean mCanToggleOn;
 
         /*static {
         SharedPreferences prefs = MyApplication.getAppContext().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -220,7 +221,9 @@ public class CustomApplication extends Application {
         if (context.getPackageManager().queryIntentActivities(mSettingsIntent, PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
             mIsDataUsageAvailable = false;
         //Check if can toggle mobile data
-        mCanToggleOn = isOldMtkDevice() && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
+        mCanToggleOff = (isOldMtkDevice() && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) ||
+                (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && hasRoot());
+        mCanToggleOn = isOldMtkDevice();
         //Store subids
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(context);
@@ -594,6 +597,10 @@ public class CustomApplication extends Application {
                     if (new File(dir, aChildren).delete())
                         Toast.makeText(context, R.string.deleted, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static boolean canToggleOff() {
+        return mCanToggleOff;
     }
 
     public static boolean canToggleOn() {

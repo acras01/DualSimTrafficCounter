@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -54,9 +55,10 @@ public class MobileUtils {
     private static final String GET_CALL = "getCallState";
     private static final String GET_DATA = "getDataState";
     private static final String GET_SUBID = "getSubIdBySlot";
-    private static final String SET_DATA = "setDataEnabled";
+    private static final String SET_DATA = "setDefaultDataSubId";
     private static final String PUT_SETTINGS = "settings put global airplane_mode_on ";
     private static final String FLIGHT_MODE = "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state ";
+    private static final String SUBSCRIPTION_MANAGER = "android.telephony.SubscriptionManager";
 
     private static int mLastActiveSIM;
 
@@ -91,6 +93,20 @@ public class MobileUtils {
     private static final int NT_LTE_CMDA_EVDO_GSM_WCDMA = 10;
     private static final int NT_LTE_ONLY = 11;
     private static final int NT_LTE_WCDMA = 12;
+
+    static void initAndroid(final ClassLoader classLoader) {
+        try {
+            final Class<?> subscriptionManagerClass= XposedHelpers.findClass(SUBSCRIPTION_MANAGER, classLoader);
+
+            XposedBridge.hookAllConstructors(subscriptionManagerClass, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
+                }
+            });
+        } catch (Throwable t) {
+            XposedBridge.log(t);
+        }
+    }
 
     private static Method getMethod (Class c, String name, int params) {
         Method[] cm = c.getDeclaredMethods();
@@ -243,7 +259,9 @@ public class MobileUtils {
 
     public static int getActiveSimForData(Context context) {
         String out = " ";
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int sim = Constants.DISABLED;
+        int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             if (sm != null) {
@@ -275,10 +293,8 @@ public class MobileUtils {
                 }
                 if (sim == Constants.DISABLED) {
                     try {
-                        if (mSubIds == null)
-                        mSubIds = new ArrayList<>();
                         if (mGetDefaultDataSubId == null) {
-                            mGetDefaultDataSubId = getMethod(sm.getClass(), "mGetDefaultDataSubId", 0);
+                            mGetDefaultDataSubId = getMethod(sm.getClass(), "getDefaultDataSubscriptionId", 0);
                             if (mGetDefaultDataSubId != null) {
                                 int id = (int) mGetDefaultDataSubId.invoke(sm);
                                 SubscriptionInfo si = sm.getActiveSubscriptionInfo(id);
@@ -312,8 +328,6 @@ public class MobileUtils {
                 }
             }
         } else {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
             if (simQuantity > 1) {
                 final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeNetworkInfo = null;
@@ -1603,21 +1617,26 @@ public class MobileUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    private static void setMobileNetworkFromLollipop(Context context, int sim, boolean state) {
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    private static void setMobileNetworkFromLollipop(Context context, int sim) {
         SubscriptionManager sm = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-        List<SubscriptionInfo> sl = null;
+        List<SubscriptionInfo> sl;
+        ArrayList<Integer> subIds = new ArrayList<>();
         if (sm != null) {
             sl = sm.getActiveSubscriptionInfoList();
-        }
-        try {
-            if (sl != null && tm != null) {
-                XposedHelpers.callMethod(tm, SET_DATA, sl.get(sim), state);
+            try {
+                if (sl != null) {                    
+                    for (SubscriptionInfo si : sl)
+                        subIds.add(si.getSubscriptionId());
+                }
+                try {
+                        XposedHelpers.callMethod(sm, SET_DATA, subIds.get(sim));
+                } catch (Throwable t) {
+                    XposedBridge.log(t);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Throwable t) {
-            XposedBridge.log(t);
-        }
-
+        }        
     }
 
     public static boolean isMobileDataActive(Context context) {
@@ -1740,7 +1759,10 @@ public class MobileUtils {
                 } else
                     localIntent.putExtra("simid", (long) mLastActiveSIM);
                 context.sendBroadcast(localIntent);
-            }
+            }/* else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                setMobileNetworkFromLollipop(context, mLastActiveSIM);
+                new SetMobileNetworkFromLollipop().execute(context, mLastActiveSIM, true);
+            }*/
             CustomApplication.sleep(1000);
         } else if (sim != Constants.DISABLED) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && CustomApplication.isOldMtkDevice()) {
@@ -1762,7 +1784,10 @@ public class MobileUtils {
                 } else
                     localIntent.putExtra("simid", (long) sim);
                 context.sendBroadcast(localIntent);
-            }
+            }/* else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                setMobileNetworkFromLollipop(context, sim);
+                new SetMobileNetworkFromLollipop().execute(context, sim, true);
+            }*/
         }
         CustomApplication.sleep(1000);
     }

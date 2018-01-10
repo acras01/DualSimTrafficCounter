@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class Constants {
+    static final String PACKAGE_NAME = "ua.od.acros.dualsimtrafficcounter"; //MainActivity.class.getPackage().getName()
     static final int DATABASE_VERSION = 10;
     public static final String SIM1RX = "sim1rx";
     public static final String SIM2RX = "sim2rx";

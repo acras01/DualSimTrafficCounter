@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -163,7 +162,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             everyday1.setEnabled(true);
             everyday2.setEnabled(true);
             everyday3.setEnabled(true);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && CustomApplication.hasRoot()) {
+        } else if (CustomApplication.canToggleOff()) {
             autoff1.setEnabled(true);
             autoff2.setEnabled(true);
             autoff3.setEnabled(true);

@@ -173,7 +173,8 @@ public class TrafficCountService extends Service implements SharedPreferences.On
 
         // cancel if already existed
         if (mTaskExecutor != null) {
-            mTaskResult.cancel(true);
+            if (mTaskResult != null)
+                mTaskResult.cancel(true);
             mTaskExecutor.shutdown();
             mTaskExecutor = Executors.newSingleThreadScheduledExecutor();
         } else {

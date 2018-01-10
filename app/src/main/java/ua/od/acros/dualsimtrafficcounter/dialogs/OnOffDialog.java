@@ -57,7 +57,7 @@ public class OnOffDialog extends DialogFragment {
         AppCompatRadioButton sim3rb = view.findViewById(R.id.sim3RB);
         sim3rb.setText(operatorNames[2]);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        if (CustomApplication.canToggleOn()) {
+        if (CustomApplication.canToggleOff()) {
             int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
             if (simQuantity >= 1)
                 sim1rb.setEnabled(true);

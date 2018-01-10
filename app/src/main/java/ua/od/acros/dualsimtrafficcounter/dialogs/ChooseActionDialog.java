@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -54,14 +53,12 @@ public class ChooseActionDialog extends AppCompatActivity {
         AppCompatRadioButton mobileData = view.findViewById(R.id.actionmobiledata);
         AppCompatRadioButton off = view.findViewById(R.id.actionoff);
         int simQuantity = prefs.getInt(Constants.PREF_OTHER[55], 1);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ||
-                !CustomApplication.canToggleOn() ||
+        if (!CustomApplication.canToggleOn() ||
                 prefs.getBoolean(Constants.PREF_OTHER[10], false) || simQuantity == 1)
             change.setEnabled(false);
         if (!CustomApplication.isDataUsageAvailable())
             mobileData.setEnabled(false);
-        if (!CustomApplication.canToggleOn() ||
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !CustomApplication.hasRoot()))
+        if (!CustomApplication.canToggleOff())
             off.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         RadioGroup radioGroup = view.findViewById(R.id.radioGroup);

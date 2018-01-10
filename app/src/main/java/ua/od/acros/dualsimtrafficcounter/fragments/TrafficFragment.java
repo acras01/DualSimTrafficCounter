@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -329,8 +328,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
 
         MenuItem mobileData = menu.getItem(1);
         if (mobileData != null) {
-            if (CustomApplication.canToggleOn() ||
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && CustomApplication.hasRoot())) {
+            if (CustomApplication.canToggleOff()) {
                 switch (MobileUtils.hasActiveNetworkInfo(mContext)) {
                     case 0:
                         mobileData.setEnabled(true);
