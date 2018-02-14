@@ -60,9 +60,11 @@ public class CustomNotification extends Notification {
             calls = mCalls;
         NotificationCompat.Builder b = newInstance(context);
         int activeSIM;
-        if (CustomApplication.isMyServiceRunning(TrafficCountService.class))
+        if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
             activeSIM = TrafficCountService.getActiveSIM();
-        else
+            if (activeSIM < 0)
+                activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
+        } else
             activeSIM = mPrefs.getInt(Constants.PREF_OTHER[46], Constants.DISABLED);
         Object[] icon = getOperatorLogo(context, activeSIM);
         b.setSmallIcon((int) icon[0]);

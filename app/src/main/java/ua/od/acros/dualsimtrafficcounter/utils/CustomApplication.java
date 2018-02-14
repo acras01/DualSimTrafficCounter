@@ -332,6 +332,7 @@ public class CustomApplication extends Application {
         try {
             ActivityManager manager = (ActivityManager) mWeakReference.get().getSystemService(Context.ACTIVITY_SERVICE);
             if (manager != null) {
+                //List<ActivityManager.RunningServiceInfo> list = manager.getRunningServices(Integer.MAX_VALUE);
                 for (ActivityManager.RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
                     if (serviceClass.getName().equals(serviceInfo.service.getClassName()))
                         return true;
