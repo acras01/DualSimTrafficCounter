@@ -31,7 +31,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Allows to control duration of outgoing calls when you calling out of home network" />
+            android:value="@string/xposed" />
         <meta-data
             android:name="xposedminversion"
             android:value="54" />

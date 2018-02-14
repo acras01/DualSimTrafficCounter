@@ -254,4 +254,5 @@
     <string name="widget">Widget #%1$d</string>
     <string name="next_reset">"\nTill "</string>
     <string name="hud_text_color">Text color</string>
+    <string name="xposed">Allows control of duration of outgoing calls when you\'re calling out of home network</string>
 </resources>
