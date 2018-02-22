@@ -247,4 +247,5 @@
     <string name="next_reset">"\nДо "</string>
     <string name="hud_text_color">Цвет текста</string>
     <string name="xposed">Контроль исходящих вызовов на сети других операторов</string>
+    <string name="use_white_icons">Использовать белые иконки в статусбаре</string>
 </resources>

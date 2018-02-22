@@ -44,33 +44,40 @@
         <ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix
             android:title="@string/statusbar" >
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
-            android:key="data_remain"
-            android:title="@string/show_remaining"
-            android:defaultValue="0"
-            android:entries="@array/remain"
-            android:entryValues="@array/values"/>
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
+                android:key="data_remain"
+                android:title="@string/show_remaining"
+                android:defaultValue="0"
+                android:entries="@array/remain"
+                android:entryValues="@array/values"/>
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
-            android:key="info_status"
-            android:title="@string/show_info_status"
-            android:defaultValue="0"
-            android:entries="@array/infostatus"
-            android:entryValues="@array/values"/>
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
+                android:key="info_status"
+                android:title="@string/show_info_status"
+                android:defaultValue="0"
+                android:entries="@array/infostatus"
+                android:entryValues="@array/values"/>
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
-            android:key="calls_remain"
-            android:title="@string/show_remaining_calls"
-            android:defaultValue="0"
-            android:entries="@array/remain"
-            android:entryValues="@array/values"/>
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineListPreference
+                android:key="calls_remain"
+                android:title="@string/show_remaining_calls"
+                android:defaultValue="0"
+                android:entries="@array/remain"
+                android:entryValues="@array/values"/>
 
-        <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
-            android:key="status_icon"
-            android:title="@string/show_icon_in_statusbar"
-            android:summaryOn="@string/on"
-            android:summaryOff="@string/off"
-            android:defaultValue="true"/>
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+                android:key="status_icon"
+                android:title="@string/show_icon_in_statusbar"
+                android:summaryOn="@string/on"
+                android:summaryOff="@string/off"
+                android:defaultValue="true"/>
+
+            <ua.od.acros.dualsimtrafficcounter.preferences.TwoLineCheckPreference
+                android:key="white_icons"
+                android:title="@string/use_white_icons"
+                android:summaryOn="@string/on"
+                android:summaryOff="@string/off"
+                android:defaultValue="false"/>
 
         </ua.od.acros.dualsimtrafficcounter.preferences.PreferenceCategoryFix>
 

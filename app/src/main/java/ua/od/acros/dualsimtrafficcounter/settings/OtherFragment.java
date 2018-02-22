@@ -128,7 +128,8 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
     @Override
     public final void onResume() {
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.other_title);
+        if (getActivity() != null)
+            ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.other_title);
         if (mSwitch != null && mSwitch.get() != null)
             mSwitch.get().resume();
         updateSummary();
@@ -192,7 +193,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             }
         }
 
-        if (key.equals(Constants.PREF_OTHER[12])) {
+        if (key.equals(Constants.PREF_OTHER[12]) || key.equals(Constants.PREF_OTHER[57])) {
             Intent i;
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
                 i = new Intent(mContext, TrafficCountService.class);

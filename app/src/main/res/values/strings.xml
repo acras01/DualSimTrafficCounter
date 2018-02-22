@@ -255,4 +255,5 @@
     <string name="next_reset">"\nTill "</string>
     <string name="hud_text_color">Text color</string>
     <string name="xposed">Allows control of duration of outgoing calls when you\'re calling out of home network</string>
+    <string name="use_white_icons">Use white icons in statusbar</string>
 </resources>
