@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.QUICKBOOT_POWERON" />
 
     <application
         android:name=".utils.CustomApplication"
@@ -142,11 +143,11 @@
         </service>
 
         <receiver
-            android:name=".receivers.BootBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter android:priority="999">
+            android:name=".receivers.BootBroadcastReceiver" >
+            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
         <receiver
@@ -160,8 +161,7 @@
         <receiver
             android:name=".receivers.OutgoingCallReceiver"
             android:enabled="true"
-            android:exported="true"
-            android:permission="">
+            android:exported="true" >
             <intent-filter android:priority="999">
                 <action android:name="ua.od.acros.dualsimtrafficcounter.NEW_OUTGOING_CALL" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
