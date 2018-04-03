@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.TrafficStats;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -2020,6 +2022,7 @@ public class TrafficCountService extends Service implements SharedPreferences.On
         return CustomNotification.getNotification(ctx, traffic, calls);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     private static void makePreCheckActions(int sim) {
         Context ctx = mContext.get();
 

@@ -1,10 +1,13 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
+import android.annotation.TargetApi;
 import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.telecom.PhoneAccountHandle;
+import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 
 import java.util.ArrayList;
@@ -207,12 +210,26 @@ class CallLogger {
         onCallStateChanged(call, state);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private void onCallStateChanged(Object call, int state) {
         Context context = AndroidAppHelper.currentApplication();
         XposedBridge.log(context.toString());
         String key = (String) XposedHelpers.callMethod(call, "getId");
+        XposedBridge.log(key);
+        PhoneAccountHandle phoneAccountHandle = (PhoneAccountHandle) XposedHelpers.callMethod(call, "getConnectionManagerPhoneAccount");
+        String id = phoneAccountHandle.getId();
+        XposedBridge.log(id);
+        TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+        ArrayList<String> ids = new ArrayList<>();
+        if (telecomManager != null) {
+            for (PhoneAccountHandle pah : telecomManager.getCallCapablePhoneAccounts()) {
+                ids.add(pah.getId());
+            }
+            XposedBridge.log(ids.toString());
+        }
+        int sim = ids.indexOf(id);
         long start;
-        int sim = MobileUtils.getActiveSimForCallM(context, mSimQuantity, mList);
+        //int sim = MobileUtils.getActiveSimForCallM(context, mSimQuantity, mList);
         // register outgoing call
         if (state == CallState.DIALING && mOutgoingCall == null) {
             mOutgoingCall = call;

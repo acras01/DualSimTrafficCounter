@@ -1,10 +1,12 @@
 package ua.od.acros.dualsimtrafficcounter.fragments;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.ListViewCompat;
+import android.widget.ListView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,7 @@ import ua.od.acros.dualsimtrafficcounter.R;
 public class IconsListFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 
     private String[] mListItems;
-    private ListViewCompat listView;
+    private ListView listView;
     private String mLogo;
 
     private OnCompleteListener mListener;
@@ -32,11 +34,14 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
         return f;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     @Override
     public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get back arguments
-        mLogo = getArguments().getString(ID, "");
+        if (getArguments() != null) {
+            mLogo = getArguments().getString(ID, "");
+        }
     }
 
     @Override
@@ -54,9 +59,11 @@ public class IconsListFragment extends DialogFragment implements AdapterView.OnI
     @Override
     public final void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mListItems);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
+        if (getActivity() != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mListItems);
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(this);
+        }
     }
 
     @Override
