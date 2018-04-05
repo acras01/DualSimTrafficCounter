@@ -223,7 +223,8 @@ class CallLogger {
         ArrayList<String> ids = new ArrayList<>();
         if (telecomManager != null) {
             for (PhoneAccountHandle pah : telecomManager.getCallCapablePhoneAccounts()) {
-                ids.add(pah.getId());
+                if (pah != null)
+                    ids.add(pah.getId());
             }
             XposedBridge.log(ids.toString());
         }
