@@ -216,8 +216,10 @@ class CallLogger {
         XposedBridge.log(context.toString());
         String key = (String) XposedHelpers.callMethod(call, "getId");
         XposedBridge.log(key);
+        String id = "null";
         PhoneAccountHandle phoneAccountHandle = (PhoneAccountHandle) XposedHelpers.callMethod(call, "getConnectionManagerPhoneAccount");
-        String id = phoneAccountHandle.getId();
+        if (phoneAccountHandle != null)
+            id = phoneAccountHandle.getId();
         XposedBridge.log(id);
         TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
         ArrayList<String> ids = new ArrayList<>();

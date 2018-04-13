@@ -52,8 +52,8 @@ public class MobileUtils {
     private static final String GET_CODE_NETWORK_FOR_PHONE = "getNetworkOperatorForPhone";
     private static final String GET_CODE_NETWORK = "getNetworkOperator";
     private static final String GET_CODE_SIM = "getSimOperator";
-    private static final String GET_CALL = "getCallState";
-    private static final String GET_DATA = "getDataState";
+    private static final String GET_CALL_STATE = "getCallState";
+    private static final String GET_DATA_STATE = "getDataState";
     private static final String GET_SUBID = "getSubIdBySlot";
     private static final String SET_DATA = "setDefaultDataSubId";
     private static final String PUT_SETTINGS = "settings put global airplane_mode_on ";
@@ -360,7 +360,7 @@ public class MobileUtils {
                             try {
                                 Class<?> c = Class.forName(MEDIATEK);
                                 if (mGetDataState == null)
-                                    mGetDataState = getMethod(c, GET_DATA, 1);
+                                    mGetDataState = getMethod(c, GET_DATA_STATE, 1);
                                 state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), i);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -379,7 +379,7 @@ public class MobileUtils {
                                 try {
                                     Class<?> c = Class.forName(MEDIATEK);
                                     if (mGetDataState == null)
-                                        mGetDataState = getMethod(c, GET_DATA, 1);
+                                        mGetDataState = getMethod(c, GET_DATA_STATE, 1);
                                     if (mSubIds == null)
                                         mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                                     state = (int) mGetDataState.invoke(c.getConstructor(android.content.Context.class).newInstance(context), mSubIds.get(i));
@@ -410,7 +410,7 @@ public class MobileUtils {
                                 int state = Constants.DISABLED;
                                 try {
                                     if (mGetDataState == null)
-                                        mGetDataState = getMethod(mTelephonyClass, GET_DATA, 1);
+                                        mGetDataState = getMethod(mTelephonyClass, GET_DATA_STATE, 1);
                                     if (mGetDataState != null) {
                                         if (mGetDataState.getParameterTypes()[0].equals(int.class)) {
                                             state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(Context.class).newInstance(context), i);
@@ -437,7 +437,7 @@ public class MobileUtils {
                                 int state = Constants.DISABLED;
                                 try {
                                     if (mGetDataState == null)
-                                        mGetDataState = getMethod(mTelephonyClass, GET_DATA + "Ext", 1);
+                                        mGetDataState = getMethod(mTelephonyClass, GET_DATA_STATE + "Ext", 1);
                                     state = (int) mGetDataState.invoke(mTelephonyClass.getConstructor(android.content.Context.class).newInstance(context), i);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -471,7 +471,7 @@ public class MobileUtils {
                                     }
                                     Method getState = null;
                                     if (mClass != null) {
-                                        getState = mClass.getDeclaredMethod(GET_DATA);
+                                        getState = mClass.getDeclaredMethod(GET_DATA_STATE);
                                     }
                                     if (getState != null) {
                                         state = (int) getState.invoke(mClass);
@@ -558,9 +558,9 @@ public class MobileUtils {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        if (mTelephonyClass != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (mTelephonyClass != null) {
             if (mGetCallState == null)
-                mGetCallState = getMethod(mTelephonyClass, GET_CALL, 1);
+                mGetCallState = getMethod(mTelephonyClass, GET_CALL_STATE, 1);
             if (mGetCallState != null)
                 for (int i = 0; i < simQuantity; i++) {
                     try {
@@ -594,7 +594,7 @@ public class MobileUtils {
                     try {
                         Class<?> c = Class.forName(MEDIATEK);
                         if (mGetCallState == null)
-                            mGetCallState = getMethod(c, GET_CALL, 1);
+                            mGetCallState = getMethod(c, GET_CALL_STATE, 1);
                         if (mGetCallState != null)
                             for (int i = 0; i < simQuantity; i++) {
                                 try {
@@ -614,7 +614,7 @@ public class MobileUtils {
                         try {
                             Class<?> c = Class.forName(MEDIATEK);
                             if (mGetCallState == null)
-                                mGetCallState = getMethod(c, GET_CALL, 1);
+                                mGetCallState = getMethod(c, GET_CALL_STATE, 1);
                             if (mSubIds == null)
                                 mSubIds = getSubIds(mTelephonyClass, simQuantity, context);
                             if (mGetCallState != null && mSubIds != null)
@@ -636,7 +636,7 @@ public class MobileUtils {
                 } else {
                     try {
                         if (mGetCallState == null)
-                            mGetCallState = getMethod(mTelephonyClass, GET_CALL, 1);
+                            mGetCallState = getMethod(mTelephonyClass, GET_CALL_STATE, 1);
                         int state = -1;
                         if (mGetCallState != null)
                             for (int i = 0; i < simQuantity; i++) {
@@ -658,7 +658,7 @@ public class MobileUtils {
                     }
                     if (sim == Constants.DISABLED) {
                         if (mGetCallState == null)
-                            mGetCallState = getMethod(mTelephonyClass, GET_CALL + "Ext", 1);
+                            mGetCallState = getMethod(mTelephonyClass, GET_CALL_STATE + "Ext", 1);
                         if (mGetCallState != null)
                             for (int i = 0; i < simQuantity; i++) {
                                 try {
@@ -692,7 +692,7 @@ public class MobileUtils {
                                     }
                                     Method getState = null;
                                     if (mClass != null) {
-                                        getState = mClass.getDeclaredMethod(GET_CALL);
+                                        getState = mClass.getDeclaredMethod(GET_CALL_STATE);
                                     }
                                     int state = 0;
                                     if (getState != null) {

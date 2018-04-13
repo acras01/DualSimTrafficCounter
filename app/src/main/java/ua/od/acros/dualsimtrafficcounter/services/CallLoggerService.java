@@ -302,6 +302,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 else {
                                     ArrayList<String> list = new ArrayList<>(Arrays.asList(mPrefs.getString(Constants.PREF_OTHER[56], "").split(";")));
                                     sim = MobileUtils.getActiveSimForCallM(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1), list);
+                                    Toast.makeText(ctx, "Active SIM: " + sim, Toast.LENGTH_LONG).show();
                                 }
                                 updateNotification();
                                 mLastActiveSIM = sim;
@@ -325,6 +326,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 boolean white = whiteList.contains(CallLoggerService.this.mNumber[0]);
                                 boolean black = blackList.contains(CallLoggerService.this.mNumber[0]);
                                 if (!white && !black && !mIsDialogShown) {
+                                    Toast.makeText(ctx, "Unknown number", Toast.LENGTH_LONG).show();
                                     mIsDialogShown = true;
                                     final Bundle bundle = new Bundle();
                                     bundle.putString("number", CallLoggerService.this.mNumber[0]);
@@ -451,6 +453,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 public void onReceive(Context context, Intent intent) {
                     if (mIsOutgoing) {
                         //final String[] out = {"Call Starts\n"};
+                        Toast.makeText(CustomApplication.getAppContext(), "Call answered", Toast.LENGTH_LONG).show();
                         readCallsDataFromDatabase();
                         String lim = "", inter = "";
                         long currentDuration = 0;
@@ -517,6 +520,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (mIsOutgoing) {
+                        Toast.makeText(CustomApplication.getAppContext(), "Call ended", Toast.LENGTH_LONG).show();
                         mIsDialogShown = mIsOutgoing = false;
                         if (mCountTimer != null)
                             mCountTimer.cancel();
