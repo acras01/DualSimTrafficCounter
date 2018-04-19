@@ -330,7 +330,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                     Toast.makeText(ctx, "Unknown number", Toast.LENGTH_LONG).show();
                                     mIsDialogShown = true;
                                     final Bundle bundle = new Bundle();
-                                    bundle.putString("number", CallLoggerService.this.mNumber[0]);
+                                    bundle.putString("number", number);
                                     bundle.putInt("sim", sim);
                                     mDialogIntent = new Intent(mContext, ChooseOperatorDialog.class);
                                     mDialogIntent.putExtra("bundle", bundle);
