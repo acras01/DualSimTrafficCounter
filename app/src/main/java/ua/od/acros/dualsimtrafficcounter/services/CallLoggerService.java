@@ -302,8 +302,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 else {
                                     ArrayList<String> list = new ArrayList<>(Arrays.asList(mPrefs.getString(Constants.PREF_OTHER[56], "").split(";")));
                                     sim = MobileUtils.getActiveSimForCallM(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1), list);
-                                    Toast.makeText(ctx, "Active SIM: " + sim, Toast.LENGTH_LONG).show();
                                 }
+                                Toast.makeText(ctx, "Active SIM: " + sim, Toast.LENGTH_LONG).show();
                                 updateNotification();
                                 mLastActiveSIM = sim;
                                 /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
@@ -336,10 +336,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                     mDialogIntent.putExtra("whitelist", whiteList);
                                     mDialogIntent.putExtra("blacklist", blackList);
                                     mDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                } else if (black)
+                                } else if (black) {
                                     mIsOutgoing = true;
-                                else if (white)
+                                    Toast.makeText(ctx, "Numder from Blacklist", Toast.LENGTH_LONG).show();
+                                }
+                                else if (white) {
+                                    Toast.makeText(ctx, "Numder from Whitelist", Toast.LENGTH_LONG).show();
                                     mService.stopSelf();
+                                }
                                 break;
                             /*case TelephonyManager.CALL_STATE_IDLE:
                                 mService.stopSelf();
@@ -520,14 +524,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (mIsOutgoing) {
-                        Toast.makeText(CustomApplication.getAppContext(), "Call ended", Toast.LENGTH_LONG).show();
                         mIsDialogShown = mIsOutgoing = false;
                         if (mCountTimer != null)
                             mCountTimer.cancel();
                         mVibrator.cancel();
                         int sim = intent.getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
                         long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
-                        Toast.makeText(context, mOperatorNames[sim] + ": " +
+                        Toast.makeText(context, "Call ended. " + mOperatorNames[sim] + ": " +
                                 DataFormat.formatCallDuration(context, duration), Toast.LENGTH_LONG).show();
                         LocalDateTime now = DateTime.now().toLocalDateTime();
                         mCallsData.put(Constants.LAST_DATE, now.toString(Constants.DATE_FORMATTER));
