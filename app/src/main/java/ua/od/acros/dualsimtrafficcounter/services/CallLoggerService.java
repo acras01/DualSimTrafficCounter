@@ -297,13 +297,14 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                         switch (state) {
                             case TelephonyManager.CALL_STATE_OFFHOOK:
                                 final int sim;
+                                String number = CallLoggerService.this.mNumber[0];
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
                                     sim = MobileUtils.getActiveSimForCall(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1));
                                 else {
                                     ArrayList<String> list = new ArrayList<>(Arrays.asList(mPrefs.getString(Constants.PREF_OTHER[56], "").split(";")));
                                     sim = MobileUtils.getActiveSimForCallM(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1), list);
                                 }
-                                Toast.makeText(ctx, "Active SIM: " + sim, Toast.LENGTH_LONG).show();
+                                Toast.makeText(ctx, "Active SIM: " + sim + "\nOutgoing number: " + number, Toast.LENGTH_LONG).show();
                                 updateNotification();
                                 mLastActiveSIM = sim;
                                 /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
@@ -323,8 +324,8 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 }*/
                                 final ArrayList<String> whiteList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "white");
                                 final ArrayList<String> blackList = CustomDatabaseHelper.readList(sim, mDbHelper, mIMSI, "black");
-                                boolean white = whiteList.contains(CallLoggerService.this.mNumber[0]);
-                                boolean black = blackList.contains(CallLoggerService.this.mNumber[0]);
+                                boolean white = whiteList.contains(number);
+                                boolean black = blackList.contains(number);
                                 if (!white && !black && !mIsDialogShown) {
                                     Toast.makeText(ctx, "Unknown number", Toast.LENGTH_LONG).show();
                                     mIsDialogShown = true;
@@ -338,12 +339,13 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                     mDialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 } else if (black) {
                                     mIsOutgoing = true;
-                                    Toast.makeText(ctx, "Numder from Blacklist", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ctx, "Number from Blacklist", Toast.LENGTH_LONG).show();
                                 }
                                 else if (white) {
-                                    Toast.makeText(ctx, "Numder from Whitelist", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ctx, "Number from Whitelist", Toast.LENGTH_LONG).show();
                                     mService.stopSelf();
-                                }
+                                } else
+                                    Toast.makeText(ctx, "Shit happens!", Toast.LENGTH_LONG).show();
                                 break;
                             /*case TelephonyManager.CALL_STATE_IDLE:
                                 mService.stopSelf();
@@ -585,7 +587,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
             startTask(intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER));
         } else
             mService.stopSelf();
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     private void pushResetNotification(int simid) {
