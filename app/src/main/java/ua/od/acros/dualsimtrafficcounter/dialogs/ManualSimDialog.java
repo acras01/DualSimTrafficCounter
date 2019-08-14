@@ -1,13 +1,14 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -28,7 +29,7 @@ public class ManualSimDialog extends AppCompatActivity {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -40,11 +41,7 @@ public class ManualSimDialog extends AppCompatActivity {
         mDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.attention)
                 .setMessage(R.string.sim_not_defined)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> dialog.cancel())
                 .create();
 
         if (!this.isFinishing()) {

@@ -7,12 +7,13 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatRadioButton;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatRadioButton;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetTrafficEvent;
@@ -67,7 +70,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.usage_fragment, container, false);
@@ -141,7 +144,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     }
 
     @Override
-    public final void onSaveInstanceState(Bundle outState) {
+    public final void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (isVisible()) {
             outState.putInt("sim", mSimChecked);
@@ -157,7 +160,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
     @Override
     public final void onResume(){
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_set_usage);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setSubtitle(R.string.action_set_usage);
     }
 
     @Override
@@ -176,7 +179,7 @@ public class SetTrafficUsageFragment extends Fragment implements CompoundButton.
                 tx = txInput.getText().toString();
             SetTrafficEvent event = new SetTrafficEvent(tx, rx, mSimChecked, mTXSpinnerSel, mRXSpinnerSel);
             EventBus.getDefault().postSticky(event);
-            getActivity().onBackPressed();
+            Objects.requireNonNull(getActivity()).onBackPressed();
         } else
             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
 

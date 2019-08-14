@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.security.SecureRandom;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -94,14 +95,12 @@ public class FloatingWindowService extends StandOutWindow {
         TimerTask doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
-                handler.post(new Runnable() {
-                    public void run() {
-                        try {
-                            CheckServiceRunning performBackgroundTask = new CheckServiceRunning();
-                            performBackgroundTask.execute(mContext, mPrefs);
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                        }
+                handler.post(() -> {
+                    try {
+                        CheckServiceRunning performBackgroundTask = new CheckServiceRunning();
+                        performBackgroundTask.execute(mContext, mPrefs);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
                     }
                 });
             }
@@ -120,7 +119,7 @@ public class FloatingWindowService extends StandOutWindow {
         View view = View.inflate(mContext, R.layout.floating_window, frame);
         TextView status = view.findViewById(R.id.tv);
         String changedText = DataFormat.formatData(mContext, 0L);
-        status.setTextSize(Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
+        status.setTextSize(Integer.valueOf(Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[33], "10"))));
         status.setBackgroundColor(mPrefs.getInt(Constants.PREF_OTHER[35], ContextCompat.getColor(mContext, android.R.color.transparent)));
         status.setTextColor(mPrefs.getInt(Constants.PREF_OTHER[34], ContextCompat.getColor(mContext, R.color.widget_text)));
         status.setText(changedText);
@@ -191,9 +190,9 @@ public class FloatingWindowService extends StandOutWindow {
                 }
                 long seconds = System.currentTimeMillis() / 1000L;
                 String changedText = "";
-                int textSize = Integer.valueOf(mPrefs.getString(Constants.PREF_OTHER[33], "10"));
+                int textSize = Integer.valueOf(Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[33], "10")));
                 String choice = mPrefs.getString(Constants.PREF_OTHER[53], "0");
-                switch (choice) {
+                switch (Objects.requireNonNull(choice)) {
                     case "0":
                         if (data.getLong("total") == -1)
                             changedText = mContext.getString(R.string.not_set);
@@ -288,7 +287,7 @@ public class FloatingWindowService extends StandOutWindow {
         boolean floatingWindow = mPrefs.getBoolean(Constants.PREF_OTHER[32], false);
         boolean alwaysShow = !mPrefs.getBoolean(Constants.PREF_OTHER[41], false);
         boolean mobileData = MobileUtils.isMobileDataActive(mContext);
-        boolean bool = (autoLoad && mobileData) || (!autoLoad && ((!alwaysShow && mobileData) || alwaysShow));
+        boolean bool = (autoLoad && mobileData) || (!autoLoad && (alwaysShow || mobileData));
         if (floatingWindow && bool)
             FloatingWindowService.showFloatingWindow(mContext, mPrefs);
     }

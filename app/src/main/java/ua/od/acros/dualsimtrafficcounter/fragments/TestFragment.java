@@ -7,14 +7,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatRadioButton;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatRadioButton;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -50,7 +53,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.test_fragment, container, false);
@@ -79,7 +82,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
     @Override
     public final void onResume(){
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_show_test);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setSubtitle(R.string.action_show_test);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class TestFragment extends Fragment implements View.OnClickListener, Radi
             case R.id.buttonOK:
                 mEdit.putBoolean(Constants.PREF_OTHER[20], mAlternative);
                 mEdit.apply();
-                getActivity().onBackPressed();
+                Objects.requireNonNull(getActivity()).onBackPressed();
                 break;
             case R.id.test:
                 if (!mSimChecked.equals("")) {

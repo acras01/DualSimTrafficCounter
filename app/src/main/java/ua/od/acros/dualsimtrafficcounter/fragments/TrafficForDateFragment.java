@@ -8,10 +8,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatRadioButton;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatRadioButton;
+import androidx.appcompat.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import java.lang.ref.WeakReference;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -77,7 +79,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.traffic_for_date_fragment, container, false);
@@ -162,7 +164,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public final void onSaveInstanceState(Bundle outState) {
+    public final void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (isVisible()) {
             outState.putInt("sim", mSimChecked);
@@ -181,7 +183,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     @Override
     public final void onResume(){
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_show_history);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setSubtitle(R.string.action_show_history);
     }
 
     public final void onButtonPressed(Uri uri) {
@@ -312,7 +314,7 @@ public class TrafficForDateFragment extends Fragment implements View.OnClickList
     public final void onClick(View v) {
         switch (v.getId()) {
             case R.id.setdate:
-                DatePickerDialog tpd = new DatePickerDialog(getActivity(), mCallBack, mYear, mMonth - 1, mDay);
+                DatePickerDialog tpd = new DatePickerDialog(Objects.requireNonNull(getActivity()), mCallBack, mYear, mMonth - 1, mDay);
                 tpd.show();
                 break;
             case R.id.buttonOK:

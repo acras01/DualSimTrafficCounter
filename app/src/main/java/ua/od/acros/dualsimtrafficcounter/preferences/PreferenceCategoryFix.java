@@ -3,8 +3,8 @@ package ua.od.acros.dualsimtrafficcounter.preferences;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.v7.preference.PreferenceCategory;
-import android.support.v7.preference.PreferenceViewHolder;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -17,7 +17,7 @@ import android.widget.TextView;
  */
 public class PreferenceCategoryFix extends PreferenceCategory {
 
-    private static final int[] COLOR_ACCENT_ID = new int[]{android.support.v7.appcompat.R.attr.colorAccent};
+    private static final int[] COLOR_ACCENT_ID = new int[]{androidx.appcompat.appcompat.R.attr.colorAccent};
 
     public PreferenceCategoryFix(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);

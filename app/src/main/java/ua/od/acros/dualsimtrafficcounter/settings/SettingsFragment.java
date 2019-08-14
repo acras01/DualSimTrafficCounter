@@ -4,13 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -33,7 +35,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getActivity().setTitle(R.string.action_settings);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.action_settings);
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
         RelativeLayout calls = view.findViewById(R.id.calls_layout);
         if (!mPrefs.getBoolean(Constants.PREF_OTHER[25], false))
@@ -42,7 +44,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         if (CustomApplication.getWidgetIds(Constants.TRAFFIC).length == 0 &&
                 CustomApplication.getWidgetIds(Constants.CALLS).length == 0)
             widgets.setVisibility(View.GONE);
-        mSwitch.setSwitch((SwitchCompat) view.findViewById(R.id.notif_sw));
+        mSwitch.setSwitch(view.findViewById(R.id.notif_sw));
         view.findViewById(R.id.notif_touch_layout).setOnClickListener(this);
         view.findViewById(R.id.traff_layout).setOnClickListener(this);
         calls.setOnClickListener(this);
@@ -56,7 +58,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public final void onResume() {
         super.onResume();
         mSwitch.resume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.action_settings);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setTitle(R.string.action_settings);
     }
 
     @Override
@@ -70,22 +72,22 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.notif_touch_layout:
                 mSwitch.setChecked(true);
-                ((SettingsActivity) getActivity()).replaceFragments(SoundFragment.class);
+                ((SettingsActivity) Objects.requireNonNull(getActivity())).replaceFragments(SoundFragment.class);
                 break;
             case R.id.traff_layout:
-                ((SettingsActivity) getActivity()).replaceFragments(TrafficLimitFragment.class);
+                ((SettingsActivity) Objects.requireNonNull(getActivity())).replaceFragments(TrafficLimitFragment.class);
                 break;
             case R.id.calls_layout:
-                ((SettingsActivity) getActivity()).replaceFragments(CallsLimitFragment.class);
+                ((SettingsActivity) Objects.requireNonNull(getActivity())).replaceFragments(CallsLimitFragment.class);
                 break;
             case R.id.operator_layout:
-                ((SettingsActivity) getActivity()).replaceFragments(OperatorFragment.class);
+                ((SettingsActivity) Objects.requireNonNull(getActivity())).replaceFragments(OperatorFragment.class);
                 break;
             case R.id.widgets_layout:
-                ((SettingsActivity) getActivity()).replaceFragments(WidgetsFragment.class);
+                ((SettingsActivity) Objects.requireNonNull(getActivity())).replaceFragments(WidgetsFragment.class);
                 break;
             case R.id.other_layout:
-                ((SettingsActivity) getActivity()).replaceFragments(OtherFragment.class);
+                ((SettingsActivity) Objects.requireNonNull(getActivity())).replaceFragments(OtherFragment.class);
                 break;
         }
     }

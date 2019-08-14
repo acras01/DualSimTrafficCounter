@@ -1,19 +1,19 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.view.WindowManager;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ListEvent;
@@ -34,7 +34,7 @@ public class ChooseOperatorDialog extends AppCompatActivity {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -59,30 +59,21 @@ public class ChooseOperatorDialog extends AppCompatActivity {
                 .setTitle(number)
                 .setCancelable(false)
                 .setMessage(R.string.is_out_of_home_network)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        bundle.putStringArrayList("list", blackList);
-                        bundle.putBoolean("black", true);
-                        EventBus.getDefault().post(new ListEvent(bundle));
-                        finish();
-                    }
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                    bundle.putStringArrayList("list", blackList);
+                    bundle.putBoolean("black", true);
+                    EventBus.getDefault().post(new ListEvent(bundle));
+                    finish();
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        bundle.putStringArrayList("list", whiteList);
-                        bundle.putBoolean("black", false);
-                        EventBus.getDefault().post(new ListEvent(bundle));
-                        finish();
-                    }
+                .setNegativeButton(R.string.no, (dialog, which) -> {
+                    bundle.putStringArrayList("list", whiteList);
+                    bundle.putBoolean("black", false);
+                    EventBus.getDefault().post(new ListEvent(bundle));
+                    finish();
                 })
-                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EventBus.getDefault().post(new NoListEvent());
-                        finish();
-                    }
+                .setNeutralButton(android.R.string.cancel, (dialog, which) -> {
+                    EventBus.getDefault().post(new NoListEvent());
+                    finish();
                 })
                 .create();
         if (mDialog.getWindow() != null)

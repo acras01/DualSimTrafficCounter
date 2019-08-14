@@ -9,12 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.Preference;
-import android.support.v7.widget.SwitchCompat;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.appcompat.widget.SwitchCompat;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
@@ -30,7 +32,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
 
     @Override
     public final void onCreatePreferences(Bundle bundle, String s) {
-        mContext = getActivity().getApplicationContext();
+        mContext = Objects.requireNonNull(getActivity()).getApplicationContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         addPreferencesFromResource(R.xml.notification_settings);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
@@ -55,7 +57,7 @@ public class SoundFragment extends PreferenceFragmentCompatFix implements Shared
     private void updateSettings() {
         int count = getPreferenceScreen().getPreferenceCount();
         for (int i = 0; i < count; ++i) {
-            android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);
+            androidx.preference.Preference pref = getPreferenceScreen().getPreference(i);
             pref.setEnabled(mSwitch.isSwitchOn());
             if (pref.getKey().equals(Constants.PREF_OTHER[1])) {
                 Ringtone ringtone = RingtoneManager.getRingtone(mContext, Uri.parse(getRingtonePreferenceValue()));

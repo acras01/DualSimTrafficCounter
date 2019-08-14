@@ -1,21 +1,22 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatRadioButton;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatRadioButton;
 import android.view.View;
 import android.widget.RadioGroup;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.ActionTrafficEvent;
@@ -40,7 +41,7 @@ public class ChooseActionDialog extends AppCompatActivity {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -56,64 +57,53 @@ public class ChooseActionDialog extends AppCompatActivity {
         if (!CustomApplication.canToggleOn() ||
                 prefs.getBoolean(Constants.PREF_OTHER[10], false) || simQuantity == 1)
             change.setEnabled(false);
-        if (!CustomApplication.isDataUsageAvailable())
+        if (CustomApplication.isDataUsageAvailable())
             mobileData.setEnabled(false);
         if (!CustomApplication.canToggleOff())
             off.setEnabled(false);
         mSimID = getIntent().getIntExtra(Constants.SIM_ACTIVE, Constants.DISABLED);
         RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
         final ColorStateList[] textColor = new ColorStateList[] {ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                bOK.setEnabled(true);
-                bOK.setTextColor(textColor[0]);
-                switch (checkedId) {
-                    case R.id.actionmobiledata:
-                        mAction = Constants.SETTINGS_ACTION;
-                        break;
-                    case R.id.actionsettings:
-                        mAction = Constants.LIMIT_ACTION;
-                        break;
-                    case R.id.actionchange:
-                        mAction = Constants.CHANGE_ACTION;
-                        break;
-                    case R.id.actionoff:
-                        mAction = Constants.OFF_ACTION;
-                        break;
-                }
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            bOK.setEnabled(true);
+            bOK.setTextColor(textColor[0]);
+            switch (checkedId) {
+                case R.id.actionmobiledata:
+                    mAction = Constants.SETTINGS_ACTION;
+                    break;
+                case R.id.actionsettings:
+                    mAction = Constants.LIMIT_ACTION;
+                    break;
+                case R.id.actionchange:
+                    mAction = Constants.CHANGE_ACTION;
+                    break;
+                case R.id.actionoff:
+                    mAction = Constants.OFF_ACTION;
+                    break;
             }
         });
-        if (!CustomApplication.isDataUsageAvailable())
+        if (CustomApplication.isDataUsageAvailable())
             view.findViewById(R.id.actionmobiledata).setEnabled(false);
         mDialog = new AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setView(view)
                 .setTitle(R.string.attention)
                 .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        EventBus.getDefault().post(new ActionTrafficEvent(mSimID, Constants.CONTINUE_ACTION));
-                        finish();
-                    }
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
+                    EventBus.getDefault().post(new ActionTrafficEvent(mSimID, Constants.CONTINUE_ACTION));
+                    finish();
                 })
                 .create();
 
-        mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                bOK = (AppCompatButton) mDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                textColor[0] = bOK.getTextColors();
-                bOK.setEnabled(false);
-                bOK.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-                bOK.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        EventBus.getDefault().post(new ActionTrafficEvent(mSimID, mAction));
-                        finish();
-                    }
-                });
-            }
+        mDialog.setOnShowListener(dialogInterface -> {
+            bOK = (AppCompatButton) mDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            textColor[0] = bOK.getTextColors();
+            bOK.setEnabled(false);
+            bOK.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            bOK.setOnClickListener(view1 -> {
+                EventBus.getDefault().post(new ActionTrafficEvent(mSimID, mAction));
+                finish();
+            });
         });
         if(!this.isFinishing()){
             mDialog.show();

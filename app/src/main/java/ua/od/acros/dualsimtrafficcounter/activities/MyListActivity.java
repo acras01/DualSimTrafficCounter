@@ -11,12 +11,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -58,7 +59,7 @@ public class MyListActivity extends AppCompatActivity {
             if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (mPrefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -67,7 +68,7 @@ public class MyListActivity extends AppCompatActivity {
             recreate();
         }
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
-        mKey = Integer.valueOf(getIntent().getDataString());
+        mKey = Integer.valueOf(Objects.requireNonNull(getIntent().getDataString()));
         mChoice = mKey < 3;
         if (!mChoice)
             mKey = mKey - 3;

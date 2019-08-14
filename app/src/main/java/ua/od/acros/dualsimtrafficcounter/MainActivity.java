@@ -1,7 +1,6 @@
 package ua.od.acros.dualsimtrafficcounter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,18 +8,18 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -33,6 +32,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
 import ua.od.acros.dualsimtrafficcounter.dialogs.CustomDialog;
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (mPrefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (mPrefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -235,109 +235,106 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.send_email)
                         .setMessage(R.string.why_email)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                                emailIntent.setType("text/plain");
-                                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"acras1@gmail.com"});
-                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
-                                ArrayList<Uri> uris = new ArrayList<>();
-                                File dir = new File(String.valueOf(mContext.getFilesDir()));
-                                String content = getString(R.string.body) + "\n";
-                                //TelephonyMethods
-                                String fileName = "telephony.txt";
-                                File file = new File(dir, fileName);
-                                try {
-                                    uris.add(Uri.fromFile(file));
-                                    InputStream is = openFileInput(fileName);
-                                    if (is != null) {
-                                        InputStreamReader isr = new InputStreamReader(is);
-                                        BufferedReader br = new BufferedReader(isr);
-                                        String read;
-                                        StringBuilder sb = new StringBuilder();
-                                        while ((read = br.readLine()) != null ) {
-                                            read += "\n";
-                                            sb.append(read);
-                                        }
-                                        is.close();
-                                        content += sb.toString();
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                            emailIntent.setType("text/plain");
+                            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"acras1@gmail.com"});
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DualSim Traffic Counter");
+                            ArrayList<Uri> uris = new ArrayList<>();
+                            File dir = new File(String.valueOf(mContext.getFilesDir()));
+                            String content = getString(R.string.body) + "\n";
+                            //TelephonyMethods
+                            String fileName = "telephony.txt";
+                            File file = new File(dir, fileName);
+                            try {
+                                uris.add(Uri.fromFile(file));
+                                InputStream is = openFileInput(fileName);
+                                if (is != null) {
+                                    InputStreamReader isr = new InputStreamReader(is);
+                                    BufferedReader br = new BufferedReader(isr);
+                                    String read;
+                                    StringBuilder sb = new StringBuilder();
+                                    while ((read = br.readLine()) != null ) {
+                                        read += "\n";
+                                        sb.append(read);
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                    is.close();
+                                    content += sb.toString();
                                 }
-                                //Active SIM
-                                int sim = MobileUtils.getActiveSimForData(mContext);
-                                fileName = "sim_log.txt";
-                                content += "\n" + "Active SIM " + sim + "\n";
-                                file = new File(dir, fileName);
-                                try {
-                                    uris.add(Uri.fromFile(file));
-                                    InputStream is = openFileInput(fileName);
-                                    if (is != null) {
-                                        InputStreamReader isr = new InputStreamReader(is);
-                                        BufferedReader br = new BufferedReader(isr);
-                                        String read;
-                                        StringBuilder sb = new StringBuilder();
-                                        while ((read = br.readLine()) != null ) {
-                                            read += "\n";
-                                            sb.append(read);
-                                        }
-                                        is.close();
-                                        content += sb.toString();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                //Operator Names
-                                ArrayList<String> names = MobileUtils.getOperatorNames(mContext);
-                                fileName = "name_log.txt";
-                                content += "\n" + "Operator names " + names.toString() + "\n";
-                                file = new File(dir, fileName);
-                                try {
-                                    uris.add(Uri.fromFile(file));
-                                    InputStream is = openFileInput(fileName);
-                                    if (is != null) {
-                                        InputStreamReader isr = new InputStreamReader(is);
-                                        BufferedReader br = new BufferedReader(isr);
-                                        String read;
-                                        StringBuilder sb = new StringBuilder();
-                                        while ((read = br.readLine()) != null ) {
-                                            read += "\n";
-                                            sb.append(read);
-                                        }
-                                        is.close();
-                                        content += sb.toString();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                //OperatorCodes
-                                fileName = "code_log.txt";
-                                file = new File(dir, fileName);
-                                try {
-                                    uris.add(Uri.fromFile(file));
-                                    InputStream is = openFileInput(fileName);
-                                    if (is != null) {
-                                        InputStreamReader isr = new InputStreamReader(is);
-                                        BufferedReader br = new BufferedReader(isr);
-                                        String read;
-                                        StringBuilder sb = new StringBuilder();
-                                        while ((read = br.readLine()) != null ) {
-                                            read += "\n";
-                                            sb.append(read);
-                                        }
-                                        is.close();
-                                        content += sb.toString();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                emailIntent.putExtra(Intent.EXTRA_TEXT, content);
-                                emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                                startActivity(Intent.createChooser(emailIntent, getString(R.string.choose_client)));
-                                dialog.dismiss();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
+                            //Active SIM
+                            int sim = MobileUtils.getActiveSimForData(mContext);
+                            fileName = "sim_log.txt";
+                            content += "\n" + "Active SIM " + sim + "\n";
+                            file = new File(dir, fileName);
+                            try {
+                                uris.add(Uri.fromFile(file));
+                                InputStream is = openFileInput(fileName);
+                                if (is != null) {
+                                    InputStreamReader isr = new InputStreamReader(is);
+                                    BufferedReader br = new BufferedReader(isr);
+                                    String read;
+                                    StringBuilder sb = new StringBuilder();
+                                    while ((read = br.readLine()) != null ) {
+                                        read += "\n";
+                                        sb.append(read);
+                                    }
+                                    is.close();
+                                    content += sb.toString();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            //Operator Names
+                            ArrayList<String> names = MobileUtils.getOperatorNames(mContext);
+                            fileName = "name_log.txt";
+                            content += "\n" + "Operator names " + names.toString() + "\n";
+                            file = new File(dir, fileName);
+                            try {
+                                uris.add(Uri.fromFile(file));
+                                InputStream is = openFileInput(fileName);
+                                if (is != null) {
+                                    InputStreamReader isr = new InputStreamReader(is);
+                                    BufferedReader br = new BufferedReader(isr);
+                                    String read;
+                                    StringBuilder sb = new StringBuilder();
+                                    while ((read = br.readLine()) != null ) {
+                                        read += "\n";
+                                        sb.append(read);
+                                    }
+                                    is.close();
+                                    content += sb.toString();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            //OperatorCodes
+                            fileName = "code_log.txt";
+                            file = new File(dir, fileName);
+                            try {
+                                uris.add(Uri.fromFile(file));
+                                InputStream is = openFileInput(fileName);
+                                if (is != null) {
+                                    InputStreamReader isr = new InputStreamReader(is);
+                                    BufferedReader br = new BufferedReader(isr);
+                                    String read;
+                                    StringBuilder sb = new StringBuilder();
+                                    while ((read = br.readLine()) != null ) {
+                                        read += "\n";
+                                        sb.append(read);
+                                    }
+                                    is.close();
+                                    content += sb.toString();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            emailIntent.putExtra(Intent.EXTRA_TEXT, content);
+                            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                            startActivity(Intent.createChooser(emailIntent, getString(R.string.choose_client)));
+                            dialog.dismiss();
                         })
                         .show();
                 break;
@@ -354,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
             startActivity(mStarterIntent);
         } else if (mNeedsReloadView) {
-            if (currentFragment != null && currentFragment instanceof TrafficFragment) {
+            if (currentFragment instanceof TrafficFragment) {
                 fm.beginTransaction()
                         .detach(currentFragment)
                         .attach(currentFragment)

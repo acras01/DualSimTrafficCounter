@@ -45,7 +45,7 @@
         android:maxLines="1"
         android:layout_below="@+id/sim_group" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
@@ -55,7 +55,7 @@
         android:entries="@array/duration"
         android:minWidth="@dimen/spinner_width" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/set"

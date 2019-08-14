@@ -226,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-"
@@ -239,7 +239,7 @@
                         android:minLines="2"
                         tools:ignore="HardcodedText" />
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-"
@@ -251,7 +251,7 @@
                         android:width="@dimen/button_width"
                         android:minLines="2" />
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-"
@@ -269,7 +269,7 @@
                     android:layout_height="match_parent"
                     android:id="@+id/butrow">
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
@@ -278,7 +278,7 @@
                         android:gravity="center|center_horizontal"
                         style="?android:attr/buttonStyleSmall" />
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
@@ -287,7 +287,7 @@
                         android:gravity="center|center_horizontal"
                         style="?android:attr/buttonStyleSmall" />
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reset"
@@ -318,7 +318,7 @@
             android:layout_centerHorizontal="true"
             android:textColor="?android:attr/textColorPrimary" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/go_to_settings"

@@ -13,8 +13,8 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
@@ -163,7 +164,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
         @Override
         public final boolean canHandleRequest(Request data) {
-            return data.uri.getScheme().contains(SCHEME_APP_ICON) || data.uri.getScheme().contains(SCHEME_CONTACT_PHOTO);
+            return Objects.requireNonNull(data.uri.getScheme()).contains(SCHEME_APP_ICON) || data.uri.getScheme().contains(SCHEME_CONTACT_PHOTO);
         }
 
         @Override
@@ -188,7 +189,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                         if (cursor.moveToFirst()) {
                             byte[] data = cursor.getBlob(0);
                             if (data != null)
-                                return new Result(new ByteArrayInputStream(data), Picasso.LoadedFrom.DISK);
+                                return new Result(BitmapFactory.decodeStream(new ByteArrayInputStream(data)), Picasso.LoadedFrom.DISK);
                             else
                                 choice = true;
                         } else

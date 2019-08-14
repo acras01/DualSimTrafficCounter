@@ -9,12 +9,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +31,7 @@ import org.acra.ACRA;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
@@ -100,7 +101,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -188,7 +189,7 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         RelativeLayout remainL = findViewById(R.id.remain_layout);
         if (remainL != null) {
             remainSum = findViewById(R.id.remain_calls_summary);
-            remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[18], "1"));
+            remainSel = Integer.valueOf(Objects.requireNonNull(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[18], "1")));
             if (remainSel == 0)
                 remainSum.setText(R.string.remain);
             else
@@ -251,50 +252,23 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         logoSum3 = findViewById(R.id.logoSum3);
 
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[6], false)) {
-            Picasso.with(this)
-                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[3], "")))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo1);
+            loadImageFromFile(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[3], "")), mDim, logo1);
             logoSum1.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(this)
-                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[3], "none"), "drawable", mContext.getPackageName()))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo1);
+            loadImageFromResource(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[3],
+                    "none"), "drawable", mContext.getPackageName()), mDim, logo1);
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[7], false)) {
-            Picasso.with(this)
-                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[4], "")))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo2);
+            loadImageFromFile(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[4], "")), mDim, logo2);
             logoSum2.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(this)
-                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[4], "none"), "drawable", mContext.getPackageName()))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo2);
+            loadImageFromResource(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[4],
+                    "none"), "drawable", mContext.getPackageName()), mDim, logo2);
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_CALLS[8], false)) {
-            Picasso.with(this)
-                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[5], "")))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo3);
+            loadImageFromFile(new File(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[5], "")), mDim, logo3);
             logoSum3.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(this)
-                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[5], "none"), "drawable", mContext.getPackageName()))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo3);
+            loadImageFromResource(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_CALLS[5],
+                    "none"), "drawable", mContext.getPackageName()), mDim, logo3);
 
         String[] listitems = getResources().getStringArray(R.array.icons_values);
         String[] list = getResources().getStringArray(R.array.icons);
@@ -316,7 +290,9 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         setOnClickListenerWithChild(simFontL, this);
         setOnClickListenerWithChild(simLogoL, this);
         setOnClickListenerWithChild(showSimL, this);
-        setOnClickListenerWithChild(remainL, this);
+        if (remainL != null) {
+            setOnClickListenerWithChild(remainL, this);
+        }
         backColorL.setOnClickListener(this);
     }
 
@@ -375,32 +351,17 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
             if (logo.equals(Constants.PREF_WIDGET_CALLS[3])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[6], false);
                 mEdit.putString(Constants.PREF_WIDGET_CALLS[3], opLogo);
-                Picasso.with(this)
-                        .load(resourceId)
-                        .resize(mDim, mDim)
-                        .centerInside()
-                        .error(R.drawable.none)
-                        .into(logo1);
+                loadImageFromResource(resourceId, mDim, logo1);
                 logoSum1.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET_CALLS[4])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[7], false);
                 mEdit.putString(Constants.PREF_WIDGET_CALLS[4], opLogo);
-                Picasso.with(this)
-                        .load(resourceId)
-                        .resize(mDim, mDim)
-                        .centerInside()
-                        .error(R.drawable.none)
-                        .into(logo2);
+                loadImageFromResource(resourceId, mDim, logo2);
                 logoSum2.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET_CALLS[5])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[8], false);
                 mEdit.putString(Constants.PREF_WIDGET_CALLS[5], opLogo);
-                Picasso.with(this)
-                        .load(resourceId)
-                        .resize(mDim, mDim)
-                        .centerInside()
-                        .error(R.drawable.none)
-                        .into(logo3);
+                loadImageFromResource(resourceId, mDim, logo3);
                 logoSum3.setText(list[position]);
             }
         } else {
@@ -423,40 +384,43 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[8], true);
                         String path = getRealPathFromURI(selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[5], path);
-                        Picasso.with(this)
-                                .load(new File(path))
-                                .resize(mDim, mDim)
-                                .centerInside()
-                                .error(R.drawable.none)
-                                .into(logo1);
+                        loadImageFromFile(new File(path), mDim, logo1);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[6])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[9], true);
                         String path = getRealPathFromURI(selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[6], path);
-                        Picasso.with(this)
-                                .load(new File(path))
-                                .resize(mDim, mDim)
-                                .centerInside()
-                                .error(R.drawable.none)
-                                .into(logo2);
+                        loadImageFromFile(new File(path), mDim, logo2);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_CALLS[7])) {
                         mEdit.putBoolean(Constants.PREF_WIDGET_CALLS[10], true);
                         String path = getRealPathFromURI(selectedImage);
                         mEdit.putString(Constants.PREF_WIDGET_CALLS[7], path);
-                        Picasso.with(this)
-                                .load(new File(path))
-                                .resize(mDim, mDim)
-                                .centerInside()
-                                .error(R.drawable.none)
-                                .into(logo3);
+                        loadImageFromFile(new File(path), mDim, logo3);
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     }
                     mUserPickedImage = "";
                 }
                 break;
         }
+    }
+
+    private void loadImageFromFile(File file, int dim, ImageView dest) {
+        Picasso.get()
+                .load(file)
+                .resize(dim, dim)
+                .centerInside()
+                .error(R.drawable.none)
+                .into(dest);
+    }
+
+    private void loadImageFromResource(int id, int dim, ImageView dest) {
+        Picasso.get()
+                .load(id)
+                .resize(dim, dim)
+                .centerInside()
+                .error(R.drawable.none)
+                .into(dest);
     }
 
     @Override
@@ -573,21 +537,19 @@ public class CallsWidgetConfigActivity extends AppCompatActivity implements Icon
         AlertDialog.Builder ldb = new AlertDialog.Builder(this);
         ArrayAdapter<String> adapter = null;
         int selection = -1;
-        DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                ListView lv = ((AlertDialog) dialog).getListView();
-                String[] array = getStringArray(lv.getAdapter());
-                boolean isChecked = lv.getCheckedItemPosition() == 0;
-                if (Arrays.equals(array, getResources().getStringArray(R.array.remain))) {
-                    remainSel = lv.getCheckedItemPosition();
-                    mEdit.putString(Constants.PREF_WIDGET_CALLS[18], isChecked ? "0" : "1");
-                    if (isChecked)
-                        remainSum.setText(R.string.remain);
-                    else
-                        remainSum.setText(R.string.used);
-                }
-                dialog.dismiss();
+        DialogInterface.OnClickListener myClickListener = (dialog1, which) -> {
+            ListView lv = ((AlertDialog) dialog1).getListView();
+            String[] array = getStringArray(lv.getAdapter());
+            boolean isChecked = lv.getCheckedItemPosition() == 0;
+            if (Arrays.equals(array, getResources().getStringArray(R.array.remain))) {
+                remainSel = lv.getCheckedItemPosition();
+                mEdit.putString(Constants.PREF_WIDGET_CALLS[18], isChecked ? "0" : "1");
+                if (isChecked)
+                    remainSum.setText(R.string.remain);
+                else
+                    remainSum.setText(R.string.used);
             }
+            dialog1.dismiss();
         };
         switch (view.getId()) {
             case R.id.remain_calls_summary:

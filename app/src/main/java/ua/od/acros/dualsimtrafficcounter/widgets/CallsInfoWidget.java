@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -130,7 +131,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 edit.putInt(Constants.PREF_WIDGET_CALLS[19], Color.WHITE); // Total Text color
                 edit.apply();
             }
-            String[] operatorNames = new String[] {MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
+            String[] operatorNames = new String[]{MobileUtils.getName(context, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                     MobileUtils.getName(context, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                     MobileUtils.getName(context, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
             Intent settIntent = new Intent(context, CallsWidgetConfigActivity.class);
@@ -144,7 +145,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
             intent.setAction(Constants.CALLS_TAP);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, i, intent, 0);
 
-            int dim = Integer.parseInt(prefs.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE));
+            int dim = Integer.parseInt(Objects.requireNonNull(prefs.getString(Constants.PREF_WIDGET_CALLS[9], Constants.ICON_SIZE)));
 
             String sizestr = prefs.getString(Constants.PREF_WIDGET_CALLS[10], Constants.TEXT_SIZE);
 
@@ -153,9 +154,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM1
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[15], true)) {
                 String text;
-                if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1")).equals("0")) {
                     String limit = prefsSIM.getString(Constants.PREF_SIM1_CALLS[1], "");
-                    if (!limit.equals("")) {
+                    if (limit != null && !limit.equals("")) {
                         long lim = Long.valueOf(limit) * Constants.MINUTE;
                         long rest = lim - bundle.getLong(Constants.CALLS1, 0);
                         if (rest < 0)
@@ -174,14 +175,14 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
                     if (!prefs.getBoolean(Constants.PREF_WIDGET_CALLS[6], false))
-                        Picasso.with(context)
+                        Picasso.get()
                                 .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_CALLS[3], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
                                 .into(updateViews, R.id.logo1, new int[]{i});
                     else
-                        Picasso.with(context)
+                        Picasso.get()
                                 .load(new File(prefs.getString(Constants.PREF_WIDGET_CALLS[3], "")))
                                 .resize(dim, dim)
                                 .centerInside()
@@ -197,7 +198,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.operSIM1, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM1, settPIntent);
                 }
-                if (!sizestr.equals("")) {
+                if (sizestr != null && !sizestr.equals("")) {
                     updateViews.setFloat(R.id.totSIM1, "setTextSize", Float.parseFloat(sizestr));
                     updateViews.setFloat(R.id.operSIM1, "setTextSize", Float.parseFloat(sizestr));
                 } else {
@@ -213,9 +214,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM2
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[16], true)) {
                 String text;
-                if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1")).equals("0")) {
                     String limit = prefsSIM.getString(Constants.PREF_SIM2_CALLS[1], "");
-                    if (!limit.equals("")) {
+                    if (limit != null && !limit.equals("")) {
                         long lim = Long.valueOf(limit) * Constants.MINUTE;
                         long rest = lim - bundle.getLong(Constants.CALLS2, 0);
                         if (rest < 0)
@@ -233,14 +234,14 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 }
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
                     if (!prefs.getBoolean(Constants.PREF_WIDGET_CALLS[7], false))
-                        Picasso.with(context)
+                        Picasso.get()
                                 .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_CALLS[4], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
                                 .into(updateViews, R.id.logo2, new int[]{i});
                     else
-                        Picasso.with(context)
+                        Picasso.get()
                                 .load(new File(prefs.getString(Constants.PREF_WIDGET_CALLS[4], "")))
                                 .resize(dim, dim)
                                 .centerInside()
@@ -256,7 +257,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.operSIM2, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM2, settPIntent);
                 }
-                if (!sizestr.equals("")) {
+                if (sizestr != null && !sizestr.equals("")) {
                     updateViews.setFloat(R.id.totSIM2, "setTextSize", Float.parseFloat(sizestr));
                     updateViews.setFloat(R.id.operSIM2, "setTextSize", Float.parseFloat(sizestr));
                 } else {
@@ -281,9 +282,9 @@ public class CallsInfoWidget extends AppWidgetProvider {
             //SIM3
             if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[17], true)) {
                 String text;
-                if (prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1").equals("0")) {
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_WIDGET_CALLS[18], "1")).equals("0")) {
                     String limit = prefsSIM.getString(Constants.PREF_SIM3_CALLS[1], "");
-                    if (!limit.equals("")) {
+                    if (limit != null && !limit.equals("")) {
                         long lim = Long.valueOf(limit) * Constants.MINUTE;
                         long rest = lim - bundle.getLong(Constants.CALLS3, 0);
                         if (rest < 0)
@@ -303,14 +304,14 @@ public class CallsInfoWidget extends AppWidgetProvider {
                 if (prefs.getBoolean(Constants.PREF_WIDGET_CALLS[2], true)) {
 
                     if (!prefs.getBoolean(Constants.PREF_WIDGET_CALLS[8], false))
-                        Picasso.with(context)
+                        Picasso.get()
                                 .load(context.getResources().getIdentifier(prefs.getString(Constants.PREF_WIDGET_CALLS[5], "none"), "drawable", context.getPackageName()))
                                 .resize(dim, dim)
                                 .centerInside()
                                 .error(R.drawable.none)
                                 .into(updateViews, R.id.logo3, new int[]{i});
                     else
-                        Picasso.with(context)
+                        Picasso.get()
                                 .load(new File(prefs.getString(Constants.PREF_WIDGET_CALLS[5], "")))
                                 .resize(dim, dim)
                                 .centerInside()
@@ -326,7 +327,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
                     updateViews.setOnClickPendingIntent(R.id.operSIM3, settPIntent);
                     updateViews.setOnClickPendingIntent(R.id.totSIM3, settPIntent);
                 }
-                if (!sizestr.equals("")) {
+                if (sizestr != null && !sizestr.equals("")) {
                     updateViews.setFloat(R.id.totSIM3, "setTextSize", Float.parseFloat(sizestr));
                     updateViews.setFloat(R.id.operSIM3, "setTextSize", Float.parseFloat(sizestr));
                 } else {
@@ -370,7 +371,7 @@ public class CallsInfoWidget extends AppWidgetProvider {
 
     @Override
     public final void onDisabled(Context context) {
-        Picasso.with(context).shutdown();
+        Picasso.get().shutdown();
         //super.onDisabled(context);
     }
 }

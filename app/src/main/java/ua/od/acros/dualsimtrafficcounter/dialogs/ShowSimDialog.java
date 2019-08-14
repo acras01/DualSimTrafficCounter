@@ -3,23 +3,22 @@ package ua.od.acros.dualsimtrafficcounter.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatCheckBox;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.utils.Constants;
@@ -54,9 +53,11 @@ public class ShowSimDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         mContext = CustomApplication.getAppContext();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        myActivity = new WeakReference<Activity>(getActivity());
-        mActivity = getArguments().getString("activity");
-        mSim = getArguments().getBooleanArray("sim");
+        myActivity = new WeakReference<>(getActivity());
+        if (getArguments() != null) {
+            mActivity = getArguments().getString("activity");
+            mSim = getArguments().getBooleanArray("sim");
+        }
         mOperatorNames = new String[] {MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
                 MobileUtils.getName(mContext, Constants.PREF_SIM3[5], Constants.PREF_SIM3[6], Constants.SIM3)};
@@ -71,32 +72,24 @@ public class ShowSimDialog extends DialogFragment {
             items.add(new Item(mOperatorNames[i], mSim[i]));
         }
         final CustomListAdapter adapter = new CustomListAdapter(mContext, R.layout.showsim_list_row, items);
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+        final AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(R.string.choose_sim)
                 .setAdapter(adapter, null)
                 .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
+                .setNegativeButton(android.R.string.cancel, (dialog1, id) -> dialog1.cancel())
                 .create();
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                bOK.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ShowSimDialogClosedListener listener = (ShowSimDialogClosedListener) getActivity();
-                        for (Item item : adapter.getList()) {
-                            mSim[adapter.getList().indexOf(item)] = item.isChecked();
-                        }
-                        listener.OnDialogClosed(mActivity, mSim);
-                        dismiss();
-                    }
-                });
-            }
+        dialog.setOnShowListener(dialogInterface -> {
+            bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            bOK.setOnClickListener(view -> {
+                ShowSimDialogClosedListener listener = (ShowSimDialogClosedListener) getActivity();
+                for (Item item : adapter.getList()) {
+                    mSim[adapter.getList().indexOf(item)] = item.isChecked();
+                }
+                if (listener != null) {
+                    listener.OnDialogClosed(mActivity, mSim);
+                }
+                dismiss();
+            });
         });
         return dialog;
     }
@@ -153,12 +146,7 @@ public class ShowSimDialog extends DialogFragment {
             holder.item.setTag(list.get(position));
             holder.item.setText(list.get(position).getName());
             holder.item.setChecked(list.get(position).isChecked());
-            holder.item.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    ((Item) buttonView.getTag()).setChecked(isChecked);
-                }
-            });
+            holder.item.setOnCheckedChangeListener((buttonView, isChecked) -> ((Item) buttonView.getTag()).setChecked(isChecked));
             if (position >= mSimQuantity) {
                 holder.item.setEnabled(false);
                 holder.item.setChecked(false);

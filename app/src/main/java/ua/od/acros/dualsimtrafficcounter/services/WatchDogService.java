@@ -16,6 +16,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -48,7 +49,7 @@ public class WatchDogService extends Service{
         super.onCreate();
         mContext = CustomApplication.getAppContext();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mInterval = Long.parseLong(mPrefs.getString(Constants.PREF_OTHER[8], "1")) * 60 * 1000;
+        mInterval = Long.parseLong(Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[8], "1"))) * 60 * 1000;
         mDbHelper = CustomDatabaseHelper.getInstance(mContext);
         // cancel if already existed
         if (mTimer != null) {

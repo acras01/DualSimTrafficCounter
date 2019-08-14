@@ -13,10 +13,11 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -48,7 +50,7 @@ import ua.od.acros.dualsimtrafficcounter.utils.DataFormat;
 import ua.od.acros.dualsimtrafficcounter.utils.MobileUtils;
 import ua.od.acros.dualsimtrafficcounter.widgets.TrafficInfoWidget;
 
-import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
+import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
 
 public class TrafficFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -81,7 +83,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (mContext == null)
-            mContext = getActivity().getApplicationContext();
+            mContext = Objects.requireNonNull(getActivity()).getApplicationContext();
         mShowNightTraffic1 = mShowNightTraffic2 = mShowNightTraffic3 = false;
         mOperatorNames = new String[]{MobileUtils.getName(mContext, Constants.PREF_SIM1[5], Constants.PREF_SIM1[6], Constants.SIM1),
                 MobileUtils.getName(mContext, Constants.PREF_SIM2[5], Constants.PREF_SIM2[6], Constants.SIM2),
@@ -100,7 +102,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 if (isVisible()) {
                     try {
                         if (!mShowNightTraffic1) {
-                            if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                            if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                                 if (RX1 != null)
                                     RX1.setText(DataFormat.formatData(context, mIsNight[0] ? intent.getLongExtra(Constants.SIM1RX_N, 0L) :
                                             intent.getLongExtra(Constants.SIM1RX, 0L)));
@@ -121,7 +123,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             if (!mShowNightTraffic2) {
                                 TOT2.setText(DataFormat.formatData(context, mIsNight[1] ? intent.getLongExtra(Constants.TOTAL2_N, 0L) :
                                         intent.getLongExtra(Constants.TOTAL2, 0L)));
-                                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                                     if (RX2 != null)
                                         RX2.setText(DataFormat.formatData(context, mIsNight[1] ? intent.getLongExtra(Constants.SIM2RX_N, 0L) :
                                                 intent.getLongExtra(Constants.SIM2RX, 0L)));
@@ -140,7 +142,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             if (!mShowNightTraffic3) {
                                 TOT3.setText(DataFormat.formatData(context, mIsNight[2] ? intent.getLongExtra(Constants.TOTAL3_N, 0L) :
                                         intent.getLongExtra(Constants.TOTAL3, 0L)));
-                                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                                     if (RX3 != null)
                                         RX3.setText(DataFormat.formatData(context, mIsNight[2] ? intent.getLongExtra(Constants.SIM3RX_N, 0L) :
                                                 intent.getLongExtra(Constants.SIM3RX, 0L)));
@@ -162,7 +164,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         String rxSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDRX, 0L));
                         String txSpeed = DataFormat.formatData(context, intent.getLongExtra(Constants.SPEEDTX, 0L));
                         setLabelText(intent.getIntExtra(Constants.SIM_ACTIVE, 0), txSpeed, rxSpeed);
-                        invalidateOptionsMenu(getActivity());
+                        invalidateOptionsMenu(Objects.requireNonNull(getActivity()));
                     } catch (Exception e) {
                         e.printStackTrace();
                         ACRA.getErrorReporter().handleException(e);
@@ -194,14 +196,14 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             ACRA.getErrorReporter().handleException(e);
         }
         if (close)
-            getActivity().finish();
+            Objects.requireNonNull(getActivity()).finish();
         else
-            invalidateOptionsMenu(getActivity());
+            invalidateOptionsMenu(Objects.requireNonNull(getActivity()));
     }
 
     @Subscribe
     public final void onMessageEvent(TipTrafficEvent event) {
-        getActivity().runOnUiThread(new Runnable() {
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (isVisible()) {
@@ -221,13 +223,13 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         super.onResume();
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setSubtitle(R.string.notification_title);
         mIsRunning = mPrefs.getBoolean(Constants.PREF_OTHER[48], true);
         if (mService != null)
             setOptionsMenuButton(mService);
         bSet.setOnClickListener(this);
         readTrafficDataFromDatabase();
-        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+        if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
             if (RX1 != null)
                 RX1.setText(DataFormat.formatData(mContext, mIsNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                         (long) mTrafficData.get(Constants.SIM1RX)));
@@ -395,16 +397,16 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 break;
         }
         if (dialog != null)
-            dialog.show(getActivity().getSupportFragmentManager(), "dialog");
+            dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "dialog");
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                                   Bundle savedInstanceState) {
         View view;
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
-        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+        if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
             view = inflater.inflate(R.layout.traffic_fragment, container, false);
             RX1 = view.findViewById(R.id.RX1);
             TX1 = view.findViewById(R.id.TX1);
@@ -435,7 +437,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         bSet = view.findViewById(R.id.settings);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+            if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                 if (TX2 != null)
                     TX2.setVisibility(View.GONE);
                 if (RX2 != null)
@@ -459,7 +461,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
         }
         if (mSimQuantity >= 2)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                     if (TX2 != null)
                         TX2.setVisibility(View.VISIBLE);
                     if (RX2 != null)
@@ -473,7 +475,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 view.findViewById(R.id.sim2row).setVisibility(View.VISIBLE);
         if (mSimQuantity == 3)
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                     if (TX3 != null)
                         TX3.setVisibility(View.VISIBLE);
                     if (RX3 != null)
@@ -486,7 +488,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
             } else
                 view.findViewById(R.id.sim3row).setVisibility(View.VISIBLE);
 
-        if (!CustomApplication.isDataUsageAvailable())
+        if (CustomApplication.isDataUsageAvailable())
             view.findViewById(R.id.settings).setEnabled(false);
 
         // Inflate the layout for this fragment
@@ -603,7 +605,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.TOTAL1, 0L);
                     }
                     writeTrafficDataToDatabase();
-                    if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                    if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                         if (RX1 != null)
                             RX1.setText(DataFormat.formatData(mContext, isNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                                     (long) mTrafficData.get(Constants.SIM1RX)));
@@ -630,7 +632,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.TOTAL2, 0L);
                     }
                     writeTrafficDataToDatabase();
-                    if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                    if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                         if (RX2 != null)
                             RX2.setText(DataFormat.formatData(mContext, isNight[1] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
                                     (long) mTrafficData.get(Constants.SIM2RX)));
@@ -657,7 +659,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         mTrafficData.put(Constants.TOTAL3, 0L);
                     }
                     writeTrafficDataToDatabase();
-                    if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                    if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                         if (RX3 != null)
                             RX3.setText(DataFormat.formatData(mContext, isNight[2] ? (long) mTrafficData.get(Constants.SIM3RX_N) :
                                     (long) mTrafficData.get(Constants.SIM3RX)));
@@ -677,7 +679,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             SIM1.setText(!isNight[0] ? "SIM1" + getString(R.string.night) : "SIM1");
                         else
                             SIM1.setText(!isNight[0] ? mOperatorNames[0] + getString(R.string.night) : mOperatorNames[0]);
-                        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                        if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                             if (RX1 != null)
                                 RX1.setText(DataFormat.formatData(mContext, !isNight[0] ? (long) mTrafficData.get(Constants.SIM1RX_N) :
                                         (long) mTrafficData.get(Constants.SIM1RX)));
@@ -698,7 +700,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                             SIM2.setText(!isNight[1] ? "SIM2" + getString(R.string.night) : "SIM2");
                         else
                             SIM2.setText(!isNight[1] ? mOperatorNames[1] + getString(R.string.night) : mOperatorNames[1]);
-                        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                        if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                             if (RX2 != null)
                                 RX2.setText(DataFormat.formatData(mContext, !isNight[1] ? (long) mTrafficData.get(Constants.SIM2RX_N) :
                                         (long) mTrafficData.get(Constants.SIM2RX)));
@@ -715,7 +717,7 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                 if (mPrefs.getBoolean(Constants.PREF_SIM3[17], false)) {
                     mShowNightTraffic3 = !mShowNightTraffic3;
                     if (mShowNightTraffic3) {
-                        if (mPrefs.getString(Constants.PREF_OTHER[7], "0").equals("0")) {
+                        if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_OTHER[7], "0")).equals("0")) {
                             if (mOperatorNames[2].equals(""))
                                 SIM3.setText(!isNight[2] ? "SIM3" + getString(R.string.night) : "SIM3");
                             else
@@ -787,7 +789,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                     limit1Builder.append("/").append(list[i]);
                 String date = mPrefs.getString(Constants.PREF_SIM1[26], getString(R.string.not_set));
                 try {
-                    date = date.substring(0, 10);
+                    if (date != null) {
+                        date = date.substring(0, 10);
+                    }
                     limit1Builder.append(getString(R.string.next_reset)).append(date);
                 } catch (Exception e) {
                     limit1Builder.append("\n").append(date);
@@ -801,7 +805,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         limit2Builder.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM2[26], getString(R.string.not_set));
                     try {
-                        date = date.substring(0, 10);
+                        if (date != null) {
+                            date = date.substring(0, 10);
+                        }
                         limit2Builder.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
                         limit2Builder.append("\n").append(date);
@@ -815,7 +821,9 @@ public class TrafficFragment extends Fragment implements View.OnClickListener, S
                         limit3.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM3[26], getString(R.string.not_set));
                     try {
-                        date = date.substring(0, 10);
+                        if (date != null) {
+                            date = date.substring(0, 10);
+                        }
                         limit3.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
                         limit3.append("\n").append(date);

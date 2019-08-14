@@ -3,7 +3,7 @@ package ua.od.acros.dualsimtrafficcounter.preferences;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.v7.preference.DialogPreference;
+import androidx.preference.DialogPreference;
 import android.util.AttributeSet;
 
 import java.util.Locale;

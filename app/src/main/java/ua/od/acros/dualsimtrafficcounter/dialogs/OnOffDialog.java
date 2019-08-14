@@ -2,23 +2,24 @@ package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatRadioButton;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatRadioButton;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.OnOffTrafficEvent;
@@ -66,27 +67,24 @@ public class OnOffDialog extends DialogFragment {
             if (simQuantity == 3)
                 sim3rb.setEnabled(true);
         }
-        final ColorStateList[] textColor = {ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.colorAccent))};
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                chbClose.setEnabled(true);
-                bOK.setEnabled(true);
-                bOK.setTextColor(textColor[0]);
-                switch (checkedId) {
-                    case R.id.sim1RB:
-                        mSimChecked = Constants.SIM1;
-                        break;
-                    case R.id.sim2RB:
-                        mSimChecked = Constants.SIM2;
-                        break;
-                    case R.id.sim3RB:
-                        mSimChecked = Constants.SIM3;
-                        break;
-                    case R.id.offRB:
-                        mSimChecked = Constants.DISABLED;
-                        break;
-                }
+        final ColorStateList[] textColor = {ColorStateList.valueOf(ContextCompat.getColor(Objects.requireNonNull(getActivity()), R.color.colorAccent))};
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            chbClose.setEnabled(true);
+            bOK.setEnabled(true);
+            bOK.setTextColor(textColor[0]);
+            switch (checkedId) {
+                case R.id.sim1RB:
+                    mSimChecked = Constants.SIM1;
+                    break;
+                case R.id.sim2RB:
+                    mSimChecked = Constants.SIM2;
+                    break;
+                case R.id.sim3RB:
+                    mSimChecked = Constants.SIM3;
+                    break;
+                case R.id.offRB:
+                    mSimChecked = Constants.DISABLED;
+                    break;
             }
         });
 
@@ -94,33 +92,23 @@ public class OnOffDialog extends DialogFragment {
                 .setView(view)
                 .setTitle(R.string.choose_sim)
                 .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
+                .setNegativeButton(android.R.string.cancel, (dialog1, id) -> dialog1.cancel())
                 .create();
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                chbClose.setEnabled(false);
-                chbClose.setChecked(false);
-                bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                textColor[0] = bOK.getTextColors();
-                bOK.setEnabled(false);
-                bOK.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark));
-                bOK.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (mSimChecked != Constants.NULL) {
-                            dialog.dismiss();
-                            EventBus.getDefault().post(new OnOffTrafficEvent(mSimChecked, chbClose.isChecked()));
-                        } else
-                            Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+        dialog.setOnShowListener(dialogInterface -> {
+            chbClose.setEnabled(false);
+            chbClose.setChecked(false);
+            bOK = (AppCompatButton) dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            textColor[0] = bOK.getTextColors();
+            bOK.setEnabled(false);
+            bOK.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getActivity()), R.color.colorPrimaryDark));
+            bOK.setOnClickListener(view1 -> {
+                if (mSimChecked != Constants.NULL) {
+                    dialog.dismiss();
+                    EventBus.getDefault().post(new OnOffTrafficEvent(mSimChecked, chbClose.isChecked()));
+                } else
+                    Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+            });
         });
         return dialog;
     }

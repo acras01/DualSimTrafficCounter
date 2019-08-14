@@ -1,11 +1,11 @@
 package ua.od.acros.dualsimtrafficcounter.preferences;
 
 import android.content.Context;
-import android.support.v7.preference.PreferenceViewHolder;
+import androidx.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-public class TwoLineCheckPreference extends android.support.v7.preference.CheckBoxPreference {
+public class TwoLineCheckPreference extends androidx.preference.CheckBoxPreference {
 
     public TwoLineCheckPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

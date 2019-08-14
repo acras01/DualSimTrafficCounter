@@ -1,10 +1,12 @@
 package ua.od.acros.dualsimtrafficcounter.utils;
 
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
+
+import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -101,21 +103,24 @@ public class DateUtils {
     @Nullable
     public static LocalDateTime setResetDate(SharedPreferences preferences, String[] simPref) {
         String time = preferences.getString(simPref[1], "00:00");
-        LocalDateTime now = new LocalDateTime()
-                .withHourOfDay(Integer.valueOf(time.split(":")[0]))
-                .withMinuteOfHour(Integer.valueOf(time.split(":")[1]));
-        int delta = parseInt(preferences.getString(simPref[2], "1"));
-        switch (preferences.getString(simPref[0], "")) {
-            case "0":
-                delta = 1;
-                return now.plusDays(delta);
-            case "1":
-                if (delta >= now.getDayOfMonth())
-                    return now.withDayOfMonth(delta);
-                else
-                    return now.plusMonths(1).withDayOfMonth(delta);
-            case "2":
-                return now.plusDays(delta);
+        LocalDateTime now;
+        if (time != null) {
+            now = new LocalDateTime()
+                    .withHourOfDay(Integer.valueOf(time.split(":")[0]))
+                    .withMinuteOfHour(Integer.valueOf(time.split(":")[1]));
+            int delta = parseInt(Objects.requireNonNull(preferences.getString(simPref[2], "1")));
+            switch (Objects.requireNonNull(preferences.getString(simPref[0], ""))) {
+                case "0":
+                    delta = 1;
+                    return now.plusDays(delta);
+                case "1":
+                    if (delta >= now.getDayOfMonth())
+                        return now.withDayOfMonth(delta);
+                    else
+                        return now.plusMonths(1).withDayOfMonth(delta);
+                case "2":
+                    return now.plusDays(delta);
+            }
         }
         return null;
     }

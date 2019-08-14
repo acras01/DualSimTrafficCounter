@@ -1,13 +1,14 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.CustomDialogEvent;
@@ -29,18 +30,18 @@ public class CustomDialog extends DialogFragment {
     @NonNull
     @Override
     public final Dialog onCreateDialog(Bundle savedInstanceState) {
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+        final AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setCancelable(false)
                 .setTitle(R.string.attention)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        EventBus.getDefault().post(new CustomDialogEvent());
-                    }
+                .setPositiveButton(android.R.string.ok, (dialog1, which) -> {
+                    dialog1.dismiss();
+                    EventBus.getDefault().post(new CustomDialogEvent());
                 })
                 .create();
-        String key = getArguments().getString("key");
+        String key = null;
+        if (getArguments() != null) {
+            key = getArguments().getString("key");
+        }
         if (key != null) {
             switch (key) {
                 case FIRST_RUN:

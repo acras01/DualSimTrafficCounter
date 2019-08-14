@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Objects;
+
 import ua.od.acros.dualsimtrafficcounter.events.MobileConnectionEvent;
 import ua.od.acros.dualsimtrafficcounter.events.NoConnectivityEvent;
 import ua.od.acros.dualsimtrafficcounter.services.TrafficCountService;
@@ -24,7 +26,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit()
                 .putInt(Constants.PREF_OTHER[55], prefs.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                        : Integer.valueOf(prefs.getString(Constants.PREF_OTHER[14], "1")))
+                        : Integer.valueOf(Objects.requireNonNull(prefs.getString(Constants.PREF_OTHER[14], "1"))))
                 .apply();
 
         if (intent.getAction() != null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -40,7 +42,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                         !prefs.getBoolean(Constants.PREF_OTHER[5], false)) {
                     Intent i = new Intent(context, TrafficCountService.class);
                     i.setAction(intent.getAction());
-                    i.putExtras(intent.getExtras());
+                    i.putExtras(Objects.requireNonNull(intent.getExtras()));
                     i.setFlags(intent.getFlags());
                     context.startService(i);
                 } else if (CustomApplication.isMyServiceRunning(TrafficCountService.class))

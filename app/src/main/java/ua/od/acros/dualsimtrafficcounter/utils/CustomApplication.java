@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -103,11 +104,11 @@ public class CustomApplication extends Application {
 
         if (!preferences.contains(Constants.PREF_OTHER[55]))
             edit.putInt(Constants.PREF_OTHER[55], preferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(context)
-                    : Integer.valueOf(preferences.getString(Constants.PREF_OTHER[14], "1")))
+                    : Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_OTHER[14], "1"))))
                     .apply();
 
         Map<String, ?> keys = preferences.getAll();
-        if (keys.get(Constants.PREF_OTHER[28]) != null && keys.get(Constants.PREF_OTHER[28]).getClass().equals(Boolean.class)) {
+        if (keys.get(Constants.PREF_OTHER[28]) != null && Objects.requireNonNull(Objects.requireNonNull(keys.get(Constants.PREF_OTHER[28]))).getClass().equals(Boolean.class)) {
             if (preferences.getBoolean(Constants.PREF_OTHER[28], true))
                 edit.remove(Constants.PREF_OTHER[28])
                         .putString(Constants.PREF_OTHER[28], "0");
@@ -115,7 +116,7 @@ public class CustomApplication extends Application {
                 edit.remove(Constants.PREF_OTHER[28])
                         .putString(Constants.PREF_OTHER[28], "1");
         }
-        if (keys.get(Constants.PREF_OTHER[7]) != null && keys.get(Constants.PREF_OTHER[7]).getClass().equals(Boolean.class)) {
+        if (keys.get(Constants.PREF_OTHER[7]) != null && Objects.requireNonNull(keys.get(Constants.PREF_OTHER[7])).getClass().equals(Boolean.class)) {
             if (preferences.getBoolean(Constants.PREF_OTHER[7], true))
                 edit.remove(Constants.PREF_OTHER[7])
                         .putString(Constants.PREF_OTHER[7], "0");
@@ -123,7 +124,7 @@ public class CustomApplication extends Application {
                 edit.remove(Constants.PREF_OTHER[7])
                         .putString(Constants.PREF_OTHER[7], "1");
         }
-        if (keys.get(Constants.PREF_OTHER[19]) != null && keys.get(Constants.PREF_OTHER[19]).getClass().equals(Boolean.class)) {
+        if (keys.get(Constants.PREF_OTHER[19]) != null && Objects.requireNonNull(keys.get(Constants.PREF_OTHER[19])).getClass().equals(Boolean.class)) {
             if (preferences.getBoolean(Constants.PREF_OTHER[19], true))
                 edit.remove(Constants.PREF_OTHER[19])
                         .putString(Constants.PREF_OTHER[19], "0");
@@ -131,7 +132,7 @@ public class CustomApplication extends Application {
                 edit.remove(Constants.PREF_OTHER[19])
                         .putString(Constants.PREF_OTHER[19], "1");
         }
-        if (keys.get(Constants.PREF_OTHER[16]) != null && keys.get(Constants.PREF_OTHER[16]).getClass().equals(Boolean.class)) {
+        if (keys.get(Constants.PREF_OTHER[16]) != null && Objects.requireNonNull(keys.get(Constants.PREF_OTHER[16])).getClass().equals(Boolean.class)) {
             if (preferences.getBoolean(Constants.PREF_OTHER[16], true))
                 edit.putString(Constants.PREF_OTHER[16], "0")
                         .remove(Constants.PREF_OTHER[16]);
@@ -139,7 +140,7 @@ public class CustomApplication extends Application {
                 edit.remove(Constants.PREF_OTHER[16])
                         .putString(Constants.PREF_OTHER[16], "1");
         }
-        if (keys.get(Constants.PREF_OTHER[27]) != null && keys.get(Constants.PREF_OTHER[27]).getClass().equals(Boolean.class)) {
+        if (keys.get(Constants.PREF_OTHER[27]) != null && Objects.requireNonNull(keys.get(Constants.PREF_OTHER[27])).getClass().equals(Boolean.class)) {
             if (preferences.getBoolean(Constants.PREF_OTHER[27], true))
                 edit.remove(Constants.PREF_OTHER[27])
                         .putString(Constants.PREF_OTHER[27], "0");
@@ -147,7 +148,7 @@ public class CustomApplication extends Application {
                 edit.remove(Constants.PREF_OTHER[27])
                         .putString(Constants.PREF_OTHER[27], "1");
         }
-        if (keys.get(Constants.PREF_OTHER[39]) != null && keys.get(Constants.PREF_OTHER[39]).getClass().equals(Boolean.class)) {
+        if (keys.get(Constants.PREF_OTHER[39]) != null && Objects.requireNonNull(keys.get(Constants.PREF_OTHER[39])).getClass().equals(Boolean.class)) {
             if (preferences.getBoolean(Constants.PREF_OTHER[39], true))
                 edit.remove(Constants.PREF_OTHER[39])
                         .putString(Constants.PREF_OTHER[39], "0");
@@ -164,7 +165,7 @@ public class CustomApplication extends Application {
                 keys = prefsWidget.getAll();
                 edit = prefsWidget.edit();
                 if (keys.get(Constants.PREF_WIDGET_TRAFFIC[2]) != null &&
-                        keys.get(Constants.PREF_WIDGET_TRAFFIC[2]).getClass().equals(Boolean.class)) {
+                        Objects.requireNonNull(keys.get(Constants.PREF_WIDGET_TRAFFIC[2])).getClass().equals(Boolean.class)) {
                     if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[2], true))
                         edit.putString(Constants.PREF_WIDGET_TRAFFIC[2], "0")
                                 .remove(Constants.PREF_WIDGET_TRAFFIC[2]);
@@ -173,7 +174,7 @@ public class CustomApplication extends Application {
                                 .putString(Constants.PREF_WIDGET_TRAFFIC[2], "1");
                 }
                 if (keys.get(Constants.PREF_WIDGET_TRAFFIC[24]) != null &&
-                        keys.get(Constants.PREF_WIDGET_TRAFFIC[24]).getClass().equals(Boolean.class)) {
+                        Objects.requireNonNull(keys.get(Constants.PREF_WIDGET_TRAFFIC[24])).getClass().equals(Boolean.class)) {
                     if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[24], true))
                         edit.remove(Constants.PREF_WIDGET_TRAFFIC[24])
                                 .putString(Constants.PREF_WIDGET_TRAFFIC[24], "0");
@@ -182,7 +183,7 @@ public class CustomApplication extends Application {
                                 .putString(Constants.PREF_WIDGET_TRAFFIC[24], "1");
                 }
                 if (keys.get(Constants.PREF_WIDGET_TRAFFIC[25]) != null &&
-                        keys.get(Constants.PREF_WIDGET_TRAFFIC[25]).getClass().equals(Boolean.class)) {
+                        Objects.requireNonNull(keys.get(Constants.PREF_WIDGET_TRAFFIC[25])).getClass().equals(Boolean.class)) {
                     if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[25], true))
                         edit.remove(Constants.PREF_WIDGET_TRAFFIC[25])
                                 .putString(Constants.PREF_WIDGET_TRAFFIC[25], "0");
@@ -298,7 +299,7 @@ public class CustomApplication extends Application {
     }
 
     public static boolean isDataUsageAvailable() {
-        return mIsDataUsageAvailable;
+        return !mIsDataUsageAvailable;
     }
 
     public static Context getAppContext() {
@@ -355,22 +356,19 @@ public class CustomApplication extends Application {
 
     // Supported MTK devices
     private static final Set<String> OLD_MTK_DEVICES = new HashSet<>(Arrays.asList(
-            new String[]{
-                    // Single-core SoC
-                    "mt6575",
-                    // Dual-core SoC
-                    "mt6572",
-                    "mt6577",
-                    "mt8377",
-                    // Quad-core SoC
-                    "mt6582",
-                    "mt6582m",
-                    "mt6589",
-                    "mt8389",
-                    // Octa-core SoC
-                    "mt6592"
-            }
-    ));
+            // Single-core SoC
+            "mt6575",
+            // Dual-core SoC
+            "mt6572",
+            "mt6577",
+            "mt8377",
+            // Quad-core SoC
+            "mt6582",
+            "mt6582m",
+            "mt6589",
+            "mt8389",
+            // Octa-core SoC
+            "mt6592"));
 
     public static boolean isOldMtkDevice() {
         if (mIsOldMtkDevice == null)
@@ -383,7 +381,7 @@ public class CustomApplication extends Application {
 
     public static boolean hasGeminiSupport() {
         if (mHasGeminiSupport == null)
-            mHasGeminiSupport = System.getProperty("ro.mediatek.gemini_support", "").equals("true") &&
+            mHasGeminiSupport = Objects.requireNonNull(System.getProperty("ro.mediatek.gemini_support", "")).equals("true") &&
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1;
         return mHasGeminiSupport;
     }
@@ -444,25 +442,25 @@ public class CustomApplication extends Application {
         int limit1, limit2, limit3;
         try {
             if (min)
-                limit1 = Integer.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], "")) * Constants.MINUTE;
+                limit1 = Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM1_CALLS[1], ""))) * Constants.MINUTE;
             else
-                limit1 = Integer.valueOf(preferences.getString(Constants.PREF_SIM1_CALLS[1], ""));
+                limit1 = Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM1_CALLS[1], "")));
         } catch (Exception e) {
             limit1 = Integer.MAX_VALUE;
         }
         try {
             if (min)
-                limit2 = Integer.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], "")) * Constants.MINUTE;
+                limit2 = Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM2_CALLS[1], ""))) * Constants.MINUTE;
             else
-                limit2 = Integer.valueOf(preferences.getString(Constants.PREF_SIM2_CALLS[1], ""));
+                limit2 = Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM2_CALLS[1], "")));
         } catch (Exception e) {
             limit2 = Integer.MAX_VALUE;
         }
         try {
             if (min)
-                limit3 = Integer.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], "")) * Constants.MINUTE;
+                limit3 = Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM3_CALLS[1], ""))) * Constants.MINUTE;
             else
-                limit3 = Integer.valueOf(preferences.getString(Constants.PREF_SIM3_CALLS[1], ""));
+                limit3 = Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM3_CALLS[1], "")));
         } catch (Exception e) {
             limit3 = Integer.MAX_VALUE;
         }
@@ -479,39 +477,39 @@ public class CustomApplication extends Application {
         String round2 = isNight[1] ? preferences.getString(Constants.PREF_SIM2[22], "0") : preferences.getString(Constants.PREF_SIM2[4], "0");
         String round3 = isNight[2] ? preferences.getString(Constants.PREF_SIM3[22], "0") : preferences.getString(Constants.PREF_SIM3[4], "0");
         int value1;
-        if (preferences.getString(Constants.PREF_SIM1[2], "").equals(""))
+        if (Objects.requireNonNull(preferences.getString(Constants.PREF_SIM1[2], "")).equals(""))
             value1 = 0;
         else
-            value1 = isNight[0] ? Integer.valueOf(preferences.getString(Constants.PREF_SIM1[19], "")) :
-                    Integer.valueOf(preferences.getString(Constants.PREF_SIM1[2], ""));
+            value1 = isNight[0] ? Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM1[19], ""))) :
+                    Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM1[2], "")));
         int value2;
-        if (preferences.getString(Constants.PREF_SIM2[2], "").equals(""))
+        if (Objects.requireNonNull(preferences.getString(Constants.PREF_SIM2[2], "")).equals(""))
             value2 = 0;
         else
-            value2 = isNight[1] ? Integer.valueOf(preferences.getString(Constants.PREF_SIM2[19], "")) :
-                    Integer.valueOf(preferences.getString(Constants.PREF_SIM2[2], ""));
+            value2 = isNight[1] ? Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM2[19], ""))) :
+                    Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM2[2], "")));
         int value3;
-        if (preferences.getString(Constants.PREF_SIM3[2], "").equals(""))
+        if (Objects.requireNonNull(preferences.getString(Constants.PREF_SIM3[2], "")).equals(""))
             value3 = 0;
         else
-            value3 = isNight[2] ? Integer.valueOf(preferences.getString(Constants.PREF_SIM3[19], "")) :
-                    Integer.valueOf(preferences.getString(Constants.PREF_SIM3[2], ""));
+            value3 = isNight[2] ? Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM3[19], ""))) :
+                    Integer.valueOf(Objects.requireNonNull(preferences.getString(Constants.PREF_SIM3[2], "")));
         float valuer1, valuer2, valuer3;
         long lim1, lim2, lim3;
         try {
-            valuer1 = 1 - Float.valueOf(round1) / 100;
+            valuer1 = 1 - Float.valueOf(Objects.requireNonNull(round1)) / 100;
             lim1 = (long) (valuer1 * DataFormat.getFormatLong(limit1, value1));
         } catch (Exception e) {
             lim1 = Long.MAX_VALUE;
         }
         try {
-            valuer2 = 1 - Float.valueOf(round2) / 100;
+            valuer2 = 1 - Float.valueOf(Objects.requireNonNull(round2)) / 100;
             lim2 = (long) (valuer2 * DataFormat.getFormatLong(limit2, value2));
         } catch (Exception e) {
             lim2 = Long.MAX_VALUE;
         }
         try {
-            valuer3 = 1 - Float.valueOf(round3) / 100;
+            valuer3 = 1 - Float.valueOf(Objects.requireNonNull(round3)) / 100;
             lim3 = (long) (valuer3 * DataFormat.getFormatLong(limit3, value3));
         } catch (Exception e) {
             lim3 = Long.MAX_VALUE;
@@ -525,11 +523,11 @@ public class CustomApplication extends Application {
         boolean isNight1, isNight2, isNight3;
         if (preferences.getBoolean(Constants.PREF_SIM1[17], false)) {
             String time = preferences.getString(Constants.PREF_SIM1[20], "23:00");
-            if (time.equals("null"))
+            if (Objects.requireNonNull(time).equals("null"))
                 time = "23:00";
             String timeON = now.toString(Constants.DATE_FORMATTER) + " " + time;
             time = preferences.getString(Constants.PREF_SIM1[21], "06:00");
-            if (time.equals("null"))
+            if (Objects.requireNonNull(time).equals("null"))
                 time = "06:00";
             String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + time;
             isNight1 = DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
@@ -537,11 +535,11 @@ public class CustomApplication extends Application {
             isNight1 = false;
         if (preferences.getBoolean(Constants.PREF_SIM2[17], false)) {
             String time = preferences.getString(Constants.PREF_SIM2[20], "23:00");
-            if (time.equals("null"))
+            if (Objects.requireNonNull(time).equals("null"))
                 time = "23:00";
             String timeON = now.toString(Constants.DATE_FORMATTER) + " " + time;
             time = preferences.getString(Constants.PREF_SIM2[21], "06:00");
-            if (time.equals("null"))
+            if (Objects.requireNonNull(time).equals("null"))
                 time = "06:00";
             String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + time;
             isNight2 = DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
@@ -549,11 +547,11 @@ public class CustomApplication extends Application {
             isNight2 = false;
         if (preferences.getBoolean(Constants.PREF_SIM3[17], false)) {
             String time = preferences.getString(Constants.PREF_SIM3[20], "23:00");
-            if (time.equals("null"))
+            if (Objects.requireNonNull(time).equals("null"))
                 time = "23:00";
             String timeON = now.toString(Constants.DATE_FORMATTER) + " " + time;
             time = preferences.getString(Constants.PREF_SIM3[21], "06:00");
-            if (time.equals("null"))
+            if (Objects.requireNonNull(time).equals("null"))
                 time = "06:00";
             String timeOFF = now.toString(Constants.DATE_FORMATTER) + " " + time;
             isNight3 = DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeON)) >= 0 && DateTimeComparator.getInstance().compare(now, Constants.DATE_TIME_FORMATTER.parseDateTime(timeOFF)) <= 0;
@@ -700,7 +698,7 @@ public class CustomApplication extends Application {
                 final int SIM3_ON = 121;
                 PendingIntent pi3On = PendingIntent.getBroadcast(context, SIM3_ON, i3On, 0);
                 alarmTime = new DateTime().withHourOfDay(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]))
-                        .withMinuteOfHour(Integer.valueOf(prefs.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]))
+                        .withMinuteOfHour(Integer.valueOf(Objects.requireNonNull(prefs.getString(Constants.PREF_SIM3[13], "00:05")).split(":")[1]))
                         .withSecondOfMinute(0);
                 if (alarmTime.getMillis() < System.currentTimeMillis())
                     alarmTime = alarmTime.plusDays(1);

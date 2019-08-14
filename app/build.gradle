@@ -9,15 +9,15 @@ android {
             storePassword 'fpfhjdfbhbyf12091977'
         }
     }
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "ua.od.acros.dualsimtrafficcounter"
-        minSdkVersion 16
-        targetSdkVersion 16
-        versionCode 123
-        versionName '2.2.3'
+        targetSdkVersion 26
+        versionCode 124
+        versionName '2.2.4'
         signingConfig signingConfigs.acras
         vectorDrawables.useSupportLibrary = true
+        minSdkVersion 17
     }
     buildTypes {
         release {
@@ -35,18 +35,18 @@ android {
     lintOptions {
         disable 'MissingTranslation'
     }
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:recyclerview-v7:27.1.0'
-    implementation 'com.android.support:preference-v7:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.preference:preference:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'joda-time:joda-time:2.9.9'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'joda-time:joda-time:2.10.1'
     implementation project(':acra')
     implementation project(':ambilwarna')
     implementation project(':standOut')

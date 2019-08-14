@@ -1,7 +1,7 @@
 package ua.od.acros.dualsimtrafficcounter.preferences;
 
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import androidx.preference.PreferenceDialogFragmentCompat;
 import android.text.Editable;
 import android.view.View;
 import android.view.ViewGroup;

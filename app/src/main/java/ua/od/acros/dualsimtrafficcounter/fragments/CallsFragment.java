@@ -14,9 +14,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +29,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.activities.SettingsActivity;
@@ -86,7 +87,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                 long duration = intent.getLongExtra(Constants.CALL_DURATION, 0L);
                 int[] limit = CustomApplication.getCallsSimLimitsValues(true);
                 TypedValue typedValue = new TypedValue();
-                Resources.Theme theme = getActivity().getTheme();
+                Resources.Theme theme = Objects.requireNonNull(getActivity()).getTheme();
                 theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
                 TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{
                         android.R.attr.textColorPrimary});
@@ -216,7 +217,7 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
     @Override
     public final void onResume() {
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setSubtitle(R.string.calls_fragment);
 
         readCallsDataFromDatabase();
         int[] limit = CustomApplication.getCallsSimLimitsValues(true);
@@ -363,7 +364,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                     limit1Builder.append("/").append(list[i]);
                 String date = mPrefs.getString(Constants.PREF_SIM1_CALLS[8], getString(R.string.not_set));
                 try {
-                    date = date.substring(0, 10);
+                    if (date != null) {
+                        date = date.substring(0, 10);
+                    }
                     limit1Builder.append(getString(R.string.next_reset)).append(date);
                 } catch (Exception e) {
                     limit1Builder.append("\n").append(date);
@@ -377,7 +380,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                         limit2Builder.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM2_CALLS[8], getString(R.string.not_set));
                     try {
-                        date = date.substring(0, 10);
+                        if (date != null) {
+                            date = date.substring(0, 10);
+                        }
                         limit2Builder.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
                         limit2Builder.append("\n").append(date);
@@ -391,7 +396,9 @@ public class CallsFragment extends Fragment implements View.OnClickListener, Sha
                         limit3Builder.append("/").append(list[i]);
                     String date = mPrefs.getString(Constants.PREF_SIM3_CALLS[8], getString(R.string.not_set));
                     try {
-                        date = date.substring(0, 10);
+                        if (date != null) {
+                            date = date.substring(0, 10);
+                        }
                         limit3Builder.append(getString(R.string.next_reset)).append(date);
                     } catch (Exception e) {
                         limit3Builder.append("\n").append(date);

@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
+import androidx.preference.PreferenceScreen;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
@@ -168,7 +169,7 @@ public class OperatorFragment extends PreferenceFragmentCompatFix implements Sha
     @Override
     public final void onResume() {
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.name_title);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setTitle(R.string.name_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 

@@ -9,13 +9,13 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +32,7 @@ import org.acra.ACRA;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.dialogs.SetSizeDialog;
@@ -100,7 +101,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -262,7 +263,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         }
 
         rxtxL = findViewById(R.id.rxtx_layout);
-        rxtxSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0"));
+        rxtxSel = Integer.valueOf(Objects.requireNonNull(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0")));
         boolean rxtxState = rxtxSel == 0;
         rxtxSum = findViewById(R.id.rx_tx_summary);
         if (rxtxState)
@@ -272,7 +273,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
 
         remainL = findViewById(R.id.remain_layout);
         remainSum = findViewById(R.id.remain_data_summary);
-        remainSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1"));
+        remainSel = Integer.valueOf(Objects.requireNonNull(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[24], "1")));
         if (remainSel == 0)
             remainSum.setText(R.string.remain);
         else
@@ -292,7 +293,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
 
         RelativeLayout infoL = findViewById(R.id.info_layout);
         infoSum = findViewById(R.id.info_summary);
-        infoSel = Integer.valueOf(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0"));
+        infoSel = Integer.valueOf(Objects.requireNonNull(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[2], "0")));
         boolean infoState = infoSel == 0;
         if (infoL != null) {
             setOnClickListenerWithChild(infoL, this);
@@ -355,50 +356,23 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         logoSum3 = findViewById(R.id.logoSum3);
 
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false)) {
-            Picasso.with(this)
-                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[5], "")))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo1);
+            loadImageFromFile(new File(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[5], "")), mDim, logo1);
             logoSum1.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(this)
-                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[5], "none"), "drawable", mContext.getPackageName()))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo1);
+            loadImageFromResource(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[5],
+                    "none"), "drawable", mContext.getPackageName()), mDim, logo1);
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false)) {
-            Picasso.with(this)
-                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[6], "")))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo2);
+            loadImageFromFile(new File(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[6], "")), mDim, logo2);
             logoSum2.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(this)
-                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[6], "none"), "drawable", mContext.getPackageName()))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo2);
+            loadImageFromResource(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[6],
+                    "none"), "drawable", mContext.getPackageName()), mDim, logo2);
         if (prefsWidget.getBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false)) {
-            Picasso.with(this)
-                    .load(new File(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[7], "")))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo3);
+            loadImageFromFile(new File(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[7], "")), mDim, logo3);
             logoSum3.setText(getResources().getString(R.string.userpick));
         } else
-            Picasso.with(this)
-                    .load(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[7], "none"), "drawable", mContext.getPackageName()))
-                    .resize(mDim, mDim)
-                    .centerInside()
-                    .error(R.drawable.none)
-                    .into(logo3);
+            loadImageFromResource(getResources().getIdentifier(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[7],
+                    "none"), "drawable", mContext.getPackageName()), mDim, logo3);
 
         String[] listitems = getResources().getStringArray(R.array.icons_values);
         String[] list = getResources().getStringArray(R.array.icons);
@@ -427,6 +401,24 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         setOnClickListenerWithChild(rxtxL, this);
         setOnClickListenerWithChild(remainL, this);
         backColorL.setOnClickListener(this);
+    }
+
+    private void loadImageFromFile(File file, int dim, ImageView dest) {
+        Picasso.get()
+                .load(file)
+                .resize(dim, dim)
+                .centerInside()
+                .error(R.drawable.none)
+                .into(dest);
+    }
+
+    private void loadImageFromResource(int id, int dim, ImageView dest) {
+        Picasso.get()
+                .load(id)
+                .resize(dim, dim)
+                .centerInside()
+                .error(R.drawable.none)
+                .into(dest);
     }
 
     @Override
@@ -463,55 +455,53 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
         ArrayAdapter<String> adapter;
         int selection = -1;
         String[] array = null;
-        DialogInterface.OnClickListener myClickListener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                ListView lv = ((AlertDialog) dialog).getListView();
-                String[] array = getStringArray(lv.getAdapter());
-                boolean isChecked = lv.getCheckedItemPosition() == 0;
-                if (Arrays.equals(array, getResources().getStringArray(R.array.remain))) {
-                    remainSel = lv.getCheckedItemPosition();
-                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "0" : "1");
-                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "1" : "0");
-                    if (isChecked)
-                        remainSum.setText(R.string.remain);
-                    else
-                        remainSum.setText(R.string.used);
-                } else if (Arrays.equals(array, getResources().getStringArray(R.array.fullinfo))) {
-                    infoSel = lv.getCheckedItemPosition();
-                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[2], isChecked ? "0" : "1");
-                    if (isChecked)
-                        infoSum.setText(R.string.all);
-                    else
-                        infoSum.setText(R.string.only_total);
-                    SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
-                    boolean rxtxChecked = prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0").equals("0");
-                    onOff(remainL, !isChecked);
-                    onOff(rxtxL, isChecked);
-                    onOff(minusL, isChecked && !rxtxChecked);
-                    if (!isChecked) {
-                        mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], isChecked);
-                        minus.setChecked(isChecked);
-                        mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "0" : "1");
-                    } else {
-                        mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "1" : "0");
-                    }
-                } else if (Arrays.equals(array, getResources().getStringArray(R.array.rxtx))) {
-                    rxtxSel = lv.getCheckedItemPosition();
-                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "1" : "0");
+        DialogInterface.OnClickListener myClickListener = (dialog1, which) -> {
+            ListView lv = ((AlertDialog) dialog1).getListView();
+            String[] array1 = getStringArray(lv.getAdapter());
+            boolean isChecked = lv.getCheckedItemPosition() == 0;
+            if (Arrays.equals(array1, getResources().getStringArray(R.array.remain))) {
+                remainSel = lv.getCheckedItemPosition();
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "0" : "1");
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "1" : "0");
+                if (isChecked)
+                    remainSum.setText(R.string.remain);
+                else
+                    remainSum.setText(R.string.used);
+            } else if (Arrays.equals(array1, getResources().getStringArray(R.array.fullinfo))) {
+                infoSel = lv.getCheckedItemPosition();
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[2], isChecked ? "0" : "1");
+                if (isChecked)
+                    infoSum.setText(R.string.all);
+                else
+                    infoSum.setText(R.string.only_total);
+                SharedPreferences prefsWidget = getSharedPreferences(String.valueOf(mWidgetID) + Constants.TRAFFIC_TAG + Constants.WIDGET_PREFERENCES, Context.MODE_PRIVATE);
+                boolean rxtxChecked = Objects.requireNonNull(prefsWidget.getString(Constants.PREF_WIDGET_TRAFFIC[25], "0")).equals("0");
+                onOff(remainL, !isChecked);
+                onOff(rxtxL, isChecked);
+                onOff(minusL, isChecked && !rxtxChecked);
+                if (!isChecked) {
+                    mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], isChecked);
+                    minus.setChecked(isChecked);
                     mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "0" : "1");
-                    if (isChecked) {
-                        minus.setChecked(!isChecked);
-                        mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], !isChecked);
-                    }
-                    onOff(remainL, !isChecked);
-                    onOff(minusL, !isChecked);
-                    if (isChecked)
-                        rxtxSum.setText(R.string.show_rx_tx_sum);
-                    else
-                        rxtxSum.setText(R.string.show_used_left);
+                } else {
+                    mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "1" : "0");
                 }
-                dialog.dismiss();
+            } else if (Arrays.equals(array1, getResources().getStringArray(R.array.rxtx))) {
+                rxtxSel = lv.getCheckedItemPosition();
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[24], isChecked ? "1" : "0");
+                mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[25], isChecked ? "0" : "1");
+                if (isChecked) {
+                    minus.setChecked(!isChecked);
+                    mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[26], !isChecked);
+                }
+                onOff(remainL, !isChecked);
+                onOff(minusL, !isChecked);
+                if (isChecked)
+                    rxtxSum.setText(R.string.show_rx_tx_sum);
+                else
+                    rxtxSum.setText(R.string.show_used_left);
             }
+            dialog1.dismiss();
         };
         switch (view.getId()) {
             case R.id.remain_data_summary:
@@ -636,32 +626,17 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
             if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[5])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[8], false);
                 mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], opLogo);
-                Picasso.with(this)
-                        .load(resourceId)
-                        .resize(mDim, mDim)
-                        .centerInside()
-                        .error(R.drawable.none)
-                        .into(logo1);
+                loadImageFromResource(resourceId, mDim, logo1);
                 logoSum1.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[6])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[9], false);
                 mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], opLogo);
-                Picasso.with(this)
-                        .load(resourceId)
-                        .resize(mDim, mDim)
-                        .centerInside()
-                        .error(R.drawable.none)
-                        .into(logo2);
+                loadImageFromResource(resourceId, mDim, logo2);
                 logoSum2.setText(list[position]);
             } else if (logo.equals(Constants.PREF_WIDGET_TRAFFIC[7])) {
                 mEdit.putBoolean(Constants.PREF_WIDGET_TRAFFIC[10], false);
                 mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], opLogo);
-                Picasso.with(this)
-                        .load(resourceId)
-                        .resize(mDim, mDim)
-                        .centerInside()
-                        .error(R.drawable.none)
-                        .into(logo3);
+                loadImageFromResource(resourceId, mDim, logo3);
                 logoSum3.setText(list[position]);
             }
         } else {
@@ -685,12 +660,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                         String path = getRealPathFromURI(selectedImage);
                         if (path != null) {
                             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[5], path);
-                            Picasso.with(this)
-                                    .load(new File(path))
-                                    .resize(mDim, mDim)
-                                    .centerInside()
-                                    .error(R.drawable.none)
-                                    .into(logo1);
+                            loadImageFromFile(new File(path), mDim, logo1);
                         }
                         logoSum1.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[6])) {
@@ -698,12 +668,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                         String path = getRealPathFromURI(selectedImage);
                         if (path != null) {
                             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[6], path);
-                            Picasso.with(this)
-                                    .load(new File(path))
-                                    .resize(mDim, mDim)
-                                    .centerInside()
-                                    .error(R.drawable.none)
-                                    .into(logo2);
+                            loadImageFromFile(new File(path), mDim, logo2);
                         }
                         logoSum2.setText(getResources().getString(R.string.userpick));
                     } else if (mUserPickedImage.equals(Constants.PREF_WIDGET_TRAFFIC[7])) {
@@ -711,12 +676,7 @@ public class TrafficWidgetConfigActivity extends AppCompatActivity implements Ic
                         String path = getRealPathFromURI(selectedImage);
                         if (path != null) {
                             mEdit.putString(Constants.PREF_WIDGET_TRAFFIC[7], path);
-                            Picasso.with(this)
-                                    .load(new File(path))
-                                    .resize(mDim, mDim)
-                                    .centerInside()
-                                    .error(R.drawable.none)
-                                    .into(logo3);
+                            loadImageFromFile(new File(path), mDim, logo3);
                         }
                         logoSum3.setText(getResources().getString(R.string.userpick));
                     }

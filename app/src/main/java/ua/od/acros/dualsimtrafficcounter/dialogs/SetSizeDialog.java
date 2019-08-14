@@ -1,8 +1,8 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 
@@ -37,10 +39,11 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
     public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get back arguments
-        mSize = getArguments().getString(mKey1, "");
-        mDialog = getArguments().getInt(mKey2, -1);
-        mActivity = getArguments().getString(mKey3, "");
-
+        if (getArguments() != null) {
+            mSize = getArguments().getString(mKey1, "");
+            mDialog = getArguments().getInt(mKey2, -1);
+            mActivity = getArguments().getString(mKey3, "");
+        }
     }
 
     public interface TextSizeDialogListener {
@@ -82,7 +85,9 @@ public class SetSizeDialog extends DialogFragment implements TextView.OnEditorAc
                 event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
             // Return input text to activity
             TextSizeDialogListener listener = (TextSizeDialogListener) getActivity();
-            listener.onFinishEditDialog(mEditText.getText().toString(), mDialog, mActivity);
+            if (listener != null) {
+                listener.onFinishEditDialog(Objects.requireNonNull(mEditText.getText()).toString(), mDialog, mActivity);
+            }
             this.dismiss();
             return true;
         }

@@ -9,7 +9,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.receivers.NotificationTapReceiver;
@@ -110,7 +112,7 @@ public class CustomNotification extends Notification {
                     break;
             }
             String logo;
-            if (mPrefs.getString(pref[23], "none").equals("auto"))
+            if (Objects.requireNonNull(mPrefs.getString(pref[23], "none")).equals("auto"))
                 logo = "logo_" + MobileUtils.getLogoFromCode(context, sim);
             else
                 logo = mPrefs.getString(pref[23], "logo_none");

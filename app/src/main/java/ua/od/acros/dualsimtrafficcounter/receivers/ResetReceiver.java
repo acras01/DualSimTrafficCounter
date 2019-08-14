@@ -31,7 +31,7 @@ public class ResetReceiver extends BroadcastReceiver {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wl = null;
         if (pm != null) {
-            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
+            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "counter:reset");
         }
         if (wl != null) {
             wl.acquire(10*60*1000L /*10 minutes*/);

@@ -7,12 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceScreen;
+import androidx.appcompat.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -141,7 +143,10 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
         changeSIM = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[10]);
         chooseActions = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[51]);
+
         autoload = (TwoLineCheckPreference) findPreference(Constants.PREF_OTHER[47]);
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
+            autoload.setEnabled(true);
 
         PreferenceScreen sim2 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim2");
         PreferenceScreen sim3 = (PreferenceScreen) getPreferenceScreen().findPreference("traff_sim3");
@@ -226,7 +231,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
         if (dialogFragment != null) {
             dialogFragment.setTargetFragment(this, 0);
-            dialogFragment.show(this.getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+            dialogFragment.show(Objects.requireNonNull(this.getFragmentManager()), "android.support.v7.preference.PreferenceFragment.DIALOG");
         } else {
             super.onDisplayPreferenceDialog(preference);
         }
@@ -487,37 +492,37 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
         if (tOn1 != null) {
             limit = mPrefs.getString(Constants.PREF_SIM1[13], "00:05");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "00:05";
             tOn1.setSummary(limit);
         }
         if (tOn2 != null) {
             limit = mPrefs.getString(Constants.PREF_SIM2[13], "00:05");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "00:05";
             tOn2.setSummary(limit);
         }
         if (tOn3 != null) {
             limit = mPrefs.getString(Constants.PREF_SIM3[13], "00:05");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "00:05";
             tOn3.setSummary(limit);
         }
         if (tOff1 != null) {
             limit = mPrefs.getString(Constants.PREF_SIM1[12], "23:55");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "23:55";
             tOff1.setSummary(limit);
         }
         if (tOff2 != null) {
             limit = mPrefs.getString(Constants.PREF_SIM2[12], "23:55");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "23:55";
             tOff2.setSummary(limit);
         }
         if (tOff3 != null) {
             limit = mPrefs.getString(Constants.PREF_SIM3[12], "23:55");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "23:55";
             tOff3.setSummary(limit);
         }
@@ -531,37 +536,37 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
             round3N.setSummary(round3N.getText() + "%");
         if (tOn1N != null) {
             limit = mPrefs.getString(Constants.PREF_SIM1[20], "23:00");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "23:00";
             tOn1N.setSummary(limit);
         }
         if (tOn2N != null) {
             limit = mPrefs.getString(Constants.PREF_SIM2[20], "23:00");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "23:00";
             tOn2N.setSummary(limit);
         }
         if (tOn3N != null) {
             limit = mPrefs.getString(Constants.PREF_SIM3[20], "23:00");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "23:00";
             tOn3N.setSummary(limit);
         }
         if (tOff1N != null) {
             limit = mPrefs.getString(Constants.PREF_SIM1[21], "06:00");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "06:00";
             tOff1N.setSummary(limit);
         }
         if (tOff2N != null) {
             limit = mPrefs.getString(Constants.PREF_SIM2[21], "06:00");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "06:00";
             tOff2N.setSummary(limit);
         }
         if (tOff3N != null) {
             limit = mPrefs.getString(Constants.PREF_SIM3[21], "06:00");
-            if (limit.equals("null"))
+            if (Objects.requireNonNull(limit).equals("null"))
                 limit = "06:00";
             tOff3N.setSummary(limit);
         }
@@ -583,7 +588,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
     @Override
     public final void onResume() {
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setTitle(R.string.limit_title);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setTitle(R.string.limit_title);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -697,11 +702,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 i1Off.setAction(Constants.ALARM_ACTION);
                 final int SIM1_OFF = 100;
                 PendingIntent pi1Off = PendingIntent.getBroadcast(mContext, SIM1_OFF, i1Off, 0);
-                if (sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
-                        sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("1")) {
+                if (Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[11], "0")).equals("0") ||
+                        Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[11], "0")).equals("1")) {
                     am.cancel(pi1Off);
-                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[0]))
-                            .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55").split(":")[1]))
+                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55")).split(":")[0]))
+                            .withMinuteOfHour(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[12], "23:55")).split(":")[1]))
                             .withSecondOfMinute(0);
                     if (alarmTime.getMillis() < System.currentTimeMillis())
                         alarmTime = alarmTime.plusDays(1);
@@ -717,11 +722,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 i1On.setAction(Constants.ALARM_ACTION);
                 final int SIM1_ON = 101;
                 PendingIntent pi1On = PendingIntent.getBroadcast(mContext, SIM1_ON, i1On, 0);
-                if (sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("0") ||
-                        sharedPreferences.getString(Constants.PREF_SIM1[11], "0").equals("2")) {
+                if (Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[11], "0")).equals("0") ||
+                        Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[11], "0")).equals("2")) {
                     am.cancel(pi1On);
-                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[0]))
-                            .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05").split(":")[1]))
+                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05")).split(":")[0]))
+                            .withMinuteOfHour(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM1[13], "00:05")).split(":")[1]))
                             .withSecondOfMinute(0);
                     if (alarmTime.getMillis() < System.currentTimeMillis())
                         alarmTime = alarmTime.plusDays(1);
@@ -737,11 +742,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 i2Off.setAction(Constants.ALARM_ACTION);
                 final int SIM2_OFF = 110;
                 PendingIntent pi2Off = PendingIntent.getBroadcast(mContext, SIM2_OFF, i2Off, 0);
-                if (sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
-                        sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("1")) {
+                if (Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[11], "0")).equals("0") ||
+                        Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[11], "0")).equals("1")) {
                     am.cancel(pi2Off);
-                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[0]))
-                            .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55").split(":")[1]))
+                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55")).split(":")[0]))
+                            .withMinuteOfHour(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[12], "23:55")).split(":")[1]))
                             .withSecondOfMinute(0);
                     if (alarmTime.getMillis() < System.currentTimeMillis())
                         alarmTime = alarmTime.plusDays(1);
@@ -757,11 +762,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 i2On.setAction(Constants.ALARM_ACTION);
                 final int SIM2_ON = 111;
                 PendingIntent pi2On = PendingIntent.getBroadcast(mContext, SIM2_ON, i2On, 0);
-                if (sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("0") ||
-                        sharedPreferences.getString(Constants.PREF_SIM2[11], "0").equals("2")) {
+                if (Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[11], "0")).equals("0") ||
+                        Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[11], "0")).equals("2")) {
                     am.cancel(pi2On);
-                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[0]))
-                            .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05").split(":")[1]))
+                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05")).split(":")[0]))
+                            .withMinuteOfHour(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM2[13], "00:05")).split(":")[1]))
                             .withSecondOfMinute(0);
                     if (alarmTime.getMillis() < System.currentTimeMillis())
                         alarmTime = alarmTime.plusDays(1);
@@ -777,11 +782,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 i3Off.setAction(Constants.ALARM_ACTION);
                 final int SIM3_OFF = 120;
                 PendingIntent pi3Off = PendingIntent.getBroadcast(mContext, SIM3_OFF, i3Off, 0);
-                if (sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
-                        sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("1")) {
+                if (Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[11], "0")).equals("0") ||
+                        Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[11], "0")).equals("1")) {
                     am.cancel(pi3Off);
-                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:35").split(":")[0]))
-                            .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55").split(":")[1]))
+                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:35")).split(":")[0]))
+                            .withMinuteOfHour(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[12], "23:55")).split(":")[1]))
                             .withSecondOfMinute(0);
                     if (alarmTime.getMillis() < System.currentTimeMillis())
                         alarmTime = alarmTime.plusDays(1);
@@ -797,11 +802,11 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
                 i3On.setAction(Constants.ALARM_ACTION);
                 final int SIM3_ON = 121;
                 PendingIntent pi3On = PendingIntent.getBroadcast(mContext, SIM3_ON, i3On, 0);
-                if (sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("0") ||
-                        sharedPreferences.getString(Constants.PREF_SIM3[11], "0").equals("2")) {
+                if (Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[11], "0")).equals("0") ||
+                        Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[11], "0")).equals("2")) {
                     am.cancel(pi3On);
-                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[0]))
-                            .withMinuteOfHour(Integer.valueOf(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05").split(":")[1]))
+                    alarmTime = new DateTime().withHourOfDay(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05")).split(":")[0]))
+                            .withMinuteOfHour(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_SIM3[13], "00:05")).split(":")[1]))
                             .withSecondOfMinute(0);
                     if (alarmTime.getMillis() < System.currentTimeMillis())
                         alarmTime = alarmTime.plusDays(1);
@@ -920,7 +925,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
 
     private void checkIfResetNeeded() {
         String[] simPref = new String[]{Constants.PREF_SIM1[3], Constants.PREF_SIM1[9], Constants.PREF_SIM1[10]};
-        LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00"));
+        LocalDateTime resetTime1 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(Objects.requireNonNull(mPrefs.getString(Constants.PREF_SIM1[26], "1970-01-01 00:00")));
         LocalDateTime nowDate = DateTime.now().toLocalDateTime();
         if (nowDate.compareTo(resetTime1) >= 0) {
             resetTime1 = DateUtils.setResetDate(mPrefs, simPref);
@@ -932,7 +937,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
         if (mSimQuantity >= 2) {
             simPref = new String[]{Constants.PREF_SIM2[3], Constants.PREF_SIM2[9], Constants.PREF_SIM2[10]};
-            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00"));
+            LocalDateTime resetTime2 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(Objects.requireNonNull(mPrefs.getString(Constants.PREF_SIM2[26], "1970-01-01 00:00")));
             if (nowDate.compareTo(resetTime2) >= 0) {
                 resetTime2 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime2 != null) {
@@ -944,7 +949,7 @@ public class TrafficLimitFragment extends PreferenceFragmentCompatFix implements
         }
         if (mSimQuantity == 3) {
             simPref = new String[]{Constants.PREF_SIM3[3], Constants.PREF_SIM3[9], Constants.PREF_SIM3[10]};
-            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00"));
+            LocalDateTime resetTime3 = Constants.DATE_TIME_FORMATTER.parseLocalDateTime(Objects.requireNonNull(mPrefs.getString(Constants.PREF_SIM3[26], "1970-01-01 00:00")));
             if (nowDate.compareTo(resetTime3) >= 0) {
                 resetTime3 = DateUtils.setResetDate(mPrefs, simPref);
                 if (resetTime3 != null) {

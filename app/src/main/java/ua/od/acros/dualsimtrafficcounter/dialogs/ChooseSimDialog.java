@@ -1,21 +1,22 @@
 package ua.od.acros.dualsimtrafficcounter.dialogs;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatRadioButton;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatRadioButton;
 import android.view.View;
 import android.widget.RadioGroup;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetSimEvent;
@@ -40,7 +41,7 @@ public class ChooseSimDialog extends AppCompatActivity {
             if (prefs.getBoolean(Constants.PREF_OTHER[29], true))
                 getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
             else {
-                if (prefs.getString(Constants.PREF_OTHER[28], "1").equals("0"))
+                if (Objects.requireNonNull(prefs.getString(Constants.PREF_OTHER[28], "1")).equals("0"))
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 else
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -74,22 +75,19 @@ public class ChooseSimDialog extends AppCompatActivity {
             sim3rb.setEnabled(false);
         }*/
         final ColorStateList[] textColor = new ColorStateList[]{ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))};
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                bOK.setEnabled(true);
-                bOK.setTextColor(textColor[0]);
-                switch (checkedId) {
-                    case R.id.sim1RB:
-                        mSimID = Constants.SIM1;
-                        break;
-                    case R.id.sim2RB:
-                        mSimID = Constants.SIM2;
-                        break;
-                    case R.id.sim3RB:
-                        mSimID = Constants.SIM3;
-                        break;
-                }
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            bOK.setEnabled(true);
+            bOK.setTextColor(textColor[0]);
+            switch (checkedId) {
+                case R.id.sim1RB:
+                    mSimID = Constants.SIM1;
+                    break;
+                case R.id.sim2RB:
+                    mSimID = Constants.SIM2;
+                    break;
+                case R.id.sim3RB:
+                    mSimID = Constants.SIM3;
+                    break;
             }
         });
         mDialog = new AlertDialog.Builder(this)
@@ -99,21 +97,15 @@ public class ChooseSimDialog extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, null)
                 .create();
 
-        mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                bOK = (AppCompatButton) mDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                textColor[0] = bOK.getTextColors();
-                bOK.setEnabled(false);
-                bOK.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-                bOK.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        EventBus.getDefault().post(new SetSimEvent(mSimID, true));
-                        finish();
-                    }
-                });
-            }
+        mDialog.setOnShowListener(dialogInterface -> {
+            bOK = (AppCompatButton) mDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            textColor[0] = bOK.getTextColors();
+            bOK.setEnabled(false);
+            bOK.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            bOK.setOnClickListener(view1 -> {
+                EventBus.getDefault().post(new SetSimEvent(mSimID, true));
+                finish();
+            });
         });
         if (!this.isFinishing()) {
             mDialog.show();

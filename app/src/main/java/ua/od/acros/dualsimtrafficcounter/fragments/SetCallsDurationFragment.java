@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatRadioButton;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatRadioButton;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.events.SetCallsEvent;
@@ -60,7 +63,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mContext == null)
             mContext = CustomApplication.getAppContext();
         View view = inflater.inflate(R.layout.duration_fragment, container, false);
@@ -113,7 +116,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     }
 
     @Override
-    public final void onSaveInstanceState(Bundle outState) {
+    public final void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (isVisible()) {
             outState.putInt("sim", mSimChecked);
@@ -125,7 +128,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
     @Override
     public final void onResume(){
         super.onResume();
-        ((Toolbar) getActivity().findViewById(R.id.toolbar)).setSubtitle(R.string.action_set_duration);
+        ((Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar)).setSubtitle(R.string.action_set_duration);
     }
 
     @Override
@@ -136,7 +139,7 @@ public class SetCallsDurationFragment extends Fragment implements RadioGroup.OnC
                 mContext.startService(new Intent(mContext, CallLoggerService.class));
             SetCallsEvent event = new SetCallsEvent(mSimChecked, duration.getText().toString(), mSpinnerSel);
             EventBus.getDefault().postSticky(event);
-            getActivity().onBackPressed();
+            Objects.requireNonNull(getActivity()).onBackPressed();
         } else
             Toast.makeText(mContext, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
     }

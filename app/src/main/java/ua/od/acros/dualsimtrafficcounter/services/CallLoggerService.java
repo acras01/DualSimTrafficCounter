@@ -19,7 +19,7 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -32,6 +32,7 @@ import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.MainActivity;
 import ua.od.acros.dualsimtrafficcounter.R;
@@ -305,7 +306,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                     sim = MobileUtils.getActiveSimForCallM(ctx, mPrefs.getInt(Constants.PREF_OTHER[55], 1), list);
                                 }
                                 Toast.makeText(ctx, "Active SIM: " + sim + "\nOutgoing number: " + number, Toast.LENGTH_LONG).show();
-                                updateNotification();
+                                //updateNotification();
                                 mLastActiveSIM = sim;
                                 /*String out = sim + " " + CallLoggerService.this.mNumber[0] + "\n";
                                 try {
@@ -483,9 +484,9 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                                 inter = mPrefs.getString(Constants.PREF_SIM3_CALLS[3], "0");
                                 break;
                         }
-                        if (!inter.equals(""))
+                        if (!Objects.requireNonNull(inter).equals(""))
                             interval = Integer.valueOf(inter) * Constants.SECOND;
-                        if (!lim.equals(""))
+                        if (!Objects.requireNonNull(lim).equals(""))
                             limit = Long.valueOf(lim) * Constants.MINUTE;
                         long timeToVibrate = limit - currentDuration - interval;
                         if (timeToVibrate < 0)
@@ -540,21 +541,21 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                         switch (sim) {
                             case Constants.SIM1:
                                 mCallsData.put(Constants.CALLS1_EX, duration + (long) mCallsData.get(Constants.CALLS1_EX));
-                                if (mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0").equals("1"))
+                                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_SIM1_CALLS[6], "0")).equals("1"))
                                     duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
                                 mCallsData.put(Constants.CALLS1, duration + (long) mCallsData.get(Constants.CALLS1));
                                 duration = (long) mCallsData.get(Constants.CALLS1);
                                 break;
                             case Constants.SIM2:
                                 mCallsData.put(Constants.CALLS2_EX, duration + (long) mCallsData.get(Constants.CALLS2_EX));
-                                if (mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0").equals("1"))
+                                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_SIM2_CALLS[6], "0")).equals("1"))
                                     duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
                                 mCallsData.put(Constants.CALLS2, duration + (long) mCallsData.get(Constants.CALLS2));
                                 duration = (long) mCallsData.get(Constants.CALLS2);
                                 break;
                             case Constants.SIM3:
                                 mCallsData.put(Constants.CALLS3_EX, duration + (long) mCallsData.get(Constants.CALLS3_EX));
-                                if (mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0").equals("1"))
+                                if (Objects.requireNonNull(mPrefs.getString(Constants.PREF_SIM3_CALLS[6], "0")).equals("1"))
                                     duration = (long) Math.ceil((double) duration / Constants.MINUTE) * Constants.MINUTE;
                                 mCallsData.put(Constants.CALLS3, duration + (long) mCallsData.get(Constants.CALLS3));
                                 duration = (long) mCallsData.get(Constants.CALLS3);
@@ -610,7 +611,7 @@ public class CallLoggerService extends Service implements SharedPreferences.OnSh
                     text = mOperatorNames[2];
                     break;
             }
-            if (mPrefs.getString(pref[23], "none").equals("auto"))
+            if (Objects.requireNonNull(mPrefs.getString(pref[23], "none")).equals("auto"))
                 id = getResources().getIdentifier("logo_" + MobileUtils.getLogoFromCode(mContext, simid), "drawable", mContext.getPackageName());
             else
                 id = getResources().getIdentifier(mPrefs.getString(pref[23], "none"), "drawable", mContext.getPackageName());

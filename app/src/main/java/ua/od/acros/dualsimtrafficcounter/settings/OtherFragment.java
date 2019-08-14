@@ -10,15 +10,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceScreen;
+import androidx.appcompat.widget.Toolbar;
 import android.text.InputFilter;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 import ua.od.acros.dualsimtrafficcounter.R;
 import ua.od.acros.dualsimtrafficcounter.preferences.PreferenceFragmentCompatFix;
@@ -105,7 +106,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
             boolean state = (mSwitch != null && mSwitch.get() != null) ? mSwitch.get().isSwitchOn()
                     : mPrefs.getBoolean(Constants.PREF_OTHER[32], true);
             for (int i = 0; i < count; ++i) {
-                android.support.v7.preference.Preference pref = getPreferenceScreen().getPreference(i);
+                androidx.preference.Preference pref = getPreferenceScreen().getPreference(i);
                 pref.setEnabled(state);
                 if (pref.getKey().equals(Constants.PREF_OTHER[41]))
                     pref.setEnabled(state && !mPrefs.getBoolean(Constants.PREF_OTHER[47], false));
@@ -184,7 +185,7 @@ public class OtherFragment extends PreferenceFragmentCompatFix implements Shared
         if (key.equals(Constants.PREF_OTHER[13]) || key.equals(Constants.PREF_OTHER[14])) {
             sharedPreferences.edit()
                 .putInt(Constants.PREF_OTHER[55], sharedPreferences.getBoolean(Constants.PREF_OTHER[13], true) ? MobileUtils.isMultiSim(mContext)
-                        : Integer.valueOf(sharedPreferences.getString(Constants.PREF_OTHER[14], "1")))
+                        : Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString(Constants.PREF_OTHER[14], "1"))))
                 .apply();
             if (CustomApplication.isMyServiceRunning(TrafficCountService.class)) {
                 Intent i = new Intent(mContext, TrafficCountService.class);
